@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  direction: rtl;
+  background: #f0f4f8;
+  color: #1a1a2e;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #1B3A6B; border-radius: 3px; }
+
+/* Markdown inside messages */
+.prose-ar p  { margin-bottom: 0.6rem; line-height: 1.8; }
+.prose-ar ul { list-style: disc; padding-right: 1.5rem; margin-bottom: 0.6rem; }
+.prose-ar ol { list-style: decimal; padding-right: 1.5rem; margin-bottom: 0.6rem; }
+.prose-ar li { margin-bottom: 0.3rem; }
+.prose-ar strong { font-weight: 700; color: #1B3A6B; }
+.prose-ar h1,.prose-ar h2,.prose-ar h3 { font-weight: 700; margin: 0.8rem 0 0.4rem; color: #1B3A6B; }
+.prose-ar a { color: #E8A020; text-decoration: underline; }
+.prose-ar code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+.prose-ar hr { border-color: #e5e7eb; margin: 0.8rem 0; }
+
+/* Typing cursor */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.cursor { display: inline-block; width: 2px; height: 1em; background: #1B3A6B; margin-right: 2px; animation: blink 1s infinite; vertical-align: middle; }
