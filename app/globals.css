@@ -9,26 +9,40 @@
 body {
   font-family: 'Tajawal', sans-serif;
   direction: rtl;
-  background: #f0f4f8;
+  background: #ffffff;
   color: #1a1a2e;
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #1B3A6B; border-radius: 3px; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f8f8f8; }
+::-webkit-scrollbar-thumb { background: #8B1A1A; border-radius: 3px; }
 
-/* Markdown inside messages */
-.prose-ar p  { margin-bottom: 0.6rem; line-height: 1.8; }
-.prose-ar ul { list-style: disc; padding-right: 1.5rem; margin-bottom: 0.6rem; }
-.prose-ar ol { list-style: decimal; padding-right: 1.5rem; margin-bottom: 0.6rem; }
+/* Markdown */
+.prose-ar p  { margin-bottom: 0.65rem; line-height: 1.85; }
+.prose-ar ul { list-style: disc; padding-right: 1.4rem; margin-bottom: 0.65rem; }
+.prose-ar ol { list-style: decimal; padding-right: 1.4rem; margin-bottom: 0.65rem; }
 .prose-ar li { margin-bottom: 0.3rem; }
-.prose-ar strong { font-weight: 700; color: #1B3A6B; }
-.prose-ar h1,.prose-ar h2,.prose-ar h3 { font-weight: 700; margin: 0.8rem 0 0.4rem; color: #1B3A6B; }
-.prose-ar a { color: #E8A020; text-decoration: underline; }
-.prose-ar code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
-.prose-ar hr { border-color: #e5e7eb; margin: 0.8rem 0; }
+.prose-ar strong { font-weight: 700; color: #8B1A1A; }
+.prose-ar h1,.prose-ar h2,.prose-ar h3 { font-weight: 700; margin: 0.8rem 0 0.4rem; color: #1a1a2e; }
+.prose-ar a { color: #8B1A1A; text-decoration: underline; }
+.prose-ar code { background: #fdf2f2; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+.prose-ar hr { border-color: #f0e0e0; margin: 0.8rem 0; }
+.prose-ar table { width: 100%; border-collapse: collapse; margin-bottom: 0.8rem; }
+.prose-ar th { background: #8B1A1A; color: white; padding: 0.5rem 0.75rem; }
+.prose-ar td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #f0e0e0; }
 
 /* Typing cursor */
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-.cursor { display: inline-block; width: 2px; height: 1em; background: #1B3A6B; margin-right: 2px; animation: blink 1s infinite; vertical-align: middle; }
+.cursor {
+  display: inline-block;
+  width: 2px; height: 1em;
+  background: #8B1A1A;
+  margin-right: 2px;
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+/* Message animations */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.msg-appear { animation: fadeIn 0.25s ease forwards; }
