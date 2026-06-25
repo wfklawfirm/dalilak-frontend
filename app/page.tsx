@@ -7,10 +7,16 @@ import ChatMessage, { Message } from '@/components/ChatMessage'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 const SUGGESTIONS = [
+  { icon: '📋', title: 'المعاملات الرسمية', desc: 'جوازات، هويات، وثائق رسمية' },
+  { icon: '🏛️', title: 'الإجراءات الحكومية', desc: 'تسجيل شركات، عقارات، سيارات' },
+  { icon: '👶', title: 'الأحوال الشخصية', desc: 'ولادة، زواج، وفاة، طلاق' },
+  { icon: '🎓', title: 'التعليم والعمل', desc: 'شهادات، تصاريح، حقوق العمال' },
+]
+
+const QUICK_QUESTIONS = [
   'كيف أستخرج جواز سفر لبناني؟',
   'ما هي إجراءات تسجيل سيارة جديدة؟',
   'كيف أستخرج شهادة ميلاد؟',
-  'كيف أجدد إقامتي في لبنان؟',
   'كيف أسجل شركة في لبنان؟',
 ]
 
@@ -25,7 +31,6 @@ export default function Home() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
@@ -35,128 +40,84 @@ export default function Home() {
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return
-
     const userMsg: Message = { role: 'user', content: text.trim() }
     const history = messages.map(m => ({ role: m.role, content: m.content }))
     setMessages(prev => [...prev, userMsg])
     setInput('')
     setLoading(true)
-
     setMessages(prev => [...prev, { role: 'assistant', content: '', streaming: true }])
-
     try {
-      const res = await fetch(`${API_URL}/chat/stream`, {
+      const res = await fetch(API_URL + '/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text.trim(), history }),
       })
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-
+      if (!res.ok) throw new Error('HTTP ' + res.status)
       const reader = res.body!.getReader()
       const decoder = new TextDecoder()
       let accumulated = ''
       let buffer = ''
-
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
-
         buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-
-        for (const line of lines) {
-          const trimmed = line.trim()
+        const sseLines = buffer.split('\n')
+        buffer = sseLines.pop() || ''
+        for (const sseLine of sseLines) {
+          const trimmed = sseLine.trim()
           if (!trimmed.startsWith('data: ')) continue
           const data = trimmed.slice(6).trim()
           if (data === '[DONE]') continue
           try {
             const parsed = JSON.parse(data)
-            // Backend format: {type: "token", text: "..."}
             if (parsed.type === 'token' && parsed.text) {
               accumulated += parsed.text
-              setMessages(prev => {
-                const updated = [...prev]
-                updated[updated.length - 1] = { role: 'assistant', content: accumulated, streaming: true }
-                return updated
-              })
+              setMessages(prev => { const u = [...prev]; u[u.length-1] = { role: 'assistant', content: accumulated, streaming: true }; return u })
             }
-            // OpenAI-compatible format: {choices: [{delta: {content: "..."}}]}
             const token = parsed.choices?.[0]?.delta?.content
             if (token) {
               accumulated += token
-              setMessages(prev => {
-                const updated = [...prev]
-                updated[updated.length - 1] = { role: 'assistant', content: accumulated, streaming: true }
-                return updated
-              })
+              setMessages(prev => { const u = [...prev]; u[u.length-1] = { role: 'assistant', content: accumulated, streaming: true }; return u })
             }
           } catch {}
         }
       }
-
-      setMessages(prev => {
-        const updated = [...prev]
-        updated[updated.length - 1] = {
-          role: 'assistant',
-          content: accumulated || 'عذراً، لم أتلقَّ ردّاً. حاول مجدداً.',
-          streaming: false,
-        }
-        return updated
-      })
-    } catch (err) {
-      setMessages(prev => {
-        const updated = [...prev]
-        updated[updated.length - 1] = {
-          role: 'assistant',
-          content: 'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مجدداً.',
-          streaming: false,
-        }
-        return updated
-      })
+      setMessages(prev => { const u = [...prev]; u[u.length-1] = { role: 'assistant', content: accumulated || 'عذراً، لم أتلقَّ ردّاً.', streaming: false }; return u })
+    } catch {
+      setMessages(prev => { const u = [...prev]; u[u.length-1] = { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال.', streaming: false }; return u })
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    sendMessage(input)
-  }
+  const handleSubmit = (e: FormEvent) => { e.preventDefault(); sendMessage(input) }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage(input)
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) }
   }
 
   return (
     <div className="flex flex-col h-screen bg-white">
 
-      {/* ── Header ── */}
+      {/* Header */}
       <header className="bg-white border-b border-gray-100 shadow-sm px-6 py-3 flex-shrink-0">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          {/* Logo */}
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image
-              src="/logo.png"
+              src="/logo.PNG"
               alt="Dalilak AI"
-              width={48}
-              height={48}
+              width={44}
+              height={44}
               className="object-contain"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
             <div>
-              <h1 className="text-lg font-bold text-gray-900 leading-tight">
+              <h1 className="text-base font-bold text-gray-900 leading-tight">
                 Dalilak <span style={{color:'#8B1A1A'}}>AI</span>
               </h1>
               <p className="text-xs text-gray-400">دليل ذكي للمواطن اللبناني</p>
             </div>
           </div>
-
-          {/* Status */}
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-xs text-gray-400">متصل</span>
@@ -164,53 +125,70 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Messages ── */}
+      {/* Main */}
       <main className="flex-1 overflow-y-auto bg-white">
         {messages.length === 0 ? (
-          /* Welcome screen */
-          <div className="flex flex-col items-center justify-center h-full px-4 py-8 text-center">
-            <div className="mb-8">
+
+          <div className="flex flex-col items-center justify-center min-h-full px-4 py-10 text-center">
+
+            {/* Logo */}
+            <div className="mb-6">
               <Image
-                src="/logo.png"
+                src="/logo.PNG"
                 alt="Dalilak AI"
-                width={120}
-                height={120}
-                className="object-contain mx-auto mb-4"
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement
-                  el.style.display = 'none'
-                }}
+                width={160}
+                height={160}
+                className="object-contain mx-auto"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
               />
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                أهلاً بك في Dalilak <span style={{color:'#8B1A1A'}}>AI</span>
-              </h2>
-              <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
-                دليلك الذكي لكل المعاملات والإجراءات الحكومية اللبنانية
-              </p>
-              <div className="flex items-center justify-center gap-4 mt-3 text-xs text-gray-300">
-                <span>المعاملات</span>
-                <span>|</span>
-                <span>الطلبات</span>
-                <span>|</span>
-                <span>لكل أنواع الأسئلة</span>
-              </div>
             </div>
 
-            {/* Suggestions */}
-            <div className="w-full max-w-lg space-y-2">
+            {/* Title */}
+            <h2 className="text-3xl font-bold text-gray-900 mb-1">
+              كيف يمكنني مساعدتك اليوم؟
+            </h2>
+            <div className="flex items-center gap-3 my-3">
+              <div style={{height:1, width:60, backgroundColor:'#8B1A1A', opacity:0.4}} />
+              <div style={{width:6, height:6, backgroundColor:'#8B1A1A', transform:'rotate(45deg)'}} />
+              <div style={{height:1, width:60, backgroundColor:'#8B1A1A', opacity:0.4}} />
+            </div>
+            <p className="text-gray-500 text-sm mb-8 max-w-md leading-relaxed">
+              اطرح سؤالاً حول أي معاملة حكومية لبنانية وسأرشدك خطوة بخطوة
+            </p>
+
+            {/* Feature Cards */}
+            <div className="grid grid-cols-2 gap-3 w-full max-w-xl mb-6">
               {SUGGESTIONS.map((s, i) => (
                 <button
                   key={i}
-                  onClick={() => sendMessage(s)}
-                  className="w-full text-right px-5 py-3.5 bg-white rounded-xl border border-gray-100 hover:border-red-200 hover:bg-red-50 text-sm text-gray-600 transition-all shadow-sm hover:shadow-md group flex items-center justify-between"
+                  onClick={() => sendMessage(s.title + ' — ' + s.desc)}
+                  className="flex flex-col items-start gap-1 p-4 bg-white rounded-xl border border-gray-100 hover:border-red-200 hover:bg-red-50 text-right shadow-sm hover:shadow-md transition-all group"
                 >
-                  <span className="text-gray-300 group-hover:text-red-300 text-xs">←</span>
-                  <span>{s}</span>
+                  <span className="text-2xl">{s.icon}</span>
+                  <span className="font-semibold text-gray-800 text-sm group-hover:text-red-800">{s.title}</span>
+                  <span className="text-xs text-gray-400">{s.desc}</span>
                 </button>
               ))}
             </div>
+
+            {/* Quick Questions */}
+            <div className="w-full max-w-xl space-y-2">
+              {QUICK_QUESTIONS.map((q, i) => (
+                <button
+                  key={i}
+                  onClick={() => sendMessage(q)}
+                  className="w-full text-right px-4 py-3 bg-white rounded-xl border border-gray-100 hover:border-red-200 hover:bg-red-50 text-sm text-gray-600 shadow-sm hover:shadow-md transition-all flex items-center justify-between group"
+                >
+                  <span className="text-gray-300 group-hover:text-red-300 text-xs">←</span>
+                  <span>{q}</span>
+                </button>
+              ))}
+            </div>
+
           </div>
+
         ) : (
+
           <div className="max-w-3xl mx-auto px-4 py-6">
             {messages.map((msg, i) => (
               <div key={i} className="msg-appear">
@@ -219,10 +197,11 @@ export default function Home() {
             ))}
             <div ref={bottomRef} />
           </div>
+
         )}
       </main>
 
-      {/* ── Input ── */}
+      {/* Input */}
       <footer className="bg-white border-t border-gray-100 px-4 py-4 flex-shrink-0">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="flex items-end gap-2 bg-white border border-gray-200 rounded-2xl px-4 py-2 shadow-sm focus-within:border-red-300 focus-within:shadow-md transition-all">
@@ -260,6 +239,7 @@ export default function Home() {
           </p>
         </form>
       </footer>
+
     </div>
   )
 }
