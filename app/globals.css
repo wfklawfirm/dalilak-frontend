@@ -1,48 +1,157 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Design Tokens ──────────────────────────────────── */
+:root {
+  --brand:        #8B1A1A;
+  --brand-dark:   #6E1515;
+  --brand-light:  #FDF4F4;
+  --brand-ring:   rgba(139, 26, 26, 0.12);
 
-body {
-  font-family: 'Tajawal', sans-serif;
-  direction: rtl;
-  background: #ffffff;
-  color: #1a1a2e;
+  --bg:           #FFFFFF;
+  --surface:      #F9FAFB;
+  --surface-2:    #F3F4F6;
+
+  --border:       #E5E7EB;
+  --border-light: #F3F4F6;
+
+  --text-1:       #111827;
+  --text-2:       #4B5563;
+  --text-3:       #9CA3AF;
+
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:    0 1px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-brand: 0 2px 8px rgba(139,26,26,0.22);
+
+  --radius-sm:    8px;
+  --radius-md:    12px;
+  --radius-lg:    16px;
+  --radius-xl:    20px;
+  --radius-full:  999px;
+
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #f8f8f8; }
-::-webkit-scrollbar-thumb { background: #8B1A1A; border-radius: 3px; }
+/* ── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
 
-/* Markdown */
-.prose-ar p  { margin-bottom: 0.65rem; line-height: 1.85; }
-.prose-ar ul { list-style: disc; padding-right: 1.4rem; margin-bottom: 0.65rem; }
-.prose-ar ol { list-style: decimal; padding-right: 1.4rem; margin-bottom: 0.65rem; }
-.prose-ar li { margin-bottom: 0.3rem; }
-.prose-ar strong { font-weight: 700; color: #8B1A1A; }
-.prose-ar h1,.prose-ar h2,.prose-ar h3 { font-weight: 700; margin: 0.8rem 0 0.4rem; color: #1a1a2e; }
-.prose-ar a { color: #8B1A1A; text-decoration: underline; }
-.prose-ar code { background: #fdf2f2; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
-.prose-ar hr { border-color: #f0e0e0; margin: 0.8rem 0; }
-.prose-ar table { width: 100%; border-collapse: collapse; margin-bottom: 0.8rem; }
-.prose-ar th { background: #8B1A1A; color: white; padding: 0.5rem 0.75rem; }
-.prose-ar td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #f0e0e0; }
+/* ── Base ───────────────────────────────────────────── */
+body {
+  font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+  direction: rtl;
+  background: var(--bg);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
-/* Typing cursor */
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+textarea { font-family: inherit; }
+
+/* ── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.5); }
+  50%       { transform: scaleY(1.5); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Cursor ──────────────────────────────────────────── */
 .cursor {
   display: inline-block;
-  width: 2px; height: 1em;
-  background: #8B1A1A;
+  width: 2px;
+  height: 1.1em;
+  background: var(--brand);
   margin-right: 2px;
-  animation: blink 1s infinite;
-  vertical-align: middle;
+  border-radius: 1px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
 }
 
-/* Message animations */
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.msg-appear { animation: fadeIn 0.25s ease forwards; }
+/* ── Message entrance ────────────────────────────────── */
+.msg-in { animation: fadeUp 0.22s ease forwards; }
+
+/* ── Interactive button states ───────────────────────── */
+.card-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.card-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.09) !important;
+  border-color: #D1D5DB !important;
+}
+.card-btn:active { transform: scale(0.97) !important; }
+
+.chip-btn {
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.chip-btn:hover  { background: var(--surface) !important; border-color: #D1D5DB !important; }
+.chip-btn:active { transform: scale(0.97); }
+
+.mode-btn { transition: all 0.15s ease; }
+.mode-btn:hover:not(.active) {
+  background: var(--surface-2) !important;
+  color: var(--text-2) !important;
+}
+
+.send-btn { transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease; }
+.send-btn:hover:not(:disabled)  { background: var(--brand-dark) !important; transform: scale(1.05); }
+.send-btn:active:not(:disabled) { transform: scale(0.95) !important; }
+
+.icon-btn { transition: background 0.15s ease, color 0.15s ease; }
+.icon-btn:hover:not(:disabled) {
+  background: var(--surface) !important;
+  color: var(--text-2) !important;
+}
+
+/* ── Input focus ring ────────────────────────────────── */
+.input-wrap {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.input-wrap.focused {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px var(--brand-ring) !important;
+}
+
+/* ── Tap highlight ───────────────────────────────────── */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── Focus ring ──────────────────────────────────────── */
+button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+textarea:focus { outline: none; }
