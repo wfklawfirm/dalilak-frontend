@@ -427,15 +427,13 @@ export default function Home() {
 
             {/* Heading */}
             <h1 className="welcome-heading" style={{
-              fontWeight: 800,
-              color: '#111827', margin: '0 0 4px',
-              letterSpacing: '-0.02em', lineHeight: 1.25,
+              color: '#111827', margin: '0 0 6px',
             }}>
               كيف يمكنني مساعدتك؟
             </h1>
 
             {/* Decorative divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '10px 0 12px' }}>
               <div style={{ height: 1, width: 52, background: 'linear-gradient(to left, transparent, #8B1A1A66)' }} />
               <div style={{ width: 5, height: 5, background: '#8B1A1A', transform: 'rotate(45deg)', opacity: 0.65 }} />
               <div style={{ height: 1, width: 52, background: 'linear-gradient(to right, transparent, #8B1A1A66)' }} />
@@ -443,7 +441,6 @@ export default function Home() {
 
             {/* Subtitle */}
             <p className="welcome-sub" style={{
-              color: '#9CA3AF', lineHeight: 1.8,
               margin: '0 0 22px', fontWeight: 400,
             }}>
               اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث بصوتك مباشرةً
@@ -466,10 +463,10 @@ export default function Home() {
                     width: '100%', minHeight: 90,
                   }}>
                   <span style={{ fontSize: 22, lineHeight: 1, display: 'block', textAlign: 'center' }}>{s.icon}</span>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: '#1F2937', lineHeight: 1.35, display: 'block', textAlign: 'center', width: '100%' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1F2937', lineHeight: 1.35, display: 'block', textAlign: 'center', width: '100%' }}>
                     {s.title}
                   </span>
-                  <span style={{ fontSize: 10, color: '#9CA3AF', lineHeight: 1.4, display: 'block', textAlign: 'center', width: '100%' }}>
+                  <span style={{ fontSize: 11.5, color: '#9CA3AF', lineHeight: 1.4, display: 'block', textAlign: 'center', width: '100%' }}>
                     {s.desc}
                   </span>
                 </button>
@@ -523,7 +520,7 @@ export default function Home() {
             </div>
 
             {/* Stats */}
-            <p style={{ fontSize: 10, color: '#C4B9B9', fontWeight: 600, letterSpacing: '0.03em', marginTop: 6 }}>
+            <p className="welcome-stats">
               35 قطاعاً · 2,484 معاملة · 1,206 نموذج رسمي
             </p>
 

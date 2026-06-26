@@ -199,23 +199,39 @@ textarea:focus { outline: none; }
 }
 
 /* Logo welcome size */
-.logo-welcome { width: 100px; height: 100px; }
+.logo-welcome { width: 110px; height: 110px; }
 
 /* Welcome heading */
-.welcome-heading { font-size: 20px; }
+.welcome-heading {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
 
 /* Welcome subtitle */
-.welcome-sub { font-size: 12px; max-width: 280px; }
+.welcome-sub {
+  font-size: 14px;
+  max-width: 300px;
+  color: #6B7280;
+  line-height: 1.75;
+}
+
+/* Welcome stats */
+.welcome-stats {
+  font-size: 11.5px;
+  color: #B0B7C3;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-top: 8px;
+}
 
 /* Header height */
-.header-inner { padding: 10px 16px; }
+.header-inner { padding: 0 18px; }
 
-/* Top bar — compact on mobile */
-.topbar-inner {
-  padding: 0 14px;
-  gap: 10px;
-}
-.topbar-link { font-size: 9.5px; }
+/* Top bar */
+.topbar-inner { padding: 0 14px; gap: 10px; }
+.topbar-link  { font-size: 9.5px; }
 
 /* ── Desktop (≥ 640px) ─────────────────────────────── */
 @media (min-width: 640px) {
@@ -229,25 +245,24 @@ textarea:focus { outline: none; }
     grid-template-columns: repeat(4, 1fr);
     max-width: 700px;
     gap: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
 
-  .quick-list  { max-width: 600px; gap: 8px; }
+  .quick-list { max-width: 620px; gap: 9px; }
 
-  .logo-welcome { width: 128px; height: 128px; }
-  .welcome-heading { font-size: 26px; }
-  .welcome-sub { font-size: 13.5px; max-width: 420px; }
+  .logo-welcome   { width: 130px; height: 130px; }
+  .welcome-heading { font-size: 30px; }
+  .welcome-sub    { font-size: 15.5px; max-width: 460px; }
+  .welcome-stats  { font-size: 12.5px; }
 
-  .header-inner { padding: 12px 24px; }
+  .header-inner { padding: 0 24px; }
 }
 
 /* ── Large desktop (≥ 1024px) ──────────────────────── */
 @media (min-width: 1024px) {
-  .welcome-grid {
-    max-width: 800px;
-    gap: 16px;
-  }
-  .quick-list { max-width: 700px; }
-  .logo-welcome { width: 140px; height: 140px; }
-  .welcome-heading { font-size: 30px; }
+  .welcome-grid { max-width: 820px; gap: 16px; }
+  .quick-list   { max-width: 720px; }
+  .logo-welcome    { width: 144px; height: 144px; }
+  .welcome-heading { font-size: 34px; }
+  .welcome-sub     { font-size: 16px; max-width: 500px; }
 }
