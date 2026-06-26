@@ -117,7 +117,7 @@ export default function Home() {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) { alert('التعرف على الصوت غير مدعوم. استخدم Chrome أو Edge.'); return }
     const recognition = new SR()
-    recognition.lang = navigator.language || 'ar'
+    recognition.lang = 'ar-LB'
     recognition.continuous = false
     recognition.interimResults = true
     recognition.onresult = (e: any) => {
