@@ -62,6 +62,7 @@ export default function Home() {
   const [attachedFile, setAttachedFile] = useState<AttachedFile | null>(null)
   const [mode, setMode] = useState<ResponseMode>('detailed')
   const [footerBottom, setFooterBottom] = useState(0)
+  const [inputFocused, setInputFocused] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -72,38 +73,27 @@ export default function Home() {
   useEffect(() => {
     const vv = (window as any).visualViewport
     if (!vv) return
-
     const onViewport = () => {
-      // Distance from bottom of visual viewport to bottom of layout viewport
       const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
       setFooterBottom(offset)
-      // Scroll chat to bottom when keyboard opens
       if (offset > 50) {
-        setTimeout(() => {
-          bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }, 50)
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
       }
     }
-
     vv.addEventListener('resize', onViewport)
     vv.addEventListener('scroll', onViewport)
-    return () => {
-      vv.removeEventListener('resize', onViewport)
-      vv.removeEventListener('scroll', onViewport)
-    }
+    return () => { vv.removeEventListener('resize', onViewport); vv.removeEventListener('scroll', onViewport) }
   }, [])
 
-  // ── Auto-scroll on new messages ───────────────────────────
   useEffect(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 80)
   }, [messages])
 
-  // ── Auto-resize textarea ──────────────────────────────────
   useEffect(() => {
     const ta = textareaRef.current
     if (!ta) return
     ta.style.height = 'auto'
-    ta.style.height = Math.min(ta.scrollHeight, 96) + 'px'
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'
   }, [input])
 
   // ── Voice ─────────────────────────────────────────────────
@@ -238,193 +228,267 @@ export default function Home() {
 
   return (
     <>
-      {/* Global styles */}
       <style>{`
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #F7F4EF; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         textarea { font-family: inherit; }
-        :root { --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-        .msg-in { animation: fadeUp 0.2s ease; }
-        /* Custom scrollbar */
+        :root {
+          --safe-top: env(safe-area-inset-top, 0px);
+          --safe-bottom: env(safe-area-inset-bottom, 0px);
+          --red: #8B1A1A;
+          --red-dark: #6B1313;
+          --red-light: #FEF2F2;
+          --gold: #B8860B;
+          --gold-light: #FDF8E8;
+          --bg: #F7F4EF;
+          --card: #FFFFFF;
+          --border: #EAE4D9;
+          --border-strong: #D4C9B8;
+          --text: #1A1208;
+          --text-2: #5C5044;
+          --text-3: #9C8E80;
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+        @keyframes shimmer {
+          0%   { background-position: -200% 0; }
+          100% { background-position:  200% 0; }
+        }
+        @keyframes glow {
+          0%,100% { box-shadow: 0 0 8px rgba(139,26,26,0.15); }
+          50%      { box-shadow: 0 0 18px rgba(139,26,26,0.30); }
+        }
+        .msg-in { animation: fadeUp 0.25s ease; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+        .suggestion-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,26,26,0.10) !important; border-color: rgba(139,26,26,0.25) !important; }
+        .quick-btn:hover { background: var(--red-light) !important; border-color: rgba(139,26,26,0.3) !important; color: var(--red) !important; }
+        .mode-btn { transition: all 0.18s ease; }
+        .mode-btn:hover { transform: scale(1.04); }
+        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
+        .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
+        .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
       `}</style>
 
-      {/*
-        Root: position:fixed fills the VISUAL viewport.
-        When the iOS keyboard opens, the visual viewport shrinks
-        and the footer stays pinned above the keyboard automatically.
-      */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: footerBottom,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#ffffff',
-          paddingTop: 'var(--safe-top)',
-        }}
-      >
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0,
+        bottom: footerBottom,
+        display: 'flex', flexDirection: 'column',
+        backgroundColor: 'var(--bg)',
+        paddingTop: 'var(--safe-top)',
+      }}>
 
-        {/* ── Header ──────────────────────────────────────────── */}
+        {/* ══════════════ HEADER ══════════════ */}
         <header style={{
           flexShrink: 0,
           backgroundColor: '#fff',
-          borderBottom: '1px solid #f3f4f6',
+          borderBottom: '1px solid var(--border)',
+          boxShadow: '0 1px 8px rgba(0,0,0,0.04)',
         }}>
+          {/* Top accent line */}
           <div style={{
-            maxWidth: 720,
-            margin: '0 auto',
-            padding: '8px 14px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            height: 3,
+            background: 'linear-gradient(90deg, var(--red) 0%, #C9982A 50%, var(--red) 100%)',
+          }} />
+          <div style={{
+            maxWidth: 720, margin: '0 auto',
+            padding: '10px 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            {/* Logo + title */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Image src="/logo.PNG" alt="Dalilak AI" width={32} height={32}
-                style={{ objectFit: 'contain', flexShrink: 0 }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{
+                width: 38, height: 38, borderRadius: 12,
+                background: 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(139,26,26,0.3)',
+                flexShrink: 0, overflow: 'hidden',
+              }}>
+                <Image src="/logo.PNG" alt="Dalilak AI" width={34} height={34}
+                  style={{ objectFit: 'contain' }}
+                  onError={(e) => {
+                    const el = e.target as HTMLImageElement
+                    el.style.display = 'none'
+                    el.parentElement!.innerHTML = '<span style="font-size:18px">🏛️</span>'
+                  }} />
+              </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2, color: '#111' }}>
-                  Dalilak <span style={{ color: '#8B1A1A' }}>AI</span>
+                <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
+                  Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
                 </div>
-                <div style={{ fontSize: 10, color: '#9ca3af', lineHeight: 1.2 }}>دليل المواطن اللبناني</div>
+                <div style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.3, fontWeight: 500 }}>
+                  دليل المواطن اللبناني الذكي
+                </div>
               </div>
             </div>
 
-            {/* Right actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {messages.length > 0 && (
-                <button
-                  onClick={() => setMessages([])}
-                  style={{
-                    fontSize: 11, color: '#9ca3af', padding: '4px 10px',
-                    borderRadius: 8, border: 'none', background: 'none',
-                    cursor: 'pointer', fontFamily: 'inherit',
-                  }}>
+                <button onClick={() => setMessages([])} style={{
+                  fontSize: 11, color: 'var(--text-3)', padding: '5px 12px',
+                  borderRadius: 20, border: '1px solid var(--border)',
+                  background: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                  fontWeight: 500, transition: 'all 0.15s',
+                }}>
                   محادثة جديدة
                 </button>
               )}
-              <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#9ca3af' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                background: '#F0FDF4', borderRadius: 20, padding: '4px 10px',
+                border: '1px solid #BBF7D0',
+              }}>
                 <span style={{
-                  width: 6, height: 6, borderRadius: '50%',
+                  width: 7, height: 7, borderRadius: '50%',
                   backgroundColor: '#22c55e', display: 'inline-block',
-                  animation: 'pulse 2s infinite',
+                  boxShadow: '0 0 6px #22c55e',
+                  animation: 'pulse 2.5s infinite',
                 }} />
-                متصل
-              </span>
+                <span style={{ fontSize: 10, color: '#16a34a', fontWeight: 600 }}>متصل</span>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* ── Main (scrollable) ────────────────────────────────── */}
-        <main
-          ref={mainRef}
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            overscrollBehavior: 'contain',
-            WebkitOverflowScrolling: 'touch' as any,
-          }}
-        >
+        {/* ══════════════ MAIN ══════════════ */}
+        <main ref={mainRef} style={{
+          flex: 1, overflowY: 'auto',
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch' as any,
+        }}>
           {messages.length === 0 ? (
 
             /* ── Welcome Screen ── */
             <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '100%',
-              padding: '12px 14px 4px',
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              minHeight: '100%', padding: '20px 16px 8px',
               textAlign: 'center',
             }}>
-              <Image src="/logo.PNG" alt="Dalilak AI" width={72} height={72}
-                style={{ objectFit: 'contain', marginBottom: 10 }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
 
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: '#111', margin: '0 0 6px' }}>
+              {/* Hero logo */}
+              <div style={{
+                width: 84, height: 84, borderRadius: 24,
+                background: 'linear-gradient(135deg, #8B1A1A 0%, #5C0F0F 100%)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 8px 30px rgba(139,26,26,0.25), 0 2px 8px rgba(139,26,26,0.15)',
+                marginBottom: 16, overflow: 'hidden',
+                animation: 'glow 3s ease-in-out infinite',
+              }}>
+                <Image src="/logo.PNG" alt="Dalilak AI" width={76} height={76}
+                  style={{ objectFit: 'contain' }}
+                  onError={(e) => {
+                    const el = e.target as HTMLImageElement
+                    el.style.display = 'none'
+                    el.parentElement!.innerHTML = '<span style="font-size:40px">🏛️</span>'
+                  }} />
+              </div>
+
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
                 كيف يمكنني مساعدتك؟
               </h2>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0 6px' }}>
-                <div style={{ height: 1, width: 36, backgroundColor: '#8B1A1A', opacity: 0.3 }} />
-                <div style={{ width: 5, height: 5, backgroundColor: '#8B1A1A', transform: 'rotate(45deg)', opacity: 0.6 }} />
-                <div style={{ height: 1, width: 36, backgroundColor: '#8B1A1A', opacity: 0.3 }} />
+              {/* Decorative divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0 10px' }}>
+                <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, transparent, var(--red))' }} />
+                <div style={{ width: 6, height: 6, background: 'var(--gold)', transform: 'rotate(45deg)', borderRadius: 1 }} />
+                <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, var(--red), transparent)' }} />
               </div>
 
-              <p style={{ fontSize: 11, color: '#9ca3af', maxWidth: 260, lineHeight: 1.6, margin: '0 0 12px' }}>
-                اسأل عن أي معاملة حكومية، ارفع وثيقة، أو تحدث مباشرةً
+              <p style={{ fontSize: 12, color: 'var(--text-3)', maxWidth: 280, lineHeight: 1.7, margin: '0 0 18px', fontWeight: 400 }}>
+                اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث مباشرةً بالصوت
               </p>
 
-              {/* Cards 2×2 */}
+              {/* Suggestion cards 2×2 */}
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 8,
-                width: '100%',
-                maxWidth: 340,
-                marginBottom: 10,
+                display: 'grid', gridTemplateColumns: '1fr 1fr',
+                gap: 10, width: '100%', maxWidth: 360, marginBottom: 12,
               }}>
                 {SUGGESTIONS.map((s, i) => (
-                  <button key={i} onClick={() => sendMessage(s.title + ' — ' + s.desc)}
+                  <button key={i}
+                    className="suggestion-card"
+                    onClick={() => sendMessage(s.title + ' — ' + s.desc)}
                     style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'center',
-                      justifyContent: 'center', gap: 4, padding: '12px 8px',
-                      backgroundColor: '#fff', borderRadius: 12, cursor: 'pointer',
-                      border: '1px solid #f3f4f6', boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-                      transition: 'all 0.15s', fontFamily: 'inherit',
+                      display: 'flex', flexDirection: 'column',
+                      alignItems: 'center', justifyContent: 'center',
+                      gap: 6, padding: '16px 10px',
+                      backgroundColor: '#fff', borderRadius: 16, cursor: 'pointer',
+                      border: '1.5px solid var(--border)',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                      transition: 'all 0.2s ease', fontFamily: 'inherit',
+                      textAlign: 'center',
                     }}
-                    onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.95)')}
-                    onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
-                    <span style={{ fontSize: 20 }}>{s.icon}</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#1f2937', lineHeight: 1.3 }}>{s.title}</span>
-                    <span style={{ fontSize: 10, color: '#9ca3af', lineHeight: 1.4 }}>{s.desc}</span>
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)' }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)' }}>
+                    <div style={{
+                      width: 42, height: 42, borderRadius: 12,
+                      background: 'linear-gradient(135deg, var(--red-light) 0%, #FDE8E8 100%)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 22, marginBottom: 2,
+                      border: '1px solid rgba(139,26,26,0.12)',
+                    }}>
+                      {s.icon}
+                    </div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3, textAlign: 'center' }}>
+                      {s.title}
+                    </span>
+                    <span style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.4, textAlign: 'center' }}>
+                      {s.desc}
+                    </span>
                   </button>
                 ))}
               </div>
 
               {/* Quick questions */}
-              <div style={{ width: '100%', maxWidth: 340, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 7 }}>
                 {QUICK_QUESTIONS.map((q, i) => (
-                  <button key={i} onClick={() => sendMessage(q)}
+                  <button key={i}
+                    className="quick-btn"
+                    onClick={() => sendMessage(q)}
                     style={{
-                      width: '100%', textAlign: 'center', padding: '10px 12px',
-                      backgroundColor: '#fff', borderRadius: 10,
-                      border: '1px solid #f3f4f6', fontSize: 12, color: '#4b5563',
-                      cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                      transition: 'all 0.15s', fontFamily: 'inherit',
+                      width: '100%', padding: '11px 16px',
+                      backgroundColor: '#fff', borderRadius: 12,
+                      border: '1.5px solid var(--border)',
+                      fontSize: 12.5, color: 'var(--text-2)', fontWeight: 500,
+                      cursor: 'pointer', fontFamily: 'inherit',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      transition: 'all 0.18s ease',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      textAlign: 'center',
                     }}
-                    onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
-                    onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.background = 'var(--red-light)' }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = '#fff' }}>
+                    <span style={{ color: 'var(--red)', fontSize: 13 }}>←</span>
                     {q}
                   </button>
                 ))}
               </div>
 
+              {/* Feature badges */}
               <div style={{
-                marginTop: 12, marginBottom: 4,
-                display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center',
-                fontSize: 10, color: '#d1d5db',
+                marginTop: 16, marginBottom: 4,
+                display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
               }}>
-                <span>📎 صور · PDF · وثائق</span>
-                <span>·</span>
-                <span>🎤 تسجيل صوتي</span>
-                <span>·</span>
-                <span>🔍 تحليل فوري</span>
+                {['📎 صور · PDF · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري'].map((badge, i) => (
+                  <span key={i} style={{
+                    fontSize: 10, color: 'var(--text-3)', fontWeight: 500,
+                    background: '#fff', padding: '4px 10px', borderRadius: 20,
+                    border: '1px solid var(--border)',
+                  }}>
+                    {badge}
+                  </span>
+                ))}
               </div>
             </div>
 
           ) : (
 
             /* ── Chat Messages ── */
-            <div style={{ maxWidth: 720, margin: '0 auto', padding: '10px 12px' }}>
+            <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
               {messages.map((msg, i) => (
                 <div key={i} className="msg-in"><ChatMessage msg={msg} /></div>
               ))}
@@ -433,36 +497,42 @@ export default function Home() {
           )}
         </main>
 
-        {/* ── Footer / Input (always visible) ─────────────────── */}
+        {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer style={{
           flexShrink: 0,
           backgroundColor: '#fff',
-          borderTop: '1px solid #f3f4f6',
+          borderTop: '1px solid var(--border)',
           paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
+          boxShadow: '0 -2px 12px rgba(0,0,0,0.04)',
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 10px 6px' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 12px 6px' }}>
 
-            {/* ── Mode pills ── */}
+            {/* Mode pills */}
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 6, marginBottom: 6,
+              gap: 6, marginBottom: 8,
             }}>
               {MODES.map(m => {
                 const active = mode === m.id
                 return (
-                  <button key={m.id} type="button" onClick={() => setMode(m.id)}
+                  <button key={m.id} type="button"
+                    className="mode-btn"
+                    onClick={() => setMode(m.id)}
                     style={{
-                      display: 'flex', alignItems: 'center', gap: 4,
-                      padding: '4px 11px', borderRadius: 999, fontSize: 11,
-                      fontWeight: 500, cursor: 'pointer', border: 'none',
-                      backgroundColor: active ? '#8B1A1A' : '#f5f5f5',
-                      color: active ? '#fff' : '#9ca3af',
-                      outline: active ? 'none' : '1px solid #e5e7eb',
-                      transition: 'all 0.15s', fontFamily: 'inherit',
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      padding: '5px 14px', borderRadius: 999, fontSize: 11.5,
+                      fontWeight: 600, cursor: 'pointer',
+                      border: active ? 'none' : '1.5px solid var(--border)',
+                      background: active
+                        ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                        : '#fff',
+                      color: active ? '#fff' : 'var(--text-3)',
+                      boxShadow: active ? '0 2px 8px rgba(139,26,26,0.3)' : 'none',
+                      fontFamily: 'inherit',
                     }}
-                    onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.94)')}
-                    onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
-                    <span style={{ fontSize: 12 }}>{m.icon}</span>
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.93)' }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}>
+                    <span>{m.icon}</span>
                     <span>{m.label}</span>
                   </button>
                 )
@@ -472,62 +542,63 @@ export default function Home() {
             {/* File preview */}
             {attachedFile && (
               <div style={{
-                marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8,
-                padding: '8px 10px', backgroundColor: '#f9fafb',
-                borderRadius: 10, border: '1px solid #e5e7eb',
+                marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 12px', backgroundColor: 'var(--red-light)',
+                borderRadius: 12, border: '1.5px solid rgba(139,26,26,0.15)',
               }}>
                 {attachedFile.preview ? (
                   <img src={attachedFile.preview} alt="preview"
-                    style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+                    style={{ width: 42, height: 42, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
                   <div style={{
-                    width: 40, height: 40, borderRadius: 8, backgroundColor: '#fef2f2',
-                    border: '1px solid #fecaca', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: 18, flexShrink: 0,
+                    width: 42, height: 42, borderRadius: 10, background: '#fff',
+                    border: '1.5px solid rgba(139,26,26,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 20, flexShrink: 0,
                   }}>
                     {getFileIcon(attachedFile.type)}
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#1f2937', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {attachedFile.name}
                   </div>
-                  <div style={{ fontSize: 10, color: '#9ca3af' }}>{formatSize(attachedFile.size)}</div>
-                  <div style={{ fontSize: 10, color: '#ef4444' }}>تحليل بواسطة AI</div>
+                  <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{formatSize(attachedFile.size)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 1 }}>⚡ جاهز للتحليل</div>
                 </div>
-                <button onClick={() => setAttachedFile(null)}
-                  style={{
-                    width: 22, height: 22, borderRadius: '50%', backgroundColor: '#e5e7eb',
-                    border: 'none', cursor: 'pointer', fontSize: 14, color: '#6b7280',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                  ×
-                </button>
+                <button onClick={() => setAttachedFile(null)} style={{
+                  width: 24, height: 24, borderRadius: '50%',
+                  backgroundColor: 'rgba(139,26,26,0.1)', border: 'none',
+                  cursor: 'pointer', fontSize: 15, color: 'var(--red)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  fontWeight: 700,
+                }}>×</button>
               </div>
             )}
 
             {/* Recording indicator */}
             {recording && (
               <div style={{
-                marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 8, padding: '6px', backgroundColor: '#fef2f2',
-                borderRadius: 10, border: '1px solid #fee2e2',
+                marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 10, padding: '8px 14px',
+                background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)',
+                borderRadius: 12, border: '1.5px solid #FECACA',
               }}>
-                <span style={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
-                  {[8, 13, 10, 15, 11].map((h, n) => (
+                <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
+                  {[8, 14, 10, 16, 11, 14, 9].map((h, n) => (
                     <span key={n} style={{
                       width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
-                      animation: 'pulse 1s infinite', animationDelay: `${n * 0.1}s`,
+                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 11, color: '#dc2626', fontWeight: 500 }}>جاري الاستماع... تحدث الآن</span>
-                <span style={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
-                  {[11, 15, 10, 13, 8].map((h, n) => (
+                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>جاري الاستماع... تحدث الآن</span>
+                <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
+                  {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
                     <span key={n} style={{
                       width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
-                      animation: 'pulse 1s infinite', animationDelay: `${n * 0.12}s`,
+                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
                       display: 'inline-block',
                     }} />
                   ))}
@@ -535,33 +606,37 @@ export default function Home() {
               </div>
             )}
 
-            {/* ── Input row ── */}
+            {/* ── Input box ── */}
             <form onSubmit={handleSubmit}>
-              <div style={{
-                display: 'flex', alignItems: 'flex-end', gap: 4,
-                backgroundColor: '#fff', border: recording ? '1.5px solid #fca5a5' : '1.5px solid #e5e7eb',
-                borderRadius: 16, padding: '4px 6px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-                transition: 'border-color 0.15s',
-              }}>
+              <div className={inputFocused ? 'input-focused' : ''}
+                style={{
+                  display: 'flex', alignItems: 'flex-end', gap: 4,
+                  backgroundColor: '#fff',
+                  border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
+                  borderRadius: 20, padding: '6px 8px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                  transition: 'all 0.2s ease',
+                }}>
 
                 {/* Attach */}
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
+                  className="icon-btn"
                   title="إرفاق ملف أو صورة"
                   style={{
-                    flexShrink: 0, width: 36, height: 36, borderRadius: 10,
-                    border: 'none', background: 'none', cursor: 'pointer',
-                    color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    opacity: loading ? 0.4 : 1,
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12,
+                    border: 'none', background: 'none', cursor: loading ? 'default' : 'pointer',
+                    color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.15s',
                   }}
-                  onTouchStart={e => !loading && (e.currentTarget.style.backgroundColor = '#fef2f2')}
-                  onTouchEnd={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  onTouchStart={e => !loading && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                   </svg>
                 </button>
-                <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx" style={{ display: 'none' }} onChange={handleFileChange} />
+                <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt"
+                  style={{ display: 'none' }} onChange={handleFileChange} />
 
                 {/* Textarea */}
                 <textarea
@@ -569,6 +644,8 @@ export default function Home() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
                   placeholder={
                     recording ? 'جاري الاستماع...' :
                     attachedFile ? 'اسأل عن الوثيقة أو أرسل للتحليل...' :
@@ -579,25 +656,29 @@ export default function Home() {
                   dir="rtl"
                   style={{
                     flex: 1, resize: 'none', border: 'none', outline: 'none',
-                    fontSize: 14, color: '#374151', background: 'transparent',
-                    padding: '8px 2px', lineHeight: 1.5, maxHeight: 96,
+                    fontSize: 14.5, color: 'var(--text)', background: 'transparent',
+                    padding: '7px 4px', lineHeight: 1.55, maxHeight: 120,
                     fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
                   }}
                 />
 
                 {/* Mic */}
                 <button type="button" onClick={recording ? stopRecording : startRecording} disabled={loading}
+                  className={recording ? '' : 'icon-btn'}
                   style={{
-                    flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: 'none',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: recording ? '#ef4444' : 'transparent',
-                    color: recording ? '#fff' : '#9ca3af',
-                    opacity: loading ? 0.4 : 1,
-                    transition: 'all 0.15s',
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
+                    cursor: loading ? 'default' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: recording
+                      ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+                      : 'none',
+                    color: recording ? '#fff' : 'var(--text-3)',
+                    boxShadow: recording ? '0 2px 8px rgba(239,68,68,0.4)' : 'none',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.2s',
                   }}
-                  onTouchStart={e => !loading && !recording && (e.currentTarget.style.backgroundColor = '#fef2f2')}
-                  onTouchEnd={e => !recording && (e.currentTarget.style.backgroundColor = 'transparent')}>
-                  <svg width="18" height="18" viewBox="0 0 24 24"
+                  onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24"
                     fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -606,38 +687,42 @@ export default function Home() {
 
                 {/* Send */}
                 <button type="submit" disabled={!canSend}
+                  className="send-btn"
                   style={{
-                    flexShrink: 0, width: 36, height: 36, borderRadius: 10, border: 'none',
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
                     cursor: canSend ? 'pointer' : 'default',
-                    backgroundColor: canSend ? '#8B1A1A' : '#e5e7eb',
+                    background: canSend
+                      ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                      : 'var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    transition: 'all 0.15s',
+                    boxShadow: canSend ? '0 3px 10px rgba(139,26,26,0.35)' : 'none',
+                    transition: 'all 0.2s ease',
                   }}
-                  onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.92)')}
+                  onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
                   onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
                   {loading ? (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                      style={{ animation: 'spin 1s linear infinite' }}>
-                      <circle cx="12" cy="12" r="10" stroke="#9ca3af" strokeWidth="4" strokeOpacity="0.25" />
-                      <path fill="#9ca3af" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      style={{ animation: 'spin 0.8s linear infinite' }}>
+                      <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
+                      <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   )}
                 </button>
               </div>
 
-              {/* Bottom hint */}
+              {/* Bottom info bar */}
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                marginTop: 4, padding: '0 2px',
+                marginTop: 5, padding: '0 4px',
               }}>
-                <span style={{ fontSize: 10, color: '#d1d5db' }}>
-                  {currentMode.icon} {currentMode.label} — {currentMode.hint}
+                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
+                  {currentMode.icon} {currentMode.hint}
                 </span>
-                <span style={{ fontSize: 10, color: '#d1d5db' }}>
+                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
                   35 قطاعاً · 1,746 سجل
                 </span>
               </div>
@@ -647,11 +732,6 @@ export default function Home() {
         </footer>
 
       </div>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-      `}</style>
     </>
   )
 }
