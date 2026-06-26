@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -98,6 +98,11 @@ export default function AdminPage() {
   const [kbResults, setKbResults] = useState<any[]>([])
   const [kbCount, setKbCount] = useState<number | null>(null)
   const [kbMsg, setKbMsg] = useState('')
+  const [kbFile, setKbFile] = useState<{ name: string; type: string; base64: string } | null>(null)
+  const [kbExtractLoading, setKbExtractLoading] = useState(false)
+  const [kbExtractedEntries, setKbExtractedEntries] = useState<any[]>([])
+  const [kbSavingIdx, setKbSavingIdx] = useState<number | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // ── Auth ────────────────────────────────────────────────────
   useEffect(() => {
@@ -192,6 +197,50 @@ export default function AdminPage() {
   }
 
   // ── Knowledge base ──────────────────────────────────────────
+  const handleKbFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const result = ev.target?.result as string
+      setKbFile({ name: file.name, type: file.type || 'application/octet-stream', base64: result.split(',')[1] })
+      setKbExtractedEntries([])
+      setKbMsg('')
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
+  const extractFromFile = async () => {
+    if (!kbFile) return
+    setKbExtractLoading(true); setKbMsg(''); setKbExtractedEntries([])
+    try {
+      const r = await fetch(`${API}/admin/knowledge/extract`, {
+        method: 'POST', headers: authHeader(),
+        body: JSON.stringify({ file_base64: kbFile.base64, file_type: kbFile.type, file_name: kbFile.name }),
+      })
+      const d = await r.json()
+      if (r.ok) {
+        setKbExtractedEntries(d.entries || [])
+        if ((d.entries || []).length === 0) setKbMsg('لم يُستخرج أي محتوى من الملف')
+      } else setKbMsg('✗ ' + (d.detail || 'خطأ في الاستخراج'))
+    } catch { setKbMsg('✗ خطأ في الاتصال') }
+    finally { setKbExtractLoading(false) }
+  }
+
+  const saveExtractedEntry = async (entry: any, idx: number) => {
+    setKbSavingIdx(idx)
+    const r = await fetch(`${API}/admin/knowledge/add`, {
+      method: 'POST', headers: authHeader(), body: JSON.stringify(entry),
+    })
+    const d = await r.json()
+    if (r.ok) {
+      setKbExtractedEntries(prev => prev.map((e, i) => i === idx ? { ...e, _saved: true } : e))
+      loadKbCount()
+    } else setKbMsg('✗ ' + (d.detail || 'خطأ'))
+    setKbSavingIdx(null)
+  }
+
   const submitKb = async () => {
     setKbMsg('')
     if (!kbForm.title.trim() || !kbForm.text.trim()) { setKbMsg('العنوان والنص مطلوبان'); return }
@@ -462,10 +511,87 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+
+            {/* ── File Upload Section ── */}
+            <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #F0EAEA', padding: '22px 24px', marginBottom: 20 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#111827', marginBottom: 6 }}>📂 استخراج من ملف</div>
+              <div style={{ fontSize: 12, color: '#9CA3AF', marginBottom: 16 }}>PDF · Word · Excel · CSV · صور · نصوص — يُحلَّل بالذكاء الاصطناعي ويُقترح تلقائياً</div>
+              <input ref={fileInputRef} type="file" onChange={handleKbFile} style={{ display: 'none' }}
+                accept=".pdf,.doc,.docx,.xlsx,.xls,.csv,.txt,.png,.jpg,.jpeg,.webp,.gif,.bmp" />
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                <button onClick={() => fileInputRef.current?.click()}
+                  style={{ padding: '9px 18px', background: '#F9FAFB', border: '1.5px dashed #D1D5DB', borderRadius: 10, fontSize: 13, color: '#374151', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 }}>
+                  📎 {kbFile ? kbFile.name : 'اختر ملفاً...'}
+                </button>
+                {kbFile && (
+                  <>
+                    <button onClick={extractFromFile} disabled={kbExtractLoading}
+                      style={{ padding: '9px 20px', background: kbExtractLoading ? '#E5E7EB' : 'linear-gradient(135deg,#8B1A1A,#C41E1E)', color: kbExtractLoading ? '#9CA3AF' : '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: kbExtractLoading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+                      {kbExtractLoading ? '⏳ جارٍ التحليل...' : '🧠 تحليل واستخراج'}
+                    </button>
+                    <button onClick={() => { setKbFile(null); setKbExtractedEntries([]) }}
+                      style={{ padding: '9px 14px', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', borderRadius: 10, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      ✕ إلغاء
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Extracted entries */}
+              {kbExtractedEntries.length > 0 && (
+                <div style={{ marginTop: 18 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>
+                    ✨ اقتراحات مستخرجة ({kbExtractedEntries.length}) — راجعها وأضف ما يناسب:
+                  </div>
+                  {kbExtractedEntries.map((entry, idx) => (
+                    <div key={idx} style={{ background: entry._saved ? '#F0FDF4' : '#FAFAFA', border: `1px solid ${entry._saved ? '#BBF7D0' : '#E5E7EB'}`, borderRadius: 12, padding: '16px 18px', marginBottom: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+                        <div style={{ flex: 1 }}>
+                          <input value={entry.title} onChange={e => setKbExtractedEntries(prev => prev.map((x, i) => i === idx ? { ...x, title: e.target.value } : x))}
+                            style={{ width: '100%', padding: '7px 11px', border: '1.5px solid #E5E7EB', borderRadius: 8, fontSize: 13, fontFamily: 'inherit', fontWeight: 700, boxSizing: 'border-box', marginBottom: 8 }} />
+                          <textarea value={entry.text} rows={4} onChange={e => setKbExtractedEntries(prev => prev.map((x, i) => i === idx ? { ...x, text: e.target.value } : x))}
+                            style={{ width: '100%', padding: '7px 11px', border: '1.5px solid #E5E7EB', borderRadius: 8, fontSize: 12, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }} />
+                        </div>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 10 }}>
+                        {(['domain', 'ministry', 'fees'] as const).map(k => (
+                          <input key={k} value={(entry as any)[k]} placeholder={k === 'domain' ? 'القطاع' : k === 'ministry' ? 'الجهة' : 'الرسوم'}
+                            onChange={e => setKbExtractedEntries(prev => prev.map((x, i) => i === idx ? { ...x, [k]: e.target.value } : x))}
+                            style={{ padding: '6px 10px', border: '1.5px solid #E5E7EB', borderRadius: 7, fontSize: 12, fontFamily: 'inherit' }} />
+                        ))}
+                        {(['website', 'phone'] as const).map(k => (
+                          <input key={k} value={(entry as any)[k]} placeholder={k === 'website' ? 'الموقع' : 'الهاتف'} dir="ltr"
+                            onChange={e => setKbExtractedEntries(prev => prev.map((x, i) => i === idx ? { ...x, [k]: e.target.value } : x))}
+                            style={{ padding: '6px 10px', border: '1.5px solid #E5E7EB', borderRadius: 7, fontSize: 12, fontFamily: 'inherit' }} />
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {entry._saved ? (
+                          <span style={{ fontSize: 13, color: '#15803D', fontWeight: 700 }}>✓ تمت الإضافة للقاعدة</span>
+                        ) : (
+                          <>
+                            <button onClick={() => saveExtractedEntry(entry, idx)} disabled={kbSavingIdx === idx}
+                              style={{ padding: '7px 18px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                              {kbSavingIdx === idx ? '...' : '💾 حفظ في القاعدة'}
+                            </button>
+                            <button onClick={() => setKbForm({ title: entry.title, text: entry.text, domain: entry.domain, ministry: entry.ministry, website: entry.website, phone: entry.phone, fees: entry.fees })}
+                              style={{ padding: '7px 14px', background: '#F3F4F6', border: '1px solid #E5E7EB', color: '#374151', borderRadius: 8, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+                              تعديل يدوي
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {kbMsg && <div style={{ marginTop: 10, padding: '8px 13px', borderRadius: 8, background: kbMsg.startsWith('✗') ? '#FEF2F2' : '#F0FDF4', color: kbMsg.startsWith('✗') ? '#991B1B' : '#15803D', fontSize: 13, border: `1px solid ${kbMsg.startsWith('✗') ? '#FCA5A5' : '#BBF7D0'}` }}>{kbMsg}</div>}
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 20 }}>
               {/* Add form */}
               <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #F0EAEA', padding: '22px 24px' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#111827', marginBottom: 18 }}>➕ إضافة معلومة جديدة</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#111827', marginBottom: 18 }}>✏️ إضافة يدوية</div>
                 {[
                   { key: 'title', label: 'العنوان *', placeholder: 'مثال: استخراج جواز سفر لبناني', rows: 1 },
                   { key: 'text',  label: 'النص الكامل *', placeholder: 'الخطوات، الوثائق، الشروط...', rows: 5 },
