@@ -124,7 +124,7 @@ export default function AdminPage() {
   const me = getUser()
 
   return (
-    <div className="min-h-screen bg-[#f5f0e8]" dir="rtl">
+    <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
       <header className="bg-[#6b2737] text-white px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">

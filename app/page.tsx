@@ -255,7 +255,7 @@ export default function Home() {
   const currentMode = MODES.find(m => m.id === mode)!
 
   if (!authChecked) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f0e8' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
       <div style={{ fontSize: 14, color: '#9ca3af' }}>جاري التحقق...</div>
     </div>
   )
@@ -263,7 +263,7 @@ export default function Home() {
   return (
     <>
       <style>{`
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #F7F4EF; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         textarea { font-family: inherit; }
         :root {
@@ -274,7 +274,7 @@ export default function Home() {
           --red-light: #FEF2F2;
           --gold: #B8860B;
           --gold-light: #FDF8E8;
-          --bg: #F7F4EF;
+          --bg: #ffffff;
           --card: #FFFFFF;
           --border: #EAE4D9;
           --border-strong: #D4C9B8;

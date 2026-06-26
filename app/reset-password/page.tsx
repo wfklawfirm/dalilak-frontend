@@ -109,7 +109,7 @@ function ResetForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f5f0e8] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
           <Image src="/logo.png" alt="دليلك AI" width={130} height={130} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
