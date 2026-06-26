@@ -335,7 +335,8 @@ export default function Home() {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 10 * 1024 * 1024) { alert('الحد الأقصى 10MB.'); return }
+    const maxMB = file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|m4a|ogg|flac|webm|aac)$/i) ? 25 : 10
+    if (file.size > maxMB * 1024 * 1024) { alert(`الحد الأقصى ${maxMB}MB لهذا النوع.`); return }
     const reader = new FileReader()
     reader.onload = ev => {
       const result = ev.target?.result as string
@@ -352,8 +353,19 @@ export default function Home() {
   const formatSize = (b: number) =>
     b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
 
-  const getFileIcon = (t: string) =>
-    t.startsWith('image/') ? '🖼️' : t === 'application/pdf' ? '📄' : t.includes('word') ? '📝' : '📎'
+  const getFileIcon = (t: string, name?: string) => {
+    const n = (name || '').toLowerCase()
+    if (t.startsWith('image/')) return '🖼️'
+    if (t === 'application/pdf' || n.endsWith('.pdf')) return '📄'
+    if (t.includes('word') || n.match(/\.docx?$/)) return '📝'
+    if (t.includes('excel') || t.includes('spreadsheet') || n.match(/\.xlsx?$/)) return '📊'
+    if (t.includes('presentation') || n.match(/\.pptx?$/)) return '📽️'
+    if (t === 'text/csv' || n.endsWith('.csv')) return '📈'
+    if (t.startsWith('audio/') || n.match(/\.(mp3|wav|m4a|ogg|flac|webm|aac)$/)) return '🎵'
+    if (t.includes('zip') || n.match(/\.(zip|rar|7z)$/)) return '🗜️'
+    if (t.startsWith('text/') || n.match(/\.(txt|md|json|xml|html|js|ts|py|sh|css)$/)) return '📃'
+    return '📎'
+  }
 
   /* Send */
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
@@ -368,8 +380,8 @@ export default function Home() {
 
     const displayText = file
       ? (text.trim()
-          ? `${getFileIcon(file.type)} **${file.name}**\n${text.trim()}`
-          : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
+          ? `${getFileIcon(file.type, file.name)} **${file.name}**\n${text.trim()}`
+          : `${getFileIcon(file.type, file.name)} **${file.name}** — طلب تحليل الوثيقة`)
       : text.trim()
 
     const history = messages.map(m => ({ role: m.role, content: m.content }))
@@ -845,7 +857,7 @@ export default function Home() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 18,
                 }}>
-                  {getFileIcon(attachedFile.type)}
+                  {getFileIcon(attachedFile.type, attachedFile.name)}
                 </div>
               )}
               <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
@@ -935,7 +947,7 @@ export default function Home() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*,.pdf,.doc,.docx"
+                accept="image/*,.pdf,.doc,.docx,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md,.json,.xml,.html,.js,.ts,.py,.mp3,.wav,.m4a,.ogg,.flac,.webm,.aac,.zip"
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
@@ -950,7 +962,7 @@ export default function Home() {
                 onBlur={() => setInputFocused(false)}
                 placeholder={
                   recording    ? (lang === 'en' ? 'Listening...' : 'جاري الاستماع...') :
-                  attachedFile ? (lang === 'en' ? 'Ask about the document or send for analysis...' : 'اسأل عن الوثيقة أو أرسل للتحليل...') :
+                  attachedFile ? (lang === 'en' ? 'Ask about this file or press send to analyze...' : 'اسأل عن الملف أو اضغط إرسال للتحليل...') :
                                  t.placeholder
                 }
                 rows={1}
