@@ -74,6 +74,20 @@ const ALL_QUICK_QUESTIONS = [
 
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 
+/* Detect text direction from first meaningful character */
+const getDir = (text: string): 'rtl' | 'ltr' => {
+  const ch = text.trim()[0]
+  if (!ch) return 'rtl'
+  const code = ch.charCodeAt(0)
+  if (
+    (code >= 0x0600 && code <= 0x06FF) || // Arabic
+    (code >= 0x0590 && code <= 0x05FF) || // Hebrew
+    (code >= 0xFB50 && code <= 0xFDFF) || // Arabic Presentation A
+    (code >= 0xFE70 && code <= 0xFEFF)    // Arabic Presentation B
+  ) return 'rtl'
+  return 'ltr'
+}
+
 /* ── Component ────────────────────────────────────────────────── */
 export default function Home() {
   const [messages,      setMessages]     = useState<Message[]>([])
@@ -660,11 +674,11 @@ export default function Home() {
                 placeholder={
                   recording    ? 'جاري الاستماع...' :
                   attachedFile ? 'اسأل عن الوثيقة أو أرسل للتحليل...' :
-                                 'اكتب سؤالك هنا...'
+                                 'اكتب سؤالك / Type your question...'
                 }
                 rows={1}
                 disabled={loading}
-                dir="rtl"
+                dir={getDir(input)}
                 style={{
                   flex: 1, resize: 'none', border: 'none', outline: 'none',
                   fontSize: 14, color: '#1F2937',

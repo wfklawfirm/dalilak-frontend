@@ -8,6 +8,20 @@ export interface Message {
   streaming?: boolean
 }
 
+/* ── Language direction detection ────────────────────────────── */
+function getDir(text: string): 'rtl' | 'ltr' {
+  const ch = text.trim()[0]
+  if (!ch) return 'rtl'
+  const code = ch.charCodeAt(0)
+  if (
+    (code >= 0x0600 && code <= 0x06FF) ||
+    (code >= 0x0590 && code <= 0x05FF) ||
+    (code >= 0xFB50 && code <= 0xFDFF) ||
+    (code >= 0xFE70 && code <= 0xFEFF)
+  ) return 'rtl'
+  return 'ltr'
+}
+
 /* ── Inline markdown (bold + code) ──────────────────────────── */
 function Inline({ text, idx }: { text: string; idx: number }): ReactNode {
   const parts: ReactNode[] = []
@@ -78,11 +92,11 @@ function MarkdownRenderer({ text }: { text: string }) {
     if (h1) {
       elements.push(
         <h2 key={i} style={{
-          fontWeight: 800, fontSize: '1.06em',
-          margin: '1rem 0 0.4rem',
+          fontWeight: 800, fontSize: '1.08em',
+          margin: '1.1rem 0 0.45rem',
           color: '#111827',
-          borderBottom: '1.5px solid #F0E0E0', paddingBottom: '0.28rem',
-          lineHeight: 1.4,
+          borderBottom: '1.5px solid #F0E0E0', paddingBottom: '0.3rem',
+          lineHeight: 1.45, letterSpacing: '-0.01em',
         }}>
           <Inline text={h1[1]} idx={i} />
         </h2>
@@ -95,10 +109,12 @@ function MarkdownRenderer({ text }: { text: string }) {
     if (h2) {
       elements.push(
         <h3 key={i} style={{
-          fontWeight: 700, fontSize: '0.98em',
-          margin: '0.85rem 0 0.28rem',
-          color: '#8B1A1A', lineHeight: 1.4,
+          fontWeight: 700, fontSize: '1em',
+          margin: '0.9rem 0 0.3rem',
+          color: '#8B1A1A', lineHeight: 1.45,
+          display: 'flex', alignItems: 'center', gap: '0.4em',
         }}>
+          <span style={{ width: 3, height: '1em', background: '#8B1A1A', borderRadius: 2, flexShrink: 0, display: 'inline-block' }} />
           <Inline text={h2[1]} idx={i} />
         </h3>
       )
@@ -110,9 +126,9 @@ function MarkdownRenderer({ text }: { text: string }) {
     if (h3) {
       elements.push(
         <h4 key={i} style={{
-          fontWeight: 600, fontSize: '0.93em',
-          margin: '0.65rem 0 0.22rem',
-          color: '#374151', lineHeight: 1.4,
+          fontWeight: 600, fontSize: '0.94em',
+          margin: '0.7rem 0 0.22rem',
+          color: '#374151', lineHeight: 1.45,
         }}>
           <Inline text={h3[1]} idx={i} />
         </h4>
@@ -126,7 +142,7 @@ function MarkdownRenderer({ text }: { text: string }) {
       while (i < lines.length && /^[-*•] /.test(lines[i].trim())) {
         const content = lines[i].trim().replace(/^[-*•] /, '')
         items.push(
-          <li key={i} style={{ marginBottom: '0.28rem', paddingRight: '0.1rem', lineHeight: 1.8 }}>
+          <li key={i} style={{ marginBottom: '0.32rem', paddingRight: '0.2rem', lineHeight: 1.85, fontSize: '0.96em' }}>
             <Inline text={content} idx={i} />
           </li>
         )
@@ -134,8 +150,8 @@ function MarkdownRenderer({ text }: { text: string }) {
       }
       elements.push(
         <ul key={'ul-' + i} style={{
-          listStyle: 'disc', paddingRight: '1.45rem',
-          marginBottom: '0.5rem', marginTop: '0.1rem',
+          listStyle: 'disc', paddingRight: '1.5rem', paddingLeft: '0.5rem',
+          marginBottom: '0.6rem', marginTop: '0.15rem',
         }}>
           {items}
         </ul>
@@ -149,7 +165,7 @@ function MarkdownRenderer({ text }: { text: string }) {
       while (i < lines.length && /^\d+\. /.test(lines[i].trim())) {
         const content = lines[i].trim().replace(/^\d+\. /, '')
         items.push(
-          <li key={i} style={{ marginBottom: '0.3rem', paddingRight: '0.1rem', lineHeight: 1.8 }}>
+          <li key={i} style={{ marginBottom: '0.35rem', paddingRight: '0.2rem', lineHeight: 1.85, fontSize: '0.96em' }}>
             <Inline text={content} idx={i} />
           </li>
         )
@@ -157,8 +173,8 @@ function MarkdownRenderer({ text }: { text: string }) {
       }
       elements.push(
         <ol key={'ol-' + i} style={{
-          listStyle: 'decimal', paddingRight: '1.45rem',
-          marginBottom: '0.5rem', marginTop: '0.1rem',
+          listStyle: 'decimal', paddingRight: '1.5rem', paddingLeft: '0.5rem',
+          marginBottom: '0.6rem', marginTop: '0.15rem',
         }}>
           {items}
         </ol>
@@ -184,19 +200,20 @@ function MarkdownRenderer({ text }: { text: string }) {
 
     /* Paragraph */
     elements.push(
-      <p key={i} style={{ marginBottom: '0.45rem', lineHeight: 1.88 }}>
+      <p key={i} style={{ marginBottom: '0.5rem', lineHeight: 1.92, fontSize: '0.96em' }}>
         <Inline text={trimmed} idx={i} />
       </p>
     )
     i++
   }
 
-  return <div>{elements}</div>
+  return <div style={{ fontSize: 14 }}>{elements}</div>
 }
 
 /* ── ChatMessage component ───────────────────────────────────── */
 export default function ChatMessage({ msg }: { msg: Message }) {
-  const isUser = msg.role === 'user'
+  const isUser  = msg.role === 'user'
+  const msgDir  = getDir(msg.content)
 
   return (
     <div style={{
@@ -244,11 +261,11 @@ export default function ChatMessage({ msg }: { msg: Message }) {
       }}>
 
         {isUser ? (
-          <p style={{ whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.75 }}>
+          <p style={{ whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.8, direction: msgDir, textAlign: msgDir === 'rtl' ? 'right' : 'left' }}>
             {msg.content}
           </p>
         ) : (
-          <div dir="rtl">
+          <div dir={msgDir} style={{ textAlign: msgDir === 'rtl' ? 'right' : 'left' }}>
             <MarkdownRenderer text={msg.content} />
             {msg.streaming && (
               <span className="cursor" />
