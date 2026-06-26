@@ -42,30 +42,50 @@ const MODES: { id: ResponseMode; icon: string; label: string; hint: string; pref
   },
 ]
 
-const SUGGESTIONS = [
+const ALL_SUGGESTIONS = [
   { icon: '📋', title: 'المعاملات الرسمية',  desc: 'جوازات · هويات · وثائق' },
   { icon: '🏛️', title: 'الإجراءات الحكومية', desc: 'شركات · عقارات · سيارات' },
   { icon: '👶', title: 'الأحوال الشخصية',   desc: 'ولادة · زواج · وفاة' },
   { icon: '🎓', title: 'التعليم والعمل',     desc: 'شهادات · تصاريح · حقوق' },
+  { icon: '🏦', title: 'المصارف والمالية',   desc: 'حسابات · قروض · تحويل' },
+  { icon: '⚖️', title: 'القانون والقضاء',    desc: 'توثيق · تقاضٍ · عقود' },
+  { icon: '🏗️', title: 'البناء والعقارات',   desc: 'رخص · تسجيل · مخططات' },
+  { icon: '💼', title: 'تأسيس الشركات',      desc: 'ش.م.م · SAL · تراخيص' },
+  { icon: '🏥', title: 'الصحة والضمان',      desc: 'CNSS · مستشفيات · وصفات' },
+  { icon: '🚗', title: 'المركبات والنقل',    desc: 'لوحات · رخص · نقل ملكية' },
+  { icon: '🌿', title: 'الزراعة والبيئة',    desc: 'تراخيص · تصدير · مشاتل' },
+  { icon: '✈️', title: 'السفر والجنسية',     desc: 'تأشيرات · جوازات · إقامة' },
 ]
 
-const QUICK_QUESTIONS = [
+const ALL_QUICK_QUESTIONS = [
   'كيف أستخرج جواز سفر لبناني؟',
   'ما هي إجراءات تسجيل سيارة جديدة؟',
   'كيف أستخرج شهادة ميلاد؟',
   'كيف أسجل شركة في لبنان؟',
+  'كيف أفتح حساباً مصرفياً للشركة؟',
+  'ما هي إجراءات معادلة الشهادة الجامعية؟',
+  'كيف أسجل في الضمان الاجتماعي CNSS؟',
+  'كيف أستخرج رخصة بناء؟',
+  'كيف أسجل علامة تجارية في لبنان؟',
+  'ما هي شروط الحصول على إقامة في لبنان؟',
+  'كيف أنقل ملكية عقار؟',
+  'كيف أحصل على رخصة مهنية؟',
 ]
+
+const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 
 /* ── Component ────────────────────────────────────────────────── */
 export default function Home() {
-  const [messages,     setMessages]     = useState<Message[]>([])
-  const [input,        setInput]        = useState('')
-  const [loading,      setLoading]      = useState(false)
-  const [recording,    setRecording]    = useState(false)
-  const [attachedFile, setAttachedFile] = useState<AttachedFile | null>(null)
-  const [mode,         setMode]         = useState<ResponseMode>('detailed')
-  const [footerBottom, setFooterBottom] = useState(0)
-  const [inputFocused, setInputFocused] = useState(false)
+  const [messages,      setMessages]     = useState<Message[]>([])
+  const [input,         setInput]        = useState('')
+  const [loading,       setLoading]      = useState(false)
+  const [recording,     setRecording]    = useState(false)
+  const [attachedFile,  setAttachedFile] = useState<AttachedFile | null>(null)
+  const [mode,          setMode]         = useState<ResponseMode>('detailed')
+  const [footerBottom,  setFooterBottom] = useState(0)
+  const [inputFocused,  setInputFocused] = useState(false)
+  const [suggestions,   setSuggestions]  = useState(() => shuffle(ALL_SUGGESTIONS).slice(0, 4))
+  const [quickQuestions,setQuickQuestions] = useState(() => shuffle(ALL_QUICK_QUESTIONS).slice(0, 4))
 
   const bottomRef      = useRef<HTMLDivElement>(null)
   const textareaRef    = useRef<HTMLTextAreaElement>(null)
@@ -331,9 +351,9 @@ export default function Home() {
             <Image
               src="/logo.PNG"
               alt="Dalilak AI"
-              width={80}
-              height={80}
-              style={{ objectFit: 'contain', display: 'block', marginBottom: 14 }}
+              width={112}
+              height={112}
+              style={{ objectFit: 'contain', display: 'block', marginBottom: 12 }}
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
 
@@ -377,7 +397,7 @@ export default function Home() {
               gap: 10, width: '100%', maxWidth: 340,
               marginBottom: 12,
             }}>
-              {SUGGESTIONS.map((s, i) => (
+              {suggestions.map((s, i) => (
                 <button
                   key={i}
                   className="card-btn"
@@ -385,18 +405,20 @@ export default function Home() {
                   style={{
                     display: 'flex', flexDirection: 'column',
                     alignItems: 'center', justifyContent: 'center',
+                    textAlign: 'center',
                     gap: 7, padding: '16px 10px',
                     backgroundColor: '#fff',
                     borderRadius: 14,
                     border: '1px solid #E5E7EB',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                     cursor: 'pointer', fontFamily: 'inherit',
+                    width: '100%',
                   }}>
                   <span style={{ fontSize: 24, lineHeight: 1 }}>{s.icon}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#1F2937', lineHeight: 1.3 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#1F2937', lineHeight: 1.3, textAlign: 'center', width: '100%' }}>
                     {s.title}
                   </span>
-                  <span style={{ fontSize: 10.5, color: '#9CA3AF', lineHeight: 1.4 }}>
+                  <span style={{ fontSize: 10.5, color: '#9CA3AF', lineHeight: 1.4, textAlign: 'center', width: '100%' }}>
                     {s.desc}
                   </span>
                 </button>
@@ -405,7 +427,7 @@ export default function Home() {
 
             {/* Quick questions */}
             <div style={{ width: '100%', maxWidth: 340, display: 'flex', flexDirection: 'column', gap: 7 }}>
-              {QUICK_QUESTIONS.map((q, i) => (
+              {quickQuestions.map((q, i) => (
                 <button
                   key={i}
                   className="chip-btn"
