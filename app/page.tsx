@@ -17,6 +17,18 @@ interface AttachedFile {
 
 type ResponseMode = 'quick' | 'detailed' | 'research'
 
+interface AuthUser {
+  username: string
+  email: string
+  full_name: string
+  plan: 'trial' | 'paid' | 'admin' | 'guest'
+  role?: string
+  trial_expires_at?: string
+  paid_until?: string
+  days_left?: number
+  subscription_status?: string
+}
+
 /* ── Config ───────────────────────────────────────────────────── */
 const MODES: { id: ResponseMode; icon: string; label: string; hint: string; prefix: string }[] = [
   {
@@ -101,6 +113,15 @@ export default function Home() {
   const [suggestions,   setSuggestions]  = useState(() => shuffle(ALL_SUGGESTIONS).slice(0, 4))
   const [quickQuestions,setQuickQuestions] = useState(() => shuffle(ALL_QUICK_QUESTIONS).slice(0, 4))
 
+  /* Auth state */
+  const [authToken,     setAuthToken]    = useState<string | null>(null)
+  const [currentUser,   setCurrentUser]  = useState<AuthUser | null>(null)
+  const [showAuth,      setShowAuth]     = useState(false)
+  const [authTab,       setAuthTab]      = useState<'login' | 'register'>('login')
+  const [authLoading,   setAuthLoading]  = useState(false)
+  const [authError,     setAuthError]    = useState('')
+  const [authForm,      setAuthForm]     = useState({ username: '', email: '', password: '', full_name: '' })
+
   const bottomRef      = useRef<HTMLDivElement>(null)
   const textareaRef    = useRef<HTMLTextAreaElement>(null)
   const fileInputRef   = useRef<HTMLInputElement>(null)
@@ -132,6 +153,65 @@ export default function Home() {
     ta.style.height = 'auto'
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'
   }, [input])
+
+  /* Load auth from localStorage */
+  useEffect(() => {
+    try {
+      const tok  = localStorage.getItem('dalilak_token')
+      const user = localStorage.getItem('dalilak_user')
+      if (tok && user) {
+        setAuthToken(tok)
+        setCurrentUser(JSON.parse(user))
+      }
+    } catch {}
+  }, [])
+
+  /* ── Auth helpers ──────────────────────────────────────────── */
+  const saveAuth = (token: string, user: AuthUser) => {
+    localStorage.setItem('dalilak_token', token)
+    localStorage.setItem('dalilak_user',  JSON.stringify(user))
+    setAuthToken(token)
+    setCurrentUser(user)
+  }
+
+  const logout = () => {
+    localStorage.removeItem('dalilak_token')
+    localStorage.removeItem('dalilak_user')
+    setAuthToken(null)
+    setCurrentUser(null)
+    setMessages([])
+  }
+
+  const submitAuth = async () => {
+    setAuthError('')
+    if (!authForm.username.trim() || !authForm.password.trim()) {
+      setAuthError('يرجى ملء جميع الحقول المطلوبة')
+      return
+    }
+    setAuthLoading(true)
+    try {
+      const endpoint = authTab === 'login' ? '/auth/login' : '/auth/register'
+      const body = authTab === 'login'
+        ? { username: authForm.username.trim(), password: authForm.password }
+        : { username: authForm.username.trim(), email: authForm.email.trim(), password: authForm.password, full_name: authForm.full_name.trim() }
+
+      const res  = await fetch(API_URL + endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.detail || 'حدث خطأ')
+
+      const user: AuthUser = data.user
+      saveAuth(data.token, user)
+      setShowAuth(false)
+      setAuthForm({ username: '', email: '', password: '', full_name: '' })
+    } catch (e: any) {
+      setAuthError(e.message || 'حدث خطأ في الاتصال')
+    } finally {
+      setAuthLoading(false)
+    }
+  }
 
   /* Voice */
   const startRecording = useCallback(() => {
@@ -207,9 +287,10 @@ export default function Home() {
         ? JSON.stringify({ file_base64: file.base64, file_type: file.type, file_name: file.name, message: prefixedMessage, history })
         : JSON.stringify({ message: prefixedMessage, history })
 
-      const res = await fetch(API_URL + endpoint, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body,
-      })
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
+
+      const res = await fetch(API_URL + endpoint, { method: 'POST', headers, body })
       if (!res.ok) throw new Error('HTTP ' + res.status)
 
       const reader  = res.body!.getReader()
@@ -367,20 +448,74 @@ export default function Home() {
               </button>
             )}
 
-            {/* Status pill */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '5px 13px', borderRadius: 999,
-              background: '#F0FDF4', border: '1px solid #BBF7D0',
-              flexShrink: 0,
-            }}>
-              <span style={{
-                width: 7, height: 7, borderRadius: '50%',
-                backgroundColor: '#22C55E', display: 'block',
-                animation: 'pulse-dot 2.5s ease infinite', flexShrink: 0,
-              }} />
-              <span style={{ fontSize: 12, color: '#15803D', fontWeight: 600, whiteSpace: 'nowrap' }}>متصل</span>
-            </div>
+            {/* Auth section */}
+            {currentUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {/* Plan badge */}
+                {currentUser.plan === 'paid' && (
+                  <div style={{ padding: '3px 10px', borderRadius: 999, background: '#F0FDF4', border: '1px solid #BBF7D0', flexShrink: 0 }}>
+                    <span style={{ fontSize: 11, color: '#15803D', fontWeight: 700 }}>مشترك ✓</span>
+                  </div>
+                )}
+                {currentUser.plan === 'trial' && (
+                  <div style={{ padding: '3px 10px', borderRadius: 999, background: '#FFFBEB', border: '1px solid #FDE68A', flexShrink: 0 }}>
+                    <span style={{ fontSize: 11, color: '#92400E', fontWeight: 600 }}>
+                      تجريبي · {currentUser.days_left ?? '?'} أيام
+                    </span>
+                  </div>
+                )}
+                {currentUser.plan === 'admin' && (
+                  <div style={{ padding: '3px 10px', borderRadius: 999, background: '#FDF4FF', border: '1px solid #E9D5FF', flexShrink: 0 }}>
+                    <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 700 }}>مشرف</span>
+                  </div>
+                )}
+                {/* Avatar + name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #8B1A1A, #B91C1C)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0,
+                    boxShadow: '0 1px 6px rgba(139,26,26,0.3)',
+                  }}>
+                    {(currentUser.full_name || currentUser.username).charAt(0).toUpperCase()}
+                  </div>
+                  <span style={{ fontSize: 12.5, color: '#374151', fontWeight: 600, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser.full_name || currentUser.username}
+                  </span>
+                </div>
+                {/* Logout */}
+                <button
+                  onClick={logout}
+                  className="chip-btn"
+                  title="تسجيل الخروج"
+                  style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    border: '1px solid #E5E7EB', background: '#F9FAFB',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                  </svg>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setShowAuth(true); setAuthTab('login'); setAuthError('') }}
+                style={{
+                  padding: '7px 18px', borderRadius: 9,
+                  background: 'linear-gradient(135deg, #8B1A1A, #B91C1C)',
+                  color: '#fff', fontSize: 13, fontWeight: 700,
+                  border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                  boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+                  whiteSpace: 'nowrap',
+                }}>
+                دخول
+              </button>
+            )}
 
           </div>
         </div>
@@ -789,6 +924,192 @@ export default function Home() {
 
         </div>
       </footer>
+
+      {/* ╔══════════════════════════════════════════════════╗
+          ║  AUTH MODAL                                      ║
+          ╚══════════════════════════════════════════════════╝ */}
+      {showAuth && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) setShowAuth(false) }}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.45)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 16,
+          }}>
+          <div style={{
+            background: '#fff', borderRadius: 20, width: '100%', maxWidth: 400,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+            overflow: 'hidden',
+            animation: 'fadeUp 0.22s ease forwards',
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: '22px 28px 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <div>
+                <div style={{ fontSize: 19, fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
+                  {authTab === 'login' ? 'أهلاً بعودتك' : 'إنشاء حساب جديد'}
+                </div>
+                <div style={{ fontSize: 12.5, color: '#9CA3AF', marginTop: 4, fontWeight: 400 }}>
+                  {authTab === 'login' ? 'سجّل الدخول للمتابعة' : `${3} أيام تجريبية مجانية`}
+                </div>
+              </div>
+              <button
+                onClick={() => setShowAuth(false)}
+                style={{
+                  width: 32, height: 32, borderRadius: 8, border: '1px solid #E5E7EB',
+                  background: '#F9FAFB', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div style={{ display: 'flex', gap: 6, padding: '18px 28px 0' }}>
+              {(['login', 'register'] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => { setAuthTab(tab); setAuthError('') }}
+                  style={{
+                    flex: 1, padding: '9px 0', borderRadius: 10,
+                    border: authTab === tab ? '1.5px solid #8B1A1A' : '1.5px solid #E5E7EB',
+                    background: authTab === tab ? '#FDF4F4' : '#F9FAFB',
+                    color: authTab === tab ? '#8B1A1A' : '#6B7280',
+                    fontWeight: authTab === tab ? 700 : 500,
+                    fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit',
+                  }}>
+                  {tab === 'login' ? 'تسجيل الدخول' : 'حساب جديد'}
+                </button>
+              ))}
+            </div>
+
+            {/* Form */}
+            <div style={{ padding: '20px 28px 28px', display: 'flex', flexDirection: 'column', gap: 13 }}>
+
+              {/* Error */}
+              {authError && (
+                <div style={{
+                  padding: '10px 14px', borderRadius: 10,
+                  background: '#FEF2F2', border: '1px solid #FECACA',
+                  fontSize: 13, color: '#DC2626', fontWeight: 500,
+                }}>
+                  {authError}
+                </div>
+              )}
+
+              {/* Full name — register only */}
+              {authTab === 'register' && (
+                <div>
+                  <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    الاسم الكامل
+                  </label>
+                  <input
+                    value={authForm.full_name}
+                    onChange={e => setAuthForm(p => ({ ...p, full_name: e.target.value }))}
+                    placeholder="وسيم خالد"
+                    style={{
+                      width: '100%', padding: '11px 14px', borderRadius: 10,
+                      border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
+                      outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Username */}
+              <div>
+                <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  اسم المستخدم
+                </label>
+                <input
+                  value={authForm.username}
+                  onChange={e => setAuthForm(p => ({ ...p, username: e.target.value }))}
+                  placeholder="wissam"
+                  dir="ltr"
+                  style={{
+                    width: '100%', padding: '11px 14px', borderRadius: 10,
+                    border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
+                    outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              {/* Email — register only */}
+              {authTab === 'register' && (
+                <div>
+                  <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    البريد الإلكتروني
+                  </label>
+                  <input
+                    value={authForm.email}
+                    onChange={e => setAuthForm(p => ({ ...p, email: e.target.value }))}
+                    placeholder="you@example.com"
+                    type="email"
+                    dir="ltr"
+                    style={{
+                      width: '100%', padding: '11px 14px', borderRadius: 10,
+                      border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
+                      outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Password */}
+              <div>
+                <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  كلمة المرور
+                </label>
+                <input
+                  value={authForm.password}
+                  onChange={e => setAuthForm(p => ({ ...p, password: e.target.value }))}
+                  onKeyDown={e => { if (e.key === 'Enter') submitAuth() }}
+                  placeholder="••••••••"
+                  type="password"
+                  dir="ltr"
+                  style={{
+                    width: '100%', padding: '11px 14px', borderRadius: 10,
+                    border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
+                    outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                onClick={submitAuth}
+                disabled={authLoading}
+                style={{
+                  width: '100%', padding: '13px 0', borderRadius: 12,
+                  background: authLoading
+                    ? '#D1D5DB'
+                    : 'linear-gradient(135deg, #8B1A1A, #B91C1C)',
+                  color: '#fff', fontSize: 15, fontWeight: 700,
+                  border: 'none', cursor: authLoading ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit', marginTop: 4,
+                  boxShadow: authLoading ? 'none' : '0 3px 12px rgba(139,26,26,0.3)',
+                  transition: 'all 0.15s ease',
+                }}>
+                {authLoading
+                  ? '...'
+                  : authTab === 'login' ? 'دخول' : 'إنشاء الحساب'}
+              </button>
+
+              {/* Trial note */}
+              {authTab === 'register' && (
+                <div style={{ textAlign: 'center', fontSize: 11.5, color: '#9CA3AF' }}>
+                  ✦ 3 أيام تجريبية مجانية · لا يلزم بطاقة ائتمان
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
