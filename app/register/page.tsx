@@ -78,8 +78,9 @@ export default function RegisterPage() {
                 type="text"
                 value={form.full_name}
                 onChange={e => update('full_name', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] text-right"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="أحمد علي"
+                dir="auto"
               />
             </div>
 
@@ -134,10 +135,11 @@ export default function RegisterPage() {
                 type="password"
                 value={form.password}
                 onChange={e => update('password', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] text-right"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="6 أحرف على الأقل"
                 required
                 minLength={6}
+                dir="ltr"
               />
             </div>
 
@@ -149,9 +151,10 @@ export default function RegisterPage() {
                 type="password"
                 value={form.confirm}
                 onChange={e => update('confirm', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] text-right"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="أعد كلمة المرور"
                 required
+                dir="ltr"
               />
             </div>
 
