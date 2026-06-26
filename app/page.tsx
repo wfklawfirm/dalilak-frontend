@@ -483,7 +483,7 @@ export default function Home() {
             </div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', letterSpacing: '-0.025em', lineHeight: 1.15 }}>
-                دليلك{' '}<span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C12020)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
+                {lang === 'en' ? 'Dalilak' : 'دليلك'}{' '}<span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C12020)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
               </div>
               <div style={{ fontSize: 10, color: '#B8BEC8', fontWeight: 500, lineHeight: 1, marginTop: 1 }}>
                 {t.tagline} · <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
