@@ -84,6 +84,105 @@ const ALL_QUICK_QUESTIONS = [
   'كيف أحصل على رخصة مهنية؟',
 ]
 
+const ALL_SUGGESTIONS_EN = [
+  { icon: '📋', title: 'Official Documents',     desc: 'Passports · IDs · Records' },
+  { icon: '🏛️', title: 'Gov. Procedures',        desc: 'Companies · Real Estate · Cars' },
+  { icon: '👶', title: 'Civil Status',            desc: 'Birth · Marriage · Death' },
+  { icon: '🎓', title: 'Education & Work',        desc: 'Degrees · Permits · Rights' },
+  { icon: '🏦', title: 'Banks & Finance',         desc: 'Accounts · Loans · Transfer' },
+  { icon: '⚖️', title: 'Law & Justice',           desc: 'Notary · Litigation · Contracts' },
+  { icon: '🏗️', title: 'Building & Real Estate', desc: 'Permits · Registration · Plans' },
+  { icon: '💼', title: 'Company Setup',           desc: 'LLC · SAL · Licenses' },
+  { icon: '🏥', title: 'Health & Insurance',      desc: 'CNSS · Hospitals · Prescriptions' },
+  { icon: '🚗', title: 'Vehicles & Transport',    desc: 'Plates · Licenses · Transfer' },
+  { icon: '🌿', title: 'Agriculture & Env.',      desc: 'Licenses · Export · Nurseries' },
+  { icon: '✈️', title: 'Travel & Nationality',    desc: 'Visas · Passports · Residency' },
+]
+
+const ALL_QUICK_QUESTIONS_EN = [
+  'How do I get a Lebanese passport?',
+  'How to register a new vehicle in Lebanon?',
+  'How to get a birth certificate?',
+  'How to register a company in Lebanon?',
+  'How to open a corporate bank account?',
+  'How to validate a foreign university degree?',
+  'How to register with CNSS social security?',
+  'How to get a building permit?',
+  'How to register a trademark in Lebanon?',
+  'What are the residency requirements in Lebanon?',
+  'How to transfer property ownership?',
+  'How to get a professional license?',
+]
+
+/* ── UI Translations ─────────────────────────────────────────── */
+const UI = {
+  ar: {
+    dir: 'rtl' as const,
+    tagline: 'دليل المواطن اللبناني',
+    heading: 'كيف يمكنني مساعدتك؟',
+    subtitle: 'اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث بصوتك مباشرةً',
+    stats: '35 قطاعاً · 2,484 معاملة · 1,206 نموذج رسمي',
+    placeholder: 'اكتب سؤالك هنا...',
+    newChat: 'جديد',
+    loginBtn: 'دخول',
+    features: ['📎 PDF · صور · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري'],
+    modes: [
+      { id: 'quick',    icon: '⚡', label: 'سريع',      hint: 'إجابة مختصرة في ثوانٍ',          prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ' },
+      { id: 'detailed', icon: '📋', label: 'مفصّل',     hint: 'خطوات وتفاصيل كاملة',             prefix: '[أجب بتفصيل كامل: الوثائق، الخطوات، الرسوم، ساعات العمل، والجهة المختصة] ' },
+      { id: 'research', icon: '🔍', label: 'بحث وافٍ',  hint: 'تقرير شامل مع أدلة ونماذج',     prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد] ' },
+    ],
+    langLabel: 'EN',
+    // auth
+    welcome: 'أهلاً بعودتك',
+    signInSub: 'سجّل الدخول للمتابعة',
+    newAccTitle: 'إنشاء حساب جديد',
+    trialSub: '3 أيام تجريبية مجانية',
+    tabLogin: 'تسجيل الدخول',
+    tabRegister: 'حساب جديد',
+    fullName: 'الاسم الكامل',
+    username: 'اسم المستخدم',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    submitLogin: 'دخول',
+    submitRegister: 'إنشاء الحساب',
+    trialNote: '✦ 3 أيام تجريبية مجانية · لا يلزم بطاقة ائتمان',
+    fillFields: 'يرجى ملء جميع الحقول المطلوبة',
+    langPrefix: '',
+  },
+  en: {
+    dir: 'ltr' as const,
+    tagline: 'Lebanese Citizen Guide',
+    heading: 'How can I help you?',
+    subtitle: 'Ask about any government service, upload a document for analysis, or speak directly',
+    stats: '35 Sectors · 2,484 Transactions · 1,206 Official Forms',
+    placeholder: 'Type your question here...',
+    newChat: 'New',
+    loginBtn: 'Sign In',
+    features: ['📎 PDF · Images · Documents', '🎤 Voice Recording', '🔍 Instant Analysis'],
+    modes: [
+      { id: 'quick',    icon: '⚡', label: 'Quick',    hint: 'Short answer in seconds',              prefix: '[Respond concisely in 4-6 lines, in English] ' },
+      { id: 'detailed', icon: '📋', label: 'Detailed', hint: 'Full steps and details',               prefix: '[Respond in full detail in English: documents, steps, fees, working hours, and the relevant authority] ' },
+      { id: 'research', icon: '🔍', label: 'Research', hint: 'Full report with references',          prefix: '[Respond in English with a comprehensive report: full analysis, all available options, official references, legal citations, and a ready-to-use template if applicable] ' },
+    ],
+    langLabel: 'ع',
+    welcome: 'Welcome back',
+    signInSub: 'Sign in to continue',
+    newAccTitle: 'Create new account',
+    trialSub: '3 free trial days',
+    tabLogin: 'Sign In',
+    tabRegister: 'New Account',
+    fullName: 'Full Name',
+    username: 'Username',
+    email: 'Email',
+    password: 'Password',
+    submitLogin: 'Sign In',
+    submitRegister: 'Create Account',
+    trialNote: '✦ 3 free trial days · No credit card required',
+    fillFields: 'Please fill in all required fields',
+    langPrefix: '[Respond in English only] ',
+  },
+}
+
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 
 /* Detect text direction from first meaningful character */
@@ -110,6 +209,7 @@ export default function Home() {
   const [mode,          setMode]         = useState<ResponseMode>('detailed')
   const [footerBottom,  setFooterBottom] = useState(0)
   const [inputFocused,  setInputFocused] = useState(false)
+  const [lang,          setLang]         = useState<'ar' | 'en'>('ar')
   const [suggestions,   setSuggestions]  = useState(() => shuffle(ALL_SUGGESTIONS).slice(0, 4))
   const [quickQuestions,setQuickQuestions] = useState(() => shuffle(ALL_QUICK_QUESTIONS).slice(0, 4))
 
@@ -154,19 +254,35 @@ export default function Home() {
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'
   }, [input])
 
-  /* Load auth from localStorage */
+  /* Load auth + lang from localStorage */
   useEffect(() => {
     try {
       const tok  = localStorage.getItem('dalilak_token')
       const user = localStorage.getItem('dalilak_user')
-      if (tok && user) {
-        setAuthToken(tok)
-        setCurrentUser(JSON.parse(user))
+      if (tok && user) { setAuthToken(tok); setCurrentUser(JSON.parse(user)) }
+      const savedLang = localStorage.getItem('dalilak_lang') as 'ar' | 'en' | null
+      if (savedLang) {
+        setLang(savedLang)
+        const pool = savedLang === 'en' ? ALL_SUGGESTIONS_EN : ALL_SUGGESTIONS
+        const qPool = savedLang === 'en' ? ALL_QUICK_QUESTIONS_EN : ALL_QUICK_QUESTIONS
+        setSuggestions(shuffle(pool).slice(0, 4))
+        setQuickQuestions(shuffle(qPool).slice(0, 4))
       }
     } catch {}
   }, [])
 
   /* ── Auth helpers ──────────────────────────────────────────── */
+  const toggleLang = () => {
+    const next = lang === 'ar' ? 'en' : 'ar'
+    setLang(next)
+    localStorage.setItem('dalilak_lang', next)
+    const pool  = next === 'en' ? ALL_SUGGESTIONS_EN : ALL_SUGGESTIONS
+    const qPool = next === 'en' ? ALL_QUICK_QUESTIONS_EN : ALL_QUICK_QUESTIONS
+    setSuggestions(shuffle(pool).slice(0, 4))
+    setQuickQuestions(shuffle(qPool).slice(0, 4))
+    setMessages([])
+  }
+
   const saveAuth = (token: string, user: AuthUser) => {
     localStorage.setItem('dalilak_token', token)
     localStorage.setItem('dalilak_user',  JSON.stringify(user))
@@ -185,7 +301,7 @@ export default function Home() {
   const submitAuth = async () => {
     setAuthError('')
     if (!authForm.username.trim() || !authForm.password.trim()) {
-      setAuthError('يرجى ملء جميع الحقول المطلوبة')
+      setAuthError(t.fillFields)
       return
     }
     setAuthLoading(true)
@@ -263,9 +379,10 @@ export default function Home() {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
 
-    const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
+    const activeMode = t.modes.find(m => m.id === (overrideMode || mode)) ?? t.modes[1]
+    const langPrefix = t.langPrefix
     const prefixedMessage = file
-      ? text.trim() || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
+      ? langPrefix + (text.trim() || (lang === 'en' ? 'Analyze this document and suggest the appropriate actions' : 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'))
       : activeMode.prefix + text.trim()
 
     const displayText = file
@@ -345,11 +462,12 @@ export default function Home() {
   }
 
   const canSend     = Boolean((input.trim() || attachedFile) && !loading)
-  const currentMode = MODES.find(m => m.id === mode)!
+  const t           = UI[lang]
+  const currentMode = t.modes.find(m => m.id === mode) ?? t.modes[1]
 
   /* ── Render ─────────────────────────────────────────────────── */
   return (
-    <div style={{
+    <div dir={t.dir} style={{
       position: 'fixed', inset: 0,
       bottom: footerBottom,
       display: 'flex', flexDirection: 'column',
@@ -392,7 +510,7 @@ export default function Home() {
                 دليلك <span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C41E1E)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ fontSize: 10.5, color: '#B0B7C3', fontWeight: 400 }}>دليل المواطن اللبناني</span>
+                <span style={{ fontSize: 10.5, color: '#B0B7C3', fontWeight: 400 }}>{t.tagline}</span>
                 <span style={{ width: 2, height: 2, borderRadius: '50%', background: '#D1D5DB', display: 'inline-block' }} />
                 <span style={{ fontSize: 10, color: '#C4BCBC', fontWeight: 400 }}>
                   by <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
@@ -423,6 +541,23 @@ export default function Home() {
           {/* ── RIGHT: Actions ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
 
+            {/* Language toggle */}
+            <button
+              onClick={toggleLang}
+              className="chip-btn"
+              style={{
+                width: 36, height: 34, borderRadius: 8,
+                border: '1.5px solid #E5E7EB', background: '#F9FAFB',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12.5, fontWeight: 800, color: '#8B1A1A',
+                fontFamily: lang === 'ar' ? 'inherit' : 'system-ui, sans-serif',
+                flexShrink: 0,
+              }}
+              title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
+            >
+              {t.langLabel}
+            </button>
+
             {/* New chat — icon + text */}
             {messages.length > 0 && (
               <button
@@ -438,7 +573,7 @@ export default function Home() {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
-                جديد
+                {t.newChat}
               </button>
             )}
 
@@ -514,7 +649,7 @@ export default function Home() {
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" y1="12" x2="3" y2="12"/>
                 </svg>
-                دخول
+                {t.loginBtn}
               </button>
             )}
           </div>
@@ -561,10 +696,8 @@ export default function Home() {
             />
 
             {/* Heading */}
-            <h1 className="welcome-heading" style={{
-              color: '#111827', margin: '0 0 6px',
-            }}>
-              كيف يمكنني مساعدتك؟
+            <h1 className="welcome-heading" style={{ color: '#111827', margin: '0 0 6px' }}>
+              {t.heading}
             </h1>
 
             {/* Decorative divider */}
@@ -575,10 +708,8 @@ export default function Home() {
             </div>
 
             {/* Subtitle */}
-            <p className="welcome-sub" style={{
-              margin: '0 0 22px', fontWeight: 400,
-            }}>
-              اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث بصوتك مباشرةً
+            <p className="welcome-sub" style={{ margin: '0 0 22px', fontWeight: 400 }}>
+              {t.subtitle}
             </p>
 
             {/* Category cards — responsive grid */}
@@ -642,7 +773,7 @@ export default function Home() {
               marginTop: 18, marginBottom: 6,
               display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
             }}>
-              {['📎 PDF · صور · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري'].map((c, i) => (
+              {t.features.map((c, i) => (
                 <span key={i} style={{
                   fontSize: 10.5, color: '#9CA3AF',
                   padding: '3px 11px', borderRadius: 999,
@@ -655,9 +786,7 @@ export default function Home() {
             </div>
 
             {/* Stats */}
-            <p className="welcome-stats">
-              35 قطاعاً · 2,484 معاملة · 1,206 نموذج رسمي
-            </p>
+            <p className="welcome-stats">{t.stats}</p>
 
 
           </div>
@@ -693,7 +822,7 @@ export default function Home() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             gap: 6, marginBottom: 9,
           }}>
-            {MODES.map(m => {
+            {t.modes.map(m => {
               const active = mode === m.id
               return (
                 <button
@@ -842,9 +971,9 @@ export default function Home() {
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
                 placeholder={
-                  recording    ? 'جاري الاستماع...' :
-                  attachedFile ? 'اسأل عن الوثيقة أو أرسل للتحليل...' :
-                                 'اكتب سؤالك / Type your question...'
+                  recording    ? (lang === 'en' ? 'Listening...' : 'جاري الاستماع...') :
+                  attachedFile ? (lang === 'en' ? 'Ask about the document or send for analysis...' : 'اسأل عن الوثيقة أو أرسل للتحليل...') :
+                                 t.placeholder
                 }
                 rows={1}
                 disabled={loading}
@@ -937,7 +1066,7 @@ export default function Home() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: 16,
           }}>
-          <div style={{
+          <div dir={t.dir} style={{
             background: '#fff', borderRadius: 20, width: '100%', maxWidth: 400,
             boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
             overflow: 'hidden',
@@ -950,10 +1079,10 @@ export default function Home() {
             }}>
               <div>
                 <div style={{ fontSize: 19, fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
-                  {authTab === 'login' ? 'أهلاً بعودتك' : 'إنشاء حساب جديد'}
+                  {authTab === 'login' ? t.welcome : t.newAccTitle}
                 </div>
                 <div style={{ fontSize: 12.5, color: '#9CA3AF', marginTop: 4, fontWeight: 400 }}>
-                  {authTab === 'login' ? 'سجّل الدخول للمتابعة' : `${3} أيام تجريبية مجانية`}
+                  {authTab === 'login' ? t.signInSub : t.trialSub}
                 </div>
               </div>
               <button
@@ -983,7 +1112,7 @@ export default function Home() {
                     fontWeight: authTab === tab ? 700 : 500,
                     fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit',
                   }}>
-                  {tab === 'login' ? 'تسجيل الدخول' : 'حساب جديد'}
+                  {tab === 'login' ? t.tabLogin : t.tabRegister}
                 </button>
               ))}
             </div>
@@ -1006,7 +1135,7 @@ export default function Home() {
               {authTab === 'register' && (
                 <div>
                   <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                    الاسم الكامل
+                    {t.fullName}
                   </label>
                   <input
                     value={authForm.full_name}
@@ -1024,7 +1153,7 @@ export default function Home() {
               {/* Username */}
               <div>
                 <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  اسم المستخدم
+                  {t.username}
                 </label>
                 <input
                   value={authForm.username}
@@ -1043,7 +1172,7 @@ export default function Home() {
               {authTab === 'register' && (
                 <div>
                   <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                    البريد الإلكتروني
+                    {t.email}
                   </label>
                   <input
                     value={authForm.email}
@@ -1063,7 +1192,7 @@ export default function Home() {
               {/* Password */}
               <div>
                 <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  كلمة المرور
+                  {t.password}
                 </label>
                 <input
                   value={authForm.password}
@@ -1095,15 +1224,13 @@ export default function Home() {
                   boxShadow: authLoading ? 'none' : '0 3px 12px rgba(139,26,26,0.3)',
                   transition: 'all 0.15s ease',
                 }}>
-                {authLoading
-                  ? '...'
-                  : authTab === 'login' ? 'دخول' : 'إنشاء الحساب'}
+                {authLoading ? '...' : authTab === 'login' ? t.submitLogin : t.submitRegister}
               </button>
 
               {/* Trial note */}
               {authTab === 'register' && (
                 <div style={{ textAlign: 'center', fontSize: 11.5, color: '#9CA3AF' }}>
-                  ✦ 3 أيام تجريبية مجانية · لا يلزم بطاقة ائتمان
+                  {t.trialNote}
                 </div>
               )}
             </div>
