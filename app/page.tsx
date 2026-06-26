@@ -279,39 +279,33 @@ export default function Home() {
       {/* ╔══════════════════════════════════╗
           ║  TOP BAR — AIJUR contact         ║
           ╚══════════════════════════════════╝ */}
-      <div style={{
-        flexShrink: 0,
-        background: '#8B1A1A',
-        height: 32,
-        display: 'flex', alignItems: 'center',
-      }}>
-        <div style={{
+      <div style={{ flexShrink: 0, background: '#8B1A1A', height: 30, display: 'flex', alignItems: 'center' }}>
+        <div className="topbar-inner" style={{
           maxWidth: 720, margin: '0 auto', width: '100%',
-          padding: '0 18px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 400, letterSpacing: '0.04em' }}>
-            مشروع بواسطة <strong style={{ color: '#fff', fontWeight: 700, letterSpacing: '0.06em' }}>AIJUR</strong>
+          <span style={{ fontSize: 'inherit', color: 'rgba(255,255,255,0.75)', fontWeight: 400, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+            بواسطة <strong style={{ color: '#fff', fontWeight: 700 }}>AIJUR</strong>
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'inherit' }}>
+            <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer" className="topbar-link"
+              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
               aijur.ai
             </a>
-            <a href="mailto:wissam@aijur.ai"
-              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 10 }}>
+            <a href="mailto:wissam@aijur.ai" className="topbar-link"
+              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
               wissam@aijur.ai
             </a>
-            <a href="tel:+971529860608"
-              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 10 }}>
+            <a href="tel:+971529860608" className="topbar-link topbar-phone"
+              style={{ alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
@@ -328,11 +322,10 @@ export default function Home() {
         flexShrink: 0,
         background: '#fff',
         borderBottom: '1px solid #F0F0F0',
-        boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
+        boxShadow: '0 1px 8px rgba(0,0,0,0.06)',
       }}>
-        <div style={{
+        <div className="header-inner" style={{
           maxWidth: 720, margin: '0 auto',
-          padding: '10px 18px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
 
@@ -409,19 +402,20 @@ export default function Home() {
             textAlign: 'center',
           }}>
 
-            {/* Logo — no frame, no border */}
+            {/* Logo */}
             <Image
               src="/logo.PNG"
               alt="Dalilak AI"
-              width={112}
-              height={112}
-              style={{ objectFit: 'contain', display: 'block', marginBottom: 12 }}
+              className="logo-welcome"
+              width={140}
+              height={140}
+              style={{ objectFit: 'contain', display: 'block', marginBottom: 14 }}
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
 
             {/* Heading */}
-            <h1 style={{
-              fontSize: 21, fontWeight: 800,
+            <h1 className="welcome-heading" style={{
+              fontWeight: 800,
               color: '#111827', margin: '0 0 4px',
               letterSpacing: '-0.02em', lineHeight: 1.25,
             }}>
@@ -430,57 +424,40 @@ export default function Home() {
 
             {/* Decorative divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
-              <div style={{
-                height: 1, width: 44,
-                background: 'linear-gradient(to left, transparent, #8B1A1A66)',
-              }} />
-              <div style={{
-                width: 5, height: 5,
-                background: '#8B1A1A', transform: 'rotate(45deg)', opacity: 0.65,
-              }} />
-              <div style={{
-                height: 1, width: 44,
-                background: 'linear-gradient(to right, transparent, #8B1A1A66)',
-              }} />
+              <div style={{ height: 1, width: 52, background: 'linear-gradient(to left, transparent, #8B1A1A66)' }} />
+              <div style={{ width: 5, height: 5, background: '#8B1A1A', transform: 'rotate(45deg)', opacity: 0.65 }} />
+              <div style={{ height: 1, width: 52, background: 'linear-gradient(to right, transparent, #8B1A1A66)' }} />
             </div>
 
             {/* Subtitle */}
-            <p style={{
-              fontSize: 12.5, color: '#9CA3AF',
-              maxWidth: 290, lineHeight: 1.75,
-              margin: '0 0 20px', fontWeight: 400,
+            <p className="welcome-sub" style={{
+              color: '#9CA3AF', lineHeight: 1.8,
+              margin: '0 0 22px', fontWeight: 400,
             }}>
               اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث بصوتك مباشرةً
             </p>
 
-            {/* Category cards 2 × 2 */}
-            <div style={{
-              display: 'grid', gridTemplateColumns: '1fr 1fr',
-              gap: 10, width: '100%', maxWidth: 340,
-              marginBottom: 12,
-            }}>
+            {/* Category cards — responsive grid */}
+            <div className="welcome-grid">
               {suggestions.map((s, i) => (
                 <button
                   key={i}
                   className="card-btn"
                   onClick={() => sendMessage(s.title + ' — ' + s.desc)}
                   style={{
-                    display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center',
-                    textAlign: 'center',
-                    gap: 7, padding: '16px 10px',
+                    gap: 6, padding: '16px 8px',
                     backgroundColor: '#fff',
                     borderRadius: 14,
                     border: '1px solid #E5E7EB',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                     cursor: 'pointer', fontFamily: 'inherit',
-                    width: '100%',
+                    width: '100%', minHeight: 90,
                   }}>
-                  <span style={{ fontSize: 24, lineHeight: 1 }}>{s.icon}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#1F2937', lineHeight: 1.3, textAlign: 'center', width: '100%' }}>
+                  <span style={{ fontSize: 22, lineHeight: 1, display: 'block', textAlign: 'center' }}>{s.icon}</span>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: '#1F2937', lineHeight: 1.35, display: 'block', textAlign: 'center', width: '100%' }}>
                     {s.title}
                   </span>
-                  <span style={{ fontSize: 10.5, color: '#9CA3AF', lineHeight: 1.4, textAlign: 'center', width: '100%' }}>
+                  <span style={{ fontSize: 10, color: '#9CA3AF', lineHeight: 1.4, display: 'block', textAlign: 'center', width: '100%' }}>
                     {s.desc}
                   </span>
                 </button>
@@ -488,7 +465,7 @@ export default function Home() {
             </div>
 
             {/* Quick questions */}
-            <div style={{ width: '100%', maxWidth: 340, display: 'flex', flexDirection: 'column', gap: 7 }}>
+            <div className="quick-list">
               {quickQuestions.map((q, i) => (
                 <button
                   key={i}

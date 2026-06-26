@@ -108,12 +108,18 @@ textarea { font-family: inherit; }
 .card-btn {
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   text-align: center !important;
+  direction: rtl;
+}
+.card-btn,
+.card-btn span,
+.card-btn div {
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-}
-.card-btn * {
   text-align: center !important;
-  width: 100%;
+}
+.card-btn {
+  flex-direction: column !important;
 }
 .card-btn:hover {
   transform: translateY(-2px);
@@ -162,3 +168,82 @@ button:focus-visible {
   outline-offset: 2px;
 }
 textarea:focus { outline: none; }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE LAYOUT
+   ══════════════════════════════════════════════════════ */
+
+/* Top bar — hide phone on small screens */
+.topbar-phone { display: none; }
+
+/* Welcome grid: 2 cols on mobile */
+.welcome-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 12px;
+}
+
+/* Quick questions */
+.quick-list {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* Logo welcome size */
+.logo-welcome { width: 100px; height: 100px; }
+
+/* Welcome heading */
+.welcome-heading { font-size: 20px; }
+
+/* Welcome subtitle */
+.welcome-sub { font-size: 12px; max-width: 280px; }
+
+/* Header height */
+.header-inner { padding: 10px 16px; }
+
+/* Top bar — compact on mobile */
+.topbar-inner {
+  padding: 0 14px;
+  gap: 10px;
+}
+.topbar-link { font-size: 9.5px; }
+
+/* ── Desktop (≥ 640px) ─────────────────────────────── */
+@media (min-width: 640px) {
+  .topbar-phone { display: flex; }
+
+  .topbar-inner { padding: 0 24px; gap: 18px; }
+  .topbar-link  { font-size: 10.5px; }
+
+  .welcome-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 700px;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .quick-list  { max-width: 600px; gap: 8px; }
+
+  .logo-welcome { width: 128px; height: 128px; }
+  .welcome-heading { font-size: 26px; }
+  .welcome-sub { font-size: 13.5px; max-width: 420px; }
+
+  .header-inner { padding: 12px 24px; }
+}
+
+/* ── Large desktop (≥ 1024px) ──────────────────────── */
+@media (min-width: 1024px) {
+  .welcome-grid {
+    max-width: 800px;
+    gap: 16px;
+  }
+  .quick-list { max-width: 700px; }
+  .logo-welcome { width: 140px; height: 140px; }
+  .welcome-heading { font-size: 30px; }
+}
