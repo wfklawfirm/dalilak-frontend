@@ -807,7 +807,7 @@ export default function Home() {
                   key={m.id}
                   type="button"
                   className={`mode-btn${active ? ' active' : ''}`}
-                  onClick={() => setMode(m.id)}
+                  onClick={() => setMode(m.id as ResponseMode)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 5,
                     padding: '5px 13px', borderRadius: 999,
