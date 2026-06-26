@@ -30,29 +30,6 @@ interface AuthUser {
 }
 
 /* ── Config ───────────────────────────────────────────────────── */
-const MODES: { id: ResponseMode; icon: string; label: string; hint: string; prefix: string }[] = [
-  {
-    id: 'quick',
-    icon: '⚡',
-    label: 'سريع',
-    hint: 'إجابة مختصرة في ثوانٍ',
-    prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ',
-  },
-  {
-    id: 'detailed',
-    icon: '📋',
-    label: 'مفصّل',
-    hint: 'خطوات وتفاصيل كاملة',
-    prefix: '[أجب بتفصيل كامل: الوثائق، الخطوات، الرسوم، ساعات العمل، والجهة المختصة] ',
-  },
-  {
-    id: 'research',
-    icon: '🔍',
-    label: 'بحث وافٍ',
-    hint: 'تقرير شامل مع أدلة ونماذج',
-    prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد] ',
-  },
-]
 
 const ALL_SUGGESTIONS = [
   { icon: '📋', title: 'المعاملات الرسمية',  desc: 'جوازات · هويات · وثائق' },
@@ -212,6 +189,10 @@ export default function Home() {
   const [lang,          setLang]         = useState<'ar' | 'en'>('ar')
   const [suggestions,   setSuggestions]  = useState(() => shuffle(ALL_SUGGESTIONS).slice(0, 4))
   const [quickQuestions,setQuickQuestions] = useState(() => shuffle(ALL_QUICK_QUESTIONS).slice(0, 4))
+
+  /* Derived from lang (updated every render) */
+  const t           = UI[lang]
+  const currentMode = t.modes.find(m => m.id === mode) ?? t.modes[1]
 
   /* Auth state */
   const [authToken,     setAuthToken]    = useState<string | null>(null)
@@ -422,9 +403,9 @@ export default function Home() {
         const lines = buffer.split('\n')
         buffer = lines.pop() || ''
         for (const line of lines) {
-          const t = line.trim()
-          if (!t.startsWith('data: ')) continue
-          const d = t.slice(6).trim()
+          const ln = line.trim()
+          if (!ln.startsWith('data: ')) continue
+          const d = ln.slice(6).trim()
           if (d === '[DONE]') continue
           try {
             const p   = JSON.parse(d)
@@ -462,8 +443,6 @@ export default function Home() {
   }
 
   const canSend     = Boolean((input.trim() || attachedFile) && !loading)
-  const t           = UI[lang]
-  const currentMode = t.modes.find(m => m.id === mode) ?? t.modes[1]
 
   /* ── Render ─────────────────────────────────────────────────── */
   return (
@@ -475,157 +454,158 @@ export default function Home() {
       paddingTop: 'var(--safe-top)',
     }}>
 
-      {/* ╔══════════════════════════════════════════════════╗
-          ║  HEADER                                          ║
-          ╚══════════════════════════════════════════════════╝ */}
+      {/* ══════════════ HEADER ══════════════ */}
       <header style={{
         flexShrink: 0,
-        background: 'rgba(255,255,255,0.97)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #EEE8E8',
-        boxShadow: '0 1px 12px rgba(0,0,0,0.055)',
+        background: '#fff',
+        borderBottom: '1px solid #F0EAEA',
+        boxShadow: '0 1px 0 #F0EAEA, 0 2px 8px rgba(0,0,0,0.04)',
+        position: 'relative', zIndex: 10,
       }}>
         <div style={{
-          maxWidth: 820, margin: '0 auto',
-          padding: '0 22px',
-          height: 64,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 12,
+          maxWidth: 880, margin: '0 auto',
+          padding: '0 20px',
+          height: 60,
+          display: 'flex', alignItems: 'center',
+          gap: 0,
         }}>
 
-          {/* ── LEFT: Brand ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 11, flexShrink: 0 }}>
-            {/* Logo mark */}
+          {/* ── BRAND ── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'linear-gradient(135deg, #8B1A1A 0%, #C41E1E 100%)',
+              width: 34, height: 34, borderRadius: 9,
+              background: 'linear-gradient(145deg, #9B1E1E 0%, #C41E1E 100%)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+              boxShadow: '0 2px 6px rgba(139,26,26,0.35)',
               flexShrink: 0,
             }}>
-              <span style={{ fontSize: 15, fontWeight: 900, color: '#fff', letterSpacing: '-0.04em', lineHeight: 1 }}>د</span>
+              <span style={{ fontSize: 14, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>د</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <div style={{ fontSize: 17, fontWeight: 800, color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                دليلك <span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C41E1E)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', letterSpacing: '-0.025em', lineHeight: 1.15 }}>
+                دليلك{' '}<span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C12020)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ fontSize: 10.5, color: '#B0B7C3', fontWeight: 400 }}>{t.tagline}</span>
-                <span style={{ width: 2, height: 2, borderRadius: '50%', background: '#D1D5DB', display: 'inline-block' }} />
-                <span style={{ fontSize: 10, color: '#C4BCBC', fontWeight: 400 }}>
-                  by <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
-                    style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>AIJUR</a>
-                </span>
+              <div style={{ fontSize: 10, color: '#B8BEC8', fontWeight: 500, lineHeight: 1, marginTop: 1 }}>
+                {t.tagline} · <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
+                  style={{ color: '#A0695A', fontWeight: 600, textDecoration: 'none' }}>AIJUR</a>
               </div>
             </div>
           </div>
 
-          {/* ── CENTER: Contact (desktop only) ── */}
-          <div className="header-contacts" style={{ alignItems: 'center', gap: 18, flex: 1, justifyContent: 'center' }}>
-            <a href="mailto:wissam@aijur.ai" style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none', opacity: 0.75 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+          {/* ── CENTER: Contacts (desktop only) ── */}
+          <div className="header-contacts" style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <a href="mailto:wissam@aijur.ai"
+              style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
+                padding: '5px 11px', borderRadius: 20,
+                border: '1px solid #F0EAEA', background: '#FAFAFA',
+                transition: 'border-color 0.15s, background 0.15s',
+              }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B1E1E" strokeWidth="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
-              <span style={{ fontSize: 11.5, color: '#6B7280', fontWeight: 500, direction: 'ltr', unicodeBidi: 'embed' }}>wissam@aijur.ai</span>
+              <span style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, direction: 'ltr', unicodeBidi: 'embed' }}>wissam@aijur.ai</span>
             </a>
-            <div style={{ width: 1, height: 14, background: '#E5E7EB' }} />
-            <a href="tel:+9613460608" style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none', opacity: 0.75 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+            <a href="tel:+9613460608"
+              style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
+                padding: '5px 11px', borderRadius: 20,
+                border: '1px solid #F0EAEA', background: '#FAFAFA',
+                transition: 'border-color 0.15s, background 0.15s',
+              }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B1E1E" strokeWidth="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
-              <span dir="ltr" style={{ fontSize: 11.5, color: '#6B7280', fontWeight: 500, unicodeBidi: 'isolate' }}>+961 3 460 608</span>
+              <span dir="ltr" style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, unicodeBidi: 'isolate' }}>+961 3 460 608</span>
             </a>
           </div>
 
           {/* ── RIGHT: Actions ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, marginRight: 'auto', marginLeft: 'auto' }}>
+            {/* Spacer so actions are pushed to end */}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
 
             {/* Language toggle */}
             <button
               onClick={toggleLang}
               className="chip-btn"
+              title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
               style={{
-                width: 36, height: 34, borderRadius: 8,
-                border: '1.5px solid #E5E7EB', background: '#F9FAFB',
+                minWidth: 38, height: 32, paddingInline: 10, borderRadius: 7,
+                border: '1.5px solid #E2D6D6', background: '#FDF6F6',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12.5, fontWeight: 800, color: '#8B1A1A',
-                fontFamily: lang === 'ar' ? 'inherit' : 'system-ui, sans-serif',
+                fontSize: 11.5, fontWeight: 800, color: '#8B1A1A',
+                letterSpacing: lang === 'en' ? '0.02em' : '0',
                 flexShrink: 0,
               }}
-              title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
             >
               {t.langLabel}
             </button>
 
-            {/* New chat — icon + text */}
+            {/* New chat */}
             {messages.length > 0 && (
               <button
                 onClick={() => setMessages([])}
                 className="chip-btn"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  fontSize: 12, color: '#6B7280', fontWeight: 500,
-                  padding: '6px 12px', borderRadius: 8,
-                  border: '1px solid #E5E7EB', background: '#FAFAFA',
+                  display: 'flex', alignItems: 'center', gap: 4,
+                  height: 32, paddingInline: 11, borderRadius: 7,
+                  border: '1px solid #E5E7EB', background: '#F9FAFB',
+                  fontSize: 11.5, color: '#6B7280', fontWeight: 500,
                   cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
                 }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
                 {t.newChat}
               </button>
             )}
 
-            {/* Divider before auth */}
-            <div style={{ width: 1, height: 22, background: '#E9E5E5', flexShrink: 0 }} />
+            {/* Separator */}
+            <div style={{ width: 1, height: 20, background: '#E5DEDE', flexShrink: 0, marginInline: 2 }} />
 
-            {/* Auth */}
+            {/* Auth section */}
             {currentUser ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                {/* Plan badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 {currentUser.plan === 'paid' && (
-                  <div style={{ padding: '3px 9px', borderRadius: 999, background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
-                    <span style={{ fontSize: 10.5, color: '#15803D', fontWeight: 700 }}>✓ مشترك</span>
+                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                    <span style={{ fontSize: 10, color: '#15803D', fontWeight: 700 }}>✓ مشترك</span>
                   </div>
                 )}
                 {currentUser.plan === 'trial' && (
-                  <div style={{ padding: '3px 9px', borderRadius: 999, background: '#FFFBEB', border: '1px solid #FDE68A' }}>
-                    <span style={{ fontSize: 10.5, color: '#92400E', fontWeight: 600 }}>تجريبي · {currentUser.days_left ?? '?'}ي</span>
+                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+                    <span style={{ fontSize: 10, color: '#92400E', fontWeight: 600 }}>تجريبي {currentUser.days_left ?? '?'}ي</span>
                   </div>
                 )}
                 {currentUser.plan === 'admin' && (
-                  <div style={{ padding: '3px 9px', borderRadius: 999, background: '#FDF4FF', border: '1px solid #E9D5FF' }}>
-                    <span style={{ fontSize: 10.5, color: '#7C3AED', fontWeight: 700 }}>مشرف</span>
+                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#FDF4FF', border: '1px solid #E9D5FF' }}>
+                    <span style={{ fontSize: 10, color: '#7C3AED', fontWeight: 700 }}>مشرف</span>
                   </div>
                 )}
-                {/* Avatar */}
                 <div style={{
-                  width: 34, height: 34, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #8B1A1A, #C41E1E)',
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: 'linear-gradient(145deg, #9B1E1E, #C41E1E)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 13, fontWeight: 800, color: '#fff',
-                  boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
-                  flexShrink: 0, cursor: 'default',
-                  border: '2px solid #fff',
+                  fontSize: 12.5, fontWeight: 800, color: '#fff',
+                  boxShadow: '0 1px 6px rgba(139,26,26,0.3)',
+                  flexShrink: 0, border: '1.5px solid rgba(255,255,255,0.9)',
                   outline: '1.5px solid #EDD0D0',
                 }}>
                   {(currentUser.full_name || currentUser.username).charAt(0).toUpperCase()}
                 </div>
-                <span className="header-contacts" style={{ fontSize: 12.5, color: '#374151', fontWeight: 600, maxWidth: 72, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span className="header-contacts" style={{
+                  fontSize: 12, color: '#374151', fontWeight: 600,
+                  maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
                   {currentUser.full_name || currentUser.username}
                 </span>
-                {/* Logout */}
-                <button
-                  onClick={logout}
-                  className="chip-btn"
-                  title="تسجيل الخروج"
+                <button onClick={logout} className="chip-btn" title="تسجيل الخروج"
                   style={{
-                    width: 32, height: 32, borderRadius: 8,
+                    width: 30, height: 30, borderRadius: 7,
                     border: '1px solid #F0E8E8', background: '#FDF8F8',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C0857C" strokeWidth="2.2">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C08070" strokeWidth="2.2">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                     <polyline points="16 17 21 12 16 7"/>
                     <line x1="21" y1="12" x2="9" y2="12"/>
@@ -637,14 +617,14 @@ export default function Home() {
                 onClick={() => { setShowAuth(true); setAuthTab('login'); setAuthError('') }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '8px 16px', borderRadius: 9,
-                  background: 'linear-gradient(135deg, #8B1A1A, #C41E1E)',
-                  color: '#fff', fontSize: 13, fontWeight: 700,
+                  height: 34, paddingInline: 16, borderRadius: 8,
+                  background: 'linear-gradient(145deg, #9B1E1E, #C41E1E)',
+                  color: '#fff', fontSize: 12.5, fontWeight: 700,
                   border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  boxShadow: '0 2px 10px rgba(139,26,26,0.3)',
-                  whiteSpace: 'nowrap',
+                  boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+                  whiteSpace: 'nowrap', letterSpacing: '0.01em',
                 }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" y1="12" x2="3" y2="12"/>
@@ -655,13 +635,11 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ── Accent line ── */}
+        {/* Brand accent line */}
         <div style={{
-          height: 2,
-          background: 'linear-gradient(to left, transparent 0%, #8B1A1A 35%, #8B1A1A 65%, transparent 100%)',
-          opacity: 0.12,
+          height: 1,
+          background: 'linear-gradient(to right, transparent, #C41E1E40 30%, #C41E1E40 70%, transparent)',
         }} />
-
       </header>
 
       {/* ╔══════════════════════════════════╗
