@@ -448,22 +448,22 @@ export default function Home() {
                   onClick={() => sendMessage(q)}
                   style={{
                     width: '100%',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '10px 14px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '11px 16px',
                     backgroundColor: '#fff',
                     borderRadius: 10,
                     border: '1px solid #E5E7EB',
                     boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
                     fontSize: 12.5, color: '#374151',
                     cursor: 'pointer', fontFamily: 'inherit',
-                    textAlign: 'right',
+                    textAlign: 'center',
+                    gap: 8,
                   }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="#8B1A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ flexShrink: 0, opacity: 0.55 }}>
-                    <path d="M15 18l-6-6 6-6" />
-                  </svg>
-                  <span>{q}</span>
+                  <span style={{
+                    width: 6, height: 6, borderRadius: '50%',
+                    backgroundColor: '#8B1A1A', opacity: 0.5, flexShrink: 0,
+                  }} />
+                  <span style={{ textAlign: 'center', flex: 1 }}>{q}</span>
                 </button>
               ))}
             </div>
