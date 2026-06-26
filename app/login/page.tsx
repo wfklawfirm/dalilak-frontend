@@ -33,7 +33,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Image src="/logo.png" alt="دليلك AI" width={72} height={72} className="rounded-2xl shadow-md mb-3" />
+          <Image src="/logo.png" alt="دليلك AI" width={140} height={140} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
           <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
           <p className="text-sm text-gray-500 mt-1">دليل المواطن اللبناني الذكي</p>
         </div>

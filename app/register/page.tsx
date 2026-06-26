@@ -52,7 +52,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
-          <Image src="/logo.png" alt="دليلك AI" width={64} height={64} className="rounded-2xl shadow-md mb-2" />
+          <Image src="/logo.png" alt="دليلك AI" width={130} height={130} className="mb-1 drop-shadow-lg" style={{objectFit:'contain'}} />
           <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
         </div>
 

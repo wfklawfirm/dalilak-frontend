@@ -335,21 +335,12 @@ export default function Home() {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: 12,
-                background: 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(139,26,26,0.3)',
-                flexShrink: 0, overflow: 'hidden',
-              }}>
-                <Image src="/logo.PNG" alt="Dalilak AI" width={34} height={34}
-                  style={{ objectFit: 'contain' }}
-                  onError={(e) => {
-                    const el = e.target as HTMLImageElement
-                    el.style.display = 'none'
-                    el.parentElement!.innerHTML = '<span style="font-size:18px">🏛️</span>'
-                  }} />
-              </div>
+              <Image src="/logo.PNG" alt="Dalilak AI" width={48} height={48}
+                style={{ objectFit: 'contain', flexShrink: 0 }}
+                onError={(e) => {
+                  const el = e.target as HTMLImageElement
+                  el.style.display = 'none'
+                }} />
               <div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
                   Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
@@ -434,22 +425,12 @@ export default function Home() {
             }}>
 
               {/* Hero logo */}
-              <div style={{
-                width: 84, height: 84, borderRadius: 24,
-                background: 'linear-gradient(135deg, #8B1A1A 0%, #5C0F0F 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 8px 30px rgba(139,26,26,0.25), 0 2px 8px rgba(139,26,26,0.15)',
-                marginBottom: 16, overflow: 'hidden',
-                animation: 'glow 3s ease-in-out infinite',
-              }}>
-                <Image src="/logo.PNG" alt="Dalilak AI" width={76} height={76}
-                  style={{ objectFit: 'contain' }}
-                  onError={(e) => {
-                    const el = e.target as HTMLImageElement
-                    el.style.display = 'none'
-                    el.parentElement!.innerHTML = '<span style="font-size:40px">🏛️</span>'
-                  }} />
-              </div>
+              <Image src="/logo.PNG" alt="Dalilak AI" width={130} height={130}
+                style={{ objectFit: 'contain', marginBottom: 16, filter: 'drop-shadow(0 4px 16px rgba(139,26,26,0.18))' }}
+                onError={(e) => {
+                  const el = e.target as HTMLImageElement
+                  el.style.display = 'none'
+                }} />
 
               <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
                 كيف يمكنني مساعدتك؟
