@@ -2,7 +2,9 @@
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
+import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -55,6 +57,9 @@ const QUICK_QUESTIONS = [
 ]
 
 export default function Home() {
+  const router = useRouter()
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -68,6 +73,17 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
   const mainRef = useRef<HTMLDivElement>(null)
+
+  // ── Auth guard ────────────────────────────────────────────
+  useEffect(() => {
+    const token = getToken()
+    if (!token) { router.push('/login'); return }
+    const u = getUser()
+    setCurrentUser(u)
+    setAuthChecked(true)
+    // ping to keep Render alive
+    fetch(`${API_URL}/ping`).catch(() => {})
+  }, [])
 
   // ── Keyboard / visualViewport fix ────────────────────────
   useEffect(() => {
@@ -168,8 +184,20 @@ export default function Home() {
         : JSON.stringify({ message: prefixedMessage, history })
 
       const res = await fetch(API_URL + endpoint, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body,
       })
+      if (res.status === 401) { clearToken(); router.push('/login'); return }
+      if (res.status === 402) {
+        setMessages(prev => prev.slice(0, -1).concat({
+          role: 'assistant',
+          content: '⏰ **انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك AI، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
+          streaming: false,
+        }))
+        setLoading(false)
+        return
+      }
       if (!res.ok) throw new Error('HTTP ' + res.status)
 
       const reader = res.body!.getReader()
@@ -225,6 +253,12 @@ export default function Home() {
 
   const canSend = Boolean((input.trim() || attachedFile) && !loading)
   const currentMode = MODES.find(m => m.id === mode)!
+
+  if (!authChecked) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f0e8' }}>
+      <div style={{ fontSize: 14, color: '#9ca3af' }}>جاري التحقق...</div>
+    </div>
+  )
 
   return (
     <>
@@ -326,17 +360,46 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {messages.length > 0 && (
                 <button onClick={() => setMessages([])} style={{
                   fontSize: 11, color: 'var(--text-3)', padding: '5px 12px',
                   borderRadius: 20, border: '1px solid var(--border)',
                   background: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  fontWeight: 500, transition: 'all 0.15s',
+                  fontWeight: 500,
                 }}>
                   محادثة جديدة
                 </button>
               )}
+              {/* Trial badge */}
+              {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
+                <div style={{
+                  fontSize: 10, color: currentUser.days_left <= 1 ? '#dc2626' : '#d97706',
+                  background: currentUser.days_left <= 1 ? '#fef2f2' : '#fffbeb',
+                  border: `1px solid ${currentUser.days_left <= 1 ? '#fecaca' : '#fde68a'}`,
+                  borderRadius: 20, padding: '4px 10px', fontWeight: 600,
+                }}>
+                  ⏱️ {currentUser.days_left} {currentUser.days_left === 1 ? 'يوم' : 'أيام'} تجريبية
+                </div>
+              )}
+              {/* Admin link */}
+              {isAdmin() && (
+                <button onClick={() => router.push('/admin')} style={{
+                  fontSize: 11, color: '#6b2737', padding: '5px 12px',
+                  borderRadius: 20, border: '1px solid #e9d5d8',
+                  background: '#fdf2f4', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                }}>
+                  🛡️ Admin
+                </button>
+              )}
+              {/* Logout */}
+              <button onClick={() => { clearToken(); router.push('/login') }} style={{
+                fontSize: 11, color: 'var(--text-3)', padding: '5px 10px',
+                borderRadius: 20, border: '1px solid var(--border)',
+                background: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                خروج
+              </button>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 5,
                 background: '#F0FDF4', borderRadius: 20, padding: '4px 10px',
