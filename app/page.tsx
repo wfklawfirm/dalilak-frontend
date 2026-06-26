@@ -544,44 +544,10 @@ export default function Home() {
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer style={{
           flexShrink: 0,
-          backgroundColor: '#fff',
-          borderTop: '1px solid var(--border)',
+          backgroundColor: 'transparent',
           paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
-          boxShadow: '0 -2px 12px rgba(0,0,0,0.04)',
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 12px 6px' }}>
-
-            {/* Mode pills */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 6, marginBottom: 8,
-            }}>
-              {MODES.map(m => {
-                const active = mode === m.id
-                return (
-                  <button key={m.id} type="button"
-                    className="mode-btn"
-                    onClick={() => setMode(m.id)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 5,
-                      padding: '5px 14px', borderRadius: 999, fontSize: 11.5,
-                      fontWeight: 600, cursor: 'pointer',
-                      border: active ? 'none' : '1.5px solid var(--border)',
-                      background: active
-                        ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
-                        : '#fff',
-                      color: active ? '#fff' : 'var(--text-3)',
-                      boxShadow: active ? '0 2px 8px rgba(139,26,26,0.3)' : 'none',
-                      fontFamily: 'inherit',
-                    }}
-                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.93)' }}
-                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}>
-                    <span>{m.icon}</span>
-                    <span>{m.label}</span>
-                  </button>
-                )
-              })}
-            </div>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 12px 10px' }}>
 
             {/* File preview */}
             {attachedFile && (
@@ -654,13 +620,43 @@ export default function Home() {
             <form onSubmit={handleSubmit}>
               <div className={inputFocused ? 'input-focused' : ''}
                 style={{
-                  display: 'flex', alignItems: 'flex-end', gap: 4,
+                  display: 'flex', flexDirection: 'column',
                   backgroundColor: '#fff',
                   border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
-                  borderRadius: 20, padding: '6px 8px',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+                  borderRadius: 20, padding: '10px 10px 6px',
+                  boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
                   transition: 'all 0.2s ease',
                 }}>
+
+                {/* Mode pills inside box */}
+                <div style={{ display: 'flex', gap: 5, marginBottom: 8, paddingBottom: 8, borderBottom: '1px solid var(--border)' }}>
+                  {MODES.map(m => {
+                    const active = mode === m.id
+                    return (
+                      <button key={m.id} type="button"
+                        className="mode-btn"
+                        onClick={() => setMode(m.id)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 4,
+                          padding: '4px 12px', borderRadius: 999, fontSize: 11,
+                          fontWeight: 600, cursor: 'pointer',
+                          border: active ? 'none' : '1px solid var(--border)',
+                          background: active
+                            ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                            : 'transparent',
+                          color: active ? '#fff' : 'var(--text-3)',
+                          boxShadow: active ? '0 1px 6px rgba(139,26,26,0.25)' : 'none',
+                          fontFamily: 'inherit',
+                        }}>
+                        <span>{m.icon}</span>
+                        <span>{m.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Input row */}
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
 
                 {/* Attach */}
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
@@ -756,20 +752,9 @@ export default function Home() {
                     </svg>
                   )}
                 </button>
-              </div>
+                </div>{/* end input row */}
+              </div>{/* end input box */}
 
-              {/* Bottom info bar */}
-              <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                marginTop: 5, padding: '0 4px',
-              }}>
-                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
-                  {currentMode.icon} {currentMode.hint}
-                </span>
-                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
-                  35 قطاعاً · 1,746 سجل
-                </span>
-              </div>
             </form>
 
           </div>
