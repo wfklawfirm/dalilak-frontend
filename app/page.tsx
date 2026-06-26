@@ -490,6 +490,43 @@ export default function Home() {
               35 قطاعاً · 2,484 معاملة · 1,206 نموذج رسمي
             </p>
 
+            {/* AIJUR branding */}
+            <div style={{
+              marginTop: 20, paddingTop: 16,
+              borderTop: '1px solid #F3F4F6',
+              width: '100%', maxWidth: 340,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+            }}>
+              <p style={{ fontSize: 10.5, color: '#9CA3AF', fontWeight: 500, letterSpacing: '0.01em' }}>
+                مشروع بواسطة <span style={{ color: '#8B1A1A', fontWeight: 700 }}>AIJUR</span>
+              </p>
+              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10.5, color: '#6B7280', textDecoration: 'none' }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                  aijur.ai
+                </a>
+                <a href="mailto:wissam@aijur.ai"
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10.5, color: '#6B7280', textDecoration: 'none' }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  wissam@aijur.ai
+                </a>
+                <a href="tel:+971529860608"
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10.5, color: '#6B7280', textDecoration: 'none' }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                  +971 52 986 0608
+                </a>
+              </div>
+            </div>
+
           </div>
 
         ) : (
