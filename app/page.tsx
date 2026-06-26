@@ -276,93 +276,85 @@ export default function Home() {
       paddingTop: 'var(--safe-top)',
     }}>
 
-      {/* ╔══════════════════════════════════╗
-          ║  TOP BAR — AIJUR contact         ║
-          ╚══════════════════════════════════╝ */}
-      <div style={{ flexShrink: 0, background: '#8B1A1A', height: 30, display: 'flex', alignItems: 'center' }}>
-        <div className="topbar-inner" style={{
-          maxWidth: 720, margin: '0 auto', width: '100%',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <span style={{ fontSize: 'inherit', color: 'rgba(255,255,255,0.75)', fontWeight: 400, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
-            بواسطة <strong style={{ color: '#fff', fontWeight: 700 }}>AIJUR</strong>
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'inherit' }}>
-            <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer" className="topbar-link"
-              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-              aijur.ai
-            </a>
-            <a href="mailto:wissam@aijur.ai" className="topbar-link"
-              style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              wissam@aijur.ai
-            </a>
-            <a href="tel:+971529860608" className="topbar-link topbar-phone"
-              style={{ alignItems: 'center', gap: 4, textDecoration: 'none', color: 'rgba(255,255,255,0.88)' }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-              +971 52 986 0608
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* ╔══════════════════════════════════╗
-          ║  HEADER                          ║
-          ╚══════════════════════════════════╝ */}
+      {/* ╔══════════════════════════════════════════════════╗
+          ║  UNIFIED HEADER                                  ║
+          ╚══════════════════════════════════════════════════╝ */}
       <header style={{
         flexShrink: 0,
         background: '#fff',
-        borderBottom: '1px solid #F0F0F0',
-        boxShadow: '0 1px 8px rgba(0,0,0,0.06)',
+        borderBottom: '2px solid #8B1A1A',
+        boxShadow: '0 2px 12px rgba(139,26,26,0.08)',
       }}>
         <div className="header-inner" style={{
           maxWidth: 720, margin: '0 auto',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
 
-          {/* Logo + Brand */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
+          {/* ── Logo + Brand + AIJUR ── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Image
               src="/logo.PNG"
               alt="Dalilak AI"
-              width={44}
-              height={44}
-              style={{ objectFit: 'contain', display: 'block' }}
+              width={46}
+              height={46}
+              style={{ objectFit: 'contain', display: 'block', flexShrink: 0 }}
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {/* Brand name */}
               <div style={{
-                fontSize: 16, fontWeight: 800,
-                color: '#111827', letterSpacing: '-0.025em', lineHeight: 1.15,
+                fontSize: 17, fontWeight: 800,
+                color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1,
               }}>
                 دليلك <span style={{ color: '#8B1A1A' }}>AI</span>
               </div>
-              <div style={{
-                fontSize: 10, color: '#9CA3AF', lineHeight: 1.2, marginTop: 2,
-                fontWeight: 400, letterSpacing: '0.01em',
-              }}>
-                دليل المواطن اللبناني
+              {/* Tagline + AIJUR inline */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{ fontSize: 10, color: '#B0B7C3', fontWeight: 400, letterSpacing: '0.01em' }}>
+                  دليل المواطن اللبناني
+                </span>
+                <span style={{ width: 1, height: 10, background: '#E5E7EB', display: 'inline-block' }} />
+                <span style={{ fontSize: 9.5, color: '#9CA3AF', fontWeight: 400, letterSpacing: '0.03em' }}>
+                  by{' '}
+                  <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
+                    style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.05em' }}>
+                    AIJUR
+                  </a>
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Right actions */}
+          {/* ── Right side ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+
+            {/* Contact links — desktop only */}
+            <div className="header-contacts" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <a href="mailto:wissam@aijur.ai"
+                style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: '#9CA3AF', fontSize: 10.5 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                wissam@aijur.ai
+              </a>
+              <a href="tel:+971529860608"
+                style={{ display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', color: '#9CA3AF', fontSize: 10.5 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                +971 52 986 0608
+              </a>
+              <span style={{ width: 1, height: 16, background: '#E5E7EB' }} />
+            </div>
+
+            {/* New chat button */}
             {messages.length > 0 && (
               <button
                 onClick={() => setMessages([])}
                 className="chip-btn"
                 style={{
-                  fontSize: 11.5, color: '#6B7280', fontWeight: 500,
+                  fontSize: 11, color: '#6B7280', fontWeight: 500,
                   padding: '5px 12px', borderRadius: 8,
                   border: '1px solid #E5E7EB', background: '#fff',
                   cursor: 'pointer', fontFamily: 'inherit',
@@ -370,14 +362,21 @@ export default function Home() {
                 محادثة جديدة
               </button>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+
+            {/* Status */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '4px 10px', borderRadius: 999,
+              background: '#F0FDF4', border: '1px solid #BBF7D0',
+            }}>
               <span style={{
-                width: 7, height: 7, borderRadius: '50%',
+                width: 6, height: 6, borderRadius: '50%',
                 backgroundColor: '#22C55E', display: 'block',
                 animation: 'pulse-dot 2.5s ease infinite',
               }} />
-              <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500 }}>متصل</span>
+              <span style={{ fontSize: 10.5, color: '#15803D', fontWeight: 600 }}>متصل</span>
             </div>
+
           </div>
         </div>
       </header>
