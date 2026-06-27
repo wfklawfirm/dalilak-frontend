@@ -84,6 +84,7 @@ export interface ProcedureStep {
 }
 
 export interface Authority {
+  type?: 'ministry' | 'municipality' | 'court' | 'notary' | 'registry' | 'security' | 'tax' | 'other'
   name_ar: string
   name_en: string
   ministry_ar?: string

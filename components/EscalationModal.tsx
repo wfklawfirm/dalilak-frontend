@@ -1,0 +1,165 @@
+'use client'
+
+/**
+ * EscalationModal — Phase 16 (Human Escalation Layer)
+ *
+ * Shows when user clicks "اطلب مراجعة قانونية" or "تواصل مع متخصص".
+ * Sends POST /escalate to backend (stub — replace with CRM/ticketing).
+ */
+
+import React, { useState } from 'react'
+import { authHeaders } from '@/lib/auth'
+import { Analytics } from '@/lib/analytics'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
+
+type RequestType = 'lawyer_review' | 'document_review' | 'consultation' | 'whatsapp'
+type ContactPref = 'email' | 'whatsapp' | 'callback'
+
+interface Props {
+  question?: string
+  isAr?: boolean
+  onClose: () => void
+}
+
+const REQUEST_TYPES: { id: RequestType; icon: string; ar: string; en: string }[] = [
+  { id: 'lawyer_review',    icon: '⚖️', ar: 'مراجعة قانونية',        en: 'Lawyer Review' },
+  { id: 'document_review',  icon: '📄', ar: 'مراجعة وثائق',          en: 'Document Review' },
+  { id: 'consultation',     icon: '💬', ar: 'استشارة متخصص',         en: 'Expert Consultation' },
+  { id: 'whatsapp',         icon: '📱', ar: 'تواصل عبر واتساب',      en: 'Contact via WhatsApp' },
+]
+
+const CONTACT_PREFS: { id: ContactPref; ar: string; en: string }[] = [
+  { id: 'email',     ar: 'بريد إلكتروني', en: 'Email' },
+  { id: 'whatsapp',  ar: 'واتساب',         en: 'WhatsApp' },
+  { id: 'callback',  ar: 'مكالمة هاتفية',  en: 'Phone call' },
+]
+
+export default function EscalationModal({ question = '', isAr = true, onClose }: Props) {
+  const [requestType, setRequestType] = useState<RequestType>('consultation')
+  const [contactPref, setContactPref] = useState<ContactPref>('whatsapp')
+  const [contact, setContact] = useState('')
+  const [note, setNote] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async () => {
+    if (!contact.trim()) {
+      setError(isAr ? 'أدخل وسيلة تواصل' : 'Please enter contact info')
+      return
+    }
+    setLoading(true)
+    setError('')
+    try {
+      const body = {
+        request_type: requestType,
+        question,
+        context: note,
+        contact_preference: contactPref,
+        [contactPref === 'email' ? 'user_email' : 'user_phone']: contact,
+      }
+      const res = await fetch(`${API_URL}/escalate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error('HTTP ' + res.status)
+      Analytics.escalationRequested(requestType)
+      setSubmitted(true)
+    } catch {
+      setError(isAr ? 'حدث خطأ، حاول مرة أخرى.' : 'An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)' }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', padding: '20px 18px 32px', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
+            {isAr ? '🤝 تواصل مع متخصص' : '🤝 Connect with an Expert'}
+          </h2>
+          <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: 13, cursor: 'pointer', color: '#6B7280' }}>✕</button>
+        </div>
+
+        {submitted ? (
+          <div style={{ textAlign: 'center', padding: '28px 0' }}>
+            <div style={{ fontSize: 44, marginBottom: 10 }}>✅</div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#15803D', margin: '0 0 6px' }}>
+              {isAr ? 'تم إرسال طلبك بنجاح' : 'Request sent successfully'}
+            </p>
+            <p style={{ fontSize: 12, color: '#6B7280', margin: '0 0 20px' }}>
+              {isAr ? 'سيتواصل معك أحد المختصين خلال 24 ساعة عمل.' : 'A specialist will contact you within 24 business hours.'}
+            </p>
+            <button onClick={onClose} style={{ padding: '10px 32px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              {isAr ? 'إغلاق' : 'Close'}
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Request type */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+              {REQUEST_TYPES.map(t => (
+                <button key={t.id} onClick={() => setRequestType(t.id)} style={{ padding: '10px 8px', border: '1.5px solid', borderColor: requestType === t.id ? '#8B1A1A' : '#EAE4D9', background: requestType === t.id ? '#FEF2F2' : '#FAFAF8', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: requestType === t.id ? '#8B1A1A' : '#4A4035', cursor: 'pointer', textAlign: 'center' }}>
+                  <div style={{ fontSize: 18, marginBottom: 2 }}>{t.icon}</div>
+                  {isAr ? t.ar : t.en}
+                </button>
+              ))}
+            </div>
+
+            {/* Question preview */}
+            {question && (
+              <div style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 10, padding: '8px 12px', marginBottom: 12, fontSize: 11.5, color: '#6B7280', lineHeight: 1.5 }}>
+                <strong style={{ color: '#9C8E80', display: 'block', marginBottom: 2 }}>{isAr ? 'سؤالك:' : 'Your question:'}</strong>
+                {question.slice(0, 150)}{question.length > 150 ? '...' : ''}
+              </div>
+            )}
+
+            {/* Note */}
+            <textarea
+              placeholder={isAr ? 'أضف ملاحظة أو تفاصيل إضافية (اختياري)...' : 'Add a note or details (optional)...'}
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              rows={2}
+              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 12, fontSize: 12.5, fontFamily: 'inherit', color: '#1A1208', resize: 'none', outline: 'none', marginBottom: 10, direction: isAr ? 'rtl' : 'ltr' }}
+            />
+
+            {/* Contact preference */}
+            <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+              {CONTACT_PREFS.map(p => (
+                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#B8860B' : '#EAE4D9', background: contactPref === p.id ? '#FFFBEB' : '#fff', borderRadius: 10, fontFamily: 'inherit', fontSize: 11, fontWeight: 600, color: contactPref === p.id ? '#B8860B' : '#6B7280', cursor: 'pointer' }}>
+                  {isAr ? p.ar : p.en}
+                </button>
+              ))}
+            </div>
+
+            {/* Contact input */}
+            <input
+              type={contactPref === 'email' ? 'email' : 'tel'}
+              placeholder={contactPref === 'email'
+                ? (isAr ? 'بريدك الإلكتروني' : 'Your email')
+                : (isAr ? 'رقم هاتفك (واتساب)' : 'Your phone (WhatsApp)')}
+              value={contact}
+              onChange={e => setContact(e.target.value)}
+              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 12, fontSize: 13, fontFamily: 'inherit', color: '#1A1208', outline: 'none', marginBottom: 12, direction: 'ltr', boxSizing: 'border-box' }}
+            />
+
+            {error && <p style={{ fontSize: 11.5, color: '#DC2626', margin: '0 0 8px' }}>{error}</p>}
+
+            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: '0 0 12px', lineHeight: 1.5 }}>
+              {isAr
+                ? '⚠️ هذه الخدمة لأغراض الإرشاد. الرد ليس استشارة قانونية رسمية.'
+                : '⚠️ This service is for guidance purposes. Response is not official legal advice.'}
+            </p>
+
+            <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', padding: '13px', background: loading ? '#ccc' : 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : '0 3px 12px rgba(139,26,26,0.3)' }}>
+              {loading ? (isAr ? 'جاري الإرسال...' : 'Sending...') : (isAr ? '📤 إرسال الطلب' : '📤 Send Request')}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}

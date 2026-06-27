@@ -20,7 +20,10 @@ interface Stats {
 
 interface ResetCode { username: string; token: string; expires_at: string }
 
-type Tab = 'stats' | 'users' | 'create' | 'resets'
+type Tab = 'stats' | 'users' | 'create' | 'resets' | 'feedback' | 'escalations'
+
+interface FeedbackEntry { question: string; answer: string; rating: string; confidence?: string; username: string; timestamp: number }
+interface EscalationEntry { request_type: string; question: string; contact_preference?: string; user_email?: string; user_phone?: string; username: string; timestamp: number; status: string }
 
 const PLAN_LABELS: Record<string, string> = {
   paid: 'مدفوع', trial: 'تجريبي', admin: 'مشرف', suspended: 'موقوف', expired: 'منتهي'
@@ -33,12 +36,16 @@ const PLAN_COLORS: Record<string, string> = {
   expired: 'bg-gray-100 text-gray-600',
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
+
 export default function AdminPage() {
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('stats')
   const [stats, setStats] = useState<Stats | null>(null)
   const [users, setUsers] = useState<UserRow[]>([])
   const [resets, setResets] = useState<ResetCode[]>([])
+  const [feedback, setFeedback] = useState<FeedbackEntry[]>([])
+  const [escalations, setEscalations] = useState<EscalationEntry[]>([])
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
@@ -68,6 +75,29 @@ export default function AdminPage() {
 
   async function loadResets() {
     try { setResets((await adminGetResets()).reset_codes) } catch (e: any) { flash(e.message || 'خطأ في تحميل الرموز', true) }
+  }
+
+  async function loadFeedback() {
+    try {
+      const { getToken } = await import('@/lib/auth')
+      const res = await fetch(`${API_URL}/admin/feedback?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
+      const data = await res.json()
+      setFeedback(data.feedback || [])
+    } catch (e: any) { flash(e.message || 'خطأ في تحميل التقييمات', true) }
+  }
+
+  async function loadEscalations() {
+    try {
+      const { getToken } = await import('@/lib/auth')
+      const res = await fetch(`${API_URL}/admin/escalations?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
+      const data = await res.json()
+      setEscalations(data.escalations || [])
+    } catch (e: any) { flash(e.message || 'خطأ في تحميل طلبات التصعيد', true) }
+  }
+
+  function fmtTs(ts?: number) {
+    if (!ts) return '—'
+    return new Date(ts * 1000).toLocaleString('ar-LB')
   }
 
   async function refreshAll() {
@@ -163,13 +193,20 @@ export default function AdminPage() {
       <div className="px-6 pt-6">
         <div className="flex gap-2 flex-wrap">
           {([
-            { id: 'stats', label: '📊 الإحصائيات' },
-            { id: 'users', label: '👥 المستخدمون' },
-            { id: 'create', label: '➕ مستخدم جديد' },
-            { id: 'resets', label: '🔑 رموز الاستعادة' },
+            { id: 'stats',       label: '📊 الإحصائيات' },
+            { id: 'users',       label: '👥 المستخدمون' },
+            { id: 'create',      label: '➕ مستخدم جديد' },
+            { id: 'resets',      label: '🔑 رموز الاستعادة' },
+            { id: 'feedback',    label: '💬 التقييمات' },
+            { id: 'escalations', label: '🤝 طلبات التصعيد' },
           ] as { id: Tab; label: string }[]).map(t => (
             <button key={t.id}
-              onClick={() => { setTab(t.id); if (t.id === 'resets') loadResets() }}
+              onClick={() => {
+                setTab(t.id)
+                if (t.id === 'resets') loadResets()
+                if (t.id === 'feedback') loadFeedback()
+                if (t.id === 'escalations') loadEscalations()
+              }}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 tab === t.id ? 'bg-[#6b2737] text-white shadow' : 'bg-white text-gray-600 hover:bg-gray-50'
               }`}>
@@ -354,6 +391,63 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── FEEDBACK ── */}
+        {tab === 'feedback' && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800">💬 تقييمات المستخدمين ({feedback.length})</h2>
+              <button onClick={loadFeedback} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
+            </div>
+            {feedback.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-8">لا توجد تقييمات بعد</p>
+            ) : (
+              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                {feedback.map((f, i) => (
+                  <div key={i} className="border border-gray-100 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`text-lg ${f.rating === 'up' ? '👍' : '👎'}`}>{f.rating === 'up' ? '👍' : '👎'}</span>
+                      <span className="text-xs text-gray-500">{f.username} · {fmtTs(f.timestamp)}</span>
+                      {f.confidence && <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{f.confidence}</span>}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium mb-1 line-clamp-2">❓ {f.question}</p>
+                    <p className="text-xs text-gray-500 line-clamp-3">{f.answer}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── ESCALATIONS ── */}
+        {tab === 'escalations' && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-gray-800">🤝 طلبات التصعيد ({escalations.length})</h2>
+              <button onClick={loadEscalations} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
+            </div>
+            {escalations.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-8">لا توجد طلبات بعد</p>
+            ) : (
+              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                {escalations.map((e, i) => (
+                  <div key={i} className="border border-gray-100 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-bold text-[#6b2737]">{e.request_type?.replace('_', ' ')}</span>
+                      <span className="text-xs text-gray-500">{fmtTs(e.timestamp)}</span>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-1 line-clamp-2">{e.question}</p>
+                    <div className="flex gap-3 mt-1">
+                      {e.user_email && <span className="text-xs text-blue-600">✉️ {e.user_email}</span>}
+                      {e.user_phone && <span className="text-xs text-green-600">📱 {e.user_phone}</span>}
+                      <span className="text-xs text-gray-500">@{e.username}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
