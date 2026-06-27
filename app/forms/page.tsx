@@ -1,157 +1,187 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { searchForms } from '@/lib/procedures'
+import type { FormItem } from '@/lib/types'
 
-const FORMS = [
-  {
-    category_ar: 'السفر والهوية',
-    category_en: 'Travel & Identity',
-    items: [
-      { icon: '📘', title_ar: 'طلب جواز سفر', title_en: 'Passport Application', ministry_ar: 'الأمن العام', ministry_en: 'General Security', url: 'https://www.general-security.gov.lb', q_ar: 'ما هو نموذج طلب جواز السفر اللبناني وأين أحصل عليه؟', q_en: 'What is the Lebanese passport application form and where to get it?' },
-      { icon: '🪪', title_ar: 'طلب بطاقة هوية', title_en: 'ID Card Application', ministry_ar: 'وزارة الداخلية', ministry_en: 'Ministry of Interior', url: 'https://www.interior.gov.lb', q_ar: 'كيف أملأ نموذج طلب بطاقة الهوية اللبنانية؟', q_en: 'How do I fill the Lebanese ID card application form?' },
-    ],
-  },
-  {
-    category_ar: 'العقارات',
-    category_en: 'Real Estate',
-    items: [
-      { icon: '📝', title_ar: 'طلب نقل ملكية', title_en: 'Property Transfer Form', ministry_ar: 'دائرة التسجيل العقاري', ministry_en: 'Real Estate Dept.', url: 'https://www.deeds.gov.lb', q_ar: 'ما هو نموذج نقل ملكية العقار في لبنان؟', q_en: 'What is the property transfer form in Lebanon?' },
-      { icon: '🏗️', title_ar: 'طلب رخصة بناء', title_en: 'Building Permit Request', ministry_ar: 'وزارة الأشغال', ministry_en: 'Ministry of Public Works', url: 'https://www.publicworks.gov.lb', q_ar: 'ما هي نماذج طلب رخصة البناء في لبنان؟', q_en: 'What are the building permit application forms in Lebanon?' },
-    ],
-  },
-  {
-    category_ar: 'الأعمال التجارية',
-    category_en: 'Business',
-    items: [
-      { icon: '🏭', title_ar: 'تسجيل شركة SAL', title_en: 'SAL Company Registration', ministry_ar: 'وزارة العدل', ministry_en: 'Ministry of Justice', url: 'https://www.justice.gov.lb', q_ar: 'ما هي نماذج تسجيل شركة مساهمة في لبنان؟', q_en: 'What are the forms for registering a joint-stock company in Lebanon?' },
-      { icon: '📄', title_ar: 'طلب سجل تجاري', title_en: 'Commercial Register', ministry_ar: 'وزارة الاقتصاد', ministry_en: 'Ministry of Economy', url: 'https://www.economy.gov.lb', q_ar: 'ما هو نموذج التسجيل في السجل التجاري اللبناني؟', q_en: 'What is the Lebanese commercial register application form?' },
-    ],
-  },
-  {
-    category_ar: 'الضمان الاجتماعي',
-    category_en: 'Social Security',
-    items: [
-      { icon: '🏥', title_ar: 'طلب تسجيل NSSF', title_en: 'NSSF Registration', ministry_ar: 'الضمان الاجتماعي', ministry_en: 'NSSF', url: 'https://www.cnss.gov.lb', q_ar: 'ما هي نماذج التسجيل في الضمان الاجتماعي اللبناني؟', q_en: 'What are the Lebanese NSSF registration forms?' },
-      { icon: '💊', title_ar: 'مطالبة تعويض صحي', title_en: 'Medical Claim Form', ministry_ar: 'الضمان الاجتماعي', ministry_en: 'NSSF', url: 'https://www.cnss.gov.lb', q_ar: 'كيف أقدم مطالبة تعويض طبي من الضمان الاجتماعي؟', q_en: 'How do I submit a medical reimbursement claim to NSSF?' },
-    ],
-  },
+const MINISTRY_FILTERS = [
+  { key: 'all', ar: 'الكل', en: 'All' },
+  { key: 'general-security', ar: 'الأمن العام', en: 'General Security' },
+  { key: 'interior', ar: 'وزارة الداخلية', en: 'Interior' },
+  { key: 'justice', ar: 'وزارة العدل', en: 'Justice' },
+  { key: 'economy', ar: 'وزارة الاقتصاد', en: 'Economy' },
+  { key: 'public-works', ar: 'وزارة الأشغال', en: 'Public Works' },
+  { key: 'nssf', ar: 'الضمان الاجتماعي', en: 'NSSF' },
+]
+
+const TYPE_FILTERS = [
+  { key: 'all', ar: 'الكل', en: 'All' },
+  { key: 'official', ar: 'رسمي', en: 'Official' },
+  { key: 'draft', ar: 'مسودة', en: 'Draft' },
 ]
 
 export default function FormsPage() {
   const router = useRouter()
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const [search, setSearch] = useState('')
+  const [ministryFilter, setMinistryFilter] = useState('all')
+  const [typeFilter, setTypeFilter] = useState('all')
   const isAr = lang === 'ar'
 
-  const handleForm = (q: string) => {
+  const allForms = useMemo(() => searchForms(''), [])
+
+  const filtered = useMemo(() => {
+    let forms = search.trim() ? searchForms(search) : allForms
+    if (ministryFilter !== 'all') {
+      forms = forms.filter(f => {
+        const m = (f.ministry_ar + f.ministry_en).toLowerCase()
+        if (ministryFilter === 'general-security') return m.includes('أمن عام') || m.includes('general security')
+        if (ministryFilter === 'interior') return m.includes('داخلية') || m.includes('interior')
+        if (ministryFilter === 'justice') return m.includes('عدل') || m.includes('justice')
+        if (ministryFilter === 'economy') return m.includes('اقتصاد') || m.includes('economy')
+        if (ministryFilter === 'public-works') return m.includes('أشغال') || m.includes('public works')
+        if (ministryFilter === 'nssf') return m.includes('ضمان') || m.includes('nssf')
+        return true
+      })
+    }
+    if (typeFilter !== 'all') forms = forms.filter(f => f.type === typeFilter)
+    return forms
+  }, [search, ministryFilter, typeFilter, allForms])
+
+  const askAI = (form: FormItem) => {
+    const q = isAr ? form.chatPrompt_ar : form.chatPrompt_en
     router.push(`/?q=${encodeURIComponent(q)}`)
   }
 
+  const openForm = (form: FormItem) => {
+    if (form.url) window.open(form.url, '_blank', 'noopener,noreferrer')
+  }
+
+  const fileTypeIcon = (ft: string) => {
+    if (ft === 'pdf') return '📄'
+    if (ft === 'word') return '📝'
+    if (ft === 'link') return '🔗'
+    return '📋'
+  }
+
+  const typeColor = (t: string) => t === 'official' ? '#15803D' : t === 'draft' ? '#B45309' : '#6B7280'
+  const typeBg = (t: string) => t === 'official' ? '#F0FDF4' : t === 'draft' ? '#FFFBEB' : '#F5F5F5'
+  const typeLabel = (t: string, ar: boolean) => {
+    if (t === 'official') return ar ? 'رسمي' : 'Official'
+    if (t === 'draft') return ar ? 'مسودة' : 'Draft'
+    return ar ? 'غير محدد' : 'Unknown'
+  }
+
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Cairo', 'Inter', sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; }`}</style>
 
       {/* Header */}
-      <header style={{
-        background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
-        padding: '12px 16px',
-        position: 'sticky', top: 0, zIndex: 50,
-      }}>
+      <header style={{ background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)', padding: '14px 16px' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button onClick={() => router.push('/')} style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
-            color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer',
-            fontSize: 12, fontFamily: 'inherit',
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            {isAr ? 'الرئيسية' : 'Home'}
-          </button>
-          <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 700, margin: 0 }}>
-            {isAr ? 'النماذج الرسمية' : 'Official Forms'}
-          </h1>
-          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{
-            background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)',
-            color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer',
-            fontSize: 11, fontFamily: 'inherit', fontWeight: 700,
-          }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button onClick={() => router.push('/')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div>
+              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>{isAr ? '📄 مكتبة النماذج' : '📄 Forms Library'}</h1>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>{isAr ? 'نماذج ووثائق الجهات الرسمية' : 'Official government forms & documents'}</p>
+            </div>
+          </div>
+          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
       </header>
 
-      {/* Content */}
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
-        {/* Banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #FDF8E8 0%, #FEF3C7 100%)',
-          border: '1px solid #FCD34D', borderRadius: 14,
-          padding: '12px 16px', marginBottom: 20,
-          display: 'flex', gap: 10, alignItems: 'flex-start',
-        }}>
-          <span style={{ fontSize: 20, flexShrink: 0 }}>💡</span>
-          <p style={{ fontSize: 12, color: '#92400E', margin: 0, lineHeight: 1.6 }}>
-            {isAr
-              ? 'اضغط على أي نموذج لسؤال الأيجنت عنه والحصول على دليل إرشادي شامل وخطوات التعبئة.'
-              : 'Tap any form to ask the agent about it and get a comprehensive guide with filling instructions.'}
-          </p>
+        {/* Search */}
+        <div style={{ position: 'relative', marginBottom: 14 }}>
+          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', [isAr ? 'right' : 'left']: 14, color: '#B0A090', fontSize: 15, pointerEvents: 'none' }}>🔍</span>
+          <input
+            type="text"
+            placeholder={isAr ? 'ابحث عن نموذج...' : 'Search forms...'}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: isAr ? '12px 42px 12px 36px' : '12px 36px 12px 42px', border: '1.5px solid #EAE4D9', borderRadius: 16, fontSize: 13, background: '#fff', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: isAr ? 'rtl' : 'ltr' }}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', [isAr ? 'left' : 'right']: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 10, color: '#6B7280' }}>✕</button>
+          )}
         </div>
 
-        {FORMS.map((cat, ci) => (
-          <div key={ci} style={{ marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 700, color: '#5C3A1A', margin: 0, whiteSpace: 'nowrap' }}>
-                {isAr ? cat.category_ar : cat.category_en}
-              </h2>
-              <div style={{ flex: 1, height: 1, background: '#EAE4D9' }} />
-            </div>
+        {/* Ministry filter pills */}
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 10, scrollbarWidth: 'none' }}>
+          {MINISTRY_FILTERS.map(f => (
+            <button key={f.key} onClick={() => setMinistryFilter(f.key)} style={{ padding: '5px 12px', borderRadius: 20, border: '1.5px solid', borderColor: ministryFilter === f.key ? '#8B1A1A' : '#EAE4D9', background: ministryFilter === f.key ? '#8B1A1A' : '#fff', color: ministryFilter === f.key ? '#fff' : '#6B7280', fontSize: 11, fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+              {isAr ? f.ar : f.en}
+            </button>
+          ))}
+        </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {cat.items.map((item, ii) => (
-                <button key={ii}
-                  onClick={() => handleForm(isAr ? item.q_ar : item.q_en)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 14px', borderRadius: 14,
-                    background: '#fff', border: '1.5px solid #EAE4D9',
-                    cursor: 'pointer', fontFamily: 'inherit',
-                    textAlign: isAr ? 'right' : 'left',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                    transition: 'all 0.15s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#B8860B'; e.currentTarget.style.boxShadow = '0 3px 12px rgba(184,134,11,0.1)' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)' }}
-                  onTouchStart={e => { e.currentTarget.style.background = '#FDF8E8' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}>
-                  <div style={{
-                    width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                    background: 'linear-gradient(135deg, #FDF8E8 0%, #FEF3C7 100%)',
-                    border: '1px solid rgba(184,134,11,0.15)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 20,
-                  }}>{item.icon}</div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
-                      {isAr ? item.title_ar : item.title_en}
-                    </div>
-                    <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>
-                      {isAr ? item.ministry_ar : item.ministry_en}
-                    </div>
-                  </div>
-                  <div style={{
-                    flexShrink: 0, background: '#FEF2F2', borderRadius: 8,
-                    padding: '4px 8px', fontSize: 10, color: '#8B1A1A', fontWeight: 600,
-                  }}>
-                    {isAr ? 'دليل' : 'Guide'}
-                  </div>
-                </button>
-              ))}
+        {/* Type filter pills */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+          {TYPE_FILTERS.map(f => (
+            <button key={f.key} onClick={() => setTypeFilter(f.key)} style={{ padding: '4px 12px', borderRadius: 20, border: '1.5px solid', borderColor: typeFilter === f.key ? '#B8860B' : '#EAE4D9', background: typeFilter === f.key ? '#B8860B' : '#fff', color: typeFilter === f.key ? '#fff' : '#6B7280', fontSize: 11, fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer' }}>
+              {isAr ? f.ar : f.en}
+            </button>
+          ))}
+        </div>
+
+        {/* Results count */}
+        <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 12px' }}>
+          {isAr ? `${filtered.length} نموذج` : `${filtered.length} form${filtered.length !== 1 ? 's' : ''}`}
+        </p>
+
+        {/* Form cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+              <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نماذج' : 'No forms found'}</p>
             </div>
-          </div>
-        ))}
+          ) : filtered.map((form) => (
+            <div key={form.slug} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 16, padding: '14px 16px', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                {/* Icon */}
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+                  {form.icon}
+                </div>
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 2 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? form.title_ar : form.title_en}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: typeColor(form.type), background: typeBg(form.type), borderRadius: 6, padding: '1px 6px' }}>{typeLabel(form.type, isAr)}</span>
+                    <span style={{ fontSize: 10, color: '#9C8E80' }}>{fileTypeIcon(form.fileType)}</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: '#6B7280', margin: '0 0 6px' }}>{isAr ? form.authority_ar : form.authority_en} · {isAr ? form.ministry_ar : form.ministry_en}</p>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 9.5, color: '#6B7280', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px' }}>📁 {isAr ? form.category_ar : form.category_en}</span>
+                    {form.lastReviewed && <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px' }}>🗓️ {form.lastReviewed}</span>}
+                  </div>
+                </div>
+              </div>
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 10, borderTop: '1px solid #F0EBE0' }}>
+                <button onClick={() => askAI(form)} style={{ flex: 1, padding: '8px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 11.5, fontWeight: 700, cursor: 'pointer' }}>
+                  🤖 {isAr ? 'اسأل AI' : 'Ask AI'}
+                </button>
+                {form.url && (
+                  <button onClick={() => openForm(form)} style={{ flex: 1, padding: '8px', background: '#fff', color: '#8B1A1A', border: '1.5px solid #8B1A1A', borderRadius: 10, fontFamily: 'inherit', fontSize: 11.5, fontWeight: 700, cursor: 'pointer' }}>
+                    {isAr ? 'فتح النموذج ↗' : 'Open Form ↗'}
+                  </button>
+                )}
+                {form.relatedProcedures.length > 0 && (
+                  <button onClick={() => router.push(`/procedures/${form.relatedProcedures[0]}`)} style={{ padding: '8px 12px', background: '#F5F5F5', color: '#6B7280', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 11, cursor: 'pointer' }}>
+                    📋
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

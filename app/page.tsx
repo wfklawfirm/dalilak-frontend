@@ -340,6 +340,8 @@ export default function Home() {
       const decoder = new TextDecoder()
       let accumulated = ''
       let buffer = ''
+      let metaSources: import('@/lib/types').AgentSource[] = []
+      let metaConfidence: import('@/lib/types').ConfidenceLevel = 'unknown'
 
       while (true) {
         const { done, value } = await reader.read()
@@ -354,6 +356,17 @@ export default function Home() {
           if (d === '[DONE]') continue
           try {
             const p = JSON.parse(d)
+            if (p.type === 'meta') {
+              if (Array.isArray(p.sources)) {
+                metaSources = p.sources.map((s: any) => ({
+                  title: s.title || s.ministry || 'مصدر',
+                  type: 'official' as const,
+                  ministry: s.ministry,
+                  score: s.score,
+                }))
+              }
+              if (p.confidence) metaConfidence = p.confidence
+            }
             const tok = p.type === 'token' ? p.text : p.choices?.[0]?.delta?.content
             if (tok) {
               accumulated += tok
@@ -369,7 +382,13 @@ export default function Home() {
       const finalAnswer = accumulated || 'عذراً، لم أتلقَّ ردّاً.'
       setMessages(prev => {
         const u = [...prev]
-        u[u.length - 1] = { role: 'assistant', content: finalAnswer, streaming: false }
+        u[u.length - 1] = {
+          role: 'assistant',
+          content: finalAnswer,
+          streaming: false,
+          sources: metaSources.length > 0 ? metaSources : undefined,
+          confidence: metaConfidence !== 'unknown' ? metaConfidence : undefined,
+        }
         return u
       })
       // Save to localStorage cache (text questions only)
@@ -417,8 +436,8 @@ export default function Home() {
           --gold-light: #FDF8E8;
           --bg: #ffffff;
           --card: #FFFFFF;
-          --border: #EAE4D9;
-          --border-strong: #D4C9B8;
+          --border: #F0F0F0;
+          --border-strong: #E0E0E0;
           --text: #1A1208;
           --text-2: #5C5044;
           --text-3: #9C8E80;
@@ -479,7 +498,7 @@ export default function Home() {
         position: 'fixed', top: 0, left: 0, right: 0,
         bottom: footerBottom,
         display: 'flex', flexDirection: 'column',
-        backgroundColor: 'var(--bg)',
+        backgroundColor: '#ffffff',
         paddingTop: 'var(--safe-top)',
       }}>
 

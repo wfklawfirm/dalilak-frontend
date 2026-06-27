@@ -1,0 +1,691 @@
+/**
+ * Dalilak AI — Procedure Data Repository
+ *
+ * This is a clean data layer that can be swapped to a PostgreSQL backend later.
+ * All data here is a mock/seed — replace with real API calls when backend is ready.
+ *
+ * TODO: Replace this with API calls to /procedures when PostgreSQL is integrated.
+ */
+
+import type { Procedure, FormItem } from './types'
+
+// ── Procedure Data ────────────────────────────────────────────────────────────
+
+export const PROCEDURES_DATA: Procedure[] = [
+  {
+    slug: 'passport',
+    icon: '📘',
+    country: 'lebanon',
+    category_ar: 'سفر وهوية',
+    category_en: 'Travel & Identity',
+    categorySlug: 'travel',
+    title_ar: 'جواز السفر اللبناني',
+    title_en: 'Lebanese Passport',
+    description_ar: 'استخراج جواز سفر لبناني جديد أو تجديد الجواز المنتهي الصلاحية للمواطنين اللبنانيين داخل لبنان وخارجه.',
+    description_en: 'Issue a new Lebanese passport or renew an expired passport for Lebanese citizens inside Lebanon or abroad.',
+    complexity: 'easy',
+    estimatedDuration_ar: '5–10 أيام عمل',
+    estimatedDuration_en: '5–10 business days',
+    requiredDocuments: [
+      { name_ar: 'صورة شخصية حديثة (4×6)', name_en: 'Recent photo (4×6)', notes_ar: 'خلفية بيضاء، صورة واضحة', original_required: true },
+      { name_ar: 'بطاقة هوية سارية المفعول', name_en: 'Valid ID card', original_required: true, copies_required: 1 },
+      { name_ar: 'إخراج قيد عائلي حديث', name_en: 'Recent civil registry extract', original_required: true, notes_ar: 'صادر خلال 3 أشهر' },
+      { name_ar: 'الجواز القديم (للتجديد)', name_en: 'Old passport (for renewal)', notes_ar: 'مطلوب فقط في حالة التجديد', original_required: true },
+      { name_ar: 'رسوم الطابع المالي', name_en: 'Revenue stamps', notes_ar: 'بحسب سنوات الجواز' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'تحضير الوثائق', title_en: 'Prepare documents', description_ar: 'جمع كل الوثائق المطلوبة واستخراج إخراج القيد من دائرة النفوس' },
+      { step: 2, title_ar: 'تقديم الطلب للأمن العام', title_en: 'Submit to General Security', description_ar: 'التوجه لأقرب مركز أمن عام وتقديم الملف', authority: 'الأمن العام', duration: '1 ساعة' },
+      { step: 3, title_ar: 'دفع الرسوم', title_en: 'Pay fees', description_ar: 'دفع رسوم الجواز حسب المدة المطلوبة', duration: '15 دقيقة' },
+      { step: 4, title_ar: 'انتظار المعالجة', title_en: 'Wait for processing', description_ar: 'الانتظار بين 5–10 أيام عمل', duration: '5-10 أيام' },
+      { step: 5, title_ar: 'استلام الجواز', title_en: 'Collect passport', description_ar: 'استلام الجواز من مركز الأمن العام أو البريد' },
+    ],
+    authority: {
+      name_ar: 'المديرية العامة للأمن العام',
+      name_en: 'General Directorate of General Security',
+      ministry_ar: 'وزارة الداخلية والبلديات',
+      ministry_en: 'Ministry of Interior & Municipalities',
+      address_ar: 'مبنى الأمن العام — الكولا، بيروت',
+      phone: '+961 1 425 610',
+      website: 'https://www.general-security.gov.lb',
+      workingHours_ar: 'الاثنين–الجمعة 8:00 ص–3:00 م',
+      workingHours_en: 'Monday–Friday 8:00 AM–3:00 PM',
+    },
+    fees: [
+      { label_ar: 'جواز سفر 5 سنوات', label_en: '5-year passport', amount: '40 دولار أمريكي' },
+      { label_ar: 'جواز سفر 10 سنوات', label_en: '10-year passport', amount: '75 دولار أمريكي' },
+      { label_ar: 'رسوم استعجالية', label_en: 'Express fees', amount: 'ضعف الرسوم العادية' },
+    ],
+    forms: [
+      { title_ar: 'نموذج طلب جواز سفر', title_en: 'Passport Application Form', type: 'official', url: 'https://www.general-security.gov.lb', fileType: 'link', lastReviewed: '2025' },
+    ],
+    sources: [
+      { title: 'الموقع الرسمي للأمن العام', type: 'official', url: 'https://www.general-security.gov.lb', lastReviewed: '2025' },
+    ],
+    tags: ['جواز', 'سفر', 'أمن عام', 'passport', 'travel'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أستخرج أو أجدد جواز السفر اللبناني؟ ما هي الوثائق والرسوم والخطوات؟',
+    chatPrompt_en: 'How do I get or renew a Lebanese passport? What are the documents, fees and steps?',
+  },
+
+  {
+    slug: 'civil-registry-extract',
+    icon: '👨‍👩‍👦',
+    country: 'lebanon',
+    category_ar: 'الأحوال الشخصية',
+    category_en: 'Civil Status',
+    categorySlug: 'civil-status',
+    title_ar: 'إخراج قيد (عائلي / فردي)',
+    title_en: 'Civil Registry Extract',
+    description_ar: 'استخراج وثيقة رسمية تُثبت القيد في دائرة النفوس، سواء إخراج قيد عائلي أو فردي.',
+    description_en: 'Official document from the Civil Registry office proving your registration — individual or family extract.',
+    complexity: 'easy',
+    estimatedDuration_ar: 'يوم واحد أو بريد',
+    estimatedDuration_en: '1 day or by mail',
+    requiredDocuments: [
+      { name_ar: 'بطاقة هوية سارية', name_en: 'Valid ID', original_required: true },
+      { name_ar: 'رسوم طابع مالي', name_en: 'Revenue stamp fees' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'التوجه لدائرة النفوس في بلدة القيد', title_en: 'Go to Civil Registry in your registration town', authority: 'وزارة الداخلية — دائرة النفوس' },
+      { step: 2, title_ar: 'تقديم الهوية ودفع الرسوم', title_en: 'Present ID and pay fees', duration: '15 دقيقة' },
+      { step: 3, title_ar: 'استلام إخراج القيد', title_en: 'Receive the extract', duration: 'نفس اليوم أو يومان' },
+    ],
+    authority: {
+      name_ar: 'دائرة النفوس — وزارة الداخلية',
+      name_en: 'Civil Registry — Ministry of Interior',
+      ministry_ar: 'وزارة الداخلية والبلديات',
+      ministry_en: 'Ministry of Interior & Municipalities',
+      website: 'https://www.interior.gov.lb',
+    },
+    fees: [
+      { label_ar: 'إخراج قيد فردي', label_en: 'Individual extract', amount: 'بضعة آلاف ل.ل.' },
+      { label_ar: 'إخراج قيد عائلي', label_en: 'Family extract', amount: 'بضعة آلاف ل.ل.' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة الداخلية والبلديات', type: 'official', url: 'https://www.interior.gov.lb' }],
+    tags: ['إخراج قيد', 'نفوس', 'أحوال شخصية', 'civil registry'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أستخرج إخراج قيد عائلي أو فردي في لبنان؟ ما هي المتطلبات والرسوم؟',
+    chatPrompt_en: 'How do I get a civil registry extract in Lebanon?',
+  },
+
+  {
+    slug: 'birth-certificate',
+    icon: '👶',
+    country: 'lebanon',
+    category_ar: 'الأحوال الشخصية',
+    category_en: 'Civil Status',
+    categorySlug: 'civil-status',
+    title_ar: 'تسجيل المولود وشهادة الميلاد',
+    title_en: 'Birth Registration & Certificate',
+    description_ar: 'تسجيل المولود في دائرة النفوس وإصدار شهادة الميلاد الرسمية خلال المهلة القانونية.',
+    description_en: 'Register a newborn at the Civil Registry and issue an official birth certificate within the legal deadline.',
+    complexity: 'easy',
+    estimatedDuration_ar: '1–3 أيام',
+    estimatedDuration_en: '1–3 days',
+    requiredDocuments: [
+      { name_ar: 'شهادة الولادة من المستشفى', name_en: 'Hospital birth certificate', original_required: true },
+      { name_ar: 'إخراج قيد الأبوين', name_en: 'Parents\' civil registry extract', original_required: true },
+      { name_ar: 'بطاقات هوية الوالدين', name_en: 'Parents\' ID cards', original_required: true, copies_required: 1 },
+      { name_ar: 'عقد الزواج الموثق', name_en: 'Certified marriage contract', notes_ar: 'إن وجد', original_required: true },
+    ],
+    steps: [
+      { step: 1, title_ar: 'الحصول على شهادة الولادة من المستشفى', title_en: 'Get birth certificate from hospital', duration: 'نفس اليوم' },
+      { step: 2, title_ar: 'تسجيل المولود في النفوس خلال 30 يوم', title_en: 'Register at Civil Registry within 30 days', authority: 'دائرة النفوس', description_ar: 'يجب التسجيل خلال شهر لتفادي الغرامات' },
+      { step: 3, title_ar: 'استلام شهادة الميلاد', title_en: 'Receive birth certificate', duration: '1–3 أيام' },
+    ],
+    authority: {
+      name_ar: 'دائرة النفوس — وزارة الداخلية',
+      name_en: 'Civil Registry — Ministry of Interior',
+      website: 'https://www.interior.gov.lb',
+    },
+    fees: [
+      { label_ar: 'رسوم تسجيل', label_en: 'Registration fees', amount: 'رمزية' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة الداخلية', type: 'official', url: 'https://www.interior.gov.lb' }],
+    tags: ['ميلاد', 'مولود', 'تسجيل', 'birth', 'newborn'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أسجل مولوداً وأستخرج شهادة ميلاد في لبنان؟',
+    chatPrompt_en: 'How do I register a newborn and get a birth certificate in Lebanon?',
+  },
+
+  {
+    slug: 'company-registration',
+    icon: '🏭',
+    country: 'lebanon',
+    category_ar: 'الأعمال',
+    category_en: 'Business',
+    categorySlug: 'business',
+    title_ar: 'تسجيل شركة (SAL / SARL)',
+    title_en: 'Company Registration (SAL / SARL)',
+    description_ar: 'خطوات تأسيس وتسجيل شركة مساهمة (SAL) أو شركة ذات مسؤولية محدودة (SARL) في لبنان.',
+    description_en: 'Steps to establish and register a joint-stock company (SAL) or limited liability company (SARL) in Lebanon.',
+    complexity: 'complex',
+    estimatedDuration_ar: '15–30 يوم عمل',
+    estimatedDuration_en: '15–30 business days',
+    requiredDocuments: [
+      { name_ar: 'عقد التأسيس (النظام الأساسي)', name_en: 'Memorandum of Association', original_required: true, notes_ar: 'يُعدّ بالتنسيق مع محامٍ' },
+      { name_ar: 'هويات المؤسسين', name_en: 'Founders\' IDs', original_required: true, copies_required: 2 },
+      { name_ar: 'شهادة براءة ذمة من المؤسسين', name_en: 'Clearance certificates for founders' },
+      { name_ar: 'إثبات عنوان المقر', name_en: 'Proof of registered address' },
+      { name_ar: 'تفويض بتأسيس الشركة (إن وجد)', name_en: 'Power of attorney (if applicable)' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'صياغة عقد التأسيس مع محامٍ', title_en: 'Draft memorandum with a lawyer', duration: '3–5 أيام' },
+      { step: 2, title_ar: 'التصديق على التوقيعات عند كاتب العدل', title_en: 'Notarize signatures', authority: 'كاتب العدل', duration: '1 يوم' },
+      { step: 3, title_ar: 'التسجيل في وزارة العدل (السجل التجاري)', title_en: 'Register at Ministry of Justice', authority: 'وزارة العدل', duration: '5–10 أيام' },
+      { step: 4, title_ar: 'التسجيل في وزارة المالية', title_en: 'Register at Ministry of Finance', authority: 'وزارة المالية', duration: '3–5 أيام' },
+      { step: 5, title_ar: 'التسجيل في الضمان الاجتماعي', title_en: 'Register with NSSF', authority: 'الضمان الاجتماعي', duration: '2–3 أيام' },
+      { step: 6, title_ar: 'الحصول على الرخصة التجارية', title_en: 'Get commercial license', authority: 'البلدية', duration: '5–10 أيام' },
+    ],
+    authority: {
+      name_ar: 'وزارة العدل — السجل التجاري',
+      name_en: 'Ministry of Justice — Commercial Registry',
+      website: 'https://www.justice.gov.lb',
+    },
+    fees: [
+      { label_ar: 'رسوم التسجيل التجاري', label_en: 'Commercial registration fees', amount: 'بحسب رأس المال' },
+      { label_ar: 'رسوم كاتب العدل', label_en: 'Notary fees', amount: 'متغيرة' },
+      { label_ar: 'رسوم التسجيل المالي', label_en: 'Tax registration fees', amount: 'رمزية' },
+    ],
+    forms: [
+      { title_ar: 'نموذج طلب تسجيل شركة', title_en: 'Company Registration Form', type: 'official', url: 'https://www.justice.gov.lb', fileType: 'link' },
+    ],
+    sources: [
+      { title: 'وزارة العدل — السجل التجاري', type: 'official', url: 'https://www.justice.gov.lb' },
+      { title: 'وزارة الاقتصاد والتجارة', type: 'official', url: 'https://www.economy.gov.lb' },
+    ],
+    tags: ['شركة', 'تسجيل', 'SAL', 'SARL', 'company', 'business'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أسجل شركة في لبنان؟ ما هي الخطوات والوثائق والرسوم؟',
+    chatPrompt_en: 'How do I register a company in Lebanon? Steps, documents and fees?',
+  },
+
+  {
+    slug: 'building-permit',
+    icon: '🏗️',
+    country: 'lebanon',
+    category_ar: 'العقارات والبناء',
+    category_en: 'Real Estate & Construction',
+    categorySlug: 'real-estate',
+    title_ar: 'رخصة البناء',
+    title_en: 'Building Permit',
+    description_ar: 'الحصول على تصريح البناء من وزارة الأشغال العامة قبل البدء بأي مشروع إنشائي.',
+    description_en: 'Obtain a construction permit from the Ministry of Public Works before starting any building project.',
+    complexity: 'complex',
+    estimatedDuration_ar: '1–3 أشهر',
+    estimatedDuration_en: '1–3 months',
+    requiredDocuments: [
+      { name_ar: 'مخططات معمارية من مهندس مرخص', name_en: 'Architectural plans by licensed engineer', original_required: true },
+      { name_ar: 'سند ملكية العقار أو عقد الإيجار', name_en: 'Title deed or lease contract', original_required: true },
+      { name_ar: 'رسم بياني للموقع', name_en: 'Site plan', original_required: true },
+      { name_ar: 'شهادة عدم ممانعة من البلدية', name_en: 'Municipality non-objection certificate' },
+      { name_ar: 'دراسة جيوتقنية (للمباني الكبيرة)', name_en: 'Geotechnical study (for large buildings)' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'توظيف مهندس مرخص', title_en: 'Hire a licensed engineer', duration: 'متغير' },
+      { step: 2, title_ar: 'إعداد المخططات المعمارية والإنشائية', title_en: 'Prepare architectural and structural plans', duration: '2–4 أسابيع' },
+      { step: 3, title_ar: 'تقديم الطلب لوزارة الأشغال أو البلدية', title_en: 'Submit to Ministry of Public Works or Municipality', authority: 'وزارة الأشغال العامة', duration: '1 يوم' },
+      { step: 4, title_ar: 'مراجعة الملف والموافقة', title_en: 'File review and approval', duration: '1–3 أشهر' },
+      { step: 5, title_ar: 'استلام الرخصة ودفع الرسوم', title_en: 'Receive permit and pay fees' },
+    ],
+    authority: {
+      name_ar: 'وزارة الأشغال العامة والنقل',
+      name_en: 'Ministry of Public Works & Transport',
+      website: 'https://www.publicworks.gov.lb',
+    },
+    fees: [
+      { label_ar: 'رسوم ترخيص البناء', label_en: 'Building permit fees', amount: 'بحسب مساحة البناء', notes_ar: 'تُحسب على أساس متري' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة الأشغال العامة', type: 'official', url: 'https://www.publicworks.gov.lb' }],
+    tags: ['بناء', 'رخصة', 'عقار', 'building permit', 'construction'],
+    confidence: 'medium',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أستخرج رخصة بناء في لبنان؟ ما هي الوثائق والخطوات والرسوم؟',
+    chatPrompt_en: 'How do I get a building permit in Lebanon?',
+  },
+
+  {
+    slug: 'property-transfer',
+    icon: '🏠',
+    country: 'lebanon',
+    category_ar: 'العقارات والبناء',
+    category_en: 'Real Estate & Construction',
+    categorySlug: 'real-estate',
+    title_ar: 'نقل ملكية العقار',
+    title_en: 'Property Ownership Transfer',
+    description_ar: 'إجراءات نقل ملكية عقار من البائع إلى المشتري عبر دائرة الأملاك العقارية.',
+    description_en: 'Process for transferring property ownership from seller to buyer through the Real Estate Registry.',
+    complexity: 'complex',
+    estimatedDuration_ar: '2–4 أسابيع',
+    estimatedDuration_en: '2–4 weeks',
+    requiredDocuments: [
+      { name_ar: 'سند الملكية الأصلي', name_en: 'Original title deed', original_required: true },
+      { name_ar: 'عقد البيع الموثق', name_en: 'Notarized sale contract', original_required: true },
+      { name_ar: 'هويات البائع والمشتري', name_en: 'Seller and buyer IDs', original_required: true, copies_required: 2 },
+      { name_ar: 'شهادة براءة ذمة ضريبية', name_en: 'Tax clearance certificate' },
+      { name_ar: 'شهادة إبراء البلدية', name_en: 'Municipality clearance' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'إعداد عقد البيع عند كاتب العدل', title_en: 'Prepare sale contract at notary', authority: 'كاتب العدل', duration: '1–2 أيام' },
+      { step: 2, title_ar: 'الحصول على براءة الذمة الضريبية', title_en: 'Get tax clearance', authority: 'وزارة المالية', duration: '3–5 أيام' },
+      { step: 3, title_ar: 'نقل الملكية في دائرة الأملاك العقارية', title_en: 'Transfer at Real Estate Registry', authority: 'دائرة الأملاك العقارية', duration: '5–10 أيام' },
+      { step: 4, title_ar: 'دفع رسوم التسجيل', title_en: 'Pay registration fees', description_ar: 'تُدفع نسبة من قيمة العقار' },
+    ],
+    authority: {
+      name_ar: 'دائرة الأملاك العقارية',
+      name_en: 'Real Estate Registry Department',
+      website: 'https://www.deeds.gov.lb',
+    },
+    fees: [
+      { label_ar: 'رسوم تسجيل نقل الملكية', label_en: 'Transfer registration fees', amount: '5% من قيمة العقار المقدّرة', notes_ar: 'تُوزع بين البائع والمشتري' },
+      { label_ar: 'رسوم كاتب العدل', label_en: 'Notary fees', amount: '0.5–1% من قيمة العقار' },
+    ],
+    forms: [],
+    sources: [{ title: 'دائرة الأملاك العقارية', type: 'official', url: 'https://www.deeds.gov.lb' }],
+    tags: ['عقار', 'ملكية', 'بيع', 'شراء', 'property', 'real estate', 'transfer'],
+    confidence: 'medium',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'ما هي إجراءات ورسوم نقل ملكية عقار في لبنان؟',
+    chatPrompt_en: 'What are the property transfer procedures and fees in Lebanon?',
+  },
+
+  {
+    slug: 'driver-license',
+    icon: '🚗',
+    country: 'lebanon',
+    category_ar: 'المركبات',
+    category_en: 'Vehicles',
+    categorySlug: 'vehicles',
+    title_ar: 'رخصة القيادة اللبنانية',
+    title_en: 'Lebanese Driver\'s License',
+    description_ar: 'استخراج رخصة قيادة جديدة أو تجديد رخصة منتهية الصلاحية.',
+    description_en: 'Get a new driver\'s license or renew an expired one.',
+    complexity: 'easy',
+    estimatedDuration_ar: '1–5 أيام',
+    estimatedDuration_en: '1–5 days',
+    requiredDocuments: [
+      { name_ar: 'بطاقة هوية لبنانية سارية', name_en: 'Valid Lebanese ID', original_required: true },
+      { name_ar: 'إخراج قيد فردي', name_en: 'Individual civil registry extract', original_required: true },
+      { name_ar: 'شهادة طبية', name_en: 'Medical certificate', notes_ar: 'من طبيب معتمد لدى وزارة الصحة' },
+      { name_ar: 'صور شخصية', name_en: 'Passport photos', copies_required: 2 },
+      { name_ar: 'الرخصة القديمة (للتجديد)', name_en: 'Old license (for renewal)' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'الحصول على شهادة طبية', title_en: 'Get medical certificate', duration: '1 يوم' },
+      { step: 2, title_ar: 'التسجيل في مدرسة قيادة معتمدة (للجديدة)', title_en: 'Enroll in driving school (new license)', duration: '2–4 أسابيع' },
+      { step: 3, title_ar: 'اجتياز اختبار القيادة', title_en: 'Pass driving test', authority: 'وزارة الداخلية' },
+      { step: 4, title_ar: 'تقديم الأوراق للمصلحة', title_en: 'Submit documents to department', duration: '1 يوم' },
+      { step: 5, title_ar: 'استلام الرخصة', title_en: 'Receive license', duration: '1–5 أيام' },
+    ],
+    authority: {
+      name_ar: 'مصلحة تسجيل السيارات — وزارة الداخلية',
+      name_en: 'Vehicle Registration Dept. — Ministry of Interior',
+    },
+    fees: [
+      { label_ar: 'رخصة قيادة جديدة', label_en: 'New driver\'s license', amount: 'بضع مئات الآلاف ل.ل.' },
+      { label_ar: 'تجديد رخصة قيادة', label_en: 'License renewal', amount: 'أقل من الجديدة' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة الداخلية والبلديات', type: 'official', url: 'https://www.interior.gov.lb' }],
+    tags: ['قيادة', 'رخصة', 'سيارة', "driver's license", 'vehicle'],
+    confidence: 'medium',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أستخرج أو أجدد رخصة القيادة اللبنانية؟',
+    chatPrompt_en: 'How do I get or renew a Lebanese driver\'s license?',
+  },
+
+  {
+    slug: 'social-security',
+    icon: '🏥',
+    country: 'lebanon',
+    category_ar: 'العمل والضمان',
+    category_en: 'Work & Social',
+    categorySlug: 'work-social',
+    title_ar: 'التسجيل في الضمان الاجتماعي (NSSF)',
+    title_en: 'NSSF Social Security Registration',
+    description_ar: 'تسجيل صاحب العمل والموظف في الصندوق الوطني للضمان الاجتماعي والاستفادة من الخدمات الصحية.',
+    description_en: 'Register employer and employee with NSSF and benefit from health services.',
+    complexity: 'medium',
+    estimatedDuration_ar: '1–2 أسابيع',
+    estimatedDuration_en: '1–2 weeks',
+    requiredDocuments: [
+      { name_ar: 'هوية المؤسسة / السجل التجاري', name_en: 'Company ID / Commercial register', original_required: true },
+      { name_ar: 'هويات الموظفين', name_en: 'Employee IDs', original_required: true },
+      { name_ar: 'عقود العمل', name_en: 'Employment contracts' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'تسجيل المؤسسة في مكتب الضمان', title_en: 'Register company at NSSF office', authority: 'الصندوق الوطني للضمان الاجتماعي', duration: '1 يوم' },
+      { step: 2, title_ar: 'تسجيل الموظفين', title_en: 'Register employees', duration: '1–3 أيام' },
+      { step: 3, title_ar: 'الحصول على بطاقات الضمان', title_en: 'Receive NSSF cards', duration: '1–2 أسابيع' },
+    ],
+    authority: {
+      name_ar: 'الصندوق الوطني للضمان الاجتماعي',
+      name_en: 'National Social Security Fund (NSSF)',
+      website: 'https://www.cnss.gov.lb',
+      phone: '+961 1 200 150',
+    },
+    fees: [
+      { label_ar: 'اشتراك صاحب العمل', label_en: 'Employer contribution', amount: '21.5% من الراتب' },
+      { label_ar: 'اشتراك الموظف', label_en: 'Employee contribution', amount: '3% من الراتب' },
+    ],
+    forms: [
+      { title_ar: 'نموذج تسجيل المؤسسة', title_en: 'Company Registration Form', type: 'official', url: 'https://www.cnss.gov.lb', fileType: 'link' },
+    ],
+    sources: [{ title: 'الصندوق الوطني للضمان الاجتماعي', type: 'official', url: 'https://www.cnss.gov.lb' }],
+    tags: ['ضمان', 'NSSF', 'تأمين صحي', 'موظف', 'social security'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أسجل في الضمان الاجتماعي اللبناني؟ ما هي الإجراءات والرسوم؟',
+    chatPrompt_en: 'How do I register with Lebanese social security (NSSF)?',
+  },
+
+  {
+    slug: 'document-attestation',
+    icon: '📜',
+    country: 'lebanon',
+    category_ar: 'توثيق وتصديق',
+    category_en: 'Attestation & Certification',
+    categorySlug: 'attestation',
+    title_ar: 'تصديق وتوثيق الوثائق',
+    title_en: 'Document Attestation & Notarization',
+    description_ar: 'تصديق المستندات الرسمية عبر كاتب العدل ووزارة الخارجية للاستخدام المحلي أو الخارجي.',
+    description_en: 'Certify official documents through notary and Ministry of Foreign Affairs for local or international use.',
+    complexity: 'medium',
+    estimatedDuration_ar: '1–5 أيام',
+    estimatedDuration_en: '1–5 days',
+    requiredDocuments: [
+      { name_ar: 'الوثيقة الأصلية المراد تصديقها', name_en: 'Original document to be certified', original_required: true },
+      { name_ar: 'صورة عن الوثيقة', name_en: 'Copy of the document', copies_required: 2 },
+      { name_ar: 'ترجمة رسمية (إن كانت مطلوبة)', name_en: 'Official translation (if required)' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'التصديق عند كاتب العدل', title_en: 'Notary certification', authority: 'كاتب العدل', duration: 'نفس اليوم' },
+      { step: 2, title_ar: 'تصديق وزارة العدل (إن لزم)', title_en: 'Ministry of Justice certification', authority: 'وزارة العدل', duration: '1–2 أيام' },
+      { step: 3, title_ar: 'تصديق وزارة الخارجية (للاستخدام الخارجي)', title_en: 'Ministry of Foreign Affairs (for international use)', authority: 'وزارة الخارجية', duration: '1–3 أيام' },
+    ],
+    authority: {
+      name_ar: 'كاتب العدل / وزارة الخارجية',
+      name_en: 'Notary / Ministry of Foreign Affairs',
+      website: 'https://www.foreign.gov.lb',
+    },
+    fees: [
+      { label_ar: 'رسوم كاتب العدل', label_en: 'Notary fees', amount: 'بضعة آلاف ل.ل.' },
+      { label_ar: 'رسوم التصديق الوزاري', label_en: 'Ministry certification fees', amount: 'متغيرة' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة الخارجية والمغتربين', type: 'official', url: 'https://www.foreign.gov.lb' }],
+    tags: ['تصديق', 'توثيق', 'كاتب عدل', 'خارجية', 'attestation', 'notary'],
+    confidence: 'high',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أصدق وثيقة رسمية في لبنان للاستخدام الداخلي أو الخارجي؟',
+    chatPrompt_en: 'How do I attest an official document in Lebanon for local or international use?',
+  },
+
+  {
+    slug: 'inheritance-certificate',
+    icon: '⚖️',
+    country: 'lebanon',
+    category_ar: 'الأحوال الشخصية',
+    category_en: 'Civil Status',
+    categorySlug: 'civil-status',
+    title_ar: 'حصر الإرث',
+    title_en: 'Inheritance Certificate',
+    description_ar: 'استخراج وثيقة حصر الإرث لتحديد الورثة الشرعيين وتوزيع تركة المتوفى.',
+    description_en: 'Get an inheritance certificate to identify legal heirs and distribute the estate.',
+    complexity: 'medium',
+    estimatedDuration_ar: '1–3 أسابيع',
+    estimatedDuration_en: '1–3 weeks',
+    requiredDocuments: [
+      { name_ar: 'شهادة وفاة المتوفى', name_en: 'Death certificate', original_required: true },
+      { name_ar: 'إخراج قيد عائلي شامل', name_en: 'Full family civil registry extract', original_required: true },
+      { name_ar: 'هويات الورثة', name_en: 'Heirs\' IDs', original_required: true },
+      { name_ar: 'وثيقة زواج إن وجدت', name_en: 'Marriage certificate if applicable' },
+    ],
+    steps: [
+      { step: 1, title_ar: 'التوجه للمحكمة الشرعية أو المدنية المختصة', title_en: 'Go to competent court (sharia or civil)', authority: 'المحكمة الشرعية / المدنية', duration: '1 يوم' },
+      { step: 2, title_ar: 'تقديم الطلب ووثائق الوفاة والعائلة', title_en: 'Submit application and documents', duration: '1 يوم' },
+      { step: 3, title_ar: 'صدور حكم حصر الإرث', title_en: 'Court issues inheritance certificate', duration: '1–3 أسابيع' },
+    ],
+    authority: {
+      name_ar: 'المحكمة الشرعية / المحكمة المدنية',
+      name_en: 'Sharia Court / Civil Court',
+    },
+    fees: [
+      { label_ar: 'رسوم المحكمة', label_en: 'Court fees', amount: 'متغيرة بحسب قيمة التركة' },
+    ],
+    forms: [],
+    sources: [{ title: 'وزارة العدل', type: 'official', url: 'https://www.justice.gov.lb' }],
+    tags: ['إرث', 'ورثة', 'وفاة', 'تركة', 'inheritance', 'heirs'],
+    confidence: 'medium',
+    lastReviewed: '2025',
+    status: 'active',
+    chatPrompt_ar: 'كيف أستخرج وثيقة حصر إرث في لبنان؟ ما هي الخطوات والمحكمة المختصة؟',
+    chatPrompt_en: 'How do I get an inheritance certificate in Lebanon?',
+  },
+]
+
+// ── Forms Data ────────────────────────────────────────────────────────────────
+
+export const FORMS_DATA: FormItem[] = [
+  {
+    slug: 'passport-application',
+    icon: '📘',
+    title_ar: 'طلب جواز سفر',
+    title_en: 'Passport Application',
+    authority_ar: 'الأمن العام',
+    authority_en: 'General Security',
+    ministry_ar: 'وزارة الداخلية والبلديات',
+    ministry_en: 'Ministry of Interior & Municipalities',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.general-security.gov.lb',
+    country: 'lebanon',
+    category_ar: 'سفر وهوية',
+    category_en: 'Travel & Identity',
+    relatedProcedures: ['passport'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'ما هو نموذج طلب جواز السفر اللبناني وكيف أملأه؟',
+    chatPrompt_en: 'What is the Lebanese passport application form and how do I fill it?',
+  },
+  {
+    slug: 'id-card-application',
+    icon: '🪪',
+    title_ar: 'طلب بطاقة هوية',
+    title_en: 'ID Card Application',
+    authority_ar: 'وزارة الداخلية',
+    authority_en: 'Ministry of Interior',
+    ministry_ar: 'وزارة الداخلية والبلديات',
+    ministry_en: 'Ministry of Interior & Municipalities',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.interior.gov.lb',
+    country: 'lebanon',
+    category_ar: 'سفر وهوية',
+    category_en: 'Travel & Identity',
+    relatedProcedures: ['national-id'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'كيف أملأ نموذج طلب بطاقة الهوية اللبنانية؟',
+    chatPrompt_en: 'How do I fill the Lebanese national ID card application form?',
+  },
+  {
+    slug: 'property-transfer-form',
+    icon: '📝',
+    title_ar: 'نموذج نقل ملكية عقار',
+    title_en: 'Property Transfer Form',
+    authority_ar: 'دائرة الأملاك العقارية',
+    authority_en: 'Real Estate Registry',
+    ministry_ar: 'وزارة المالية',
+    ministry_en: 'Ministry of Finance',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.deeds.gov.lb',
+    country: 'lebanon',
+    category_ar: 'العقارات',
+    category_en: 'Real Estate',
+    relatedProcedures: ['property-transfer'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'ما هو نموذج نقل ملكية العقار وكيف أملأه؟',
+    chatPrompt_en: 'What is the property transfer form and how do I fill it?',
+  },
+  {
+    slug: 'company-registration-sal',
+    icon: '🏭',
+    title_ar: 'تسجيل شركة مساهمة (SAL)',
+    title_en: 'SAL Company Registration',
+    authority_ar: 'السجل التجاري — وزارة العدل',
+    authority_en: 'Commercial Registry — Ministry of Justice',
+    ministry_ar: 'وزارة العدل',
+    ministry_en: 'Ministry of Justice',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.justice.gov.lb',
+    country: 'lebanon',
+    category_ar: 'الأعمال',
+    category_en: 'Business',
+    relatedProcedures: ['company-registration'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'ما هي نماذج تسجيل شركة مساهمة (SAL) في لبنان؟',
+    chatPrompt_en: 'What are the forms for registering a joint-stock company (SAL) in Lebanon?',
+  },
+  {
+    slug: 'nssf-registration',
+    icon: '🏥',
+    title_ar: 'تسجيل في الضمان الاجتماعي',
+    title_en: 'NSSF Registration',
+    authority_ar: 'الصندوق الوطني للضمان الاجتماعي',
+    authority_en: 'National Social Security Fund (NSSF)',
+    ministry_ar: 'وزارة العمل',
+    ministry_en: 'Ministry of Labor',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.cnss.gov.lb',
+    country: 'lebanon',
+    category_ar: 'العمل والضمان',
+    category_en: 'Work & Social',
+    relatedProcedures: ['social-security'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'ما هي نماذج التسجيل في الضمان الاجتماعي اللبناني؟',
+    chatPrompt_en: 'What are the Lebanese NSSF registration forms?',
+  },
+  {
+    slug: 'building-permit-form',
+    icon: '🏗️',
+    title_ar: 'طلب رخصة بناء',
+    title_en: 'Building Permit Request',
+    authority_ar: 'وزارة الأشغال العامة',
+    authority_en: 'Ministry of Public Works',
+    ministry_ar: 'وزارة الأشغال العامة والنقل',
+    ministry_en: 'Ministry of Public Works & Transport',
+    type: 'official',
+    fileType: 'link',
+    url: 'https://www.publicworks.gov.lb',
+    country: 'lebanon',
+    category_ar: 'العقارات والبناء',
+    category_en: 'Real Estate & Construction',
+    relatedProcedures: ['building-permit'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'ما هي نماذج طلب رخصة البناء في لبنان؟',
+    chatPrompt_en: 'What are the building permit application forms in Lebanon?',
+  },
+  {
+    slug: 'nssf-medical-claim',
+    icon: '💊',
+    title_ar: 'مطالبة تعويض طبي',
+    title_en: 'Medical Reimbursement Claim',
+    authority_ar: 'الضمان الاجتماعي',
+    authority_en: 'NSSF',
+    ministry_ar: 'وزارة العمل',
+    ministry_en: 'Ministry of Labor',
+    type: 'official',
+    fileType: 'pdf',
+    url: 'https://www.cnss.gov.lb',
+    country: 'lebanon',
+    category_ar: 'العمل والضمان',
+    category_en: 'Work & Social',
+    relatedProcedures: ['social-security'],
+    lastReviewed: '2025',
+    chatPrompt_ar: 'كيف أقدم مطالبة تعويض طبي من الضمان الاجتماعي؟',
+    chatPrompt_en: 'How do I submit a medical reimbursement claim to NSSF?',
+  },
+]
+
+// ── Repository Functions ───────────────────────────────────────────────────────
+// TODO: Replace these with API calls to /api/procedures and /api/forms
+
+export function getProcedureBySlug(slug: string): Procedure | undefined {
+  return PROCEDURES_DATA.find(p => p.slug === slug)
+}
+
+export function getProceduresByCategory(categorySlug: string): Procedure[] {
+  return PROCEDURES_DATA.filter(p => p.categorySlug === categorySlug && p.status === 'active')
+}
+
+export function searchProcedures(query: string): Procedure[] {
+  const q = query.toLowerCase()
+  return PROCEDURES_DATA.filter(p =>
+    p.status === 'active' && (
+      p.title_ar.includes(query) ||
+      p.title_en.toLowerCase().includes(q) ||
+      p.description_ar.includes(query) ||
+      p.description_en.toLowerCase().includes(q) ||
+      p.tags.some(t => t.toLowerCase().includes(q))
+    )
+  )
+}
+
+export function getProcedureCategories(): { slug: string; ar: string; en: string; icon: string }[] {
+  const seen = new Set<string>()
+  const cats: { slug: string; ar: string; en: string; icon: string }[] = []
+  for (const p of PROCEDURES_DATA) {
+    if (!seen.has(p.categorySlug)) {
+      seen.add(p.categorySlug)
+      cats.push({ slug: p.categorySlug, ar: p.category_ar, en: p.category_en, icon: p.icon })
+    }
+  }
+  return cats
+}
+
+export function searchForms(query: string): FormItem[] {
+  const q = query.toLowerCase()
+  return FORMS_DATA.filter(f =>
+    f.title_ar.includes(query) ||
+    f.title_en.toLowerCase().includes(q) ||
+    f.authority_ar.includes(query) ||
+    f.ministry_ar.includes(query)
+  )
+}
+
+export function getComplexityColor(complexity: string): string {
+  if (complexity === 'easy') return '#15803D'
+  if (complexity === 'medium') return '#B45309'
+  return '#DC2626'
+}
+
+export function getComplexityBg(complexity: string): string {
+  if (complexity === 'easy') return '#F0FDF4'
+  if (complexity === 'medium') return '#FFFBEB'
+  return '#FEF2F2'
+}
+
+export function getComplexityLabel(complexity: string, isAr: boolean): string {
+  if (complexity === 'easy') return isAr ? 'سهل' : 'Easy'
+  if (complexity === 'medium') return isAr ? 'متوسط' : 'Medium'
+  return isAr ? 'معقد' : 'Complex'
+}
