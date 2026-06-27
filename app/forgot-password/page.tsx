@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.PNG" alt="دليلك AI" width={130} height={130} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
+          <img src="/logo.PNG" alt="دليلك AI" width={130} height={130} className="mb-2" style={{objectFit:'contain', mixBlendMode:'multiply'}} />
           <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
         </div>
 

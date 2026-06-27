@@ -29,191 +29,86 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <style>{`
-        html, body { margin: 0; padding: 0; background: #fff; }
-        .auth-page {
-          min-height: 100vh;
-          min-height: 100dvh;
-          background: #fff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 24px 16px;
-        }
-        .auth-card {
-          width: 100%;
-          max-width: 420px;
-        }
-        .auth-logo {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 28px;
-        }
-        .auth-logo img {
-          width: 100px;
-          height: 100px;
-          object-fit: contain;
-          mix-blend-mode: multiply;
-        }
-        .auth-logo h1 {
-          margin: 10px 0 4px;
-          font-size: 24px;
-          font-weight: 700;
-          color: #6b2737;
-        }
-        .auth-logo p {
-          margin: 0;
-          font-size: 13px;
-          color: #9ca3af;
-        }
-        .auth-box {
-          background: #fff;
-          border: 1px solid #ebebeb;
-          border-radius: 20px;
-          box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-          padding: 28px 24px;
-        }
-        .auth-box h2 {
-          margin: 0 0 22px;
-          font-size: 18px;
-          font-weight: 700;
-          color: #111827;
-          text-align: center;
-        }
-        .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-        .field label { font-size: 13px; font-weight: 600; color: #374151; }
-        .field input {
-          width: 100%;
-          padding: 13px 14px;
-          border: 1.5px solid #e5e7eb;
-          border-radius: 12px;
-          font-size: 15px;
-          font-family: inherit;
-          background: #fafafa;
-          outline: none;
-          box-sizing: border-box;
-          transition: border-color 0.15s;
-          -webkit-appearance: none;
-        }
-        .field input:focus { border-color: #6b2737; background: #fff; }
-        .pass-wrap { position: relative; }
-        .pass-wrap input { padding-right: 44px; }
-        .pass-toggle {
-          position: absolute;
-          right: 13px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-size: 17px;
-          color: #9ca3af;
-          padding: 0;
-          line-height: 1;
-        }
-        .auth-error {
-          margin-bottom: 16px;
-          padding: 10px 14px;
-          background: #fef2f2;
-          border: 1px solid #fecaca;
-          border-radius: 10px;
-          color: #b91c1c;
-          font-size: 13px;
-          text-align: center;
-        }
-        .auth-submit {
-          width: 100%;
-          padding: 14px;
-          background: #6b2737;
-          color: #fff;
-          border: none;
-          border-radius: 12px;
-          font-size: 16px;
-          font-weight: 700;
-          font-family: inherit;
-          cursor: pointer;
-          margin-top: 6px;
-          transition: background 0.15s;
-          -webkit-appearance: none;
-        }
-        .auth-submit:hover:not(:disabled) { background: #5a2030; }
-        .auth-submit:disabled { background: #d1d5db; cursor: not-allowed; }
-        .auth-link { margin: 6px 0 0; font-size: 13px; color: #6b2737; text-align: left; }
-        .auth-link a { color: #6b2737; text-decoration: none; }
-        .auth-footer { margin-top: 18px; text-align: center; font-size: 13px; color: #6b7280; }
-        .auth-footer a { color: #6b2737; font-weight: 700; text-decoration: none; }
-        @media (min-width: 640px) {
-          .auth-logo img { width: 120px; height: 120px; }
-          .auth-logo h1 { font-size: 26px; }
-          .auth-box { padding: 36px 32px; }
-        }
-      `}</style>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-8">
+          <img src="/logo.PNG" alt="دليلك AI" width={140} height={140}
+            className="mb-2" style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
+          <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
+          <p className="text-sm text-gray-500 mt-1">دليل المواطن اللبناني الذكي</p>
+        </div>
 
-      <div className="auth-page">
-        <div className="auth-card">
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">تسجيل الدخول</h2>
 
-          <div className="auth-logo">
-            <img src="/logo.PNG" alt="دليلك AI" />
-            <h1>دليلك AI</h1>
-            <p>دليل المواطن اللبناني الذكي</p>
-          </div>
-
-          <div className="auth-box">
-            <h2>تسجيل الدخول</h2>
-
-            {error && <div className="auth-error">{error}</div>}
-
-            <form onSubmit={handleSubmit}>
-              <div className="field">
-                <label>اسم المستخدم أو البريد الإلكتروني</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="اسم المستخدم أو البريد"
-                  required
-                  autoFocus
-                  dir="auto"
-                />
-              </div>
-
-              <div className="field">
-                <label>كلمة المرور</label>
-                <div className="pass-wrap">
-                  <input
-                    type={showPass ? 'text' : 'password'}
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    autoComplete="current-password"
-                    style={{ direction: 'ltr', textAlign: 'left' }}
-                  />
-                  <button type="button" className="pass-toggle" onClick={() => setShowPass(s => !s)} tabIndex={-1}>
-                    {showPass ? '🙈' : '👁'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="auth-link">
-                <Link href="/forgot-password">نسيت كلمة المرور؟</Link>
-              </div>
-
-              <button type="submit" className="auth-submit" disabled={loading}>
-                {loading ? 'جاري الدخول...' : 'دخول'}
-              </button>
-            </form>
-
-            <div className="auth-footer">
-              ليس لديك حساب؟{' '}
-              <Link href="/register">سجّل الآن — مجاناً لـ 3 أيام</Link>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
+              {error}
             </div>
-          </div>
+          )}
 
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                اسم المستخدم أو البريد الإلكتروني
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
+                placeholder="اسم المستخدم أو البريد"
+                required
+                autoFocus
+                dir="auto"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+              <div className="relative">
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                  style={{ direction: 'ltr', textAlign: 'left', paddingRight: 44 }}
+                />
+                <button type="button" tabIndex={-1} onClick={() => setShowPass(s => !s)}
+                  style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#9ca3af', padding: 0 }}>
+                  {showPass ? '🙈' : '👁'}
+                </button>
+              </div>
+            </div>
+
+            <div className="text-left">
+              <Link href="/forgot-password" className="text-sm text-[#6b2737] hover:underline">
+                نسيت كلمة المرور؟
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? 'جاري الدخول...' : 'دخول'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-gray-500">
+            ليس لديك حساب؟{' '}
+            <Link href="/register" className="text-[#6b2737] font-semibold hover:underline">
+              سجّل الآن — مجاناً لـ 3 أيام
+            </Link>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

@@ -16,47 +16,87 @@ interface AttachedFile {
 }
 
 type ResponseMode = 'quick' | 'detailed' | 'research'
+type Lang = 'ar' | 'en'
 
-const MODES: { id: ResponseMode; icon: string; label: string; hint: string; prefix: string }[] = [
+const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: string; hint_ar: string; hint_en: string; prefix: string }[] = [
   {
     id: 'quick',
     icon: '⚡',
-    label: 'سريع',
-    hint: 'إجابة مختصرة في ثوانٍ',
+    label_ar: 'سريع', label_en: 'Quick',
+    hint_ar: 'إجابة مختصرة في ثوانٍ', hint_en: 'Short answer in seconds',
     prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ',
   },
   {
     id: 'detailed',
     icon: '📋',
-    label: 'مفصّل',
-    hint: 'خطوات وتفاصيل كاملة',
+    label_ar: 'مفصّل', label_en: 'Detailed',
+    hint_ar: 'خطوات وتفاصيل كاملة', hint_en: 'Full steps and details',
     prefix: '[أجب بتفصيل كامل: الوثائق، الخطوات، الرسوم، ساعات العمل، والجهة المختصة] ',
   },
   {
     id: 'research',
     icon: '🔍',
-    label: 'بحث وافٍ',
-    hint: 'تقرير شامل مع أدلة ونماذج',
+    label_ar: 'بحث وافٍ', label_en: 'Research',
+    hint_ar: 'تقرير شامل مع أدلة ونماذج', hint_en: 'Full report with evidence',
     prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد، وتنبيهات العطل الرسمية] ',
   },
 ]
 
 const SUGGESTIONS = [
-  { icon: '📋', title: 'المعاملات الرسمية', desc: 'جوازات، هويات، وثائق رسمية' },
-  { icon: '🏛️', title: 'الإجراءات الحكومية', desc: 'تسجيل شركات، عقارات، سيارات' },
-  { icon: '👶', title: 'الأحوال الشخصية', desc: 'ولادة، زواج، وفاة، طلاق' },
-  { icon: '🎓', title: 'التعليم والعمل', desc: 'شهادات، تصاريح، حقوق العمال' },
+  { icon: '📋', title_ar: 'المعاملات الرسمية', desc_ar: 'جوازات، هويات، وثائق رسمية', title_en: 'Official Transactions', desc_en: 'Passports, IDs, official documents' },
+  { icon: '🏛️', title_ar: 'الإجراءات الحكومية', desc_ar: 'تسجيل شركات، عقارات، سيارات', title_en: 'Gov. Procedures', desc_en: 'Companies, real estate, vehicles' },
+  { icon: '👶', title_ar: 'الأحوال الشخصية', desc_ar: 'ولادة، زواج، وفاة، طلاق', title_en: 'Civil Status', desc_en: 'Birth, marriage, death, divorce' },
+  { icon: '🎓', title_ar: 'التعليم والعمل', desc_ar: 'شهادات، تصاريح، حقوق العمال', title_en: 'Education & Work', desc_en: 'Degrees, permits, labor rights' },
 ]
 
-const QUICK_QUESTIONS = [
+const QUESTION_POOL_AR = [
   'كيف أستخرج جواز سفر لبناني؟',
   'ما هي إجراءات تسجيل سيارة جديدة؟',
   'كيف أستخرج شهادة ميلاد؟',
   'كيف أسجل شركة في لبنان؟',
+  'ما إجراءات استخراج تصريح بناء؟',
+  'كيف أجدد رخصة القيادة؟',
+  'ما وثائق تسجيل الزواج الرسمي؟',
+  'كيف أستخرج بطاقة هوية لبنانية؟',
+  'ما هي إجراءات نقل ملكية العقار؟',
+  'كيف أستخرج شهادة عدم محكومية؟',
+  'ما الوثائق اللازمة لتسجيل مولود؟',
+  'كيف أحصل على إجازة مزاولة المهنة؟',
+  'ما هي رسوم التسجيل في الضمان الاجتماعي؟',
+  'كيف أطعن في قرار إداري؟',
+  'ما خطوات تجديد إقامة الأجانب في لبنان؟',
 ]
+
+const QUESTION_POOL_EN = [
+  'How do I get a Lebanese passport?',
+  'How do I register a new car in Lebanon?',
+  'How do I get a birth certificate?',
+  'How do I register a company in Lebanon?',
+  'How do I get a building permit?',
+  'How do I renew my driver\'s license?',
+  'What are the civil marriage registration requirements?',
+  'How do I get a Lebanese national ID card?',
+  'What are the real estate transfer procedures?',
+  'How do I get a certificate of good conduct?',
+  'What documents are needed to register a newborn?',
+  'How do I get a professional practice license?',
+  'What are the social security registration fees?',
+  'How do I appeal an administrative decision?',
+  'What are the steps to renew a foreigner\'s residency?',
+]
+
+function shufflePick<T>(arr: T[], n: number): T[] {
+  const copy = [...arr]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy.slice(0, n)
+}
 
 export default function Home() {
   const router = useRouter()
+  const [lang, setLang] = useState<Lang>('ar')
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authChecked, setAuthChecked] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -67,17 +107,19 @@ export default function Home() {
   const [mode, setMode] = useState<ResponseMode>('detailed')
   const [footerBottom, setFooterBottom] = useState(0)
   const [inputFocused, setInputFocused] = useState(false)
+  const [visibleQ, setVisibleQ] = useState<string[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
   const mainRef = useRef<HTMLDivElement>(null)
 
+  const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
+
   // ── Auth guard ────────────────────────────────────────────
   useEffect(() => {
     const token = getToken()
     if (!token) { router.push('/login'); return }
-    // Verify token with backend (not just localStorage)
     fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(async res => {
@@ -86,13 +128,18 @@ export default function Home() {
       setCurrentUser(data)
       setAuthChecked(true)
     }).catch(() => {
-      // Network error — allow offline use if token exists
       setCurrentUser(getUser())
       setAuthChecked(true)
     })
-    // ping to keep Render alive
     fetch(`${API_URL}/ping`).catch(() => {})
   }, [])
+
+  // ── Auto-rotate quick questions ───────────────────────────
+  useEffect(() => {
+    setVisibleQ(shufflePick(pool, 4))
+    const interval = setInterval(() => setVisibleQ(shufflePick(pool, 4)), 8000)
+    return () => clearInterval(interval)
+  }, [lang])
 
   // ── Keyboard / visualViewport fix ────────────────────────
   useEffect(() => {
@@ -126,7 +173,7 @@ export default function Home() {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) { alert('التعرف على الصوت غير مدعوم. استخدم Chrome أو Edge.'); return }
     const recognition = new SR()
-    recognition.lang = 'ar-LB'
+    recognition.lang = lang === 'ar' ? 'ar-LB' : 'en-US'
     recognition.continuous = false
     recognition.interimResults = true
     recognition.onresult = (e: any) => {
@@ -137,7 +184,7 @@ export default function Home() {
     recognition.start()
     recognitionRef.current = recognition
     setRecording(true)
-  }, [])
+  }, [lang])
 
   const stopRecording = useCallback(() => {
     recognitionRef.current?.stop()
@@ -261,7 +308,7 @@ export default function Home() {
   }
 
   const canSend = Boolean((input.trim() || attachedFile) && !loading)
-  const currentMode = MODES.find(m => m.id === mode)!
+  const isAr = lang === 'ar'
 
   if (!authChecked) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
@@ -297,15 +344,12 @@ export default function Home() {
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
-        @keyframes shimmer {
-          0%   { background-position: -200% 0; }
-          100% { background-position:  200% 0; }
-        }
-        @keyframes glow {
-          0%,100% { box-shadow: 0 0 8px rgba(139,26,26,0.15); }
-          50%      { box-shadow: 0 0 18px rgba(139,26,26,0.30); }
+        @keyframes slideQ {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         .msg-in { animation: fadeUp 0.25s ease; }
+        .quick-btn { animation: slideQ 0.3s ease; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
@@ -316,6 +360,7 @@ export default function Home() {
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
+        .lang-btn:hover { background: #f9f9f9 !important; }
       `}</style>
 
       <div style={{
@@ -338,6 +383,24 @@ export default function Home() {
             height: 3,
             background: 'linear-gradient(90deg, var(--red) 0%, #C9982A 50%, var(--red) 100%)',
           }} />
+
+          {/* Contact strip */}
+          <div style={{
+            background: '#fafafa',
+            borderBottom: '1px solid var(--border)',
+            padding: '3px 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 20, fontSize: 10.5, color: 'var(--text-3)',
+          }}>
+            <a href="tel:+96100000000" style={{ color: 'var(--text-3)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+              📞 +961 xx xxx xxx
+            </a>
+            <span style={{ color: 'var(--border-strong)' }}>|</span>
+            <a href="mailto:info@dalilak.ai" style={{ color: 'var(--text-3)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+              ✉️ info@dalilak.ai
+            </a>
+          </div>
+
           <div style={{
             maxWidth: 720, margin: '0 auto',
             padding: '10px 16px',
@@ -345,28 +408,47 @@ export default function Home() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
+                style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
               <div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
                   Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
                 </div>
                 <div style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.3, fontWeight: 500 }}>
-                  دليل المواطن اللبناني الذكي
+                  {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+
+              {/* Language toggle */}
+              <button
+                className="lang-btn"
+                onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+                style={{
+                  fontSize: 11, fontWeight: 700,
+                  padding: '4px 11px', borderRadius: 20,
+                  border: '1.5px solid var(--border)',
+                  background: '#fff', cursor: 'pointer',
+                  fontFamily: 'inherit', color: 'var(--red)',
+                  transition: 'all 0.15s',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                {isAr ? 'EN' : 'AR'}
+              </button>
+
               {messages.length > 0 && (
                 <button onClick={() => setMessages([])} style={{
-                  fontSize: 11, color: 'var(--text-3)', padding: '5px 12px',
+                  fontSize: 11, color: 'var(--text-3)', padding: '4px 11px',
                   borderRadius: 20, border: '1px solid var(--border)',
                   background: 'none', cursor: 'pointer', fontFamily: 'inherit',
                   fontWeight: 500,
                 }}>
-                  محادثة جديدة
+                  {isAr ? 'محادثة جديدة' : 'New Chat'}
                 </button>
               )}
+
               {/* Trial badge */}
               {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
                 <div style={{
@@ -375,27 +457,31 @@ export default function Home() {
                   border: `1px solid ${currentUser.days_left <= 1 ? '#fecaca' : '#fde68a'}`,
                   borderRadius: 20, padding: '4px 10px', fontWeight: 600,
                 }}>
-                  ⏱️ {currentUser.days_left} {currentUser.days_left === 1 ? 'يوم' : 'أيام'} تجريبية
+                  ⏱️ {currentUser.days_left} {isAr ? (currentUser.days_left === 1 ? 'يوم' : 'أيام') : (currentUser.days_left === 1 ? 'day' : 'days')}
                 </div>
               )}
+
               {/* Admin link */}
               {isAdmin() && (
                 <button onClick={() => router.push('/admin')} style={{
-                  fontSize: 11, color: '#6b2737', padding: '5px 12px',
+                  fontSize: 11, color: '#6b2737', padding: '4px 11px',
                   borderRadius: 20, border: '1px solid #e9d5d8',
                   background: '#fdf2f4', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
                 }}>
                   🛡️ Admin
                 </button>
               )}
+
               {/* Logout */}
               <button onClick={() => { clearToken(); router.push('/login') }} style={{
-                fontSize: 11, color: 'var(--text-3)', padding: '5px 10px',
+                fontSize: 11, color: 'var(--text-3)', padding: '4px 10px',
                 borderRadius: 20, border: '1px solid var(--border)',
                 background: 'none', cursor: 'pointer', fontFamily: 'inherit',
               }}>
-                خروج
+                {isAr ? 'خروج' : 'Logout'}
               </button>
+
+              {/* Online dot */}
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 5,
                 background: '#F0FDF4', borderRadius: 20, padding: '4px 10px',
@@ -407,7 +493,9 @@ export default function Home() {
                   boxShadow: '0 0 6px #22c55e',
                   animation: 'pulse 2.5s infinite',
                 }} />
-                <span style={{ fontSize: 10, color: '#16a34a', fontWeight: 600 }}>متصل</span>
+                <span style={{ fontSize: 10, color: '#16a34a', fontWeight: 600 }}>
+                  {isAr ? 'متصل' : 'Online'}
+                </span>
               </div>
             </div>
           </div>
@@ -431,32 +519,28 @@ export default function Home() {
 
               {/* Hero logo */}
               <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 130, height: 130, objectFit: 'contain', marginBottom: 16, mixBlendMode: 'multiply' }} />
+                style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 14, mixBlendMode: 'multiply' }} />
 
               <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
-                كيف يمكنني مساعدتك؟
+                {isAr ? 'كيف يمكنني مساعدتك؟' : 'How can I help you?'}
               </h2>
 
               {/* Decorative divider */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0 10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0 16px' }}>
                 <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, transparent, var(--red))' }} />
                 <div style={{ width: 6, height: 6, background: 'var(--gold)', transform: 'rotate(45deg)', borderRadius: 1 }} />
                 <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, var(--red), transparent)' }} />
               </div>
 
-              <p style={{ fontSize: 12, color: 'var(--text-3)', maxWidth: 280, lineHeight: 1.7, margin: '0 0 18px', fontWeight: 400 }}>
-                اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث مباشرةً بالصوت
-              </p>
-
               {/* Suggestion cards 2×2 */}
               <div style={{
                 display: 'grid', gridTemplateColumns: '1fr 1fr',
-                gap: 10, width: '100%', maxWidth: 360, marginBottom: 12,
+                gap: 10, width: '100%', maxWidth: 360, marginBottom: 14,
               }}>
                 {SUGGESTIONS.map((s, i) => (
                   <button key={i}
                     className="suggestion-card"
-                    onClick={() => sendMessage(s.title + ' — ' + s.desc)}
+                    onClick={() => sendMessage(isAr ? (s.title_ar + ' — ' + s.desc_ar) : (s.title_en + ' — ' + s.desc_en))}
                     style={{
                       display: 'flex', flexDirection: 'column',
                       alignItems: 'center', justifyContent: 'center',
@@ -479,19 +563,19 @@ export default function Home() {
                       {s.icon}
                     </div>
                     <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3, textAlign: 'center' }}>
-                      {s.title}
+                      {isAr ? s.title_ar : s.title_en}
                     </span>
                     <span style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.4, textAlign: 'center' }}>
-                      {s.desc}
+                      {isAr ? s.desc_ar : s.desc_en}
                     </span>
                   </button>
                 ))}
               </div>
 
-              {/* Quick questions */}
+              {/* Auto-rotating quick questions */}
               <div style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 7 }}>
-                {QUICK_QUESTIONS.map((q, i) => (
-                  <button key={i}
+                {visibleQ.map((q, i) => (
+                  <button key={`${q}-${i}`}
                     className="quick-btn"
                     onClick={() => sendMessage(q)}
                     style={{
@@ -504,10 +588,11 @@ export default function Home() {
                       transition: 'all 0.18s ease',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                       textAlign: 'center',
+                      direction: isAr ? 'rtl' : 'ltr',
                     }}
                     onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.background = 'var(--red-light)' }}
                     onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = '#fff' }}>
-                    <span style={{ color: 'var(--red)', fontSize: 13 }}>←</span>
+                    <span style={{ color: 'var(--red)', fontSize: 13 }}>{isAr ? '←' : '→'}</span>
                     {q}
                   </button>
                 ))}
@@ -518,7 +603,10 @@ export default function Home() {
                 marginTop: 16, marginBottom: 4,
                 display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
               }}>
-                {['📎 صور · PDF · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري'].map((badge, i) => (
+                {(isAr
+                  ? ['📎 صور · PDF · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري']
+                  : ['📎 Images · PDF · Docs', '🎤 Voice input', '🔍 Instant analysis']
+                ).map((badge, i) => (
                   <span key={i} style={{
                     fontSize: 10, color: 'var(--text-3)', fontWeight: 500,
                     background: '#fff', padding: '4px 10px', borderRadius: 20,
@@ -575,7 +663,9 @@ export default function Home() {
                     {attachedFile.name}
                   </div>
                   <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{formatSize(attachedFile.size)}</div>
-                  <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 1 }}>⚡ جاهز للتحليل</div>
+                  <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 1 }}>
+                    {isAr ? '⚡ جاهز للتحليل' : '⚡ Ready to analyze'}
+                  </div>
                 </div>
                 <button onClick={() => setAttachedFile(null)} style={{
                   width: 24, height: 24, borderRadius: '50%',
@@ -604,7 +694,9 @@ export default function Home() {
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>جاري الاستماع... تحدث الآن</span>
+                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>
+                  {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
+                </span>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
                     <span key={n} style={{
@@ -617,10 +709,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* ── Mode selector — centered above input ── */}
-            <div style={{
-              display: 'flex', justifyContent: 'center', marginBottom: 10,
-            }}>
+            {/* ── Mode selector ── */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
               <div style={{
                 display: 'inline-flex', alignItems: 'center',
                 background: '#f3f4f6', borderRadius: 999,
@@ -643,7 +733,7 @@ export default function Home() {
                         transition: 'all 0.18s ease',
                       }}>
                       <span style={{ fontSize: 13 }}>{m.icon}</span>
-                      <span>{m.label}</span>
+                      <span>{isAr ? m.label_ar : m.label_en}</span>
                     </button>
                   )
                 })}
@@ -662,13 +752,12 @@ export default function Home() {
                   transition: 'all 0.2s ease',
                 }}>
 
-                {/* Input row */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
 
                 {/* Attach */}
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
                   className="icon-btn"
-                  title="إرفاق ملف أو صورة"
+                  title={isAr ? 'إرفاق ملف أو صورة' : 'Attach file or image'}
                   style={{
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12,
                     border: 'none', background: 'none', cursor: loading ? 'default' : 'pointer',
@@ -694,13 +783,15 @@ export default function Home() {
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
                   placeholder={
-                    recording ? 'جاري الاستماع...' :
-                    attachedFile ? 'اسأل عن الوثيقة أو أرسل للتحليل...' :
-                    'اكتب سؤالك هنا...'
+                    recording
+                      ? (isAr ? 'جاري الاستماع...' : 'Listening...')
+                      : attachedFile
+                        ? (isAr ? 'اسأل عن الوثيقة أو أرسل للتحليل...' : 'Ask about the document...')
+                        : (isAr ? 'اكتب سؤالك هنا...' : 'Type your question here...')
                   }
                   rows={1}
                   disabled={loading}
-                  dir="rtl"
+                  dir={isAr ? 'rtl' : 'ltr'}
                   style={{
                     flex: 1, resize: 'none', border: 'none', outline: 'none',
                     fontSize: 14.5, color: 'var(--text)', background: 'transparent',
@@ -759,9 +850,8 @@ export default function Home() {
                     </svg>
                   )}
                 </button>
-                </div>{/* end input row */}
-              </div>{/* end input box */}
-
+                </div>
+              </div>
             </form>
 
           </div>
