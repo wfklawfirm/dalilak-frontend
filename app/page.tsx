@@ -378,37 +378,44 @@ export default function Home() {
           borderBottom: '1px solid var(--border)',
           boxShadow: '0 1px 8px rgba(0,0,0,0.04)',
         }}>
-          {/* Top accent line */}
+          {/* Top accent line with contact info embedded */}
           <div style={{
-            height: 3,
-            background: 'linear-gradient(90deg, var(--red) 0%, #C9982A 50%, var(--red) 100%)',
-          }} />
-
-          {/* Contact strip */}
-          <div style={{
-            background: '#fafafa',
-            borderBottom: '1px solid var(--border)',
-            padding: '3px 16px',
+            background: 'linear-gradient(90deg, var(--red) 0%, #9B3A20 50%, var(--red) 100%)',
+            padding: '4px 16px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: 20, fontSize: 10.5, color: 'var(--text-3)',
+            gap: 16,
           }}>
-            <a href="tel:+96100000000" style={{ color: 'var(--text-3)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-              📞 +961 xx xxx xxx
+            <a href="tel:03460608" style={{
+              color: 'rgba(255,255,255,0.88)', textDecoration: 'none',
+              fontSize: 10.5, fontWeight: 500, letterSpacing: '0.3px',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+              </svg>
+              03 460 608
             </a>
-            <span style={{ color: 'var(--border-strong)' }}>|</span>
-            <a href="mailto:info@dalilak.ai" style={{ color: 'var(--text-3)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-              ✉️ info@dalilak.ai
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10 }}>·</span>
+            <a href="mailto:wissam@aijur.ai" style={{
+              color: 'rgba(255,255,255,0.88)', textDecoration: 'none',
+              fontSize: 10.5, fontWeight: 500, letterSpacing: '0.2px',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+              wissam@aijur.ai
             </a>
           </div>
 
           <div style={{
             maxWidth: 720, margin: '0 auto',
-            padding: '10px 16px',
+            padding: '8px 16px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
+                style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
               <div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
                   Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
@@ -594,7 +601,7 @@ export default function Home() {
                     onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.background = 'var(--red-light)' }}
                     onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = '#fff' }}>
                     <span style={{ color: 'var(--red)', fontSize: 13 }}>{isAr ? '←' : '→'}</span>
-                    {q}
+                    <bdi style={{ unicodeBidi: 'isolate', direction: isAr ? 'rtl' : 'ltr' }}>{q}</bdi>
                   </button>
                 ))}
               </div>
