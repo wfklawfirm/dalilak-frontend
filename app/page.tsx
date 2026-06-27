@@ -78,9 +78,19 @@ export default function Home() {
   useEffect(() => {
     const token = getToken()
     if (!token) { router.push('/login'); return }
-    const u = getUser()
-    setCurrentUser(u)
-    setAuthChecked(true)
+    // Verify token with backend (not just localStorage)
+    fetch(`${API_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(async res => {
+      if (!res.ok) { clearToken(); router.push('/login'); return }
+      const data = await res.json()
+      setCurrentUser(data)
+      setAuthChecked(true)
+    }).catch(() => {
+      // Network error — allow offline use if token exists
+      setCurrentUser(getUser())
+      setAuthChecked(true)
+    })
     // ping to keep Render alive
     fetch(`${API_URL}/ping`).catch(() => {})
   }, [])
