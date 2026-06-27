@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
+import BottomNav from '@/components/BottomNav'
 import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -157,6 +158,17 @@ export default function Home() {
   const mainRef = useRef<HTMLDivElement>(null)
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
+
+  // ── Handle ?q= param from procedures/forms pages ─────────
+  useEffect(() => {
+    if (!authChecked) return
+    const params = new URLSearchParams(window.location.search)
+    const q = params.get('q')
+    if (q) {
+      window.history.replaceState({}, '', '/')
+      sendMessage(q)
+    }
+  }, [authChecked])
 
   // ── Auth guard ────────────────────────────────────────────
   useEffect(() => {
@@ -429,6 +441,12 @@ export default function Home() {
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
+        /* ── Bottom nav (mobile only) ── */
+        .bottom-nav-wrapper { display: none !important; }
+        @media (max-width: 640px) {
+          .bottom-nav-wrapper { display: block !important; position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 100; }
+          .bottom-nav-padding { padding-bottom: 64px !important; }
+        }
         /* ── Header responsive ── */
         .hdr-contact { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
         .hdr-extra   { display: flex; align-items: center; gap: 6px; }
@@ -688,9 +706,55 @@ export default function Home() {
                 ))}
               </div>
 
+              {/* Popular Procedures shortcut strip */}
+              <div style={{ width: '100%', maxWidth: 360, marginTop: 14 }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  marginBottom: 8,
+                }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)' }}>
+                    {isAr ? '⭐ أكثر المعاملات طلباً' : '⭐ Most Requested'}
+                  </span>
+                  <button
+                    onClick={() => router.push('/procedures')}
+                    style={{
+                      fontSize: 10, color: 'var(--red)', background: 'none',
+                      border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                    }}>
+                    {isAr ? 'عرض الكل ←' : '→ View all'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+                  {[
+                    { icon: '📘', label_ar: 'جواز سفر', label_en: 'Passport', q_ar: 'كيف أستخرج أو أجدد جواز السفر اللبناني؟', q_en: 'How do I get or renew a Lebanese passport?' },
+                    { icon: '📋', label_ar: 'شهادة ميلاد', label_en: 'Birth Cert.', q_ar: 'كيف أسجل مولوداً واستخرج شهادة ميلاد؟', q_en: 'How do I register a newborn and get a birth certificate?' },
+                    { icon: '🏭', label_ar: 'تسجيل شركة', label_en: 'Company Reg.', q_ar: 'كيف أسجل شركة في لبنان؟ ما هي الخطوات والوثائق؟', q_en: 'How do I register a company in Lebanon?' },
+                    { icon: '🪪', label_ar: 'رخصة قيادة', label_en: 'Driver License', q_ar: 'كيف أستخرج رخصة القيادة اللبنانية؟', q_en: 'How do I get a Lebanese driver\'s license?' },
+                    { icon: '🏥', label_ar: 'الضمان', label_en: 'NSSF', q_ar: 'كيف أسجل في الضمان الاجتماعي اللبناني؟', q_en: 'How do I register with Lebanese social security?' },
+                  ].map((p, i) => (
+                    <button key={i} onClick={() => sendMessage(isAr ? p.q_ar : p.q_en)} style={{
+                      flexShrink: 0, display: 'flex', flexDirection: 'column',
+                      alignItems: 'center', gap: 5, padding: '10px 12px',
+                      background: '#fff', borderRadius: 14, border: '1.5px solid var(--border)',
+                      cursor: 'pointer', fontFamily: 'inherit', minWidth: 70,
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(139,26,26,0.1)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)' }}
+                    onTouchStart={e => { e.currentTarget.style.background = 'var(--red-light)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}>
+                      <span style={{ fontSize: 22 }}>{p.icon}</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-2)', textAlign: 'center', lineHeight: 1.3 }}>
+                        {isAr ? p.label_ar : p.label_en}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Feature badges */}
               <div style={{
-                marginTop: 16, marginBottom: 4,
+                marginTop: 14, marginBottom: 4,
                 display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
               }}>
                 {(isAr
@@ -738,7 +802,7 @@ export default function Home() {
               </div>
 
               {messages.map((msg, i) => (
-                <div key={i} className="msg-in"><ChatMessage msg={msg} /></div>
+                <div key={i} className="msg-in"><ChatMessage msg={msg} isAr={isAr} /></div>
               ))}
               <div ref={bottomRef} style={{ height: 8 }} />
             </div>
@@ -746,7 +810,7 @@ export default function Home() {
         </main>
 
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
-        <footer style={{
+        <footer className="bottom-nav-padding" style={{
           flexShrink: 0,
           backgroundColor: 'transparent',
           paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
@@ -971,6 +1035,16 @@ export default function Home() {
 
           </div>
         </footer>
+
+        {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
+        <div style={{ display: 'none' }} className="bottom-nav-wrapper">
+          <BottomNav
+            isAr={isAr}
+            activeTab={messages.length > 0 ? 'chat' : 'home'}
+            onHomeClick={() => setMessages([])}
+            onChatClick={() => { /* already in chat */ }}
+          />
+        </div>
 
       </div>
     </>
