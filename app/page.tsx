@@ -8,6 +8,7 @@ import GuidedFlow from '@/components/GuidedFlow'
 import MobileMenu from '@/components/MobileMenu'
 import ModeSelector from '@/components/MobileModeSheet'
 import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
+import { sanitizeInput } from '@/lib/sanitize'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -280,17 +281,27 @@ export default function Home() {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
 
+    // ── Sanitize input ────────────────────────────────────────
+    const { clean: cleanText, flagged } = sanitizeInput(text)
+    if (flagged) {
+      setMessages(prev => [...prev,
+        { role: 'user', content: cleanText },
+        { role: 'assistant', content: '⚠️ تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.', streaming: false },
+      ])
+      return
+    }
+
     const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
     const langInstruction = lang === 'en'
       ? '[IMPORTANT: The user is writing in English. You MUST respond entirely in English. Do not use Arabic at all.] '
       : ''
     const prefixedMessage = file
-      ? text.trim() || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
-      : langInstruction + activeMode.prefix + text.trim()
+      ? cleanText || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
+      : langInstruction + activeMode.prefix + cleanText
 
     const displayText = file
-      ? (text.trim() ? `${getFileIcon(file.type)} **${file.name}**\n${text.trim()}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
-      : text.trim()
+      ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
+      : cleanText
 
     // ── Check localStorage cache (text-only, no file) ─────
     if (!file) {
