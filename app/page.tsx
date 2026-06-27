@@ -586,7 +586,9 @@ export default function Home() {
                 style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 14, mixBlendMode: 'multiply' }} />
 
               <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
-                {isAr ? 'كيف يمكنني مساعدتك؟' : 'How can I help you?'}
+                <bdi style={{ unicodeBidi: 'isolate', direction: isAr ? 'rtl' : 'ltr' }}>
+                  {isAr ? 'كيف يمكنني مساعدتك؟' : 'How can I help you?'}
+                </bdi>
               </h2>
 
               {/* Decorative divider */}
