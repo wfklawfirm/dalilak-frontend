@@ -93,6 +93,39 @@ const QUESTION_POOL_EN = [
   'What are the steps to renew a foreigner\'s residency?',
 ]
 
+// ── localStorage Q&A cache ─────────────────────────────────────
+const LS_KEY = 'dalilak_qa_cache'
+const LS_MAX = 30
+
+interface QAEntry { q: string; a: string; ts: number }
+
+function lsNormalize(s: string) {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function lsGet(question: string): string | null {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    if (!raw) return null
+    const entries: QAEntry[] = JSON.parse(raw)
+    const norm = lsNormalize(question)
+    const hit = entries.find(e => lsNormalize(e.q) === norm)
+    return hit ? hit.a : null
+  } catch { return null }
+}
+
+function lsSet(question: string, answer: string) {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    let entries: QAEntry[] = raw ? JSON.parse(raw) : []
+    const norm = lsNormalize(question)
+    entries = entries.filter(e => lsNormalize(e.q) !== norm)
+    entries.unshift({ q: question, a: answer, ts: Date.now() })
+    if (entries.length > LS_MAX) entries = entries.slice(0, LS_MAX)
+    localStorage.setItem(LS_KEY, JSON.stringify(entries))
+  } catch {}
+}
+
 function shufflePick<T>(arr: T[], n: number): T[] {
   const copy = [...arr]
   for (let i = copy.length - 1; i > 0; i--) {
@@ -242,6 +275,20 @@ export default function Home() {
       ? (text.trim() ? `${getFileIcon(file.type)} **${file.name}**\n${text.trim()}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
       : text.trim()
 
+    // ── Check localStorage cache (text-only, no file) ─────
+    if (!file) {
+      const cached = lsGet(prefixedMessage)
+      if (cached) {
+        setMessages(prev => [
+          ...prev,
+          { role: 'user', content: displayText },
+          { role: 'assistant', content: cached, streaming: false },
+        ])
+        setInput('')
+        return
+      }
+    }
+
     const history = messages.map(m => ({ role: m.role, content: m.content }))
     setMessages(prev => [...prev, { role: 'user', content: displayText }])
     setInput('')
@@ -302,11 +349,16 @@ export default function Home() {
           } catch {}
         }
       }
+      const finalAnswer = accumulated || 'عذراً، لم أتلقَّ ردّاً.'
       setMessages(prev => {
         const u = [...prev]
-        u[u.length - 1] = { role: 'assistant', content: accumulated || 'عذراً، لم أتلقَّ ردّاً.', streaming: false }
+        u[u.length - 1] = { role: 'assistant', content: finalAnswer, streaming: false }
         return u
       })
+      // Save to localStorage cache (text questions only)
+      if (!file && accumulated) {
+        lsSet(prefixedMessage, accumulated)
+      }
     } catch {
       setMessages(prev => {
         const u = [...prev]
