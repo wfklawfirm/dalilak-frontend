@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'reac
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
+import GuidedFlow from '@/components/GuidedFlow'
 import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -32,7 +33,7 @@ const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: strin
     icon: '📋',
     label_ar: 'مفصّل', label_en: 'Detailed',
     hint_ar: 'خطوات وتفاصيل كاملة', hint_en: 'Full steps and details',
-    prefix: '[أجب بتفصيل كامل: الوثائق، الخطوات، الرسوم، ساعات العمل، والجهة المختصة] ',
+    prefix: '[أجب بتنسيق منظّم مع عناوين ## واضحة: ## الخلاصة | ## المستندات المطلوبة | ## الخطوات | ## الجهة المختصة | ## الرسوم | ## تنبيه مهم] ',
   },
   {
     id: 'research',
@@ -151,6 +152,8 @@ export default function Home() {
   const [inputFocused, setInputFocused] = useState(false)
   const [visibleQ, setVisibleQ] = useState<string[]>([])
   const [visibleS, setVisibleS] = useState<typeof SUGGESTION_POOL>([])
+  const [showGuide, setShowGuide] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -465,15 +468,13 @@ export default function Home() {
         paddingTop: 'var(--safe-top)',
       }}>
 
-        {/* ══════════════ HEADER — responsive single bar ══════════════ */}
+        {/* ══════════════ HEADER ══════════════ */}
         <header style={{
           flexShrink: 0,
           background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
           boxShadow: '0 2px 12px rgba(139,26,26,0.25)',
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 14px' }}>
-
-            {/* ── Main row ── */}
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '9px 14px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
 
               {/* Brand */}
@@ -481,84 +482,62 @@ export default function Home() {
                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
                   Dalilak <span style={{ color: '#f5c842' }}>AI</span>
                 </div>
-                <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.6)', fontWeight: 400, whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', fontWeight: 400, whiteSpace: 'nowrap' }}>
                   {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
                 </div>
-
-                {/* Contact — always visible, wraps cleanly */}
+                {/* Contact — desktop only */}
                 <div className="hdr-contact">
-                  <a href="tel:+9613460608" style={{
-                    color: 'rgba(255,255,255,0.82)', textDecoration: 'none',
-                    fontSize: 10, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 3,
-                    direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap',
-                  }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
-                      <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-                    </svg>
-                    <bdi dir="ltr" style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
-                      {isAr ? '00961 3 460 608' : '+961 3 460 608'}
-                    </bdi>
+                  <a href="tel:+9613460608" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 9.5, display: 'flex', alignItems: 'center', gap: 3, direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap' }}>
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                    +961 3 460 608
                   </a>
-                  <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 9 }}>|</span>
-                  <a href="mailto:wissam@aijur.ai" style={{
-                    color: 'rgba(255,255,255,0.82)', textDecoration: 'none',
-                    fontSize: 10, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 3,
-                    direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap',
-                  }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
-                      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                    <span className="hdr-email-label">wissam@aijur.ai</span>
-                  </a>
+                  <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
+                  <a href="mailto:wissam@aijur.ai" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 9.5 }}>wissam@aijur.ai</a>
                 </div>
               </div>
 
-              {/* ── Right controls ── */}
+              {/* Right controls */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
 
-                {/* Home button — always visible when in chat */}
+                {/* Guided flow shortcut */}
+                {messages.length === 0 && (
+                  <button onClick={() => setShowGuide(true)} className="hdr-extra-btn" style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    fontSize: 11, color: '#fff', padding: '5px 12px',
+                    borderRadius: 20, border: '1.5px solid rgba(255,255,255,0.35)',
+                    background: 'rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                  }}>
+                    <span>🗂️</span>
+                    <span className="hdr-extra">{isAr ? 'ابدأ معاملة' : 'Start'}</span>
+                  </button>
+                )}
+
+                {/* Home — when in chat */}
                 {messages.length > 0 && (
-                  <button
-                    onClick={() => setMessages([])}
-                    title={isAr ? 'الصفحة الرئيسية' : 'Home'}
-                    style={{
-                      width: 34, height: 34, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.35)',
-                      background: 'rgba(255,255,255,0.15)', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      transition: 'all 0.15s', flexShrink: 0,
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.28)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}
-                    onTouchStart={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.28)')}
-                    onTouchEnd={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}>
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+                  <button onClick={() => setMessages([])} style={{
+                    width: 34, height: 34, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.3)',
+                    background: 'rgba(255,255,255,0.13)', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
                     </svg>
                   </button>
                 )}
 
-                {/* Lang toggle — always visible */}
+                {/* Lang */}
                 <button className="lang-btn" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{
                   fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 20,
                   border: '1.5px solid rgba(255,255,255,0.35)',
                   background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
-                  fontFamily: 'inherit', color: '#fff', transition: 'all 0.15s', letterSpacing: '0.5px',
+                  fontFamily: 'inherit', color: '#fff', letterSpacing: '0.5px',
                 }}>
                   {isAr ? 'EN' : 'AR'}
                 </button>
 
-                {/* Extra controls — hidden on mobile via .hdr-extra */}
-                <div className="hdr-extra">
-                  {messages.length > 0 && (
-                    <button onClick={() => setMessages([])} style={{
-                      fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 10px',
-                      borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)',
-                      background: 'rgba(255,255,255,0.08)', cursor: 'pointer', fontFamily: 'inherit',
-                    }}>
-                      {isAr ? 'محادثة جديدة' : 'New Chat'}
-                    </button>
-                  )}
+                {/* Desktop extras */}
+                <div className="hdr-extra" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
                     <div style={{
                       fontSize: 10, color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
@@ -566,7 +545,7 @@ export default function Home() {
                       border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.4)' : 'rgba(253,230,138,0.4)'}`,
                       borderRadius: 20, padding: '4px 9px', fontWeight: 600, whiteSpace: 'nowrap',
                     }}>
-                      ⏱️ {currentUser.days_left} {isAr ? (currentUser.days_left === 1 ? 'يوم' : 'أيام') : (currentUser.days_left === 1 ? 'day' : 'days')}
+                      ⏱️ {currentUser.days_left} {isAr ? 'أيام' : 'days'}
                     </div>
                   )}
                   {isAdmin() && (
@@ -576,28 +555,26 @@ export default function Home() {
                       background: 'rgba(245,200,66,0.1)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
                     }}>🛡️</button>
                   )}
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 8px',
-                    border: '1px solid rgba(34,197,94,0.3)',
-                  }}>
-                    <span style={{
-                      width: 6, height: 6, borderRadius: '50%', backgroundColor: '#4ade80',
-                      display: 'inline-block', boxShadow: '0 0 5px #4ade80', animation: 'pulse 2.5s infinite',
-                    }} />
-                    <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>
-                      {isAr ? 'متصل' : 'Online'}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 8px', border: '1px solid rgba(34,197,94,0.3)' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#4ade80', display: 'inline-block', boxShadow: '0 0 5px #4ade80', animation: 'pulse 2.5s infinite' }} />
+                    <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>{isAr ? 'متصل' : 'Online'}</span>
                   </div>
+                  {messages.length > 0 && (
+                    <button onClick={() => setMessages([])} style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                      {isAr ? 'محادثة جديدة' : 'New Chat'}
+                    </button>
+                  )}
                 </div>
 
-                {/* Logout — always visible */}
-                <button onClick={() => { clearToken(); router.push('/login') }} style={{
-                  fontSize: 11, color: 'rgba(255,255,255,0.7)', padding: '5px 10px',
-                  borderRadius: 20, border: '1px solid rgba(255,255,255,0.18)',
-                  background: 'none', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+                {/* Account / Logout */}
+                <button onClick={() => router.push('/my-files')} style={{
+                  width: 32, height: 32, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {isAr ? 'خروج' : 'Logout'}
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
                 </button>
 
               </div>
@@ -613,139 +590,112 @@ export default function Home() {
         }}>
           {messages.length === 0 ? (
 
-            /* ── Welcome Screen ── */
+            /* ══ NEW Welcome Screen ══ */
             <div style={{
               display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              minHeight: '100%', padding: '20px 16px 8px',
-              textAlign: 'center',
+              alignItems: 'center',
+              minHeight: '100%', padding: '18px 16px 16px',
             }}>
 
-              {/* Hero logo */}
+              {/* Hero */}
               <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 120, height: 120, objectFit: 'contain', marginBottom: 14, mixBlendMode: 'multiply' }} />
-
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
-                <bdi style={{ unicodeBidi: 'isolate', direction: isAr ? 'rtl' : 'ltr' }}>
-                  {isAr ? 'كيف يمكنني مساعدتك؟' : 'How can I help you?'}
-                </bdi>
+                style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 10, mixBlendMode: 'multiply' }} />
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', margin: '0 0 4px', textAlign: 'center', letterSpacing: '-0.3px' }}>
+                {isAr ? 'كيف يمكنني مساعدتك في معاملتك اليوم؟' : 'How can I help with your procedure today?'}
               </h2>
+              <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: '0 0 16px', textAlign: 'center' }}>
+                {isAr ? 'اختر ما تريد وسيرشدك الأيجنت خطوة بخطوة' : 'Choose what you need and the agent will guide you step by step'}
+              </p>
 
-              {/* Decorative divider */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0 16px' }}>
-                <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, transparent, var(--red))' }} />
-                <div style={{ width: 6, height: 6, background: 'var(--gold)', transform: 'rotate(45deg)', borderRadius: 1 }} />
-                <div style={{ height: 1.5, width: 40, background: 'linear-gradient(90deg, var(--red), transparent)' }} />
-              </div>
-
-              {/* Suggestion cards 2×2 */}
+              {/* ── 6 Intent cards (2×3) ── */}
               <div style={{
                 display: 'grid', gridTemplateColumns: '1fr 1fr',
-                gap: 10, width: '100%', maxWidth: 360, marginBottom: 14,
+                gap: 9, width: '100%', maxWidth: 380, marginBottom: 18,
               }}>
-                {visibleS.map((s, i) => (
+                {[
+                  { icon: '📋', ar: 'المستندات المطلوبة', en: 'Required Documents', desc_ar: 'ما الأوراق التي أحتاجها؟', desc_en: 'What papers do I need?' },
+                  { icon: '📎', ar: 'تحليل مستند', en: 'Analyze a Document', desc_ar: 'رفع ملف أو صورة للتحليل', desc_en: 'Upload a file for analysis', isFile: true },
+                  { icon: '📄', ar: 'الحصول على نموذج', en: 'Get Official Form', desc_ar: 'النموذج الرسمي وكيفية تعبئته', desc_en: 'The form and how to fill it' },
+                  { icon: '🏛️', ar: 'الجهة المختصة', en: 'Responsible Authority', desc_ar: 'أين أراجع؟ وكيف أتصل؟', desc_en: 'Where to go & contact info' },
+                  { icon: '✈️', ar: 'للمغتربين', en: 'For Expats', desc_ar: 'إنجاز المعاملة من الخارج', desc_en: 'Complete from abroad' },
+                  { icon: '🔄', ar: 'متابعة معاملة', en: 'Track a Procedure', desc_ar: 'معاملتي جارية — ماذا بعد؟', desc_en: 'Ongoing procedure — what next?' },
+                ].map((item, i) => (
                   <button key={i}
-                    className="suggestion-card"
-                    onClick={() => sendMessage(isAr ? (s.title_ar + ' — ' + s.desc_ar) : (s.title_en + ' — ' + s.desc_en))}
+                    onClick={() => {
+                      if ((item as any).isFile) { fileInputRef.current?.click(); return }
+                      setShowGuide(true)
+                    }}
                     style={{
-                      display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center',
-                      gap: 6, padding: '16px 10px',
+                      display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                      gap: 4, padding: '13px 13px',
                       backgroundColor: '#fff', borderRadius: 16, cursor: 'pointer',
                       border: '1.5px solid var(--border)',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                      transition: 'all 0.2s ease', fontFamily: 'inherit',
-                      textAlign: 'center',
-                      animation: 'slideQ 0.35s ease',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      transition: 'all 0.18s ease', fontFamily: 'inherit',
+                      textAlign: isAr ? 'right' : 'left',
                     }}
-                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)' }}
-                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)' }}>
-                    <div style={{
-                      width: 42, height: 42, borderRadius: 12,
-                      background: 'linear-gradient(135deg, var(--red-light) 0%, #FDE8E8 100%)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 22, marginBottom: 2,
-                      border: '1px solid rgba(139,26,26,0.12)',
-                    }}>
-                      {s.icon}
-                    </div>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3, textAlign: 'center' }}>
-                      {isAr ? s.title_ar : s.title_en}
-                    </span>
-                    <span style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.4, textAlign: 'center' }}>
-                      {isAr ? s.desc_ar : s.desc_en}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Auto-rotating quick questions */}
-              <div style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 7 }}>
-                {visibleQ.map((q, i) => (
-                  <button key={`${q}-${i}`}
-                    className="quick-btn"
-                    onClick={() => sendMessage(q)}
-                    style={{
-                      width: '100%', padding: '11px 16px',
-                      backgroundColor: '#fff', borderRadius: 12,
-                      border: '1.5px solid var(--border)',
-                      fontSize: 12.5, color: 'var(--text-2)', fontWeight: 500,
-                      cursor: 'pointer', fontFamily: 'inherit',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                      transition: 'all 0.18s ease',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                      textAlign: 'center',
-                      direction: isAr ? 'rtl' : 'ltr',
-                      unicodeBidi: 'embed',
-                    }}
-                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.background = 'var(--red-light)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(139,26,26,0.10)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'translateY(0)' }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.96)'; e.currentTarget.style.background = 'var(--red-light)' }}
                     onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = '#fff' }}>
-                    <span style={{ color: 'var(--red)', fontSize: 13 }}>{isAr ? '←' : '→'}</span>
-                    <bdi style={{ unicodeBidi: 'isolate', direction: isAr ? 'rtl' : 'ltr' }}>{q}</bdi>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 10,
+                      background: 'linear-gradient(135deg, var(--red-light) 0%, #FDE8E8 100%)',
+                      border: '1px solid rgba(139,26,26,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 18, marginBottom: 4,
+                    }}>{item.icon}</div>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3 }}>
+                      {isAr ? item.ar : item.en}
+                    </span>
+                    <span style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.4 }}>
+                      {isAr ? item.desc_ar : item.desc_en}
+                    </span>
                   </button>
                 ))}
               </div>
 
-              {/* Popular Procedures shortcut strip */}
-              <div style={{ width: '100%', maxWidth: 360, marginTop: 14 }}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  marginBottom: 8,
-                }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)' }}>
-                    {isAr ? '⭐ أكثر المعاملات طلباً' : '⭐ Most Requested'}
+              {/* ── Popular procedures strip ── */}
+              <div style={{ width: '100%', maxWidth: 380, marginBottom: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)' }}>
+                    {isAr ? '⭐ المعاملات الأكثر طلباً' : '⭐ Most Requested'}
                   </span>
-                  <button
-                    onClick={() => router.push('/procedures')}
-                    style={{
-                      fontSize: 10, color: 'var(--red)', background: 'none',
-                      border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
-                    }}>
-                    {isAr ? 'عرض الكل ←' : '→ View all'}
+                  <button onClick={() => router.push('/procedures')} style={{
+                    fontSize: 10.5, color: 'var(--red)', background: 'none',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                  }}>
+                    {isAr ? 'عرض الكل ←' : '→ All'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+                <div style={{
+                  display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8,
+                }}>
                   {[
-                    { icon: '📘', label_ar: 'جواز سفر', label_en: 'Passport', q_ar: 'كيف أستخرج أو أجدد جواز السفر اللبناني؟', q_en: 'How do I get or renew a Lebanese passport?' },
-                    { icon: '📋', label_ar: 'شهادة ميلاد', label_en: 'Birth Cert.', q_ar: 'كيف أسجل مولوداً واستخرج شهادة ميلاد؟', q_en: 'How do I register a newborn and get a birth certificate?' },
-                    { icon: '🏭', label_ar: 'تسجيل شركة', label_en: 'Company Reg.', q_ar: 'كيف أسجل شركة في لبنان؟ ما هي الخطوات والوثائق؟', q_en: 'How do I register a company in Lebanon?' },
-                    { icon: '🪪', label_ar: 'رخصة قيادة', label_en: 'Driver License', q_ar: 'كيف أستخرج رخصة القيادة اللبنانية؟', q_en: 'How do I get a Lebanese driver\'s license?' },
-                    { icon: '🏥', label_ar: 'الضمان', label_en: 'NSSF', q_ar: 'كيف أسجل في الضمان الاجتماعي اللبناني؟', q_en: 'How do I register with Lebanese social security?' },
+                    { icon: '📘', ar: 'جواز سفر', en: 'Passport' },
+                    { icon: '📋', ar: 'سجل عدلي', en: 'Criminal Record' },
+                    { icon: '👨‍👩‍👦', ar: 'إخراج قيد', en: 'Civil Extract' },
+                    { icon: '⚖️', ar: 'حصر إرث', en: 'Inheritance' },
+                    { icon: '🏭', ar: 'تأسيس شركة', en: 'Company Reg.' },
+                    { icon: '🏗️', ar: 'رخصة بناء', en: 'Building Permit' },
+                    { icon: '📜', ar: 'تصديق مستند', en: 'Attestation' },
+                    { icon: '🏠', ar: 'بيع عقار', en: 'Real Estate' },
+                    { icon: '✈️', ar: 'مغتربين', en: 'Expats' },
                   ].map((p, i) => (
-                    <button key={i} onClick={() => sendMessage(isAr ? p.q_ar : p.q_en)} style={{
-                      flexShrink: 0, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', gap: 5, padding: '10px 12px',
-                      background: '#fff', borderRadius: 14, border: '1.5px solid var(--border)',
-                      cursor: 'pointer', fontFamily: 'inherit', minWidth: 70,
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.15s',
+                    <button key={i} onClick={() => setShowGuide(true)} style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+                      padding: '10px 6px', background: '#fff', borderRadius: 13,
+                      border: '1.5px solid var(--border)', cursor: 'pointer',
+                      fontFamily: 'inherit', transition: 'all 0.15s',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                     }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(139,26,26,0.1)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)' }}
-                    onTouchStart={e => { e.currentTarget.style.background = 'var(--red-light)' }}
-                    onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}>
+                    onTouchStart={e => { e.currentTarget.style.background = 'var(--red-light)'; e.currentTarget.style.transform = 'scale(0.95)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
                       <span style={{ fontSize: 22 }}>{p.icon}</span>
                       <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-2)', textAlign: 'center', lineHeight: 1.3 }}>
-                        {isAr ? p.label_ar : p.label_en}
+                        {isAr ? p.ar : p.en}
                       </span>
                     </button>
                   ))}
@@ -753,21 +703,16 @@ export default function Home() {
               </div>
 
               {/* Feature badges */}
-              <div style={{
-                marginTop: 14, marginBottom: 4,
-                display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
-              }}>
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', justifyContent: 'center' }}>
                 {(isAr
-                  ? ['📎 صور · PDF · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري']
-                  : ['📎 Images · PDF · Docs', '🎤 Voice input', '🔍 Instant analysis']
-                ).map((badge, i) => (
+                  ? ['📎 صور · PDF · وثائق', '🎤 صوتي', '🔍 تحليل فوري', '💬 محادثة حرة']
+                  : ['📎 Images · PDF · Docs', '🎤 Voice', '🔍 Instant analysis', '💬 Free chat']
+                ).map((b, i) => (
                   <span key={i} style={{
                     fontSize: 10, color: 'var(--text-3)', fontWeight: 500,
                     background: '#fff', padding: '4px 10px', borderRadius: 20,
                     border: '1px solid var(--border)',
-                  }}>
-                    {badge}
-                  </span>
+                  }}>{b}</span>
                 ))}
               </div>
             </div>
@@ -802,7 +747,13 @@ export default function Home() {
               </div>
 
               {messages.map((msg, i) => (
-                <div key={i} className="msg-in"><ChatMessage msg={msg} isAr={isAr} /></div>
+                <div key={i} className="msg-in">
+                  <ChatMessage
+                    msg={msg}
+                    isAr={isAr}
+                    onFollowUp={(q) => { setInput(q); textareaRef.current?.focus() }}
+                  />
+                </div>
               ))}
               <div ref={bottomRef} style={{ height: 8 }} />
             </div>
@@ -1047,6 +998,15 @@ export default function Home() {
         </div>
 
       </div>
+
+      {/* ══════════════ GUIDED FLOW MODAL ══════════════ */}
+      {showGuide && (
+        <GuidedFlow
+          isAr={isAr}
+          onSend={(msg) => { sendMessage(msg) }}
+          onClose={() => setShowGuide(false)}
+        />
+      )}
     </>
   )
 }
