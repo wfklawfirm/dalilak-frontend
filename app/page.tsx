@@ -363,7 +363,7 @@ export default function Home() {
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
-        .lang-btn:hover { background: #f9f9f9 !important; }
+        .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
       `}</style>
 
       <div style={{
@@ -374,58 +374,53 @@ export default function Home() {
         paddingTop: 'var(--safe-top)',
       }}>
 
-        {/* ══════════════ HEADER ══════════════ */}
+        {/* ══════════════ HEADER — single merged bar ══════════════ */}
         <header style={{
           flexShrink: 0,
-          backgroundColor: '#fff',
-          borderBottom: '1px solid var(--border)',
-          boxShadow: '0 1px 8px rgba(0,0,0,0.04)',
+          background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
+          boxShadow: '0 2px 12px rgba(139,26,26,0.25)',
         }}>
-          {/* Top accent line with contact info embedded */}
-          <div style={{
-            background: 'linear-gradient(90deg, var(--red) 0%, #9B3A20 50%, var(--red) 100%)',
-            padding: '4px 16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: 16,
-          }}>
-            <a href="tel:03460608" style={{
-              color: 'rgba(255,255,255,0.88)', textDecoration: 'none',
-              fontSize: 10.5, fontWeight: 500, letterSpacing: '0.3px',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-              </svg>
-              03 460 608
-            </a>
-            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10 }}>·</span>
-            <a href="mailto:wissam@aijur.ai" style={{
-              color: 'rgba(255,255,255,0.88)', textDecoration: 'none',
-              fontSize: 10.5, fontWeight: 500, letterSpacing: '0.2px',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-              </svg>
-              wissam@aijur.ai
-            </a>
-          </div>
-
           <div style={{
             maxWidth: 720, margin: '0 auto',
-            padding: '8px 16px',
+            padding: '9px 16px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
-                  Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
-                </div>
-                <div style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: 1.3, fontWeight: 500 }}>
-                  {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
-                </div>
+            {/* ── Brand + Contact ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
+                Dalilak <span style={{ color: '#f5c842' }}>AI</span>
+              </div>
+              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.65)', fontWeight: 400 }}>
+                {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
+              </div>
+              {/* Contact row — phone number formatted per language */}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                marginTop: 1,
+              }}>
+                <a href="tel:03460608" style={{
+                  color: 'rgba(255,255,255,0.8)', textDecoration: 'none',
+                  fontSize: 10, fontWeight: 500,
+                  display: 'flex', alignItems: 'center', gap: 3,
+                  direction: 'ltr', unicodeBidi: 'isolate',
+                }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+                    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                  </svg>
+                  {isAr ? '٠٣ ٤٦٠ ٦٠٨' : '+961 3 460 608'}
+                </a>
+                <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9 }}>|</span>
+                <a href="mailto:wissam@aijur.ai" style={{
+                  color: 'rgba(255,255,255,0.8)', textDecoration: 'none',
+                  fontSize: 10, fontWeight: 500,
+                  display: 'flex', alignItems: 'center', gap: 3,
+                  direction: 'ltr', unicodeBidi: 'isolate',
+                }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
+                  wissam@aijur.ai
+                </a>
               </div>
             </div>
 
@@ -437,12 +432,11 @@ export default function Home() {
                 onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
                 style={{
                   fontSize: 11, fontWeight: 700,
-                  padding: '4px 11px', borderRadius: 20,
-                  border: '1.5px solid var(--border)',
-                  background: '#fff', cursor: 'pointer',
-                  fontFamily: 'inherit', color: 'var(--red)',
-                  transition: 'all 0.15s',
-                  letterSpacing: '0.5px',
+                  padding: '4px 12px', borderRadius: 20,
+                  border: '1.5px solid rgba(255,255,255,0.35)',
+                  background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
+                  fontFamily: 'inherit', color: '#fff',
+                  transition: 'all 0.15s', letterSpacing: '0.5px',
                 }}
               >
                 {isAr ? 'EN' : 'AR'}
@@ -450,10 +444,10 @@ export default function Home() {
 
               {messages.length > 0 && (
                 <button onClick={() => setMessages([])} style={{
-                  fontSize: 11, color: 'var(--text-3)', padding: '4px 11px',
-                  borderRadius: 20, border: '1px solid var(--border)',
-                  background: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  fontWeight: 500,
+                  fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 11px',
+                  borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)',
+                  background: 'rgba(255,255,255,0.08)', cursor: 'pointer',
+                  fontFamily: 'inherit', fontWeight: 500,
                 }}>
                   {isAr ? 'محادثة جديدة' : 'New Chat'}
                 </button>
@@ -462,9 +456,9 @@ export default function Home() {
               {/* Trial badge */}
               {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
                 <div style={{
-                  fontSize: 10, color: currentUser.days_left <= 1 ? '#dc2626' : '#d97706',
-                  background: currentUser.days_left <= 1 ? '#fef2f2' : '#fffbeb',
-                  border: `1px solid ${currentUser.days_left <= 1 ? '#fecaca' : '#fde68a'}`,
+                  fontSize: 10, color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.4)' : 'rgba(253,230,138,0.4)'}`,
                   borderRadius: 20, padding: '4px 10px', fontWeight: 600,
                 }}>
                   ⏱️ {currentUser.days_left} {isAr ? (currentUser.days_left === 1 ? 'يوم' : 'أيام') : (currentUser.days_left === 1 ? 'day' : 'days')}
@@ -474,9 +468,10 @@ export default function Home() {
               {/* Admin link */}
               {isAdmin() && (
                 <button onClick={() => router.push('/admin')} style={{
-                  fontSize: 11, color: '#6b2737', padding: '4px 11px',
-                  borderRadius: 20, border: '1px solid #e9d5d8',
-                  background: '#fdf2f4', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                  fontSize: 11, color: '#f5c842', padding: '4px 11px',
+                  borderRadius: 20, border: '1px solid rgba(245,200,66,0.4)',
+                  background: 'rgba(245,200,66,0.1)', cursor: 'pointer',
+                  fontFamily: 'inherit', fontWeight: 600,
                 }}>
                   🛡️ Admin
                 </button>
@@ -484,8 +479,8 @@ export default function Home() {
 
               {/* Logout */}
               <button onClick={() => { clearToken(); router.push('/login') }} style={{
-                fontSize: 11, color: 'var(--text-3)', padding: '4px 10px',
-                borderRadius: 20, border: '1px solid var(--border)',
+                fontSize: 11, color: 'rgba(255,255,255,0.65)', padding: '4px 10px',
+                borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)',
                 background: 'none', cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 {isAr ? 'خروج' : 'Logout'}
@@ -493,17 +488,17 @@ export default function Home() {
 
               {/* Online dot */}
               <div style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                background: '#F0FDF4', borderRadius: 20, padding: '4px 10px',
-                border: '1px solid #BBF7D0',
+                display: 'flex', alignItems: 'center', gap: 4,
+                background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 9px',
+                border: '1px solid rgba(34,197,94,0.3)',
               }}>
                 <span style={{
-                  width: 7, height: 7, borderRadius: '50%',
-                  backgroundColor: '#22c55e', display: 'inline-block',
-                  boxShadow: '0 0 6px #22c55e',
+                  width: 6, height: 6, borderRadius: '50%',
+                  backgroundColor: '#4ade80', display: 'inline-block',
+                  boxShadow: '0 0 5px #4ade80',
                   animation: 'pulse 2.5s infinite',
                 }} />
-                <span style={{ fontSize: 10, color: '#16a34a', fontWeight: 600 }}>
+                <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>
                   {isAr ? 'متصل' : 'Online'}
                 </span>
               </div>
