@@ -1,10 +1,17 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'دليلك AI — مساعدك في المعاملات اللبنانية',
   description: 'دليلك AI هو دليلك الذكي لكل المعاملات الحكومية اللبنانية',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

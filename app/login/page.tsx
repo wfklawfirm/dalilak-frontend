@@ -29,98 +29,191 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
-      <div style={{ width: '100%', maxWidth: 360 }}>
+    <>
+      <style>{`
+        html, body { margin: 0; padding: 0; background: #fff; }
+        .auth-page {
+          min-height: 100vh;
+          min-height: 100dvh;
+          background: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px 16px;
+        }
+        .auth-card {
+          width: 100%;
+          max-width: 420px;
+        }
+        .auth-logo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 28px;
+        }
+        .auth-logo img {
+          width: 100px;
+          height: 100px;
+          object-fit: contain;
+          mix-blend-mode: multiply;
+        }
+        .auth-logo h1 {
+          margin: 10px 0 4px;
+          font-size: 24px;
+          font-weight: 700;
+          color: #6b2737;
+        }
+        .auth-logo p {
+          margin: 0;
+          font-size: 13px;
+          color: #9ca3af;
+        }
+        .auth-box {
+          background: #fff;
+          border: 1px solid #ebebeb;
+          border-radius: 20px;
+          box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+          padding: 28px 24px;
+        }
+        .auth-box h2 {
+          margin: 0 0 22px;
+          font-size: 18px;
+          font-weight: 700;
+          color: #111827;
+          text-align: center;
+        }
+        .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .field label { font-size: 13px; font-weight: 600; color: #374151; }
+        .field input {
+          width: 100%;
+          padding: 13px 14px;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 12px;
+          font-size: 15px;
+          font-family: inherit;
+          background: #fafafa;
+          outline: none;
+          box-sizing: border-box;
+          transition: border-color 0.15s;
+          -webkit-appearance: none;
+        }
+        .field input:focus { border-color: #6b2737; background: #fff; }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { padding-right: 44px; }
+        .pass-toggle {
+          position: absolute;
+          right: 13px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 17px;
+          color: #9ca3af;
+          padding: 0;
+          line-height: 1;
+        }
+        .auth-error {
+          margin-bottom: 16px;
+          padding: 10px 14px;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 10px;
+          color: #b91c1c;
+          font-size: 13px;
+          text-align: center;
+        }
+        .auth-submit {
+          width: 100%;
+          padding: 14px;
+          background: #6b2737;
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 700;
+          font-family: inherit;
+          cursor: pointer;
+          margin-top: 6px;
+          transition: background 0.15s;
+          -webkit-appearance: none;
+        }
+        .auth-submit:hover:not(:disabled) { background: #5a2030; }
+        .auth-submit:disabled { background: #d1d5db; cursor: not-allowed; }
+        .auth-link { margin: 6px 0 0; font-size: 13px; color: #6b2737; text-align: left; }
+        .auth-link a { color: #6b2737; text-decoration: none; }
+        .auth-footer { margin-top: 18px; text-align: center; font-size: 13px; color: #6b7280; }
+        .auth-footer a { color: #6b2737; font-weight: 700; text-decoration: none; }
+        @media (min-width: 640px) {
+          .auth-logo img { width: 120px; height: 120px; }
+          .auth-logo h1 { font-size: 26px; }
+          .auth-box { padding: 36px 32px; }
+        }
+      `}</style>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
-          <img
-            src="/logo.PNG"
-            alt="دليلك AI"
-            style={{ width: 120, height: 120, objectFit: 'contain', mixBlendMode: 'multiply' }}
-          />
-          <h1 style={{ margin: '8px 0 4px', fontSize: 22, fontWeight: 700, color: '#6b2737' }}>دليلك AI</h1>
-          <p style={{ margin: 0, fontSize: 13, color: '#9ca3af' }}>دليل المواطن اللبناني الذكي</p>
-        </div>
+      <div className="auth-page">
+        <div className="auth-card">
 
-        {/* Form */}
-        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #f0f0f0', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', padding: '28px 24px' }}>
-          <h2 style={{ margin: '0 0 20px', fontSize: 18, fontWeight: 700, color: '#1f2937', textAlign: 'center' }}>تسجيل الدخول</h2>
+          <div className="auth-logo">
+            <img src="/logo.PNG" alt="دليلك AI" />
+            <h1>دليلك AI</h1>
+            <p>دليل المواطن اللبناني الذكي</p>
+          </div>
 
-          {error && (
-            <div style={{ marginBottom: 16, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
-              {error}
-            </div>
-          )}
+          <div className="auth-box">
+            <h2>تسجيل الدخول</h2>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>
-                اسم المستخدم أو البريد الإلكتروني
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                placeholder="اسم المستخدم أو البريد"
-                required
-                autoFocus
-                dir="auto"
-                style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #e5e7eb', borderRadius: 12, fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: '#fafafa' }}
-                onFocus={e => e.currentTarget.style.borderColor = '#6b2737'}
-                onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
-              />
-            </div>
+            {error && <div className="auth-error">{error}</div>}
 
-            <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>كلمة المرور</label>
-              <div style={{ position: 'relative' }}>
+            <form onSubmit={handleSubmit}>
+              <div className="field">
+                <label>اسم المستخدم أو البريد الإلكتروني</label>
                 <input
-                  type={showPass ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  type="text"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  placeholder="اسم المستخدم أو البريد"
                   required
-                  autoComplete="current-password"
-                  style={{ width: '100%', padding: '12px 40px 12px 14px', border: '1.5px solid #e5e7eb', borderRadius: 12, fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: '#fafafa', direction: 'ltr', textAlign: 'left' }}
-                  onFocus={e => e.currentTarget.style.borderColor = '#6b2737'}
-                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
+                  autoFocus
+                  dir="auto"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(s => !s)}
-                  tabIndex={-1}
-                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: '#9ca3af', padding: 0 }}
-                >
-                  {showPass ? '🙈' : '👁'}
-                </button>
               </div>
+
+              <div className="field">
+                <label>كلمة المرور</label>
+                <div className="pass-wrap">
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    autoComplete="current-password"
+                    style={{ direction: 'ltr', textAlign: 'left' }}
+                  />
+                  <button type="button" className="pass-toggle" onClick={() => setShowPass(s => !s)} tabIndex={-1}>
+                    {showPass ? '🙈' : '👁'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="auth-link">
+                <Link href="/forgot-password">نسيت كلمة المرور؟</Link>
+              </div>
+
+              <button type="submit" className="auth-submit" disabled={loading}>
+                {loading ? 'جاري الدخول...' : 'دخول'}
+              </button>
+            </form>
+
+            <div className="auth-footer">
+              ليس لديك حساب؟{' '}
+              <Link href="/register">سجّل الآن — مجاناً لـ 3 أيام</Link>
             </div>
+          </div>
 
-            <div style={{ textAlign: 'right' }}>
-              <Link href="/forgot-password" style={{ fontSize: 12, color: '#6b2737', textDecoration: 'none' }}>
-                نسيت كلمة المرور؟
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ padding: '13px', background: loading ? '#9ca3af' : '#6b2737', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4 }}
-            >
-              {loading ? 'جاري الدخول...' : 'دخول'}
-            </button>
-          </form>
-
-          <p style={{ margin: '20px 0 0', textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
-            ليس لديك حساب؟{' '}
-            <Link href="/register" style={{ color: '#6b2737', fontWeight: 700, textDecoration: 'none' }}>
-              سجّل الآن — مجاناً لـ 3 أيام
-            </Link>
-          </p>
         </div>
-
       </div>
-    </div>
+    </>
   )
 }

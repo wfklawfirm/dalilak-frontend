@@ -4,26 +4,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { apiRegister, setToken, setUser } from '@/lib/auth'
 
-const INPUT_STYLE: React.CSSProperties = {
-  width: '100%',
-  padding: '12px 14px',
-  border: '1.5px solid #e5e7eb',
-  borderRadius: 12,
-  fontSize: 14,
-  outline: 'none',
-  boxSizing: 'border-box',
-  fontFamily: 'inherit',
-  background: '#fafafa',
-}
-
-const LABEL_STYLE: React.CSSProperties = {
-  display: 'block',
-  fontSize: 13,
-  fontWeight: 600,
-  color: '#374151',
-  marginBottom: 6,
-}
-
 export default function RegisterPage() {
   const router = useRouter()
   const [form, setForm] = useState({
@@ -35,15 +15,6 @@ export default function RegisterPage() {
 
   function update(k: string, v: string) {
     setForm(f => ({ ...f, [k]: v }))
-  }
-
-  function focusStyle(e: React.FocusEvent<HTMLInputElement>) {
-    e.currentTarget.style.borderColor = '#6b2737'
-    e.currentTarget.style.background = '#fff'
-  }
-  function blurStyle(e: React.FocusEvent<HTMLInputElement>) {
-    e.currentTarget.style.borderColor = '#e5e7eb'
-    e.currentTarget.style.background = '#fafafa'
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -71,159 +42,266 @@ export default function RegisterPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
-      <div style={{ width: '100%', maxWidth: 360 }}>
+    <>
+      <style>{`
+        html, body { margin: 0; padding: 0; background: #fff; }
+        .reg-page {
+          min-height: 100vh;
+          min-height: 100dvh;
+          background: #fff;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding: 20px 16px 32px;
+        }
+        .reg-card {
+          width: 100%;
+          max-width: 420px;
+          padding-top: 8px;
+        }
+        .reg-logo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+        .reg-logo img {
+          width: 90px;
+          height: 90px;
+          object-fit: contain;
+          mix-blend-mode: multiply;
+        }
+        .reg-logo h1 {
+          margin: 8px 0 0;
+          font-size: 22px;
+          font-weight: 700;
+          color: #6b2737;
+        }
+        .reg-box {
+          background: #fff;
+          border: 1px solid #ebebeb;
+          border-radius: 20px;
+          box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+          padding: 24px 20px 20px;
+        }
+        .reg-box h2 {
+          margin: 0 0 4px;
+          font-size: 17px;
+          font-weight: 700;
+          color: #111827;
+          text-align: center;
+        }
+        .reg-badge {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 16px;
+        }
+        .reg-badge span {
+          background: #dcfce7;
+          color: #16a34a;
+          padding: 3px 12px;
+          border-radius: 999px;
+          font-size: 12px;
+          font-weight: 600;
+        }
+        .reg-error {
+          margin-bottom: 14px;
+          padding: 10px 14px;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 10px;
+          color: #b91c1c;
+          font-size: 13px;
+          text-align: center;
+        }
+        .reg-form { display: flex; flex-direction: column; gap: 12px; }
+        .field label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          color: #374151;
+          margin-bottom: 5px;
+        }
+        .field input {
+          width: 100%;
+          padding: 12px 14px;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 12px;
+          font-size: 15px;
+          font-family: inherit;
+          background: #fafafa;
+          outline: none;
+          box-sizing: border-box;
+          transition: border-color 0.15s;
+          -webkit-appearance: none;
+        }
+        .field input:focus { border-color: #6b2737; background: #fff; }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { padding-right: 44px; }
+        .pass-toggle {
+          position: absolute;
+          right: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 16px;
+          color: #9ca3af;
+          padding: 0;
+          line-height: 1;
+        }
+        .reg-submit {
+          width: 100%;
+          padding: 14px;
+          background: #6b2737;
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 700;
+          font-family: inherit;
+          cursor: pointer;
+          margin-top: 4px;
+          transition: background 0.15s;
+          -webkit-appearance: none;
+        }
+        .reg-submit:hover:not(:disabled) { background: #5a2030; }
+        .reg-submit:disabled { background: #d1d5db; cursor: not-allowed; }
+        .reg-terms {
+          margin: 10px 0 0;
+          font-size: 11px;
+          color: #9ca3af;
+          text-align: center;
+        }
+        .reg-footer {
+          margin-top: 12px;
+          text-align: center;
+          font-size: 13px;
+          color: #6b7280;
+        }
+        .reg-footer a { color: #6b2737; font-weight: 700; text-decoration: none; }
+        @media (min-width: 640px) {
+          .reg-page { align-items: center; padding: 32px 16px; }
+          .reg-logo img { width: 110px; height: 110px; }
+          .reg-logo h1 { font-size: 24px; }
+          .reg-box { padding: 28px 28px 24px; }
+        }
+      `}</style>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
-          <img
-            src="/logo.PNG"
-            alt="دليلك AI"
-            style={{ width: 110, height: 110, objectFit: 'contain', mixBlendMode: 'multiply' }}
-          />
-          <h1 style={{ margin: '8px 0 0', fontSize: 22, fontWeight: 700, color: '#6b2737' }}>دليلك AI</h1>
-        </div>
+      <div className="reg-page">
+        <div className="reg-card">
 
-        {/* Form */}
-        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #f0f0f0', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', padding: '24px 24px 20px' }}>
-          <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#1f2937', textAlign: 'center' }}>إنشاء حساب جديد</h2>
-          <p style={{ margin: '0 0 18px', textAlign: 'center' }}>
-            <span style={{ display: 'inline-block', background: '#dcfce7', color: '#16a34a', padding: '3px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600 }}>
-              🎁 مجاني لمدة 3 أيام
-            </span>
-          </p>
+          <div className="reg-logo">
+            <img src="/logo.PNG" alt="دليلك AI" />
+            <h1>دليلك AI</h1>
+          </div>
 
-          {error && (
-            <div style={{ marginBottom: 14, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
-              {error}
-            </div>
-          )}
+          <div className="reg-box">
+            <h2>إنشاء حساب جديد</h2>
+            <div className="reg-badge"><span>🎁 مجاني لمدة 3 أيام</span></div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {error && <div className="reg-error">{error}</div>}
 
-            {/* Full name */}
-            <div>
-              <label style={LABEL_STYLE}>الاسم الكامل</label>
-              <input
-                type="text"
-                value={form.full_name}
-                onChange={e => update('full_name', e.target.value)}
-                placeholder="أحمد علي"
-                dir="auto"
-                style={INPUT_STYLE}
-                onFocus={focusStyle} onBlur={blurStyle}
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="reg-form">
 
-            {/* Username */}
-            <div>
-              <label style={LABEL_STYLE}>اسم المستخدم <span style={{ color: '#ef4444' }}>*</span></label>
-              <input
-                type="text"
-                value={form.username}
-                onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
-                placeholder="username"
-                required
-                minLength={3}
-                dir="ltr"
-                style={{ ...INPUT_STYLE, textAlign: 'left' }}
-                onFocus={focusStyle} onBlur={blurStyle}
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label style={LABEL_STYLE}>البريد الإلكتروني <span style={{ color: '#ef4444' }}>*</span></label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => update('email', e.target.value)}
-                placeholder="you@example.com"
-                required
-                dir="ltr"
-                style={{ ...INPUT_STYLE, textAlign: 'left' }}
-                onFocus={focusStyle} onBlur={blurStyle}
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label style={LABEL_STYLE}>رقم الهاتف</label>
-              <input
-                type="tel"
-                value={form.phone}
-                onChange={e => update('phone', e.target.value)}
-                placeholder="+961 xx xxx xxx"
-                dir="ltr"
-                style={{ ...INPUT_STYLE, textAlign: 'left' }}
-                onFocus={focusStyle} onBlur={blurStyle}
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label style={LABEL_STYLE}>كلمة المرور <span style={{ color: '#ef4444' }}>*</span></label>
-              <div style={{ position: 'relative' }}>
+              <div className="field">
+                <label>الاسم الكامل</label>
                 <input
-                  type={showPass ? 'text' : 'password'}
-                  value={form.password}
-                  onChange={e => update('password', e.target.value)}
-                  placeholder="min. 6 characters"
-                  required
-                  minLength={6}
-                  autoComplete="new-password"
-                  style={{ ...INPUT_STYLE, paddingRight: 40, direction: 'ltr', textAlign: 'left' }}
-                  onFocus={focusStyle} onBlur={blurStyle}
+                  type="text"
+                  value={form.full_name}
+                  onChange={e => update('full_name', e.target.value)}
+                  placeholder="أحمد علي"
+                  dir="auto"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(s => !s)}
-                  tabIndex={-1}
-                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, color: '#9ca3af', padding: 0 }}
-                >
-                  {showPass ? '🙈' : '👁'}
-                </button>
               </div>
-            </div>
 
-            {/* Confirm */}
-            <div>
-              <label style={LABEL_STYLE}>تأكيد كلمة المرور <span style={{ color: '#ef4444' }}>*</span></label>
-              <div style={{ position: 'relative' }}>
+              <div className="field">
+                <label>اسم المستخدم <span style={{color:'#ef4444'}}>*</span></label>
                 <input
-                  type={showPass ? 'text' : 'password'}
-                  value={form.confirm}
-                  onChange={e => update('confirm', e.target.value)}
-                  placeholder="repeat password"
+                  type="text"
+                  value={form.username}
+                  onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
+                  placeholder="username"
                   required
-                  autoComplete="new-password"
-                  style={{ ...INPUT_STYLE, paddingRight: 40, direction: 'ltr', textAlign: 'left' }}
-                  onFocus={focusStyle} onBlur={blurStyle}
+                  minLength={3}
+                  dir="ltr"
+                  style={{textAlign:'left'}}
                 />
               </div>
+
+              <div className="field">
+                <label>البريد الإلكتروني <span style={{color:'#ef4444'}}>*</span></label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={e => update('email', e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  dir="ltr"
+                  style={{textAlign:'left'}}
+                />
+              </div>
+
+              <div className="field">
+                <label>رقم الهاتف</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={e => update('phone', e.target.value)}
+                  placeholder="+961 xx xxx xxx"
+                  dir="ltr"
+                  style={{textAlign:'left'}}
+                />
+              </div>
+
+              <div className="field">
+                <label>كلمة المرور <span style={{color:'#ef4444'}}>*</span></label>
+                <div className="pass-wrap">
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={e => update('password', e.target.value)}
+                    placeholder="min. 6 characters"
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                    style={{direction:'ltr', textAlign:'left'}}
+                  />
+                  <button type="button" className="pass-toggle" onClick={() => setShowPass(s => !s)} tabIndex={-1}>
+                    {showPass ? '🙈' : '👁'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="field">
+                <label>تأكيد كلمة المرور <span style={{color:'#ef4444'}}>*</span></label>
+                <div className="pass-wrap">
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={form.confirm}
+                    onChange={e => update('confirm', e.target.value)}
+                    placeholder="repeat password"
+                    required
+                    autoComplete="new-password"
+                    style={{direction:'ltr', textAlign:'left'}}
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="reg-submit" disabled={loading}>
+                {loading ? 'جاري التسجيل...' : 'إنشاء الحساب'}
+              </button>
+            </form>
+
+            <p className="reg-terms">بالتسجيل توافق على شروط الاستخدام وسياسة الخصوصية</p>
+            <div className="reg-footer">
+              لديك حساب؟ <Link href="/login">سجّل الدخول</Link>
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{ marginTop: 6, padding: '13px', background: loading ? '#9ca3af' : '#6b2737', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
-            >
-              {loading ? 'جاري التسجيل...' : 'إنشاء الحساب'}
-            </button>
-          </form>
-
-          <p style={{ margin: '14px 0 0', fontSize: 11, color: '#9ca3af', textAlign: 'center' }}>
-            بالتسجيل توافق على شروط الاستخدام وسياسة الخصوصية
-          </p>
-          <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
-            لديك حساب؟{' '}
-            <Link href="/login" style={{ color: '#6b2737', fontWeight: 700, textDecoration: 'none' }}>
-              سجّل الدخول
-            </Link>
-          </p>
         </div>
-
       </div>
-    </div>
+    </>
   )
 }
