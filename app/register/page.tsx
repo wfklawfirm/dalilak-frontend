@@ -1,7 +1,6 @@
 'use client'
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { apiRegister, setToken, setUser } from '@/lib/auth'
 
@@ -10,6 +9,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     username: '', email: '', password: '', confirm: '', full_name: '', phone: ''
   })
+  const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -52,7 +52,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
-          <Image src="/logo.png" alt="دليلك AI" width={130} height={130} className="mb-1 drop-shadow-lg" style={{objectFit:'contain'}} />
+          <img src="/logo.PNG" alt="دليلك AI" width={130} height={130} className="mb-1 drop-shadow-lg" style={{objectFit:'contain'}} />
           <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
         </div>
 
@@ -131,31 +131,47 @@ export default function RegisterPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 كلمة المرور <span className="text-red-500">*</span>
               </label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={e => update('password', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="6 أحرف على الأقل"
-                required
-                minLength={6}
-                dir="ltr"
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={form.password}
+                  onChange={e => update('password', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
+                  placeholder="min. 6 characters"
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  inputMode="text"
+                  style={{ direction: 'ltr', textAlign: 'left' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(s => !s)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
+                  tabIndex={-1}
+                >
+                  {showPass ? '🙈' : '👁'}
+                </button>
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 تأكيد كلمة المرور <span className="text-red-500">*</span>
               </label>
-              <input
-                type="password"
-                value={form.confirm}
-                onChange={e => update('confirm', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="أعد كلمة المرور"
-                required
-                dir="ltr"
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={form.confirm}
+                  onChange={e => update('confirm', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
+                  placeholder="repeat password"
+                  required
+                  autoComplete="new-password"
+                  inputMode="text"
+                  style={{ direction: 'ltr', textAlign: 'left' }}
+                />
+              </div>
             </div>
 
             <button

@@ -1,7 +1,6 @@
 'use client'
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { apiLogin, setToken, setUser } from '@/lib/auth'
 
@@ -9,6 +8,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Image src="/logo.png" alt="دليلك AI" width={140} height={140} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
+          <img src="/logo.PNG" alt="دليلك AI" width={140} height={140} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
           <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
           <p className="text-sm text-gray-500 mt-1">دليل المواطن اللبناني الذكي</p>
         </div>
@@ -67,15 +67,27 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="••••••••"
-                required
-                dir="ltr"
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                  inputMode="text"
+                  style={{ direction: 'ltr', textAlign: 'left' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(s => !s)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
+                  tabIndex={-1}
+                >
+                  {showPass ? '🙈' : '👁'}
+                </button>
+              </div>
             </div>
 
             <div className="text-left">

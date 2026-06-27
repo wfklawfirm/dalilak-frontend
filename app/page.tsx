@@ -78,19 +78,9 @@ export default function Home() {
   useEffect(() => {
     const token = getToken()
     if (!token) { router.push('/login'); return }
-    // Verify token with backend (not just localStorage)
-    fetch(`${API_URL}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(async res => {
-      if (!res.ok) { clearToken(); router.push('/login'); return }
-      const data = await res.json()
-      setCurrentUser(data)
-      setAuthChecked(true)
-    }).catch(() => {
-      // Network error — allow offline use if token exists
-      setCurrentUser(getUser())
-      setAuthChecked(true)
-    })
+    const u = getUser()
+    setCurrentUser(u)
+    setAuthChecked(true)
     // ping to keep Render alive
     fetch(`${API_URL}/ping`).catch(() => {})
   }, [])
@@ -127,7 +117,7 @@ export default function Home() {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) { alert('التعرف على الصوت غير مدعوم. استخدم Chrome أو Edge.'); return }
     const recognition = new SR()
-    recognition.lang = 'ar-LB'
+    recognition.lang = navigator.language || 'ar'
     recognition.continuous = false
     recognition.interimResults = true
     recognition.onresult = (e: any) => {
@@ -265,7 +255,7 @@ export default function Home() {
   const currentMode = MODES.find(m => m.id === mode)!
 
   if (!authChecked) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f0e8' }}>
       <div style={{ fontSize: 14, color: '#9ca3af' }}>جاري التحقق...</div>
     </div>
   )
@@ -273,7 +263,7 @@ export default function Home() {
   return (
     <>
       <style>{`
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #F7F4EF; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         textarea { font-family: inherit; }
         :root {
@@ -284,7 +274,7 @@ export default function Home() {
           --red-light: #FEF2F2;
           --gold: #B8860B;
           --gold-light: #FDF8E8;
-          --bg: #ffffff;
+          --bg: #F7F4EF;
           --card: #FFFFFF;
           --border: #EAE4D9;
           --border-strong: #D4C9B8;
@@ -554,10 +544,44 @@ export default function Home() {
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer style={{
           flexShrink: 0,
-          backgroundColor: 'transparent',
+          backgroundColor: '#fff',
+          borderTop: '1px solid var(--border)',
           paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
+          boxShadow: '0 -2px 12px rgba(0,0,0,0.04)',
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 12px 10px' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 12px 6px' }}>
+
+            {/* Mode pills */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              gap: 6, marginBottom: 8,
+            }}>
+              {MODES.map(m => {
+                const active = mode === m.id
+                return (
+                  <button key={m.id} type="button"
+                    className="mode-btn"
+                    onClick={() => setMode(m.id)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      padding: '5px 14px', borderRadius: 999, fontSize: 11.5,
+                      fontWeight: 600, cursor: 'pointer',
+                      border: active ? 'none' : '1.5px solid var(--border)',
+                      background: active
+                        ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                        : '#fff',
+                      color: active ? '#fff' : 'var(--text-3)',
+                      boxShadow: active ? '0 2px 8px rgba(139,26,26,0.3)' : 'none',
+                      fontFamily: 'inherit',
+                    }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.93)' }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}>
+                    <span>{m.icon}</span>
+                    <span>{m.label}</span>
+                  </button>
+                )
+              })}
+            </div>
 
             {/* File preview */}
             {attachedFile && (
@@ -626,39 +650,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* ── Mode selector — centered above input ── */}
-            <div style={{
-              display: 'flex', justifyContent: 'center', marginBottom: 10,
-            }}>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center',
-                background: '#f3f4f6', borderRadius: 999,
-                padding: '3px', gap: 2,
-              }}>
-                {MODES.map(m => {
-                  const active = mode === m.id
-                  return (
-                    <button key={m.id} type="button"
-                      className="mode-btn"
-                      onClick={() => setMode(m.id)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 5,
-                        padding: '6px 16px', borderRadius: 999, fontSize: 12,
-                        fontWeight: 600, cursor: 'pointer', border: 'none',
-                        background: active ? '#fff' : 'transparent',
-                        color: active ? 'var(--red)' : '#9ca3af',
-                        boxShadow: active ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.18s ease',
-                      }}>
-                      <span style={{ fontSize: 13 }}>{m.icon}</span>
-                      <span>{m.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
             {/* ── Input box ── */}
             <form onSubmit={handleSubmit}>
               <div className={inputFocused ? 'input-focused' : ''}
@@ -667,12 +658,9 @@ export default function Home() {
                   backgroundColor: '#fff',
                   border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
                   borderRadius: 20, padding: '6px 8px',
-                  boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
                   transition: 'all 0.2s ease',
                 }}>
-
-                {/* Input row */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
 
                 {/* Attach */}
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
@@ -768,9 +756,20 @@ export default function Home() {
                     </svg>
                   )}
                 </button>
-                </div>{/* end input row */}
-              </div>{/* end input box */}
+              </div>
 
+              {/* Bottom info bar */}
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                marginTop: 5, padding: '0 4px',
+              }}>
+                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
+                  {currentMode.icon} {currentMode.hint}
+                </span>
+                <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
+                  35 قطاعاً · 1,746 سجل
+                </span>
+              </div>
             </form>
 
           </div>
