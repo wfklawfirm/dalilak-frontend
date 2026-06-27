@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
@@ -345,12 +344,8 @@ export default function Home() {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Image src="/logo.PNG" alt="Dalilak AI" width={48} height={48}
-                style={{ objectFit: 'contain', flexShrink: 0 }}
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement
-                  el.style.display = 'none'
-                }} />
+              <img src="/logo.PNG" alt="Dalilak AI"
+                style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'multiply' }} />
               <div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
                   Dalilak <span style={{ color: 'var(--red)' }}>AI</span>
@@ -435,12 +430,8 @@ export default function Home() {
             }}>
 
               {/* Hero logo */}
-              <Image src="/logo.PNG" alt="Dalilak AI" width={130} height={130}
-                style={{ objectFit: 'contain', marginBottom: 16, filter: 'drop-shadow(0 4px 16px rgba(139,26,26,0.18))' }}
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement
-                  el.style.display = 'none'
-                }} />
+              <img src="/logo.PNG" alt="Dalilak AI"
+                style={{ width: 130, height: 130, objectFit: 'contain', marginBottom: 16, mixBlendMode: 'multiply' }} />
 
               <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
                 كيف يمكنني مساعدتك؟
