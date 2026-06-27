@@ -4,6 +4,26 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { apiRegister, setToken, setUser } from '@/lib/auth'
 
+const INPUT_STYLE: React.CSSProperties = {
+  width: '100%',
+  padding: '12px 14px',
+  border: '1.5px solid #e5e7eb',
+  borderRadius: 12,
+  fontSize: 14,
+  outline: 'none',
+  boxSizing: 'border-box',
+  fontFamily: 'inherit',
+  background: '#fafafa',
+}
+
+const LABEL_STYLE: React.CSSProperties = {
+  display: 'block',
+  fontSize: 13,
+  fontWeight: 600,
+  color: '#374151',
+  marginBottom: 6,
+}
+
 export default function RegisterPage() {
   const router = useRouter()
   const [form, setForm] = useState({
@@ -17,17 +37,20 @@ export default function RegisterPage() {
     setForm(f => ({ ...f, [k]: v }))
   }
 
+  function focusStyle(e: React.FocusEvent<HTMLInputElement>) {
+    e.currentTarget.style.borderColor = '#6b2737'
+    e.currentTarget.style.background = '#fff'
+  }
+  function blurStyle(e: React.FocusEvent<HTMLInputElement>) {
+    e.currentTarget.style.borderColor = '#e5e7eb'
+    e.currentTarget.style.background = '#fafafa'
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
-    if (form.password !== form.confirm) {
-      setError('كلمتا المرور غير متطابقتين')
-      return
-    }
-    if (form.password.length < 6) {
-      setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل')
-      return
-    }
+    if (form.password !== form.confirm) { setError('كلمتا المرور غير متطابقتين'); return }
+    if (form.password.length < 6) { setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return }
     setLoading(true)
     try {
       const data = await apiRegister({
@@ -48,128 +71,134 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
-      <div className="w-full max-w-sm">
+    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
+      <div style={{ width: '100%', maxWidth: 360 }}>
+
         {/* Logo */}
-        <div className="flex flex-col items-center mb-6">
-          <img src="/logo.PNG" alt="دليلك AI" width={130} height={130} className="mb-1 drop-shadow-lg" style={{objectFit:'contain'}} />
-          <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
+          <img
+            src="/logo.PNG"
+            alt="دليلك AI"
+            style={{ width: 110, height: 110, objectFit: 'contain', mixBlendMode: 'multiply' }}
+          />
+          <h1 style={{ margin: '8px 0 0', fontSize: 22, fontWeight: 700, color: '#6b2737' }}>دليلك AI</h1>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-2 text-center">إنشاء حساب جديد</h2>
-          <p className="text-sm text-center text-gray-500 mb-6">
-            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+        {/* Form */}
+        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #f0f0f0', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', padding: '24px 24px 20px' }}>
+          <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#1f2937', textAlign: 'center' }}>إنشاء حساب جديد</h2>
+          <p style={{ margin: '0 0 18px', textAlign: 'center' }}>
+            <span style={{ display: 'inline-block', background: '#dcfce7', color: '#16a34a', padding: '3px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600 }}>
               🎁 مجاني لمدة 3 أيام
             </span>
           </p>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
+            <div style={{ marginBottom: 14, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+            {/* Full name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
+              <label style={LABEL_STYLE}>الاسم الكامل</label>
               <input
                 type="text"
                 value={form.full_name}
                 onChange={e => update('full_name', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="أحمد علي"
                 dir="auto"
+                style={INPUT_STYLE}
+                onFocus={focusStyle} onBlur={blurStyle}
               />
             </div>
 
+            {/* Username */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                اسم المستخدم <span className="text-red-500">*</span>
-              </label>
+              <label style={LABEL_STYLE}>اسم المستخدم <span style={{ color: '#ef4444' }}>*</span></label>
               <input
                 type="text"
                 value={form.username}
                 onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="username"
                 required
                 minLength={3}
                 dir="ltr"
+                style={{ ...INPUT_STYLE, textAlign: 'left' }}
+                onFocus={focusStyle} onBlur={blurStyle}
               />
             </div>
 
+            {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                البريد الإلكتروني <span className="text-red-500">*</span>
-              </label>
+              <label style={LABEL_STYLE}>البريد الإلكتروني <span style={{ color: '#ef4444' }}>*</span></label>
               <input
                 type="email"
                 value={form.email}
                 onChange={e => update('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="you@example.com"
                 required
                 dir="ltr"
+                style={{ ...INPUT_STYLE, textAlign: 'left' }}
+                onFocus={focusStyle} onBlur={blurStyle}
               />
             </div>
 
+            {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
+              <label style={LABEL_STYLE}>رقم الهاتف</label>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={e => update('phone', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="+961 xx xxx xxx"
                 dir="ltr"
+                style={{ ...INPUT_STYLE, textAlign: 'left' }}
+                onFocus={focusStyle} onBlur={blurStyle}
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                كلمة المرور <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
+              <label style={LABEL_STYLE}>كلمة المرور <span style={{ color: '#ef4444' }}>*</span></label>
+              <div style={{ position: 'relative' }}>
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.password}
                   onChange={e => update('password', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
                   placeholder="min. 6 characters"
                   required
                   minLength={6}
                   autoComplete="new-password"
-                  inputMode="text"
-                  style={{ direction: 'ltr', textAlign: 'left' }}
+                  style={{ ...INPUT_STYLE, paddingRight: 40, direction: 'ltr', textAlign: 'left' }}
+                  onFocus={focusStyle} onBlur={blurStyle}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(s => !s)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
                   tabIndex={-1}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, color: '#9ca3af', padding: 0 }}
                 >
                   {showPass ? '🙈' : '👁'}
                 </button>
               </div>
             </div>
 
+            {/* Confirm */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                تأكيد كلمة المرور <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
+              <label style={LABEL_STYLE}>تأكيد كلمة المرور <span style={{ color: '#ef4444' }}>*</span></label>
+              <div style={{ position: 'relative' }}>
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.confirm}
                   onChange={e => update('confirm', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
                   placeholder="repeat password"
                   required
                   autoComplete="new-password"
-                  inputMode="text"
-                  style={{ direction: 'ltr', textAlign: 'left' }}
+                  style={{ ...INPUT_STYLE, paddingRight: 40, direction: 'ltr', textAlign: 'left' }}
+                  onFocus={focusStyle} onBlur={blurStyle}
                 />
               </div>
             </div>
@@ -177,23 +206,23 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] transition-colors disabled:opacity-60 mt-2"
+              style={{ marginTop: 6, padding: '13px', background: loading ? '#9ca3af' : '#6b2737', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}
             >
               {loading ? 'جاري التسجيل...' : 'إنشاء الحساب'}
             </button>
           </form>
 
-          <p className="mt-4 text-xs text-gray-400 text-center">
+          <p style={{ margin: '14px 0 0', fontSize: 11, color: '#9ca3af', textAlign: 'center' }}>
             بالتسجيل توافق على شروط الاستخدام وسياسة الخصوصية
           </p>
-
-          <div className="mt-4 text-center text-sm text-gray-500">
+          <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
             لديك حساب؟{' '}
-            <Link href="/login" className="text-[#6b2737] font-semibold hover:underline">
+            <Link href="/login" style={{ color: '#6b2737', fontWeight: 700, textDecoration: 'none' }}>
               سجّل الدخول
             </Link>
-          </div>
+          </p>
         </div>
+
       </div>
     </div>
   )

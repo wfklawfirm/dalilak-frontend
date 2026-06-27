@@ -29,69 +29,76 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      <div className="w-full max-w-sm">
+    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
+      <div style={{ width: '100%', maxWidth: 360 }}>
+
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <img src="/logo.PNG" alt="دليلك AI" width={140} height={140} className="mb-2 drop-shadow-lg" style={{objectFit:'contain'}} />
-          <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
-          <p className="text-sm text-gray-500 mt-1">دليل المواطن اللبناني الذكي</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 32 }}>
+          <img
+            src="/logo.PNG"
+            alt="دليلك AI"
+            style={{ width: 120, height: 120, objectFit: 'contain', mixBlendMode: 'multiply' }}
+          />
+          <h1 style={{ margin: '8px 0 4px', fontSize: 22, fontWeight: 700, color: '#6b2737' }}>دليلك AI</h1>
+          <p style={{ margin: 0, fontSize: 13, color: '#9ca3af' }}>دليل المواطن اللبناني الذكي</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">تسجيل الدخول</h2>
+        {/* Form */}
+        <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #f0f0f0', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', padding: '28px 24px' }}>
+          <h2 style={{ margin: '0 0 20px', fontSize: 18, fontWeight: 700, color: '#1f2937', textAlign: 'center' }}>تسجيل الدخول</h2>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
+            <div style={{ marginBottom: 16, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: 13, textAlign: 'center' }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>
                 اسم المستخدم أو البريد الإلكتروني
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
                 placeholder="اسم المستخدم أو البريد"
                 required
                 autoFocus
                 dir="auto"
+                style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #e5e7eb', borderRadius: 12, fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: '#fafafa' }}
+                onFocus={e => e.currentTarget.style.borderColor = '#6b2737'}
+                onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
-              <div className="relative">
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>كلمة المرور</label>
+              <div style={{ position: 'relative' }}>
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737] pr-10"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  inputMode="text"
-                  style={{ direction: 'ltr', textAlign: 'left' }}
+                  style={{ width: '100%', padding: '12px 40px 12px 14px', border: '1.5px solid #e5e7eb', borderRadius: 12, fontSize: 14, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit', background: '#fafafa', direction: 'ltr', textAlign: 'left' }}
+                  onFocus={e => e.currentTarget.style.borderColor = '#6b2737'}
+                  onBlur={e => e.currentTarget.style.borderColor = '#e5e7eb'}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(s => !s)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
                   tabIndex={-1}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: '#9ca3af', padding: 0 }}
                 >
                   {showPass ? '🙈' : '👁'}
                 </button>
               </div>
             </div>
 
-            <div className="text-left">
-              <Link href="/forgot-password" className="text-sm text-[#6b2737] hover:underline">
+            <div style={{ textAlign: 'right' }}>
+              <Link href="/forgot-password" style={{ fontSize: 12, color: '#6b2737', textDecoration: 'none' }}>
                 نسيت كلمة المرور؟
               </Link>
             </div>
@@ -99,19 +106,20 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ padding: '13px', background: loading ? '#9ca3af' : '#6b2737', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4 }}
             >
               {loading ? 'جاري الدخول...' : 'دخول'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <p style={{ margin: '20px 0 0', textAlign: 'center', fontSize: 13, color: '#6b7280' }}>
             ليس لديك حساب؟{' '}
-            <Link href="/register" className="text-[#6b2737] font-semibold hover:underline">
+            <Link href="/register" style={{ color: '#6b2737', fontWeight: 700, textDecoration: 'none' }}>
               سجّل الآن — مجاناً لـ 3 أيام
             </Link>
-          </div>
+          </p>
         </div>
+
       </div>
     </div>
   )
