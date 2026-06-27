@@ -498,6 +498,28 @@ export default function Home() {
               {/* ── Right controls ── */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
 
+                {/* Home button — always visible when in chat */}
+                {messages.length > 0 && (
+                  <button
+                    onClick={() => setMessages([])}
+                    title={isAr ? 'الصفحة الرئيسية' : 'Home'}
+                    style={{
+                      width: 34, height: 34, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.35)',
+                      background: 'rgba(255,255,255,0.15)', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transition: 'all 0.15s', flexShrink: 0,
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.28)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}
+                    onTouchStart={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.28)')}
+                    onTouchEnd={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.15)')}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
+                    </svg>
+                  </button>
+                )}
+
                 {/* Lang toggle — always visible */}
                 <button className="lang-btn" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{
                   fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 20,
@@ -690,6 +712,31 @@ export default function Home() {
 
             /* ── Chat Messages ── */
             <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
+              {/* Home button — visible on mobile inside chat */}
+              <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
+                <button
+                  onClick={() => setMessages([])}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '6px 14px', borderRadius: 20,
+                    background: '#fff', border: '1.5px solid #e5e7eb',
+                    fontSize: 12, color: '#6b7280', fontWeight: 600,
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.color = '#6b7280' }}
+                  onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#8B1A1A' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#6b7280' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
+                  </svg>
+                  {isAr ? 'الرئيسية' : 'Home'}
+                </button>
+              </div>
+
               {messages.map((msg, i) => (
                 <div key={i} className="msg-in"><ChatMessage msg={msg} /></div>
               ))}
