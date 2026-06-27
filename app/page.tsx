@@ -589,6 +589,7 @@ export default function Home() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                       textAlign: 'center',
                       direction: isAr ? 'rtl' : 'ltr',
+                      unicodeBidi: 'embed',
                     }}
                     onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.background = 'var(--red-light)' }}
                     onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = '#fff' }}>
