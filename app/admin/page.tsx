@@ -59,15 +59,21 @@ export default function AdminPage() {
   }, [])
 
   async function loadStats() {
-    try { setStats(await adminGetStats()) } catch {}
+    try { setStats(await adminGetStats()) } catch (e: any) { flash(e.message || 'خطأ في تحميل الإحصائيات', true) }
   }
 
   async function loadUsers() {
-    try { setUsers((await adminListUsers()).users) } catch {}
+    try { setUsers((await adminListUsers()).users) } catch (e: any) { flash(e.message || 'خطأ في تحميل المستخدمين', true) }
   }
 
   async function loadResets() {
-    try { setResets((await adminGetResets()).reset_codes) } catch {}
+    try { setResets((await adminGetResets()).reset_codes) } catch (e: any) { flash(e.message || 'خطأ في تحميل الرموز', true) }
+  }
+
+  async function refreshAll() {
+    setLoading(true)
+    await Promise.all([loadStats(), loadUsers()])
+    setLoading(false)
   }
 
   function flash(m: string, isErr = false) {
@@ -135,6 +141,10 @@ export default function AdminPage() {
           </div>
         </div>
         <div className="flex gap-3">
+          <button onClick={refreshAll} disabled={loading}
+            className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50">
+            {loading ? '...' : '🔄 تحديث'}
+          </button>
           <button onClick={() => router.push('/')} className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
             التطبيق
           </button>
