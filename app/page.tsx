@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
 import GuidedFlow from '@/components/GuidedFlow'
+import MobileMenu from '@/components/MobileMenu'
+import ModeSelector from '@/components/MobileModeSheet'
 import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -450,6 +452,19 @@ export default function Home() {
           .bottom-nav-wrapper { display: block !important; position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 100; }
           .bottom-nav-padding { padding-bottom: 64px !important; }
         }
+        /* ── Mode selector responsive ── */
+        .mode-mobile { display: none; }
+        .mode-desktop { display: flex; justify-content: center; }
+        @media (max-width: 640px) {
+          .mode-mobile { display: flex; justify-content: center; }
+          .mode-desktop { display: none; }
+        }
+        /* ── Header hamburger (mobile only) ── */
+        .hdr-hamburger { display: none; }
+        @media (max-width: 640px) {
+          .hdr-hamburger { display: flex !important; }
+          .hdr-extra-desktop { display: none !important; }
+        }
         /* ── Header responsive ── */
         .hdr-contact { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
         .hdr-extra   { display: flex; align-items: center; gap: 6px; }
@@ -566,14 +581,31 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Account / Logout */}
-                <button onClick={() => router.push('/my-files')} style={{
+                {/* Account — desktop only */}
+                <button onClick={() => router.push('/my-files')} className="hdr-extra-desktop" style={{
                   width: 32, height: 32, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.3)',
                   background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </button>
+
+                {/* Hamburger — mobile only */}
+                <button
+                  className="hdr-hamburger"
+                  onClick={() => setMobileMenuOpen(true)}
+                  aria-label={isAr ? 'القائمة' : 'Menu'}
+                  style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    border: '1.5px solid rgba(255,255,255,0.3)',
+                    background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
+                    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+                    <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16"/>
                   </svg>
                 </button>
 
@@ -839,35 +871,9 @@ export default function Home() {
               </div>
             )}
 
-            {/* ── Mode selector ── */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center',
-                background: '#f3f4f6', borderRadius: 999,
-                padding: '3px', gap: 2,
-              }}>
-                {MODES.map(m => {
-                  const active = mode === m.id
-                  return (
-                    <button key={m.id} type="button"
-                      className="mode-btn"
-                      onClick={() => setMode(m.id)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 5,
-                        padding: '6px 16px', borderRadius: 999, fontSize: 12,
-                        fontWeight: 600, cursor: 'pointer', border: 'none',
-                        background: active ? '#fff' : 'transparent',
-                        color: active ? 'var(--red)' : '#9ca3af',
-                        boxShadow: active ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.18s ease',
-                      }}>
-                      <span style={{ fontSize: 13 }}>{m.icon}</span>
-                      <span>{isAr ? m.label_ar : m.label_en}</span>
-                    </button>
-                  )
-                })}
-              </div>
+            {/* ── Mode selector — ModeSelector handles mobile/desktop ── */}
+            <div style={{ marginBottom: 10 }}>
+              <ModeSelector mode={mode} onSelect={setMode} isAr={isAr} />
             </div>
 
             {/* ── Input box ── */}
@@ -1007,6 +1013,17 @@ export default function Home() {
           onClose={() => setShowGuide(false)}
         />
       )}
+
+      {/* ══════════════ MOBILE MENU DRAWER ══════════════ */}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        isAr={isAr}
+        lang={lang}
+        onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+        onHome={() => setMessages([])}
+        currentUser={currentUser}
+      />
     </>
   )
 }
