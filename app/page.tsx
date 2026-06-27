@@ -218,9 +218,12 @@ export default function Home() {
     if (!hasContent || loading) return
 
     const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
+    const langInstruction = lang === 'en'
+      ? '[IMPORTANT: The user is writing in English. You MUST respond entirely in English. Do not use Arabic at all.] '
+      : ''
     const prefixedMessage = file
       ? text.trim() || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
-      : activeMode.prefix + text.trim()
+      : langInstruction + activeMode.prefix + text.trim()
 
     const displayText = file
       ? (text.trim() ? `${getFileIcon(file.type)} **${file.name}**\n${text.trim()}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
