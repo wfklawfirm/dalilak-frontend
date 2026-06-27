@@ -631,7 +631,7 @@ export default function Home() {
 
               {/* Hero */}
               <img src="/logo.PNG" alt="Dalilak AI"
-                style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 10, mixBlendMode: 'multiply' }} />
+                style={{ width: 'clamp(110px, 28vw, 160px)', height: 'clamp(110px, 28vw, 160px)', objectFit: 'contain', marginBottom: 8, mixBlendMode: 'multiply' }} />
               <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', margin: '0 0 4px', textAlign: 'center', letterSpacing: '-0.3px' }}>
                 {isAr ? 'كيف يمكنني مساعدتك في معاملتك اليوم؟' : 'How can I help with your procedure today?'}
               </h2>
