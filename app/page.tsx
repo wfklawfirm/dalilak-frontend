@@ -377,6 +377,14 @@ export default function Home() {
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
+        /* ── Header responsive ── */
+        .hdr-contact { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+        .hdr-extra   { display: flex; align-items: center; gap: 6px; }
+        @media (max-width: 520px) {
+          .hdr-extra   { display: none; }
+          .hdr-contact { gap: 5px; }
+          .hdr-contact .hdr-email-label { display: none; }
+        }
       `}</style>
 
       <div style={{
@@ -387,135 +395,119 @@ export default function Home() {
         paddingTop: 'var(--safe-top)',
       }}>
 
-        {/* ══════════════ HEADER — single merged bar ══════════════ */}
+        {/* ══════════════ HEADER — responsive single bar ══════════════ */}
         <header style={{
           flexShrink: 0,
           background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
           boxShadow: '0 2px 12px rgba(139,26,26,0.25)',
         }}>
-          <div style={{
-            maxWidth: 720, margin: '0 auto',
-            padding: '9px 16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          }}>
-            {/* ── Brand + Contact ── */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
-                Dalilak <span style={{ color: '#f5c842' }}>AI</span>
-              </div>
-              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.65)', fontWeight: 400 }}>
-                {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
-              </div>
-              {/* Contact row — phone number formatted per language */}
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                marginTop: 1,
-              }}>
-                <a href="tel:+9613460608" style={{
-                  color: 'rgba(255,255,255,0.8)', textDecoration: 'none',
-                  fontSize: 10, fontWeight: 500,
-                  display: 'flex', alignItems: 'center', gap: 3,
-                  direction: 'ltr', unicodeBidi: 'isolate',
-                }}>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
-                    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-                  </svg>
-                  <bdi dir="ltr" style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
-                    {isAr ? '00961 3 460 608' : '+961 3 460 608'}
-                  </bdi>
-                </a>
-                <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 9 }}>|</span>
-                <a href="mailto:wissam@aijur.ai" style={{
-                  color: 'rgba(255,255,255,0.8)', textDecoration: 'none',
-                  fontSize: 10, fontWeight: 500,
-                  display: 'flex', alignItems: 'center', gap: 3,
-                  direction: 'ltr', unicodeBidi: 'isolate',
-                }}>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
-                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                  </svg>
-                  wissam@aijur.ai
-                </a>
-              </div>
-            </div>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 14px' }}>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {/* ── Main row ── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
 
-              {/* Language toggle */}
-              <button
-                className="lang-btn"
-                onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
-                style={{
-                  fontSize: 11, fontWeight: 700,
-                  padding: '4px 12px', borderRadius: 20,
+              {/* Brand */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
+                  Dalilak <span style={{ color: '#f5c842' }}>AI</span>
+                </div>
+                <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.6)', fontWeight: 400, whiteSpace: 'nowrap' }}>
+                  {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
+                </div>
+
+                {/* Contact — always visible, wraps cleanly */}
+                <div className="hdr-contact">
+                  <a href="tel:+9613460608" style={{
+                    color: 'rgba(255,255,255,0.82)', textDecoration: 'none',
+                    fontSize: 10, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 3,
+                    direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap',
+                  }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+                      <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                    </svg>
+                    <bdi dir="ltr" style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
+                      {isAr ? '00961 3 460 608' : '+961 3 460 608'}
+                    </bdi>
+                  </a>
+                  <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 9 }}>|</span>
+                  <a href="mailto:wissam@aijur.ai" style={{
+                    color: 'rgba(255,255,255,0.82)', textDecoration: 'none',
+                    fontSize: 10, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 3,
+                    direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap',
+                  }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+                      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span className="hdr-email-label">wissam@aijur.ai</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* ── Right controls ── */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+
+                {/* Lang toggle — always visible */}
+                <button className="lang-btn" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{
+                  fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 20,
                   border: '1.5px solid rgba(255,255,255,0.35)',
                   background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
-                  fontFamily: 'inherit', color: '#fff',
-                  transition: 'all 0.15s', letterSpacing: '0.5px',
-                }}
-              >
-                {isAr ? 'EN' : 'AR'}
-              </button>
-
-              {messages.length > 0 && (
-                <button onClick={() => setMessages([])} style={{
-                  fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 11px',
-                  borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)',
-                  background: 'rgba(255,255,255,0.08)', cursor: 'pointer',
-                  fontFamily: 'inherit', fontWeight: 500,
+                  fontFamily: 'inherit', color: '#fff', transition: 'all 0.15s', letterSpacing: '0.5px',
                 }}>
-                  {isAr ? 'محادثة جديدة' : 'New Chat'}
+                  {isAr ? 'EN' : 'AR'}
                 </button>
-              )}
 
-              {/* Trial badge */}
-              {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
-                <div style={{
-                  fontSize: 10, color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
-                  background: 'rgba(255,255,255,0.1)',
-                  border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.4)' : 'rgba(253,230,138,0.4)'}`,
-                  borderRadius: 20, padding: '4px 10px', fontWeight: 600,
-                }}>
-                  ⏱️ {currentUser.days_left} {isAr ? (currentUser.days_left === 1 ? 'يوم' : 'أيام') : (currentUser.days_left === 1 ? 'day' : 'days')}
+                {/* Extra controls — hidden on mobile via .hdr-extra */}
+                <div className="hdr-extra">
+                  {messages.length > 0 && (
+                    <button onClick={() => setMessages([])} style={{
+                      fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 10px',
+                      borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)',
+                      background: 'rgba(255,255,255,0.08)', cursor: 'pointer', fontFamily: 'inherit',
+                    }}>
+                      {isAr ? 'محادثة جديدة' : 'New Chat'}
+                    </button>
+                  )}
+                  {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
+                    <div style={{
+                      fontSize: 10, color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
+                      background: 'rgba(255,255,255,0.1)',
+                      border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.4)' : 'rgba(253,230,138,0.4)'}`,
+                      borderRadius: 20, padding: '4px 9px', fontWeight: 600, whiteSpace: 'nowrap',
+                    }}>
+                      ⏱️ {currentUser.days_left} {isAr ? (currentUser.days_left === 1 ? 'يوم' : 'أيام') : (currentUser.days_left === 1 ? 'day' : 'days')}
+                    </div>
+                  )}
+                  {isAdmin() && (
+                    <button onClick={() => router.push('/admin')} style={{
+                      fontSize: 11, color: '#f5c842', padding: '4px 10px',
+                      borderRadius: 20, border: '1px solid rgba(245,200,66,0.4)',
+                      background: 'rgba(245,200,66,0.1)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                    }}>🛡️</button>
+                  )}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 8px',
+                    border: '1px solid rgba(34,197,94,0.3)',
+                  }}>
+                    <span style={{
+                      width: 6, height: 6, borderRadius: '50%', backgroundColor: '#4ade80',
+                      display: 'inline-block', boxShadow: '0 0 5px #4ade80', animation: 'pulse 2.5s infinite',
+                    }} />
+                    <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>
+                      {isAr ? 'متصل' : 'Online'}
+                    </span>
+                  </div>
                 </div>
-              )}
 
-              {/* Admin link */}
-              {isAdmin() && (
-                <button onClick={() => router.push('/admin')} style={{
-                  fontSize: 11, color: '#f5c842', padding: '4px 11px',
-                  borderRadius: 20, border: '1px solid rgba(245,200,66,0.4)',
-                  background: 'rgba(245,200,66,0.1)', cursor: 'pointer',
-                  fontFamily: 'inherit', fontWeight: 600,
+                {/* Logout — always visible */}
+                <button onClick={() => { clearToken(); router.push('/login') }} style={{
+                  fontSize: 11, color: 'rgba(255,255,255,0.7)', padding: '5px 10px',
+                  borderRadius: 20, border: '1px solid rgba(255,255,255,0.18)',
+                  background: 'none', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
                 }}>
-                  🛡️ Admin
+                  {isAr ? 'خروج' : 'Logout'}
                 </button>
-              )}
 
-              {/* Logout */}
-              <button onClick={() => { clearToken(); router.push('/login') }} style={{
-                fontSize: 11, color: 'rgba(255,255,255,0.65)', padding: '4px 10px',
-                borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)',
-                background: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              }}>
-                {isAr ? 'خروج' : 'Logout'}
-              </button>
-
-              {/* Online dot */}
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 4,
-                background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 9px',
-                border: '1px solid rgba(34,197,94,0.3)',
-              }}>
-                <span style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  backgroundColor: '#4ade80', display: 'inline-block',
-                  boxShadow: '0 0 5px #4ade80',
-                  animation: 'pulse 2.5s infinite',
-                }} />
-                <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>
-                  {isAr ? 'متصل' : 'Online'}
-                </span>
               </div>
             </div>
           </div>
