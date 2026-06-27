@@ -42,11 +42,19 @@ const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: strin
   },
 ]
 
-const SUGGESTIONS = [
+const SUGGESTION_POOL = [
   { icon: '📋', title_ar: 'المعاملات الرسمية', desc_ar: 'جوازات، هويات، وثائق رسمية', title_en: 'Official Transactions', desc_en: 'Passports, IDs, official documents' },
   { icon: '🏛️', title_ar: 'الإجراءات الحكومية', desc_ar: 'تسجيل شركات، عقارات، سيارات', title_en: 'Gov. Procedures', desc_en: 'Companies, real estate, vehicles' },
   { icon: '👶', title_ar: 'الأحوال الشخصية', desc_ar: 'ولادة، زواج، وفاة، طلاق', title_en: 'Civil Status', desc_en: 'Birth, marriage, death, divorce' },
   { icon: '🎓', title_ar: 'التعليم والعمل', desc_ar: 'شهادات، تصاريح، حقوق العمال', title_en: 'Education & Work', desc_en: 'Degrees, permits, labor rights' },
+  { icon: '🏠', title_ar: 'العقارات والبناء', desc_ar: 'تصاريح، ملكية، رخص بناء', title_en: 'Real Estate', desc_en: 'Permits, ownership, construction' },
+  { icon: '🚗', title_ar: 'المركبات والسير', desc_ar: 'تسجيل، رخص قيادة، مخالفات', title_en: 'Vehicles & Traffic', desc_en: 'Registration, licenses, fines' },
+  { icon: '⚖️', title_ar: 'الحقوق القانونية', desc_ar: 'دعاوى، طعون، استئنافات', title_en: 'Legal Rights', desc_en: 'Lawsuits, appeals, disputes' },
+  { icon: '💼', title_ar: 'الأعمال والتجارة', desc_ar: 'تراخيص، ضرائب، شركات', title_en: 'Business & Trade', desc_en: 'Licenses, taxes, companies' },
+  { icon: '🏥', title_ar: 'الصحة والضمان', desc_ar: 'ضمان اجتماعي، تأمين، صحة', title_en: 'Health & Insurance', desc_en: 'Social security, coverage' },
+  { icon: '✈️', title_ar: 'السفر والإقامة', desc_ar: 'تأشيرات، إقامة، جوازات', title_en: 'Travel & Residency', desc_en: 'Visas, residency, passports' },
+  { icon: '🌍', title_ar: 'الأجانب في لبنان', desc_ar: 'إقامة، عمل، تجنيس', title_en: 'Foreigners in Lebanon', desc_en: 'Residency, work permits' },
+  { icon: '👴', title_ar: 'الضمان والتقاعد', desc_ar: 'معاشات، تقاعد، مستحقات', title_en: 'Pension & Retirement', desc_en: 'Pensions, benefits, rights' },
 ]
 
 const QUESTION_POOL_AR = [
@@ -108,6 +116,7 @@ export default function Home() {
   const [footerBottom, setFooterBottom] = useState(0)
   const [inputFocused, setInputFocused] = useState(false)
   const [visibleQ, setVisibleQ] = useState<string[]>([])
+  const [visibleS, setVisibleS] = useState<typeof SUGGESTION_POOL>([])
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -134,10 +143,14 @@ export default function Home() {
     fetch(`${API_URL}/ping`).catch(() => {})
   }, [])
 
-  // ── Auto-rotate quick questions ───────────────────────────
+  // ── Auto-rotate questions + suggestion cards ──────────────
   useEffect(() => {
-    setVisibleQ(shufflePick(pool, 4))
-    const interval = setInterval(() => setVisibleQ(shufflePick(pool, 4)), 8000)
+    const refresh = () => {
+      setVisibleQ(shufflePick(pool, 4))
+      setVisibleS(shufflePick(SUGGESTION_POOL, 4))
+    }
+    refresh()
+    const interval = setInterval(refresh, 8000)
     return () => clearInterval(interval)
   }, [lang])
 
@@ -544,7 +557,7 @@ export default function Home() {
                 display: 'grid', gridTemplateColumns: '1fr 1fr',
                 gap: 10, width: '100%', maxWidth: 360, marginBottom: 14,
               }}>
-                {SUGGESTIONS.map((s, i) => (
+                {visibleS.map((s, i) => (
                   <button key={i}
                     className="suggestion-card"
                     onClick={() => sendMessage(isAr ? (s.title_ar + ' — ' + s.desc_ar) : (s.title_en + ' — ' + s.desc_en))}
@@ -557,6 +570,7 @@ export default function Home() {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                       transition: 'all 0.2s ease', fontFamily: 'inherit',
                       textAlign: 'center',
+                      animation: 'slideQ 0.35s ease',
                     }}
                     onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)' }}
                     onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)' }}>
