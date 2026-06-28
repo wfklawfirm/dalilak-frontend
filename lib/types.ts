@@ -59,7 +59,7 @@ export interface AgentResponse {
 
 // ── Procedure Data Model ──────────────────────────────────────────────────────
 
-export type Country = 'lebanon' | 'syria' | 'both'
+export type Country = 'lebanon' | 'syria' | 'both' | 'unknown'
 export type Complexity = 'easy' | 'medium' | 'complex'
 export type ProcedureStatus = 'active' | 'inactive' | 'draft'
 
@@ -214,4 +214,202 @@ export interface FeedbackEntry {
   rating: FeedbackRating
   confidence?: ConfidenceLevel
   timestamp: number
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Phase 1 — Transaction Intelligence Contracts
+// ═══════════════════════════════════════════════════════════════
+
+// Country is defined above (extended to include 'unknown')
+
+export type UserType =
+  | 'citizen'
+  | 'lawyer'
+  | 'accountant'
+  | 'company'
+  | 'expat'
+  | 'service_office'
+  | 'ngo'
+
+export type TransactionStatus =
+  | 'draft'
+  | 'in_progress'
+  | 'ready'
+  | 'needs_review'
+  | 'completed'
+  | 'archived'
+
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical' | 'unknown'
+
+export type RecommendedAction =
+  | 'continue'
+  | 'verify'
+  | 'lawyer_review'
+  | 'admin_review'
+  | 'human_support'
+
+export type ActionType =
+  | 'upload_document'
+  | 'download_checklist'
+  | 'generate_pdf'
+  | 'generate_docx'
+  | 'start_guided_flow'
+  | 'ask_followup'
+  | 'request_human_review'
+  | 'verify_source'
+  | 'save_transaction'
+  | 'continue_transaction'
+  | 'analyze_document'
+  | 'contract_review'
+  | 'none'
+
+export interface RiskScore {
+  level: RiskLevel
+  score?: number
+  reasons: string[]
+  recommendedAction: RecommendedAction
+  factors?: string[]
+}
+
+export interface ConfidenceSummary {
+  level: 'high' | 'medium' | 'low' | 'unknown'
+  reason?: string | null
+  sourceCoverage?: 'strong' | 'partial' | 'weak' | 'none'
+}
+
+export interface NextAction {
+  id: string
+  label: string
+  description?: string
+  actionType: ActionType
+  locked?: boolean
+  requiredPlan?: 'trial' | 'paid' | 'admin'
+}
+
+export interface MissingDocument {
+  id: string
+  title: string
+  required: boolean
+  reason: string
+  priority: 'low' | 'medium' | 'high' | 'critical'
+  status: 'missing' | 'uploaded' | 'needs_review' | 'not_applicable'
+  relatedProcedureSlug?: string
+}
+
+export interface TransactionFile {
+  id: string
+  user_id?: string
+  title: string
+  procedure_slug?: string | null
+  country: string
+  user_type?: string | null
+  status: TransactionStatus
+  summary?: string | null
+  required_documents: Array<{ title: string; required: boolean; notes?: string }>
+  uploaded_doc_ids: string[]
+  missing_documents: MissingDocument[]
+  steps: Array<{ order?: number; title: string; description?: string; authority?: string }>
+  risk_level?: RiskLevel | null
+  risk_score?: number | null
+  risk_reasons: string[]
+  next_actions: NextAction[]
+  sources: Array<{ title: string; type?: string; ministry?: string }>
+  notes?: string | null
+  created_at?: string
+  updated_at?: string
+}
+
+export type DocumentType =
+  | 'lease_contract'
+  | 'sale_contract'
+  | 'power_of_attorney'
+  | 'civil_record'
+  | 'property_document'
+  | 'company_document'
+  | 'identity_document'
+  | 'invoice'
+  | 'certificate'
+  | 'correspondence'
+  | 'unknown'
+
+export interface ExtractedField {
+  label: string
+  value: string
+  confidence: 'high' | 'medium' | 'low'
+}
+
+export interface DocumentWarning {
+  level: 'info' | 'warning' | 'critical'
+  message: string
+}
+
+export interface DocumentAnalysis {
+  document_type: DocumentType
+  detected_country?: string
+  detected_language?: string
+  document_date?: string | null
+  extracted_fields: ExtractedField[]
+  parties?: Array<{ role: string; name: string | null }>
+  key_facts?: string[]
+  related_procedures?: string[]
+  missing_documents: MissingDocument[]
+  warnings: DocumentWarning[]
+  suggested_next_actions: Array<{ label: string; action_type: ActionType }>
+  confidence: ConfidenceSummary
+  summary: string
+}
+
+export interface ContractClause {
+  clause: string
+  found: boolean
+  strength: 'strong' | 'acceptable' | 'weak' | 'missing' | 'unclear'
+  notes?: string | null
+}
+
+export interface MissingClause {
+  clause: string
+  risk_level: 'low' | 'medium' | 'high' | 'critical'
+  why_it_matters: string
+  recommendation: string
+  suggested_clause_draft?: string | null
+}
+
+export interface ContractRiskReview {
+  document_type: string
+  summary: string
+  extracted_facts: {
+    parties?: string[]
+    subject?: string | null
+    property?: string | null
+    duration?: string | null
+    amount?: string | null
+    currency?: string | null
+    payment_terms?: string | null
+    start_date?: string | null
+    end_date?: string | null
+  }
+  key_clauses_found: ContractClause[]
+  missing_or_weak_clauses: MissingClause[]
+  party_risk_balance: {
+    favors?: 'party_one' | 'party_two' | 'balanced' | 'unclear'
+    notes: string
+  }
+  practical_recommendations: string[]
+  questions_for_lawyer: string[]
+  risk_score: RiskScore
+  confidence: ConfidenceSummary
+  disclaimer: string
+}
+
+export interface UploadedDocumentMeta {
+  id: string
+  file_name: string
+  file_type: string
+  file_size?: number | null
+  doc_type?: string | null
+  detected_country?: string | null
+  has_analysis: boolean
+  has_risk_review: boolean
+  created_at?: string
+  transaction_id?: string | null
 }

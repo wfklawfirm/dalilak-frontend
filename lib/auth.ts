@@ -207,3 +207,140 @@ export async function exportChecklist(data: Record<string, unknown>): Promise<st
   }
   return res.text()
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  Transaction Files API (Phase 3)
+// ═══════════════════════════════════════════════════════════════
+
+export async function createTransaction(data: {
+  title: string
+  procedure_slug?: string
+  country?: string
+  user_type?: string
+  summary?: string
+  notes?: string
+  required_documents?: unknown[]
+  steps?: unknown[]
+  sources?: unknown[]
+}) {
+  const res = await fetch(`${API}/transactions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في إنشاء ملف المعاملة')
+  return json
+}
+
+export async function listTransactions() {
+  const res = await fetch(`${API}/transactions`, { headers: authHeaders() })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في جلب ملفات المعاملات')
+  return json
+}
+
+export async function getTransaction(txId: string) {
+  const res = await fetch(`${API}/transactions/${txId}`, { headers: authHeaders() })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ')
+  return json
+}
+
+export async function updateTransaction(txId: string, data: Record<string, unknown>) {
+  const res = await fetch(`${API}/transactions/${txId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في تحديث ملف المعاملة')
+  return json
+}
+
+export async function deleteTransaction(txId: string) {
+  const res = await fetch(`${API}/transactions/${txId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في حذف ملف المعاملة')
+  return json
+}
+
+export async function scoreTransactionRisk(txId: string) {
+  const res = await fetch(`${API}/transactions/${txId}/risk-score`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في تقييم المخاطر')
+  return json
+}
+
+export async function createTransactionFromProcedure(slug: string) {
+  const res = await fetch(`${API}/procedures/${slug}/transaction-file`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في إنشاء الملف')
+  return json
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Document Intelligence API (Phases 4, 7, 9)
+// ═══════════════════════════════════════════════════════════════
+
+export async function uploadDocument(data: {
+  file_base64: string
+  file_name: string
+  file_type: string
+  transaction_id?: string
+}) {
+  const res = await fetch(`${API}/documents/upload`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في رفع الوثيقة')
+  return json
+}
+
+export async function listDocuments() {
+  const res = await fetch(`${API}/documents`, { headers: authHeaders() })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في جلب الوثائق')
+  return json
+}
+
+export async function analyzeDocument(docId: string) {
+  const res = await fetch(`${API}/documents/${docId}/analyze`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في تحليل الوثيقة')
+  return json
+}
+
+export async function reviewDocumentRisk(docId: string) {
+  const res = await fetch(`${API}/documents/${docId}/risk-review`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في مراجعة العقد')
+  return json
+}
+
+export async function deleteDocument(docId: string) {
+  const res = await fetch(`${API}/documents/${docId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ في حذف الوثيقة')
+  return json
+}

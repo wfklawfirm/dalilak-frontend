@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUser, clearToken, isAdmin, type User } from '@/lib/auth'
+import { getUser, clearToken, isAdmin, listTransactions, deleteTransaction, type User } from '@/lib/auth'
 import { getProcedureBySlug } from '@/lib/procedures'
-import type { SavedProcedure, SavedChecklist, FeedbackEntry } from '@/lib/types'
+import type { SavedProcedure, SavedChecklist, FeedbackEntry, TransactionFile } from '@/lib/types'
+import TransactionFilePanel from '@/components/TransactionFilePanel'
 
 const LS_QA = 'dalilak_qa_cache'
 const LS_SAVED_PROCS = 'dalilak_saved_procedures'
@@ -12,7 +13,18 @@ const LS_CHECKLISTS = 'dalilak_checklists'
 
 interface QAEntry { q: string; a: string; ts: number }
 
-type Tab = 'procedures' | 'checklists' | 'history' | 'account'
+type Tab = 'procedures' | 'checklists' | 'history' | 'account' | 'transactions'
+
+const RISK_LABEL: Record<string, string> = {
+  low: 'منخفض', medium: 'متوسط', high: 'عالٍ', critical: 'حرج', unknown: '—',
+}
+const RISK_COLOR: Record<string, string> = {
+  low: '#16a34a', medium: '#ca8a04', high: '#ea580c', critical: '#dc2626', unknown: '#9ca3af',
+}
+const STATUS_AR: Record<string, string> = {
+  draft: 'مسودة', in_progress: 'قيد التنفيذ', ready: 'جاهزة',
+  needs_review: 'تحتاج مراجعة', completed: 'مكتملة', archived: 'محفوظة',
+}
 
 export default function MyFilesPage() {
   const router = useRouter()
@@ -24,6 +36,10 @@ export default function MyFilesPage() {
   const [checklists, setChecklists] = useState<SavedChecklist[]>([])
   const [expandedChecklist, setExpandedChecklist] = useState<string | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [transactions, setTransactions] = useState<TransactionFile[]>([])
+  const [txLoading, setTxLoading] = useState(false)
+  const [txError, setTxError] = useState<string | null>(null)
+  const [selectedTx, setSelectedTx] = useState<TransactionFile | null>(null)
   const isAr = lang === 'ar'
 
   useEffect(() => {
@@ -69,6 +85,30 @@ export default function MyFilesPage() {
     setShowDeleteConfirm(false)
   }
 
+  const loadTransactions = useCallback(async () => {
+    setTxLoading(true)
+    setTxError(null)
+    try {
+      const data = await listTransactions()
+      setTransactions(data.transactions || [])
+    } catch (e: unknown) {
+      setTxError(e instanceof Error ? e.message : 'خطأ في جلب البيانات')
+    } finally {
+      setTxLoading(false)
+    }
+  }, [])
+
+  const handleDeleteTx = async (txId: string) => {
+    if (!confirm('هل تريد حذف هذا الملف؟')) return
+    try {
+      await deleteTransaction(txId)
+      setTransactions(prev => prev.filter(t => t.id !== txId))
+      if (selectedTx?.id === txId) setSelectedTx(null)
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'خطأ في الحذف')
+    }
+  }
+
   const logout = () => { clearToken(); router.push('/login') }
 
   const timeAgo = (ts: number) => {
@@ -85,8 +125,9 @@ export default function MyFilesPage() {
     return { label: isAr ? 'مجاني' : 'Free', color: '#6B7280', bg: '#F5F5F5' }
   }
 
-  const TABS: { key: Tab; icon: string; ar: string; en: string; count?: number }[] = [
+  const TABS: { key: Tab; icon: string; ar: string; en: string; count?: number; onActivate?: () => void }[] = [
     { key: 'procedures', icon: '📋', ar: 'معاملاتي', en: 'Procedures', count: savedProcs.length },
+    { key: 'transactions', icon: '🗂️', ar: 'ملفاتي', en: 'Files', count: transactions.length, onActivate: loadTransactions },
     { key: 'checklists', icon: '✅', ar: 'قوائمي', en: 'Checklists', count: checklists.length },
     { key: 'history', icon: '💬', ar: 'السجل', en: 'History', count: history.length },
     { key: 'account', icon: '👤', ar: 'الحساب', en: 'Account' },
@@ -120,11 +161,11 @@ export default function MyFilesPage() {
       <div style={{ background: '#fff', borderBottom: '1.5px solid #EAE4D9', overflowX: 'auto', scrollbarWidth: 'none' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex' }}>
           {TABS.map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{ flex: 1, padding: '10px 4px', background: 'none', border: 'none', borderBottom: tab === t.key ? '2.5px solid #8B1A1A' : '2.5px solid transparent', color: tab === t.key ? '#8B1A1A' : '#9C8E80', fontSize: 11.5, fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, transition: 'color 0.15s', whiteSpace: 'nowrap' }}>
+            <button key={t.key} onClick={() => { setTab(t.key); t.onActivate?.() }} style={{ flex: 1, padding: '10px 4px', background: 'none', border: 'none', borderBottom: tab === t.key ? '2.5px solid #6b2737' : '2.5px solid transparent', color: tab === t.key ? '#6b2737' : '#9C8E80', fontSize: 11.5, fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, transition: 'color 0.15s', whiteSpace: 'nowrap' }}>
               <span style={{ fontSize: 14 }}>{t.icon}</span>
               <span>{isAr ? t.ar : t.en}</span>
               {t.count !== undefined && t.count > 0 && (
-                <span style={{ fontSize: 9, background: tab === t.key ? '#8B1A1A' : '#EAE4D9', color: tab === t.key ? '#fff' : '#6B7280', borderRadius: 10, padding: '0 5px' }}>{t.count}</span>
+                <span style={{ fontSize: 9, background: tab === t.key ? '#6b2737' : '#EAE4D9', color: tab === t.key ? '#fff' : '#6B7280', borderRadius: 10, padding: '0 5px' }}>{t.count}</span>
               )}
             </button>
           ))}
@@ -165,6 +206,100 @@ export default function MyFilesPage() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── Transaction Files ── */}
+        {tab === 'transactions' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <h2 style={{ fontSize: 14, fontWeight: 800, color: '#1A1208', margin: 0 }}>ملفات المعاملات</h2>
+              <button
+                onClick={loadTransactions}
+                style={{ fontSize: 12, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}
+              >
+                تحديث
+              </button>
+            </div>
+
+            {txLoading && (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#9C8E80', fontSize: 13 }}>
+                جاري التحميل...
+              </div>
+            )}
+
+            {txError && (
+              <div style={{ background: '#FEF2F2', border: '1.5px solid #FECACA', borderRadius: 12, padding: '12px 16px', color: '#B91C1C', fontSize: 13, marginBottom: 14 }}>
+                {txError}
+              </div>
+            )}
+
+            {!txLoading && !txError && transactions.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '48px 0' }}>
+                <p style={{ fontSize: 32, margin: '0 0 12px' }}>🗂️</p>
+                <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 4px' }}>لا توجد ملفات معاملات بعد</p>
+                <p style={{ color: '#BDB5A8', fontSize: 11 }}>ابدأ معاملة من الشاشة الرئيسية لإنشاء ملف تلقائياً</p>
+              </div>
+            )}
+
+            {!txLoading && transactions.map((tx) => (
+              <div
+                key={tx.id}
+                style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '14px 16px', marginBottom: 12 }}
+              >
+                {/* Card header */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 10 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {tx.title}
+                    </p>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <span style={{ fontSize: 10, background: '#6b2737', color: '#fff', padding: '2px 8px', borderRadius: 20, fontWeight: 700 }}>
+                        {STATUS_AR[tx.status] || tx.status}
+                      </span>
+                      {tx.risk_level && tx.risk_level !== 'unknown' && (
+                        <span style={{ fontSize: 10, color: RISK_COLOR[tx.risk_level] || '#9ca3af', fontWeight: 700 }}>
+                          خطر {RISK_LABEL[tx.risk_level]}
+                        </span>
+                      )}
+                      {tx.missing_documents?.length > 0 && (
+                        <span style={{ fontSize: 10, color: '#dc2626', fontWeight: 600 }}>
+                          {tx.missing_documents.length} ناقص
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {tx.updated_at && (
+                    <p style={{ fontSize: 10, color: '#BDB5A8', flexShrink: 0 }}>
+                      {new Date(tx.updated_at).toLocaleDateString('ar-LB', { month: 'short', day: 'numeric' })}
+                    </p>
+                  )}
+                </div>
+
+                {/* Summary preview */}
+                {tx.summary && (
+                  <p style={{ fontSize: 11.5, color: '#6B7280', margin: '0 0 10px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {tx.summary}
+                  </p>
+                )}
+
+                {/* Actions */}
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={() => setSelectedTx(tx)}
+                    style={{ flex: 1, padding: '8px 12px', background: '#6b2737', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    فتح الملف
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTx(tx.id)}
+                    style={{ padding: '8px 12px', background: '#FEF2F2', color: '#DC2626', border: '1.5px solid #FECACA', borderRadius: 8, fontSize: 12, fontFamily: 'inherit', cursor: 'pointer' }}
+                  >
+                    حذف
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -307,6 +442,21 @@ export default function MyFilesPage() {
           </div>
         )}
       </div>
+
+      {/* Transaction File Modal */}
+      {selectedTx && (
+        <div
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: '0 0 0 0' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setSelectedTx(null) }}
+        >
+          <div style={{ width: '100%', maxWidth: 560, maxHeight: '90vh', overflow: 'hidden' }}>
+            <TransactionFilePanel
+              transaction={selectedTx}
+              onClose={() => setSelectedTx(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
