@@ -7,7 +7,7 @@ import BottomNav from '@/components/BottomNav'
 import GuidedFlow from '@/components/GuidedFlow'
 import MobileMenu from '@/components/MobileMenu'
 import ModeSelector from '@/components/MobileModeSheet'
-import { getToken, getUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
+import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 import { sanitizeInput } from '@/lib/sanitize'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -177,21 +177,35 @@ export default function Home() {
   }, [authChecked])
 
   // ── Auth guard ────────────────────────────────────────────
+  // Strategy: show UI instantly from cached user, validate in background.
+  // This hides the Render cold-start delay (up to 30s on free tier).
   useEffect(() => {
     const token = getToken()
     if (!token) { router.push('/login'); return }
+
+    // Wake the backend early (fire-and-forget — don't await)
+    fetch(`${API_URL}/ping`).catch(() => {})
+
+    // Instant render: use cached user if available
+    const cached = getUser()
+    if (cached) {
+      setCurrentUser(cached)
+      setAuthChecked(true)
+    }
+
+    // Background validation — update user data silently
     fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(async res => {
       if (!res.ok) { clearToken(); router.push('/login'); return }
       const data = await res.json()
+      setUser(data)          // refresh localStorage cache
       setCurrentUser(data)
-      setAuthChecked(true)
+      if (!cached) setAuthChecked(true)   // first login: no cache yet
     }).catch(() => {
-      setCurrentUser(getUser())
-      setAuthChecked(true)
+      // Network error — keep showing cached user
+      if (!cached) setAuthChecked(true)
     })
-    fetch(`${API_URL}/ping`).catch(() => {})
   }, [])
 
   // ── Auto-rotate questions + suggestion cards ──────────────
