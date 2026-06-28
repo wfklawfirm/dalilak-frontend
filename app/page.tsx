@@ -7,6 +7,7 @@ import BottomNav from '@/components/BottomNav'
 import GuidedFlow from '@/components/GuidedFlow'
 import MobileMenu from '@/components/MobileMenu'
 import ModeSelector from '@/components/MobileModeSheet'
+import TopNav from '@/components/TopNav'
 import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 import { sanitizeInput } from '@/lib/sanitize'
 
@@ -503,20 +504,6 @@ export default function Home() {
           .mode-mobile { display: flex; justify-content: center; }
           .mode-desktop { display: none; }
         }
-        /* ── Header hamburger (mobile only) ── */
-        .hdr-hamburger { display: none; }
-        @media (max-width: 640px) {
-          .hdr-hamburger { display: flex !important; }
-          .hdr-extra-desktop { display: none !important; }
-        }
-        /* ── Header responsive ── */
-        .hdr-contact { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
-        .hdr-extra   { display: flex; align-items: center; gap: 6px; }
-        @media (max-width: 520px) {
-          .hdr-extra   { display: none; }
-          .hdr-contact { gap: 5px; }
-          .hdr-contact .hdr-email-label { display: none; }
-        }
       `}</style>
 
       <div style={{
@@ -528,135 +515,17 @@ export default function Home() {
       }}>
 
         {/* ══════════════ HEADER ══════════════ */}
-        <header style={{
-          flexShrink: 0,
-          background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
-          boxShadow: '0 2px 12px rgba(139,26,26,0.25)',
-        }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '9px 14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <TopNav
+          isAr={isAr}
+          currentUser={currentUser}
+          messages={messages}
+          onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+          onNewChat={() => setMessages([])}
+          onMenuOpen={() => setMobileMenuOpen(true)}
+          onStartGuide={() => setShowGuide(true)}
+          showGuideBtn={messages.length === 0}
+        />
 
-              {/* Brand */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
-                  Dalilak <span style={{ color: '#f5c842' }}>AI</span>
-                </div>
-                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', fontWeight: 400, whiteSpace: 'nowrap' }}>
-                  {isAr ? 'دليل المواطن اللبناني الذكي' : 'Smart Lebanese Citizens Guide'}
-                </div>
-                {/* Contact — desktop only */}
-                <div className="hdr-contact">
-                  <a href="tel:+9613460608" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 9.5, display: 'flex', alignItems: 'center', gap: 3, direction: 'ltr', unicodeBidi: 'isolate', whiteSpace: 'nowrap' }}>
-                    <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                    +961 3 460 608
-                  </a>
-                  <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-                  <a href="mailto:wissam@aijur.ai" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 9.5 }}>wissam@aijur.ai</a>
-                </div>
-              </div>
-
-              {/* Right controls */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-
-                {/* Guided flow shortcut */}
-                {messages.length === 0 && (
-                  <button onClick={() => setShowGuide(true)} className="hdr-extra-btn" style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    fontSize: 11, color: '#fff', padding: '5px 12px',
-                    borderRadius: 20, border: '1.5px solid rgba(255,255,255,0.35)',
-                    background: 'rgba(255,255,255,0.12)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
-                  }}>
-                    <span>🗂️</span>
-                    <span className="hdr-extra">{isAr ? 'ابدأ معاملة' : 'Start'}</span>
-                  </button>
-                )}
-
-                {/* Home — when in chat */}
-                {messages.length > 0 && (
-                  <button onClick={() => setMessages([])} style={{
-                    width: 34, height: 34, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.3)',
-                    background: 'rgba(255,255,255,0.13)', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
-                    </svg>
-                  </button>
-                )}
-
-                {/* Lang */}
-                <button className="lang-btn" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{
-                  fontSize: 11, fontWeight: 700, padding: '5px 12px', borderRadius: 20,
-                  border: '1.5px solid rgba(255,255,255,0.35)',
-                  background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
-                  fontFamily: 'inherit', color: '#fff', letterSpacing: '0.5px',
-                }}>
-                  {isAr ? 'EN' : 'AR'}
-                </button>
-
-                {/* Desktop extras */}
-                <div className="hdr-extra" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
-                    <div style={{
-                      fontSize: 10, color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
-                      background: 'rgba(255,255,255,0.1)',
-                      border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.4)' : 'rgba(253,230,138,0.4)'}`,
-                      borderRadius: 20, padding: '4px 9px', fontWeight: 600, whiteSpace: 'nowrap',
-                    }}>
-                      ⏱️ {currentUser.days_left} {isAr ? 'أيام' : 'days'}
-                    </div>
-                  )}
-                  {isAdmin() && (
-                    <button onClick={() => router.push('/admin')} style={{
-                      fontSize: 11, color: '#f5c842', padding: '4px 10px',
-                      borderRadius: 20, border: '1px solid rgba(245,200,66,0.4)',
-                      background: 'rgba(245,200,66,0.1)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
-                    }}>🛡️</button>
-                  )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(34,197,94,0.15)', borderRadius: 20, padding: '4px 8px', border: '1px solid rgba(34,197,94,0.3)' }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#4ade80', display: 'inline-block', boxShadow: '0 0 5px #4ade80', animation: 'pulse 2.5s infinite' }} />
-                    <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>{isAr ? 'متصل' : 'Online'}</span>
-                  </div>
-                  {messages.length > 0 && (
-                    <button onClick={() => setMessages([])} style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', padding: '4px 10px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', cursor: 'pointer', fontFamily: 'inherit' }}>
-                      {isAr ? 'محادثة جديدة' : 'New Chat'}
-                    </button>
-                  )}
-                </div>
-
-                {/* Account — desktop only */}
-                <button onClick={() => router.push('/my-files')} className="hdr-extra-desktop" style={{
-                  width: 32, height: 32, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.3)',
-                  background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                  </svg>
-                </button>
-
-                {/* Hamburger — mobile only */}
-                <button
-                  className="hdr-hamburger"
-                  onClick={() => setMobileMenuOpen(true)}
-                  aria-label={isAr ? 'القائمة' : 'Menu'}
-                  style={{
-                    width: 36, height: 36, borderRadius: 10,
-                    border: '1.5px solid rgba(255,255,255,0.3)',
-                    background: 'rgba(255,255,255,0.12)', cursor: 'pointer',
-                    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
-                    <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16"/>
-                  </svg>
-                </button>
-
-              </div>
-            </div>
-          </div>
-        </header>
 
         {/* ══════════════ MAIN ══════════════ */}
         <main ref={mainRef} style={{
