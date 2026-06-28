@@ -20,7 +20,7 @@ interface Stats {
 
 interface ResetCode { username: string; token: string; expires_at: string }
 
-type Tab = 'stats' | 'users' | 'create' | 'resets' | 'feedback' | 'escalations'
+type Tab = 'stats' | 'users' | 'create' | 'resets' | 'feedback' | 'escalations' | 'gaps'
 
 interface FeedbackEntry { question: string; answer: string; rating: string; confidence?: string; username: string; timestamp: number }
 interface EscalationEntry { request_type: string; question: string; contact_preference?: string; user_email?: string; user_phone?: string; username: string; timestamp: number; status: string }
@@ -199,6 +199,7 @@ export default function AdminPage() {
             { id: 'resets',      label: '🔑 رموز الاستعادة' },
             { id: 'feedback',    label: '💬 التقييمات' },
             { id: 'escalations', label: '🤝 طلبات التصعيد' },
+            { id: 'gaps',        label: '🔍 ثغرات المحتوى' },
           ] as { id: Tab; label: string }[]).map(t => (
             <button key={t.id}
               onClick={() => {
@@ -448,6 +449,92 @@ export default function AdminPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── CONTENT GAPS ── */}
+        {tab === 'gaps' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h2 className="font-bold text-gray-800 mb-1">🔍 ثغرات المحتوى</h2>
+              <p className="text-sm text-gray-500 mb-4">معاملات مفقودة أو منخفضة الثقة تحتاج إلى بيانات رسمية موثّقة.</p>
+
+              {/* Draft procedures needing data */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />
+                  معاملات في طور المسودة (تحتاج توثيق)
+                </h3>
+                {[
+                  { slug: 'expat-services',       title_ar: 'خدمات المغتربين',             missing: 'الرسوم الرسمية، قائمة الخدمات الكاملة' },
+                  { slug: 'vehicle-registration',  title_ar: 'تسجيل السيارة',               missing: 'جدول الرسوم الرسمي، متطلبات الفحص' },
+                  { slug: 'ngo-registration',      title_ar: 'تسجيل جمعية / NGO',          missing: 'النموذج الرسمي، الرسوم، مدة المعالجة' },
+                  { slug: 'real-estate-statement', title_ar: 'البيان العقاري',              missing: 'الرسوم، النماذج، أوقات عمل الدائرة' },
+                ].map(gap => (
+                  <div key={gap.slug} className="flex items-start gap-3 py-3 border-b border-gray-50 last:border-0">
+                    <span className="mt-0.5 text-yellow-500">⚠️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-800">{gap.title_ar}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">معلومات مفقودة: {gap.missing}</p>
+                    </div>
+                    <span className="shrink-0 text-xs bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full">مسودة</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Feedback-derived gaps */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
+                  موضوعات كثيراً ما يُسأل عنها بدون بيانات كافية
+                </h3>
+                {[
+                  { topic: 'رخصة العمل للأجانب',           coverage: 'منخفضة',  priority: 'عالية' },
+                  { topic: 'تجديد الإقامة',                coverage: 'منخفضة',  priority: 'عالية' },
+                  { topic: 'شهادات إيكوس / أبوستيل',        coverage: 'متوسطة', priority: 'متوسطة' },
+                  { topic: 'إجراءات التقاعد والتقديمات NSSF', coverage: 'منخفضة', priority: 'متوسطة' },
+                  { topic: 'المعاملات السورية — وثائق الأحوال الشخصية', coverage: 'منعدمة', priority: 'عالية' },
+                ].map((g, i) => (
+                  <div key={i} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                    <div>
+                      <p className="text-sm text-gray-800">{g.topic}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">تغطية: {g.coverage}</p>
+                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      g.priority === 'عالية' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
+                    }`}>أولوية {g.priority}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Low-confidence procedures */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
+                  معاملات ذات ثقة منخفضة تحتاج مراجعة
+                </h3>
+                <p className="text-xs text-gray-400 mb-3">
+                  هذه المعاملات موجودة في قاعدة البيانات لكن ثقتها منخفضة. يجب التحقق من الرسوم والنماذج من المصادر الرسمية.
+                </p>
+                {[
+                  { slug: 'tax-registration', title_ar: 'تسجيل ضريبي', reason: 'الأرقام تتغير — يحتاج تحديث 2024/2025' },
+                  { slug: 'social-security',  title_ar: 'الضمان الاجتماعي', reason: 'رسوم NSSF بحاجة للتحقق من الموقع الرسمي' },
+                  { slug: 'driver-license',   title_ar: 'رخصة القيادة', reason: 'اختبارات ورسوم غير موثّقة بالكامل' },
+                ].map(p => (
+                  <div key={p.slug} className="flex items-start gap-3 py-3 border-b border-gray-50 last:border-0">
+                    <span className="mt-0.5 text-orange-500">🟡</span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">{p.title_ar}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{p.reason}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm text-blue-700">
+              💡 لإضافة بيانات رسمية: حدّث <code className="bg-blue-100 px-1 rounded">frontend/lib/procedures.ts</code> أو أضف chunks جديدة إلى Qdrant عبر سكريبت الرفع.
+            </div>
           </div>
         )}
       </div>
