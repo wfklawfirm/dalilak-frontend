@@ -5,6 +5,7 @@ import {
   isAdmin, getUser, clearToken,
   adminListUsers, adminCreateUser, adminUpdateUser, adminDeactivateUser,
   adminGetStats, adminGetResets,
+  adminGetContentGaps, adminUpdateContentGap, adminGetContentGapStats,
 } from '@/lib/auth'
 
 interface UserRow {
@@ -24,6 +25,11 @@ type Tab = 'stats' | 'users' | 'create' | 'resets' | 'feedback' | 'escalations' 
 
 interface FeedbackEntry { question: string; answer: string; rating: string; confidence?: string; username: string; timestamp: number }
 interface EscalationEntry { request_type: string; question: string; contact_preference?: string; user_email?: string; user_phone?: string; username: string; timestamp: number; status: string }
+interface ContentGapEntry {
+  id: string; user_question: string; gap_type: string; detected_country?: string
+  detected_procedure?: string; confidence_score?: number; status: string
+  priority: string; admin_notes?: string; username?: string; created_at?: string
+}
 
 const PLAN_LABELS: Record<string, string> = {
   paid: 'مدفوع', trial: 'تجريبي', admin: 'مشرف', suspended: 'موقوف', expired: 'منتهي'
@@ -50,6 +56,11 @@ export default function AdminPage() {
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
+
+  // Content Gaps
+  const [contentGaps, setContentGaps] = useState<ContentGapEntry[]>([])
+  const [gapStats, setGapStats] = useState<{total:number;open:number;in_review:number;high_priority:number}|null>(null)
+  const [gapFilter, setGapFilter] = useState<string>('open')
 
   // Create user form
   const [newUser, setNewUser] = useState({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
@@ -93,6 +104,24 @@ export default function AdminPage() {
       const data = await res.json()
       setEscalations(data.escalations || [])
     } catch (e: any) { flash(e.message || 'خطأ في تحميل طلبات التصعيد', true) }
+  }
+
+  async function loadContentGaps(status?: string) {
+    try {
+      setLoading(true)
+      const data = await adminGetContentGaps(status ?? gapFilter)
+      setContentGaps(data.gaps || [])
+      setGapStats(data.stats || null)
+    } catch (e: any) { flash(e.message || 'خطأ في تحميل ثغرات المحتوى', true) }
+    finally { setLoading(false) }
+  }
+
+  async function handleGapUpdate(gapId: string, status: string, notes?: string) {
+    try {
+      await adminUpdateContentGap(gapId, status, notes)
+      flash(`✅ تم تحديث الثغرة`)
+      loadContentGaps(gapFilter)
+    } catch (e: any) { flash(e.message || 'خطأ في تحديث الثغرة', true) }
   }
 
   function fmtTs(ts?: number) {
@@ -207,6 +236,7 @@ export default function AdminPage() {
                 if (t.id === 'resets') loadResets()
                 if (t.id === 'feedback') loadFeedback()
                 if (t.id === 'escalations') loadEscalations()
+                if (t.id === 'gaps') loadContentGaps('open')
               }}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 tab === t.id ? 'bg-[#6b2737] text-white shadow' : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -455,85 +485,146 @@ export default function AdminPage() {
         {/* ── CONTENT GAPS ── */}
         {tab === 'gaps' && (
           <div className="space-y-4">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="font-bold text-gray-800 mb-1">🔍 ثغرات المحتوى</h2>
-              <p className="text-sm text-gray-500 mb-4">معاملات مفقودة أو منخفضة الثقة تحتاج إلى بيانات رسمية موثّقة.</p>
-
-              {/* Draft procedures needing data */}
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />
-                  معاملات في طور المسودة (تحتاج توثيق)
-                </h3>
+            {/* Stats cards */}
+            {gapStats && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { slug: 'expat-services',       title_ar: 'خدمات المغتربين',             missing: 'الرسوم الرسمية، قائمة الخدمات الكاملة' },
-                  { slug: 'vehicle-registration',  title_ar: 'تسجيل السيارة',               missing: 'جدول الرسوم الرسمي، متطلبات الفحص' },
-                  { slug: 'ngo-registration',      title_ar: 'تسجيل جمعية / NGO',          missing: 'النموذج الرسمي، الرسوم، مدة المعالجة' },
-                  { slug: 'real-estate-statement', title_ar: 'البيان العقاري',              missing: 'الرسوم، النماذج، أوقات عمل الدائرة' },
-                ].map(gap => (
-                  <div key={gap.slug} className="flex items-start gap-3 py-3 border-b border-gray-50 last:border-0">
-                    <span className="mt-0.5 text-yellow-500">⚠️</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-800">{gap.title_ar}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">معلومات مفقودة: {gap.missing}</p>
-                    </div>
-                    <span className="shrink-0 text-xs bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full">مسودة</span>
+                  { label: 'الإجمالي',      val: gapStats.total,        bg: 'bg-white' },
+                  { label: 'مفتوحة',        val: gapStats.open,         bg: 'bg-red-50' },
+                  { label: 'قيد المراجعة', val: gapStats.in_review,    bg: 'bg-yellow-50' },
+                  { label: 'أولوية عالية', val: gapStats.high_priority, bg: 'bg-orange-50' },
+                ].map(s => (
+                  <div key={s.label} className={`${s.bg} rounded-2xl p-4 border border-gray-100 shadow-sm`}>
+                    <div className="text-2xl font-bold text-gray-800">{s.val}</div>
+                    <div className="text-xs text-gray-500 mt-1">{s.label}</div>
                   </div>
                 ))}
               </div>
+            )}
 
-              {/* Feedback-derived gaps */}
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
-                  موضوعات كثيراً ما يُسأل عنها بدون بيانات كافية
-                </h3>
-                {[
-                  { topic: 'رخصة العمل للأجانب',           coverage: 'منخفضة',  priority: 'عالية' },
-                  { topic: 'تجديد الإقامة',                coverage: 'منخفضة',  priority: 'عالية' },
-                  { topic: 'شهادات إيكوس / أبوستيل',        coverage: 'متوسطة', priority: 'متوسطة' },
-                  { topic: 'إجراءات التقاعد والتقديمات NSSF', coverage: 'منخفضة', priority: 'متوسطة' },
-                  { topic: 'المعاملات السورية — وثائق الأحوال الشخصية', coverage: 'منعدمة', priority: 'عالية' },
-                ].map((g, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                    <div>
-                      <p className="text-sm text-gray-800">{g.topic}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">تغطية: {g.coverage}</p>
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      g.priority === 'عالية' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
-                    }`}>أولوية {g.priority}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Filter bar */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {[
+                { k: 'open',      label: '🔴 مفتوح' },
+                { k: 'in_review', label: '🟡 قيد المراجعة' },
+                { k: 'resolved',  label: '✅ محلول' },
+                { k: 'ignored',   label: '⏭️ متجاهَل' },
+              ].map(f => (
+                <button key={f.k}
+                  onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    gapFilter === f.k
+                      ? 'bg-[#6b2737] text-white'
+                      : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  }`}>
+                  {f.label}
+                </button>
+              ))}
+              <button onClick={() => loadContentGaps(gapFilter)}
+                className="text-xs text-[#6b2737] hover:underline mr-auto">
+                {loading ? '...' : '🔄 تحديث'}
+              </button>
+            </div>
 
-              {/* Low-confidence procedures */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
-                  معاملات ذات ثقة منخفضة تحتاج مراجعة
-                </h3>
-                <p className="text-xs text-gray-400 mb-3">
-                  هذه المعاملات موجودة في قاعدة البيانات لكن ثقتها منخفضة. يجب التحقق من الرسوم والنماذج من المصادر الرسمية.
-                </p>
-                {[
-                  { slug: 'tax-registration', title_ar: 'تسجيل ضريبي', reason: 'الأرقام تتغير — يحتاج تحديث 2024/2025' },
-                  { slug: 'social-security',  title_ar: 'الضمان الاجتماعي', reason: 'رسوم NSSF بحاجة للتحقق من الموقع الرسمي' },
-                  { slug: 'driver-license',   title_ar: 'رخصة القيادة', reason: 'اختبارات ورسوم غير موثّقة بالكامل' },
-                ].map(p => (
-                  <div key={p.slug} className="flex items-start gap-3 py-3 border-b border-gray-50 last:border-0">
-                    <span className="mt-0.5 text-orange-500">🟡</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">{p.title_ar}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{p.reason}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* Gaps list */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              {loading && contentGaps.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 text-sm">جاري التحميل...</div>
+              ) : contentGaps.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 text-sm">لا توجد ثغرات بهذا الفلتر</div>
+              ) : (
+                <div className="divide-y divide-gray-50">
+                  {contentGaps.map(gap => {
+                    const priorityColor =
+                      gap.priority === 'critical' ? 'bg-red-100 text-red-800' :
+                      gap.priority === 'high'     ? 'bg-red-50 text-red-700' :
+                      gap.priority === 'medium'   ? 'bg-yellow-50 text-yellow-700' :
+                                                    'bg-gray-50 text-gray-600'
+                    const gapTypeLabel: Record<string, string> = {
+                      low_confidence:      'ثقة منخفضة',
+                      user_reported_error: 'خطأ مُبلَّغ',
+                      missing_procedure:   'إجراء مفقود',
+                      missing_form:        'نموذج مفقود',
+                      missing_fee:         'رسوم مفقودة',
+                      unclear_authority:   'جهة غير واضحة',
+                    }
+                    return (
+                      <div key={gap.id} className="p-4 hover:bg-gray-50/60 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-800 line-clamp-2">{gap.user_question}</p>
+                            <div className="flex flex-wrap gap-1.5 mt-2">
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${priorityColor}`}>
+                                {gap.priority}
+                              </span>
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                                {gapTypeLabel[gap.gap_type] || gap.gap_type}
+                              </span>
+                              {gap.detected_country && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                                  🌍 {gap.detected_country}
+                                </span>
+                              )}
+                              {gap.detected_procedure && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">
+                                  📋 {gap.detected_procedure}
+                                </span>
+                              )}
+                              {gap.confidence_score != null && (
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                                  ثقة {(gap.confidence_score * 100).toFixed(0)}%
+                                </span>
+                              )}
+                            </div>
+                            {gap.admin_notes && (
+                              <p className="text-xs text-gray-500 mt-1.5 italic">📝 {gap.admin_notes}</p>
+                            )}
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <span className="text-xs text-gray-400">{gap.username ? `@${gap.username}` : 'نظام'}</span>
+                              {gap.created_at && (
+                                <span className="text-xs text-gray-400">
+                                  · {new Date(gap.created_at).toLocaleDateString('ar-LB')}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {/* Action buttons */}
+                          <div className="flex flex-col gap-1.5 shrink-0">
+                            {(gap.status === 'open') && (
+                              <button onClick={() => handleGapUpdate(gap.id, 'in_review')}
+                                className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg hover:bg-yellow-100 whitespace-nowrap">
+                                مراجعة
+                              </button>
+                            )}
+                            {(gap.status === 'open' || gap.status === 'in_review') && (
+                              <>
+                                <button onClick={() => handleGapUpdate(gap.id, 'resolved')}
+                                  className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded-lg hover:bg-green-100 whitespace-nowrap">
+                                  حُلّ ✓
+                                </button>
+                                <button onClick={() => handleGapUpdate(gap.id, 'ignored')}
+                                  className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg hover:bg-gray-200 whitespace-nowrap">
+                                  تجاهل
+                                </button>
+                              </>
+                            )}
+                            {(gap.status === 'resolved' || gap.status === 'ignored') && (
+                              <button onClick={() => handleGapUpdate(gap.id, 'open')}
+                                className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg hover:bg-gray-200 whitespace-nowrap">
+                                إعادة فتح
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm text-blue-700">
-              💡 لإضافة بيانات رسمية: حدّث <code className="bg-blue-100 px-1 rounded">frontend/lib/procedures.ts</code> أو أضف chunks جديدة إلى Qdrant عبر سكريبت الرفع.
+              💡 الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ 👎. لإضافة بيانات رسمية: حدّث <code className="bg-blue-100 px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.
             </div>
           </div>
         )}

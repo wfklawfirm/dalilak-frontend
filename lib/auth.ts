@@ -164,3 +164,46 @@ export async function adminGetResets() {
   if (!res.ok) throw new Error(json.detail || 'خطأ')
   return json
 }
+
+// ── Content Gaps ──────────────────────────────────────────────
+export async function adminGetContentGaps(status?: string, limit = 100) {
+  const url = new URL(`${API}/admin/content-gaps`)
+  if (status) url.searchParams.set('status', status)
+  url.searchParams.set('limit', String(limit))
+  const res = await fetch(url.toString(), { headers: authHeaders() })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ')
+  return json
+}
+
+export async function adminUpdateContentGap(gapId: string, status: string, adminNotes?: string) {
+  const res = await fetch(`${API}/admin/content-gaps/${gapId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ status, admin_notes: adminNotes }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ')
+  return json
+}
+
+export async function adminGetContentGapStats() {
+  const res = await fetch(`${API}/admin/content-gaps/stats`, { headers: authHeaders() })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'خطأ')
+  return json
+}
+
+// ── PDF Export ────────────────────────────────────────────────
+export async function exportChecklist(data: Record<string, unknown>): Promise<string> {
+  const res = await fetch(`${API}/export/checklist`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({}))
+    throw new Error((json as any).detail || 'خطأ في التصدير')
+  }
+  return res.text()
+}
