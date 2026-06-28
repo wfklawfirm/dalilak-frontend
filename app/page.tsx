@@ -600,14 +600,79 @@ export default function Home() {
             }}>
 
               {/* ── Hero ────────────────────────────────────── */}
-              <div style={{ textAlign: 'center', marginBottom: 18, maxWidth: 400 }}>
-                <img src="/logo.PNG" alt="Dalilak AI"
-                  style={{ width: 'clamp(72px, 18vw, 100px)', height: 'clamp(72px, 18vw, 100px)', objectFit: 'contain', marginBottom: 6, mixBlendMode: 'multiply' }} />
-                <h2 style={{ fontSize: 'clamp(16px, 4.5vw, 20px)', fontWeight: 800, color: 'var(--text)', margin: '0 0 5px', letterSpacing: '-0.3px', lineHeight: 1.3 }}>
+              <div style={{ textAlign: 'center', marginBottom: 20, maxWidth: 420, width: '100%' }}>
+
+                {/* Logo container */}
+                <div style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  marginBottom: 14,
+                }}>
+                  {/* Logo ring */}
+                  <div style={{
+                    position: 'relative',
+                    width: 'clamp(88px, 22vw, 116px)',
+                    height: 'clamp(88px, 22vw, 116px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {/* Outer glow ring */}
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, rgba(139,26,26,0.15) 0%, rgba(184,134,11,0.10) 100%)',
+                      border: '2px solid rgba(139,26,26,0.12)',
+                    }} />
+                    {/* Inner circle */}
+                    <div style={{
+                      position: 'absolute', inset: 7, borderRadius: '50%',
+                      background: '#fff',
+                      boxShadow: '0 6px 28px rgba(139,26,26,0.14), 0 2px 8px rgba(0,0,0,0.08)',
+                      border: '1.5px solid rgba(139,26,26,0.09)',
+                      overflow: 'hidden',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <img
+                        src="/logo.PNG"
+                        alt="Dalilak AI"
+                        style={{
+                          width: '78%', height: '78%',
+                          objectFit: 'contain',
+                          mixBlendMode: 'multiply',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Brand name */}
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{
+                      fontSize: 'clamp(20px, 5.5vw, 26px)',
+                      fontWeight: 900,
+                      color: '#1A1208',
+                      letterSpacing: '-0.5px',
+                      lineHeight: 1,
+                    }}>
+                      دليلك<span style={{ color: '#8B1A1A', marginRight: 3 }}>AI</span>
+                    </div>
+                    <div style={{
+                      fontSize: 11, color: '#9C8E80', fontWeight: 500,
+                      marginTop: 4, letterSpacing: '0.2px',
+                    }}>
+                      {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Title & subtitle */}
+                <h2 style={{
+                  fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 800,
+                  color: 'var(--text)', margin: '0 0 6px',
+                  letterSpacing: '-0.2px', lineHeight: 1.35,
+                }}>
                   {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What do you need to complete?'}
                 </h2>
-                <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.5 }}>
-                  {isAr ? 'اختر نوع المعاملة، أو ارفع مستنداً، وسنرشدك خطوة بخطوة.' : 'Choose a procedure, upload a document, or let Dalilak guide you step by step.'}
+                <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.55 }}>
+                  {isAr
+                    ? 'اختر نوع المعاملة، أو ارفع مستنداً، وسنرشدك خطوة بخطوة.'
+                    : 'Choose a procedure, upload a document, or let Dalilak guide you step by step.'}
                 </p>
               </div>
 
