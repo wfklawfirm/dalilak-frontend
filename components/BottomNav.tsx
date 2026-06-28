@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 
 interface BottomNavProps {
   isAr: boolean
-  activeTab?: 'home' | 'procedures' | 'chat' | 'forms' | 'account'
+  activeTab?: 'home' | 'services' | 'chat' | 'procedures' | 'account'
   onHomeClick?: () => void
   onChatClick?: () => void
 }
@@ -43,13 +43,12 @@ const TABS = [
     ),
   },
   {
-    id: 'forms',
-    label_ar: 'النماذج',
-    label_en: 'Forms',
+    id: 'services',
+    label_ar: 'الخدمات',
+    label_en: 'Services',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6M9 17h4"/>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
       </svg>
     ),
   },
@@ -73,9 +72,9 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
     if (id === 'chat' && onChatClick) { onChatClick(); return }
     const routes: Record<string, string> = {
       home: '/',
+      services: '/services',
       procedures: '/procedures',
       chat: '/',
-      forms: '/forms',
       account: '/my-files',
     }
     router.push(routes[id] || '/')

@@ -17,6 +17,7 @@ interface TopNavProps {
 
 const NAV_LINKS = [
   { href: '/',           icon: '🏠', ar: 'الرئيسية',  en: 'Home'       },
+  { href: '/services',   icon: '⚡', ar: 'الخدمات',   en: 'Services'   },
   { href: '/procedures', icon: '📋', ar: 'المعاملات', en: 'Procedures' },
   { href: '/forms',      icon: '📄', ar: 'النماذج',   en: 'Forms'      },
   { href: '/faq',        icon: '❓', ar: 'أسئلة',     en: 'FAQ'        },
