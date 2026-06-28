@@ -340,7 +340,11 @@ export default function Home() {
       }
     }
 
-    const history = messages.map(m => ({ role: m.role, content: m.content }))
+    // Filter out empty-content messages (e.g. documentAnalysis placeholders) and cap at 18
+    const history = messages
+      .filter(m => m.content && m.content.trim().length > 0)
+      .slice(-18)
+      .map(m => ({ role: m.role, content: m.content }))
     setMessages(prev => [...prev, { role: 'user', content: displayText }])
     setInput('')
     // Persist document name for follow-up context chip
