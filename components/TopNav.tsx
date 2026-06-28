@@ -16,173 +16,244 @@ interface TopNavProps {
 }
 
 const NAV_LINKS = [
-  { href: '/',           icon: '🏠', ar: 'الرئيسية',  en: 'Home'       },
-  { href: '/services',   icon: '⚡', ar: 'الخدمات',   en: 'Services'   },
-  { href: '/procedures', icon: '📋', ar: 'المعاملات', en: 'Procedures' },
-  { href: '/forms',      icon: '📄', ar: 'النماذج',   en: 'Forms'      },
-  { href: '/faq',        icon: '❓', ar: 'أسئلة',     en: 'FAQ'        },
+  { href: '/',           ar: 'الرئيسية',  en: 'Home'       },
+  { href: '/services',   ar: 'الخدمات',   en: 'Services'   },
+  { href: '/procedures', ar: 'المعاملات', en: 'Procedures' },
+  { href: '/forms',      ar: 'النماذج',   en: 'Forms'      },
+  { href: '/faq',        ar: 'أسئلة',     en: 'FAQ'        },
 ]
 
 export default function TopNav({
   isAr, currentUser, messages = [], onLangToggle,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
 }: TopNavProps) {
-  const router = useRouter()
+  const router  = useRouter()
   const pathname = usePathname()
-  const hasChat = messages.length > 0
-
-  const btnBase: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    height: 34, borderRadius: 10, border: '1.5px solid rgba(255,255,255,0.28)',
-    background: 'rgba(255,255,255,0.10)', cursor: 'pointer',
-    fontFamily: 'inherit', color: '#fff', transition: 'background 0.15s',
-    flexShrink: 0,
-  }
+  const hasChat  = messages.length > 0
 
   return (
     <>
       <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-        .tn-link:hover { background: rgba(255,255,255,0.15) !important; }
-        .tn-btn:hover  { background: rgba(255,255,255,0.22) !important; }
-        .tn-active     { background: rgba(255,255,255,0.18) !important; border-color: rgba(255,255,255,0.5) !important; }
+        @keyframes tn-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-        /* Desktop: show nav strip, hide hamburger */
-        @media (min-width: 641px) {
-          .tn-hamburger     { display: none !important; }
-          .tn-nav-strip     { display: flex !important; }
-          .tn-desktop-only  { display: flex !important; }
+        /* ── Nav link hover ── */
+        .tn-link { transition: background 0.14s, color 0.14s; }
+        .tn-link:hover { background: rgba(255,255,255,0.13) !important; color: #fff !important; }
+        .tn-link-active { background: rgba(255,255,255,0.17) !important; }
+
+        /* ── Icon button hover ── */
+        .tn-ibtn { transition: background 0.14s; }
+        .tn-ibtn:hover { background: rgba(255,255,255,0.20) !important; }
+
+        /* ── Responsive breakpoint ── */
+        @media (min-width: 768px) {
+          .tn-nav-links  { display: flex !important; }
+          .tn-desk-only  { display: flex !important; }
+          .tn-hamburger  { display: none  !important; }
+          .tn-mobile-brand { display: none !important; }
+          .tn-desk-brand { display: flex !important; }
         }
-        /* Mobile: hide nav strip + desktop extras, show hamburger */
-        @media (max-width: 640px) {
-          .tn-hamburger        { display: flex !important; }
-          .tn-nav-strip        { display: none !important; }
-          .tn-desktop-only     { display: none !important; }
-          .tn-new-chat-label   { display: none !important; }
+        @media (max-width: 767px) {
+          .tn-nav-links  { display: none  !important; }
+          .tn-desk-only  { display: none  !important; }
+          .tn-hamburger  { display: flex  !important; }
+          .tn-mobile-brand { display: flex !important; }
+          .tn-desk-brand { display: none  !important; }
         }
       `}</style>
 
       <header style={{
         flexShrink: 0,
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 55%, #7a1a1a 100%)',
-        boxShadow: '0 2px 20px rgba(107,39,55,0.40)',
+        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.35)',
+        zIndex: 50,
       }}>
-
-        {/* ── Main bar ─────────────────────────────────────────────── */}
         <div style={{
-          maxWidth: 800, margin: '0 auto',
-          padding: '0 14px',
-          height: 64,
-          display: 'flex', alignItems: 'center',
-          position: 'relative',
+          maxWidth: 960, margin: '0 auto',
+          padding: '0 16px',
+          height: 58,
+          display: 'flex', alignItems: 'center', gap: 0,
         }}>
 
-          {/* ── Brand — absolutely centered ───────────────────────── */}
+          {/* ══ DESKTOP BRAND (left) ══════════════════════════════════ */}
           <button
+            className="tn-desk-brand"
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
             style={{
-              position: 'absolute',
-              left: '50%', top: '50%',
-              transform: 'translate(-50%, -50%)',
-              background: 'none', border: 'none', cursor: 'pointer',
-              padding: 0, display: 'flex', alignItems: 'center', gap: 10,
-              zIndex: 2,
+              display: 'none',
+              alignItems: 'center', gap: 9,
+              background: 'none', border: 'none',
+              cursor: 'pointer', padding: '0 0', flexShrink: 0,
+              marginInlineEnd: 28,
             }}
           >
-            {/* Logo mark */}
             <div style={{
-              width: 42, height: 42, borderRadius: 12,
-              background: 'rgba(255,255,255,0.14)',
-              border: '1.5px solid rgba(255,255,255,0.32)',
+              width: 34, height: 34, borderRadius: 9,
+              background: 'rgba(255,255,255,0.13)',
+              border: '1.5px solid rgba(255,255,255,0.25)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 20,
-              boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
+              fontSize: 17,
             }}>⚖️</div>
-
-            <div style={{ textAlign: isAr ? 'right' : 'left' }}>
+            <div>
               <div style={{
-                fontSize: 20, fontWeight: 900, color: '#fff',
-                lineHeight: 1, letterSpacing: '-0.4px',
-                whiteSpace: 'nowrap',
+                fontSize: 16, fontWeight: 900, color: '#fff',
+                lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap',
               }}>
-                دليلك<span style={{ color: '#f5c842', marginRight: 3 }}>AI</span>
+                دليلك<span style={{ color: '#fbbf24' }}> AI</span>
               </div>
-              <div style={{
-                fontSize: 10.5, color: 'rgba(255,255,255,0.60)',
-                lineHeight: 1.3, marginTop: 2, whiteSpace: 'nowrap',
-              }}>
+              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.50)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
                 {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
               </div>
             </div>
           </button>
 
-          {/* ── Left spacer (balances right group) ───────────────── */}
-          <div style={{ flex: 1 }} />
+          {/* ══ DESKTOP NAV LINKS (center-left) ═════════════════════ */}
+          <nav className="tn-nav-links" style={{ display: 'none', alignItems: 'center', gap: 2, flex: 1 }}>
+            {NAV_LINKS.map(link => {
+              const active = pathname === link.href
+              return (
+                <button
+                  key={link.href}
+                  onClick={() => link.href === '/' && onNewChat ? onNewChat() : router.push(link.href)}
+                  className={`tn-link${active ? ' tn-link-active' : ''}`}
+                  style={{
+                    height: 34, padding: '0 13px', borderRadius: 8,
+                    border: 'none',
+                    background: active ? 'rgba(255,255,255,0.17)' : 'transparent',
+                    color: active ? '#fff' : 'rgba(255,255,255,0.68)',
+                    fontSize: 12.5, fontWeight: active ? 700 : 500,
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                    display: 'flex', alignItems: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  {isAr ? link.ar : link.en}
+                  {active && (
+                    <span style={{
+                      position: 'absolute', bottom: 0, left: '20%', right: '20%',
+                      height: 2, background: '#fbbf24', borderRadius: 2,
+                    }} />
+                  )}
+                </button>
+              )
+            })}
+          </nav>
 
-          {/* ── Right actions ─────────────────────────────────────── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, zIndex: 3 }}>
+          {/* ══ MOBILE: left gap ═════════════════════════════════════ */}
+          <div className="tn-mobile-brand" style={{ display: 'none', flex: 1 }} />
 
-            {/* Online dot — desktop */}
-            <div className="tn-desktop-only" style={{
-              display: 'none', alignItems: 'center', gap: 4,
-              background: 'rgba(34,197,94,0.15)', borderRadius: 20,
-              padding: '4px 9px', border: '1px solid rgba(34,197,94,0.3)',
+          {/* ══ MOBILE BRAND (center, absolute) ═════════════════════ */}
+          <button
+            className="tn-mobile-brand"
+            onClick={() => onNewChat ? onNewChat() : router.push('/')}
+            style={{
+              display: 'none',
+              position: 'absolute', left: '50%', top: '50%',
+              transform: 'translate(-50%, -50%)',
+              alignItems: 'center', gap: 8,
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            }}
+          >
+            <div style={{
+              width: 30, height: 30, borderRadius: 8,
+              background: 'rgba(255,255,255,0.13)',
+              border: '1.5px solid rgba(255,255,255,0.22)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
+            }}>⚖️</div>
+            <div style={{
+              fontSize: 17, fontWeight: 900, color: '#fff',
+              letterSpacing: '-0.3px', lineHeight: 1,
+            }}>
+              دليلك<span style={{ color: '#fbbf24' }}> AI</span>
+            </div>
+          </button>
+
+          {/* ══ RIGHT ACTIONS ════════════════════════════════════════ */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginInlineStart: 'auto', flexShrink: 0 }}>
+
+            {/* Online pill — desktop */}
+            <div className="tn-desk-only" style={{
+              display: 'none', alignItems: 'center', gap: 5,
+              background: 'rgba(34,197,94,0.12)', borderRadius: 20,
+              padding: '4px 10px', border: '1px solid rgba(34,197,94,0.25)',
             }}>
               <span style={{
                 width: 6, height: 6, borderRadius: '50%', background: '#4ade80',
-                display: 'inline-block', boxShadow: '0 0 5px #4ade80',
-                animation: 'pulse 2.5s infinite',
+                boxShadow: '0 0 6px #4ade80', animation: 'tn-pulse 2.5s infinite',
               }} />
-              <span style={{ fontSize: 10, color: '#4ade80', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#4ade80', fontWeight: 600 }}>
                 {isAr ? 'متصل' : 'Online'}
               </span>
             </div>
 
-            {/* Trial days */}
+            {/* Trial badge — desktop */}
             {currentUser?.plan === 'trial' && currentUser?.days_left !== undefined && (
-              <div className="tn-desktop-only" style={{
-                display: 'none',
-                fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap',
-                borderRadius: 20, padding: '4px 9px',
+              <div className="tn-desk-only" style={{
+                display: 'none', fontSize: 10.5, fontWeight: 700,
+                whiteSpace: 'nowrap', borderRadius: 20, padding: '4px 10px',
                 color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
-                background: 'rgba(255,255,255,0.08)',
-                border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.35)' : 'rgba(253,230,138,0.35)'}`,
+                background: 'rgba(255,255,255,0.07)',
+                border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.3)' : 'rgba(253,230,138,0.3)'}`,
               }}>
-                ⏱️ {currentUser.days_left} {isAr ? 'يوم' : 'd'}
+                ⏱ {currentUser.days_left}{isAr ? ' يوم' : 'd'}
               </div>
             )}
 
-            {/* Start guide — desktop, no messages */}
+            {/* Start guide CTA — desktop, welcome screen */}
             {showGuideBtn && (
               <button
                 onClick={onStartGuide}
-                className="tn-btn tn-desktop-only"
-                style={{ ...btnBase, display: 'none', gap: 5, padding: '0 12px', fontSize: 11, fontWeight: 600 }}
+                className="tn-ibtn tn-desk-only"
+                style={{
+                  display: 'none', alignItems: 'center', gap: 5,
+                  height: 32, padding: '0 13px', borderRadius: 9,
+                  border: '1.5px solid rgba(255,255,255,0.25)',
+                  background: 'rgba(255,255,255,0.09)',
+                  color: '#fff', fontSize: 11.5, fontWeight: 600,
+                  cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+                }}
               >
-                <span>🗂️</span>
-                <span>{isAr ? 'ابدأ معاملة' : 'Start'}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/>
+                </svg>
+                {isAr ? 'ابدأ معاملة' : 'Start'}
               </button>
             )}
 
-            {/* New chat — when in conversation */}
+            {/* New chat — in conversation */}
             {hasChat && (
               <button
                 onClick={onNewChat}
-                className="tn-btn"
-                style={{ ...btnBase, gap: 5, padding: '0 12px', fontSize: 11, fontWeight: 600 }}
+                className="tn-ibtn"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  height: 32, padding: '0 12px', borderRadius: 9,
+                  border: '1.5px solid rgba(255,255,255,0.22)',
+                  background: 'rgba(255,255,255,0.09)',
+                  color: '#fff', fontSize: 11.5, fontWeight: 600,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span className="tn-new-chat-label">{isAr ? 'جديد' : 'New'}</span>
+                <span style={{ display: 'none' }} className="tn-desk-only">{isAr ? 'جديد' : 'New'}</span>
               </button>
             )}
 
             {/* Language toggle */}
             <button
               onClick={onLangToggle}
-              className="tn-btn"
-              style={{ ...btnBase, width: 44, fontSize: 11, fontWeight: 700, letterSpacing: '0.5px' }}
+              className="tn-ibtn"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                height: 32, width: 46, borderRadius: 9,
+                border: '1.5px solid rgba(255,255,255,0.22)',
+                background: 'rgba(255,255,255,0.09)',
+                color: '#fff', fontSize: 11, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.5px',
+              }}
             >
               {isAr ? 'EN' : 'AR'}
             </button>
@@ -190,9 +261,15 @@ export default function TopNav({
             {/* Account — desktop */}
             <button
               onClick={() => router.push('/my-files')}
-              className="tn-btn tn-desktop-only"
-              style={{ ...btnBase, display: 'none', width: 34 }}
+              className="tn-ibtn tn-desk-only"
               title={isAr ? 'حسابي' : 'Account'}
+              style={{
+                display: 'none', alignItems: 'center', justifyContent: 'center',
+                height: 32, width: 32, borderRadius: 9,
+                border: '1.5px solid rgba(255,255,255,0.22)',
+                background: 'rgba(255,255,255,0.09)',
+                color: '#fff', cursor: 'pointer',
+              }}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -203,65 +280,45 @@ export default function TopNav({
             {isAdmin() && (
               <button
                 onClick={() => router.push('/admin')}
-                className="tn-btn tn-desktop-only"
-                style={{ ...btnBase, display: 'none', width: 34 }}
+                className="tn-ibtn tn-desk-only"
                 title="Admin"
-              >
-                <span style={{ fontSize: 14 }}>🛡️</span>
-              </button>
+                style={{
+                  display: 'none', alignItems: 'center', justifyContent: 'center',
+                  height: 32, width: 32, borderRadius: 9,
+                  border: '1.5px solid rgba(255,255,255,0.22)',
+                  background: 'rgba(255,255,255,0.09)',
+                  color: '#fff', cursor: 'pointer', fontSize: 15,
+                }}
+              >🛡️</button>
             )}
+
+            {/* Divider — desktop only, before hamburger boundary */}
+            <div className="tn-hamburger" style={{
+              display: 'none', width: 1, height: 20,
+              background: 'rgba(255,255,255,0.18)', margin: '0 2px',
+            }} />
 
             {/* Hamburger — mobile */}
             <button
-              className="tn-hamburger tn-btn"
+              className="tn-ibtn tn-hamburger"
               onClick={onMenuOpen}
               aria-label={isAr ? 'القائمة' : 'Menu'}
-              style={{ ...btnBase, display: 'none', width: 36, flexDirection: 'column', gap: 4, padding: '0 9px' }}
+              style={{
+                display: 'none', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', gap: 4.5,
+                height: 34, width: 36, borderRadius: 9,
+                border: '1.5px solid rgba(255,255,255,0.22)',
+                background: 'rgba(255,255,255,0.09)',
+                cursor: 'pointer',
+              }}
             >
-              <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 12, height: 1.5, background: 'rgba(255,255,255,0.7)', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 15, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 11, height: 1.5, background: 'rgba(255,255,255,0.65)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 15, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
             </button>
           </div>
+
         </div>
-
-        {/* ── Nav strip — desktop only ──────────────────────────────── */}
-        <nav
-          className="tn-nav-strip"
-          style={{
-            display: 'none',
-            justifyContent: 'center', alignItems: 'center', gap: 2,
-            borderTop: '1px solid rgba(255,255,255,0.10)',
-            padding: '0 14px',
-            height: 38,
-            background: 'rgba(0,0,0,0.08)',
-          }}
-        >
-          {NAV_LINKS.map(link => {
-            const active = pathname === link.href
-            return (
-              <button
-                key={link.href}
-                onClick={() => link.href === '/' && onNewChat ? onNewChat() : router.push(link.href)}
-                className={`tn-link${active ? ' tn-active' : ''}`}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  height: 28, padding: '0 13px', borderRadius: 8,
-                  border: active ? '1.5px solid rgba(255,255,255,0.40)' : '1.5px solid transparent',
-                  background: active ? 'rgba(255,255,255,0.15)' : 'transparent',
-                  color: active ? '#fff' : 'rgba(255,255,255,0.72)',
-                  fontSize: 11.5, fontWeight: active ? 700 : 500,
-                  cursor: 'pointer', fontFamily: 'inherit',
-                  transition: 'all 0.15s', whiteSpace: 'nowrap',
-                }}
-              >
-                <span style={{ fontSize: 12 }}>{link.icon}</span>
-                <span>{isAr ? link.ar : link.en}</span>
-              </button>
-            )
-          })}
-        </nav>
-
       </header>
     </>
   )
