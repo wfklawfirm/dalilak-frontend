@@ -4,10 +4,11 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import { ALL_SERVICES, SERVICE_CATEGORIES, type ServiceItem } from '@/lib/allServices'
+import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-type ViewMode = 'all' | 'detailed'
+type ViewMode = 'all' | 'enriched' | 'detailed'
 
 // ── Service Detail Modal ───────────────────────────────────────────────────────
 
@@ -174,6 +175,7 @@ export default function ProceduresPage() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [viewMode, setViewMode] = useState<ViewMode>('all')
+  const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
   const isAr = lang === 'ar'
 
@@ -271,8 +273,9 @@ export default function ProceduresPage() {
         {/* View mode tabs */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
           {[
-            { mode: 'all' as ViewMode, label: `كل الخدمات (${ALL_SERVICES.length})`, icon: '📋' },
-            { mode: 'detailed' as ViewMode, label: `إجراءات مفصّلة (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, icon: '🧭' },
+            { mode: 'all' as ViewMode, label: `خدمات (${ALL_SERVICES.length})`, icon: '📋' },
+            { mode: 'enriched' as ViewMode, label: `مفصّلة (${ENRICHED_PROCEDURES.length})`, icon: '🔍' },
+            { mode: 'detailed' as ViewMode, label: `مُرشدة (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, icon: '🧭' },
           ].map(({ mode, label, icon }) => (
             <button key={mode} onClick={() => setViewMode(mode)} style={{
               flex: 1, padding: '8px 12px', borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: 'pointer',
@@ -290,7 +293,7 @@ export default function ProceduresPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #E5E7EB', borderRadius: 14, padding: '10px 14px', marginBottom: 12, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
           <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder={viewMode === 'all' ? 'ابحث في 201 خدمة حكومية...' : 'ابحث في الإجراءات المفصّلة...'}
+            placeholder={viewMode === 'all' ? 'ابحث في 201 خدمة...' : viewMode === 'enriched' ? 'ابحث في 60 إجراء مفصّل...' : 'ابحث في الإجراءات المُرشدة...'}
             dir="rtl"
             style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }} />
           {search && <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', fontSize: 18, lineHeight: 1 }}>×</button>}
@@ -326,7 +329,9 @@ export default function ProceduresPage() {
         <p style={{ fontSize: 11, color: '#9C8E80', marginBottom: 12 }}>
           {viewMode === 'all'
             ? `${filteredAll.length} خدمة${activeCategory !== 'all' ? ' في هذه الفئة' : ''}`
-            : `${filteredDetailed.length} إجراء مفصّل`
+            : viewMode === 'enriched'
+            ? `${searchEnrichedProcedures(search).length} إجراء مفصّل بخطوات ووثائق`
+            : `${filteredDetailed.length} إجراء مُرشد`
           }
         </p>
 
@@ -396,6 +401,86 @@ export default function ProceduresPage() {
             </div>
           )
         )}
+
+        {/* ── ENRICHED PROCEDURES VIEW (60 with steps + docs) ─────────────── */}
+        {viewMode === 'enriched' && (() => {
+          const procs = searchEnrichedProcedures(search)
+          return procs.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+              <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {procs.map((proc: EnrichedProcedure) => (
+                <div key={proc.code} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 16, overflow: 'hidden' }}>
+                  <button
+                    onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
+                    style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 12 }}
+                  >
+                    <div style={{ width: 42, height: 42, borderRadius: 12, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+                      {proc.icon}
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'right' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{proc.title}</div>
+                      <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginTop: 2 }}>{proc.ministry}</div>
+                      <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
+                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#EFF6FF', color: '#1E40AF', borderRadius: 6, padding: '1px 7px', border: '1px solid #BFDBFE' }}>📁 {proc.requiredDocuments.length} وثيقة</span>}
+                        {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>📋 {proc.steps.length} خطوة</span>}
+                        {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>📄 نموذج</span>}
+                        {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>💰 رسوم</span>}
+                      </div>
+                    </div>
+                    <span style={{ color: '#9C8E80', fontSize: 16, transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>▾</span>
+                  </button>
+                  {expandedProc === proc.code && (
+                    <div style={{ padding: '0 16px 16px', borderTop: '1px solid #F3F4F6' }}>
+                      {proc.requiredDocuments.length > 0 && (
+                        <div style={{ marginTop: 12, marginBottom: 10 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>📁 الوثائق المطلوبة:</div>
+                          {proc.requiredDocuments.map((d, i) => (
+                            <div key={i} style={{ fontSize: 11.5, color: '#374151', padding: '4px 0', borderBottom: '1px solid #F9FAFB', display: 'flex', gap: 6 }}>
+                              <span style={{ color: '#8B1A1A', fontWeight: 700 }}>•</span><span>{d}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {proc.steps.length > 0 && (
+                        <div style={{ marginBottom: 10 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>📋 خطوات الإجراء:</div>
+                          {proc.steps.map((s, i) => (
+                            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'flex-start' }}>
+                              <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
+                              <span style={{ fontSize: 11.5, color: '#374151', lineHeight: 1.5 }}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {proc.fees && (
+                        <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 12px', marginBottom: 10 }}>
+                          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#854D0E' }}>💰 الرسوم: </span>
+                          <span style={{ fontSize: 11, color: '#6B7280', whiteSpace: 'pre-line' }}>{proc.fees.slice(0, 200)}</span>
+                        </div>
+                      )}
+                      {proc.pdfUrls.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+                          {proc.pdfUrls.map((url, i) => (
+                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#1E40AF', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
+                              📄 تحميل النموذج {proc.pdfUrls.length > 1 ? i + 1 : ''}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                      <button onClick={() => router.push(`/?q=${encodeURIComponent(`ما هي خطوات ومتطلبات إجراء: ${proc.title}؟`)}`)} style={{ width: '100%', padding: '10px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                        🤖 اسأل الذكاء الاصطناعي عن هذا الإجراء
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        })()}
 
         {/* ── DETAILED PROCEDURES VIEW ──────────────────────────────────────── */}
         {viewMode === 'detailed' && (

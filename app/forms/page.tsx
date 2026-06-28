@@ -3,17 +3,17 @@
 import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { searchForms } from '@/lib/procedures'
-import { TX_WITH_FORMS, TX_MINISTRIES, filterTxForms, type TxItem } from '@/lib/allTransactions'
+import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES, filterTxAll, filterTxForms, type TxItem } from '@/lib/allTransactions'
 import type { FormItem } from '@/lib/types'
 
-type ViewTab = 'curated' | 'transactions'
+type ViewTab = 'curated' | 'all-tx' | 'forms-tx'
 
 export default function FormsPage() {
   const router = useRouter()
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
   const [search, setSearch] = useState('')
   const [ministryFilter, setMinistryFilter] = useState('all')
-  const [viewTab, setViewTab] = useState<ViewTab>('transactions')
+  const [viewTab, setViewTab] = useState<ViewTab>('forms-tx')
   const isAr = lang === 'ar'
 
   const allForms = useMemo(() => searchForms(''), [])
@@ -30,13 +30,18 @@ export default function FormsPage() {
     return forms
   }, [search, ministryFilter, allForms])
 
-  // 794 transactions with PDFs
-  const filteredTx = useMemo(() => {
-    return filterTxForms(ministryFilter === 'all' ? '' : ministryFilter, search)
-  }, [search, ministryFilter])
+  // All 2484 transactions
+  const filteredAllTx = useMemo(() =>
+    filterTxAll(ministryFilter === 'all' ? '' : ministryFilter, search, false),
+    [search, ministryFilter])
 
-  // Top 20 ministries for filter
-  const topMinistries = useMemo(() => TX_MINISTRIES.slice(0, 18), [])
+  // 794 transactions with PDF forms
+  const filteredTx = useMemo(() =>
+    filterTxForms(ministryFilter === 'all' ? '' : ministryFilter, search),
+    [search, ministryFilter])
+
+  // Top ministries for filter
+  const topMinistries = useMemo(() => TX_MINISTRIES.slice(0, 20), [])
 
   const askAI = (prompt: string) => router.push(`/?q=${encodeURIComponent(prompt)}`)
 
@@ -61,7 +66,7 @@ export default function FormsPage() {
             </button>
             <div>
               <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0 }}>📄 مكتبة النماذج والمعاملات</h1>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>794 نموذج رسمي · 52 جهة حكومية</p>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>2,484 معاملة حكومية · 794 نموذج PDF · 52 جهة</p>
             </div>
           </div>
           <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}>
@@ -73,10 +78,11 @@ export default function FormsPage() {
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 100px' }}>
 
         {/* View tabs */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
+        <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
           {[
-            { tab: 'transactions' as ViewTab, label: `معاملات بنماذج (${TX_WITH_FORMS.length})`, icon: '📄' },
-            { tab: 'curated' as ViewTab, label: `نماذج منظّمة (${allForms.length})`, icon: '✅' },
+            { tab: 'forms-tx' as ViewTab, label: `نماذج PDF (${TX_WITH_FORMS.length})`, icon: '📄' },
+            { tab: 'all-tx' as ViewTab, label: `كل المعاملات (${TX_ALL.length})`, icon: '🗂️' },
+            { tab: 'curated' as ViewTab, label: `منظّمة (${allForms.length})`, icon: '✅' },
           ].map(({ tab, label, icon }) => (
             <button key={tab} onClick={() => setViewTab(tab)} style={{
               flex: 1, padding: '8px 10px', borderRadius: 9, fontSize: 11.5, fontWeight: 700,
@@ -94,15 +100,15 @@ export default function FormsPage() {
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: '#B0A090', fontSize: 15, pointerEvents: 'none' }}>🔍</span>
           <input type="text"
-            placeholder={viewTab === 'transactions' ? 'ابحث في 794 معاملة...' : 'ابحث في النماذج المنظّمة...'}
+            placeholder={viewTab === 'all-tx' ? 'ابحث في 2,484 معاملة...' : viewTab === 'forms-tx' ? 'ابحث في 794 نموذج PDF...' : 'ابحث في النماذج المنظّمة...'}
             value={search} onChange={e => setSearch(e.target.value)}
             style={{ width: '100%', padding: '11px 42px 11px 36px', border: '1.5px solid #EAE4D9', borderRadius: 14, fontSize: 13, background: '#fff', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
           />
           {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 10, color: '#6B7280' }}>✕</button>}
         </div>
 
-        {/* Ministry filter — only in transactions tab */}
-        {viewTab === 'transactions' && (
+        {/* Ministry filter — for transaction tabs */}
+        {(viewTab === 'forms-tx' || viewTab === 'all-tx') && (
           <div style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 12 }}>
             <button onClick={() => setMinistryFilter('all')} style={{
               padding: '4px 12px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap', fontSize: 10.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
@@ -110,7 +116,7 @@ export default function FormsPage() {
               background: ministryFilter === 'all' ? '#FEF2F2' : '#fff',
               color: ministryFilter === 'all' ? '#8B1A1A' : '#6B7280',
             }}>
-              الكل ({TX_WITH_FORMS.length})
+              الكل ({viewTab === 'all-tx' ? TX_ALL.length : TX_WITH_FORMS.length})
             </button>
             {topMinistries.map(m => (
               <button key={m.slug} onClick={() => setMinistryFilter(m.slug)} style={{
@@ -127,11 +133,51 @@ export default function FormsPage() {
 
         {/* Results count */}
         <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 10px' }}>
-          {viewTab === 'transactions' ? `${filteredTx.length} معاملة بنموذج رسمي` : `${filteredCurated.length} نموذج منظّم`}
+          {viewTab === 'all-tx' ? `${filteredAllTx.length} معاملة حكومية` : viewTab === 'forms-tx' ? `${filteredTx.length} معاملة بنموذج PDF` : `${filteredCurated.length} نموذج منظّم`}
         </p>
 
-        {/* ── TRANSACTIONS VIEW ─────────────────────────────────────────────── */}
-        {viewTab === 'transactions' && (
+        {/* ── ALL TRANSACTIONS VIEW ──────────────────────────────────────────── */}
+        {viewTab === 'all-tx' && (
+          filteredAllTx.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+              <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نتائج</p>
+              <button onClick={() => askAI(`أريد معلومات عن معاملة: ${search}`)} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: '#8B1A1A', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                🤖 اسأل الذكاء الاصطناعي
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {filteredAllTx.slice(0, 200).map((tx: TxItem) => (
+                <div key={tx.id} className="form-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '10px 14px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', transition: 'all 0.15s', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 9, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
+                    {tx.icon}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{tx.title}</div>
+                    <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600 }}>{tx.ministry}</div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                    {tx.hasForm && tx.pdfUrl ? (
+                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#1E40AF', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>📄 PDF</a>
+                    ) : (
+                      <span style={{ padding: '5px 9px', background: '#F3F4F6', color: '#6B7280', borderRadius: 8, fontSize: 10 }}>بلا نموذج</span>
+                    )}
+                    <button onClick={() => askAI(`ما هي متطلبات وخطوات معاملة: ${tx.title}؟`)} style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>AI</button>
+                  </div>
+                </div>
+              ))}
+              {filteredAllTx.length > 200 && (
+                <div style={{ textAlign: 'center', padding: '12px', color: '#9C8E80', fontSize: 11 }}>
+                  يتم عرض أول 200 نتيجة من {filteredAllTx.length} — استخدم البحث لتضييق النتائج
+                </div>
+              )}
+            </div>
+          )
+        )}
+
+        {/* ── FORMS-ONLY TRANSACTIONS VIEW ──────────────────────────────────── */}
+        {viewTab === 'forms-tx' && (
           filteredTx.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
@@ -167,10 +213,10 @@ export default function FormsPage() {
                         📄 تحميل النموذج
                       </a>
                     )}
-                    {tx.archiveUrl && !tx.pdfUrl && (
-                      <a href={tx.archiveUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '7px', background: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        🔗 المصدر الأرشيف
-                      </a>
+                    {!tx.pdfUrl && (
+                      <span style={{ flex: 1, padding: '7px', background: '#F9FAFB', color: '#6B7280', border: '1px solid #E5E7EB', borderRadius: 9, fontSize: 11, textAlign: 'center' }}>
+                        بلا نموذج
+                      </span>
                     )}
                   </div>
                 </div>
