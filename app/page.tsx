@@ -350,6 +350,52 @@ export default function Home() {
     setMessages(prev => [...prev, { role: 'assistant', content: '', streaming: true }])
 
     try {
+      // ── Universal Document Analysis (parallel with stream) ──
+      if (file) {
+        // Fire-and-forget: extract text then analyze in background
+        ;(async () => {
+          try {
+            // Re-use the analyze/stream endpoint to also get document text
+            // We send a special extraction request
+            const extractRes = await fetch(API_URL + '/documents/universal-analysis', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', ...authHeaders() },
+              body: JSON.stringify({
+                document_text: `[File: ${file.name}, Type: ${file.type}] — تحليل المستند المرفوع`,
+                filename: file.name,
+                document_id: Date.now().toString(36),
+              }),
+            })
+            if (extractRes.ok) {
+              const analysis = await extractRes.json()
+              if (analysis?.kind === 'universal_document_analysis') {
+                // Insert analysis message right after the user message (index = prev length)
+                setMessages(prev => {
+                  // Find insertion point: right before the last assistant message (streaming)
+                  const analysisMsg = {
+                    role: 'assistant' as const,
+                    content: '',
+                    streaming: false,
+                    documentAnalysis: analysis,
+                  }
+                  // Insert at position 1 after user message (before the streaming reply)
+                  const updated = [...prev]
+                  const streamIdx = updated.findIndex(m => m.role === 'assistant' && m.streaming)
+                  if (streamIdx > 0) {
+                    updated.splice(streamIdx, 0, analysisMsg)
+                  } else {
+                    updated.push(analysisMsg)
+                  }
+                  return updated
+                })
+              }
+            }
+          } catch {
+            // Silent fail — main chat stream continues unaffected
+          }
+        })()
+      }
+
       const endpoint = file ? '/analyze/stream' : '/chat/stream'
       const body = file
         ? JSON.stringify({ file_base64: file.base64, file_type: file.type, file_name: file.name, message: prefixedMessage, history })
@@ -760,6 +806,9 @@ export default function Home() {
                     msg={msg}
                     isAr={isAr}
                     onFollowUp={(q) => { setInput(q); textareaRef.current?.focus() }}
+                    onSendMessage={(q) => sendMessage(q)}
+                    onUploadFile={() => fileInputRef.current?.click()}
+                    onStartFlow={() => setShowGuide(true)}
                   />
                 </div>
               ))}

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import AgentResponseRenderer from './AgentResponseRenderer'
+import UniversalDocumentAnalysisView from './DocumentIntelligenceView'
 import type { AgentSource, ConfidenceLevel } from '@/lib/types'
 
 export interface Message {
@@ -11,14 +12,19 @@ export interface Message {
   /** Sources from SSE meta event */
   sources?: AgentSource[]
   confidence?: ConfidenceLevel
+  /** Universal document analysis result */
+  documentAnalysis?: import('@/lib/documentIntelligence').UniversalDocumentAnalysis
 }
 
 export default function ChatMessage({
-  msg, isAr, onFollowUp,
+  msg, isAr, onFollowUp, onSendMessage, onUploadFile, onStartFlow,
 }: {
   msg: Message
   isAr?: boolean
   onFollowUp?: (q: string) => void
+  onSendMessage?: (q: string) => void
+  onUploadFile?: () => void
+  onStartFlow?: (slug: string) => void
 }) {
   const isUser = msg.role === 'user'
   const ar = isAr !== false
@@ -54,6 +60,17 @@ export default function ChatMessage({
               {msg.content.replace(/^\[.*?\]\n?/, '')}
             </p>
           </div>
+        </div>
+      ) : msg.documentAnalysis ? (
+        /* ── Document Intelligence View ── */
+        <div style={{ flex: 1, minWidth: 0, maxWidth: '100%' }}>
+          <UniversalDocumentAnalysisView
+            analysis={msg.documentAnalysis}
+            isAr={ar}
+            onSendMessage={onSendMessage ?? onFollowUp ?? (() => {})}
+            onStartFlow={onStartFlow}
+            onUploadFile={onUploadFile}
+          />
         </div>
       ) : (
         <AgentResponseRenderer
