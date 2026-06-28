@@ -99,6 +99,13 @@ export default function ProcedureDetailClient() {
           </button>
         </div>
 
+        {/* Playbook link */}
+        <div style={{ marginBottom: 16 }}>
+          <button onClick={() => router.push(`/procedures/${slug}/playbook`)} style={{ width: '100%', padding: '11px 16px', background: '#F5F3FF', color: '#6D28D9', border: '1.5px solid #DDD6FE', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            📋 {isAr ? 'دليل التنفيذ — خارطة الإجراء' : 'Playbook — Procedure Map'}
+          </button>
+        </div>
+
         {/* Required Documents */}
         {proc.requiredDocuments.length > 0 && (
           <Section title={isAr ? '📋 المستندات المطلوبة' : '📋 Required Documents'} bg="#F0FDF4" border="#BBF7D0">
