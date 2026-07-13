@@ -654,19 +654,6 @@ export default function Home() {
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
-        /* ── Bottom nav (mobile only) ── */
-        .bottom-nav-wrapper { display: none !important; }
-        @media (max-width: 640px) {
-          .bottom-nav-wrapper { display: block !important; position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 100; }
-          .bottom-nav-padding { padding-bottom: 64px !important; }
-        }
-        /* ── Mode selector responsive ── */
-        .mode-mobile { display: none; }
-        .mode-desktop { display: flex; justify-content: center; }
-        @media (max-width: 640px) {
-          .mode-mobile { display: flex; justify-content: center; }
-          .mode-desktop { display: none; }
-        }
       `}</style>
 
       <div style={{
@@ -725,9 +712,9 @@ export default function Home() {
 
                 {/* Title & subtitle */}
                 <h2 style={{
-                  fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 800,
+                  fontSize: 'clamp(16px, 4.5vw, 20px)', fontWeight: 800,
                   color: 'var(--text)', margin: '0 0 6px',
-                  letterSpacing: '-0.2px', lineHeight: 1.35,
+                  letterSpacing: '-0.25px', lineHeight: 1.3,
                 }}>
                   {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What do you need to complete?'}
                 </h2>
@@ -815,7 +802,7 @@ export default function Home() {
                         <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {isAr ? group.titleAr : group.titleEn}
                         </div>
-                        <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1 }}>
+                        <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>
                           {group.services.length} {isAr ? 'خدمة' : 'services'}
                         </div>
                       </div>
@@ -879,7 +866,7 @@ export default function Home() {
                     background: 'linear-gradient(135deg, #5c1212 0%, #8B1A1A 100%)',
                     border: 'none', color: '#fff', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    gap: 10, boxShadow: '0 4px 16px rgba(30,64,175,0.25)',
+                    gap: 10, boxShadow: '0 4px 16px rgba(139,26,26,0.25)',
                     transition: 'transform 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
@@ -1036,10 +1023,11 @@ export default function Home() {
         )}
 
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
-        <footer className="bottom-nav-padding" style={{
+        {/* bottom-nav-padding only when keyboard is closed — prevents 56px phantom gap above keyboard */}
+        <footer className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
           flexShrink: 0,
           backgroundColor: 'transparent',
-          paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
+          paddingBottom: footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
         }}>
           <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 12px 10px' }}>
 
@@ -1194,6 +1182,7 @@ export default function Home() {
                     flex: 1, resize: 'none', border: 'none', outline: 'none',
                     fontSize: 14.5, color: 'var(--text)', background: 'transparent',
                     padding: '7px 4px', lineHeight: 1.55, maxHeight: 120,
+                    overflowY: 'auto',
                     fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
                   }}
                 />

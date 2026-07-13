@@ -83,9 +83,11 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: '#fff',
-      borderTop: '1px solid #EAE4D9',
-      boxShadow: '0 -2px 16px rgba(0,0,0,0.08)',
+      background: 'rgba(255,255,255,0.92)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderTop: '1px solid rgba(234,228,217,0.8)',
+      boxShadow: '0 -2px 20px rgba(0,0,0,0.07), 0 -1px 0 rgba(139,26,26,0.04)',
       display: 'flex', alignItems: 'stretch',
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       zIndex: 100,
@@ -115,7 +117,7 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
             <span style={{ color: active ? '#8B1A1A' : '#9C8E80', opacity: active ? 1 : 0.7 }}>
               {tab.icon}
             </span>
-            <span style={{ fontSize: 9.5, fontWeight: active ? 700 : 500 }}>
+            <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>
               {isAr ? tab.label_ar : tab.label_en}
             </span>
           </button>
