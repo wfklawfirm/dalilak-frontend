@@ -10,12 +10,13 @@
  * Future: Accept parsed AgentResponse JSON when backend supports it.
  */
 
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useState, useEffect } from 'react'
 import type { AgentSource, ConfidenceLevel } from '@/lib/types'
 
 // ── Section style map ─────────────────────────────────────────
 const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; labelColor: string }> = {
   'الخلاصة':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
+  'الملخص':               { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
   'summary':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
   'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
@@ -23,6 +24,7 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; la
   'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
   'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
   'الجهة المختصة':        { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
+  'الجهة':                { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
   'responsible authority':{ bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
   'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
   'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
@@ -37,6 +39,7 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; la
   'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'الأساس القانوني':      { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
   'legal basis':          { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
+  'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
 }
 
 function getSectionStyle(header: string) {
@@ -47,26 +50,88 @@ function getSectionStyle(header: string) {
   return null
 }
 
+// ── Citation superscript badge ────────────────────────────────
+function CiteBadge({ n, active, onClick }: { n: number; active: boolean; onClick: () => void }) {
+  return (
+    <sup
+      onClick={(e) => { e.stopPropagation(); onClick() }}
+      title={`المصدر [${n}]`}
+      style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: 16, height: 16, borderRadius: '50%',
+        background: active ? '#8B1A1A' : '#FEF2F2',
+        color: active ? '#fff' : '#8B1A1A',
+        fontSize: 9, fontWeight: 800, cursor: 'pointer',
+        border: `1px solid ${active ? '#8B1A1A' : '#FECACA'}`,
+        marginInline: 2, verticalAlign: 'super', lineHeight: 1,
+        transition: 'all 0.15s', flexShrink: 0,
+        userSelect: 'none',
+      }}
+    >
+      {n}
+    </sup>
+  )
+}
+
 // ── Inline formatting ─────────────────────────────────────────
-function inlineFormat(str: string, keyPrefix: string | number): ReactNode {
+function inlineFormat(
+  str: string,
+  keyPrefix: string | number,
+  onCitation?: (n: number) => void,
+  activeCitation?: number | null,
+): ReactNode {
   const parts: ReactNode[] = []
   let rest = str
   let idx = 0
+
   while (rest.length > 0) {
     const boldMatch = rest.match(/^(.*?)\*\*(.+?)\*\*/)
     const codeMatch = rest.match(/^(.*?)`([^`]+)`/)
-    if (boldMatch && (!codeMatch || boldMatch[0].length <= codeMatch[0].length)) {
-      if (boldMatch[1]) parts.push(<span key={`${keyPrefix}-${idx++}`}>{boldMatch[1]}</span>)
-      parts.push(<strong key={`${keyPrefix}-${idx++}`} style={{ color: '#7B1111' }}>{boldMatch[2]}</strong>)
-      rest = rest.slice(boldMatch[0].length)
-    } else if (codeMatch) {
-      if (codeMatch[1]) parts.push(<span key={`${keyPrefix}-${idx++}`}>{codeMatch[1]}</span>)
-      parts.push(<code key={`${keyPrefix}-${idx++}`} style={{ background: '#fdf2f2', padding: '1px 5px', borderRadius: 3, fontSize: '0.85em' }}>{codeMatch[2]}</code>)
-      rest = rest.slice(codeMatch[0].length)
-    } else {
+    const citeMatch = rest.match(/^(.*?)\[(\d{1,2})\]/)
+
+    type MatchEntry = { type: 'bold' | 'code' | 'cite'; match: RegExpMatchArray }
+    const candidates: MatchEntry[] = []
+    if (boldMatch) candidates.push({ type: 'bold', match: boldMatch })
+    if (codeMatch) candidates.push({ type: 'code', match: codeMatch })
+    if (citeMatch) candidates.push({ type: 'cite', match: citeMatch })
+
+    if (candidates.length === 0) {
       parts.push(<span key={`${keyPrefix}-${idx++}`}>{rest}</span>)
       break
     }
+
+    const earliest = candidates.reduce((a, b) =>
+      a.match[1].length <= b.match[1].length ? a : b
+    )
+    const { type, match } = earliest
+
+    if (match[1]) parts.push(<span key={`${keyPrefix}-${idx++}`}>{match[1]}</span>)
+
+    if (type === 'bold') {
+      parts.push(
+        <strong key={`${keyPrefix}-${idx++}`} style={{ color: '#7B1111' }}>{match[2]}</strong>
+      )
+    } else if (type === 'code') {
+      parts.push(
+        <code key={`${keyPrefix}-${idx++}`} style={{ background: '#fdf2f2', padding: '1px 5px', borderRadius: 3, fontSize: '0.85em' }}>{match[2]}</code>
+      )
+    } else if (type === 'cite') {
+      const n = parseInt(match[2])
+      if (n >= 1 && n <= 15 && onCitation) {
+        parts.push(
+          <CiteBadge
+            key={`${keyPrefix}-cite-${idx++}`}
+            n={n}
+            active={activeCitation === n}
+            onClick={() => onCitation(n)}
+          />
+        )
+      } else {
+        parts.push(<span key={`${keyPrefix}-${idx++}`}>[{match[2]}]</span>)
+      }
+    }
+
+    rest = rest.slice(match[0].length)
   }
   return <>{parts}</>
 }
@@ -91,7 +156,15 @@ function parseSections(text: string): Section[] {
 }
 
 // ── Markdown fallback renderer ────────────────────────────────
-export function MarkdownFallbackRenderer({ lines }: { lines: string[] }) {
+export function MarkdownFallbackRenderer({
+  lines,
+  onCitation,
+  activeCitation,
+}: {
+  lines: string[]
+  onCitation?: (n: number) => void
+  activeCitation?: number | null
+}) {
   const elements: ReactNode[] = []
   let i = 0
   while (i < lines.length) {
@@ -100,15 +173,15 @@ export function MarkdownFallbackRenderer({ lines }: { lines: string[] }) {
     const h2m = line.match(/^## (.+)/)
     const h1m = line.match(/^# (.+)/)
     if (h1m) {
-      elements.push(<h1 key={i} style={{ fontWeight: 800, fontSize: '1.05em', margin: '0.8rem 0 0.35rem', color: '#1a1208', borderBottom: '2px solid #f0e0e0', paddingBottom: '0.3rem' }}>{inlineFormat(h1m[1], i)}</h1>)
+      elements.push(<h1 key={i} style={{ fontWeight: 800, fontSize: '1.05em', margin: '0.8rem 0 0.35rem', color: '#1a1208', borderBottom: '2px solid #f0e0e0', paddingBottom: '0.3rem' }}>{inlineFormat(h1m[1], i, onCitation, activeCitation)}</h1>)
       i++; continue
     }
     if (h2m) {
-      elements.push(<h2 key={i} style={{ fontWeight: 700, fontSize: '0.97em', margin: '0.75rem 0 0.3rem', color: '#8B1A1A' }}>{inlineFormat(h2m[1], i)}</h2>)
+      elements.push(<h2 key={i} style={{ fontWeight: 700, fontSize: '0.97em', margin: '0.75rem 0 0.3rem', color: '#8B1A1A' }}>{inlineFormat(h2m[1], i, onCitation, activeCitation)}</h2>)
       i++; continue
     }
     if (h3) {
-      elements.push(<h3 key={i} style={{ fontWeight: 600, fontSize: '0.9em', margin: '0.6rem 0 0.25rem', color: '#5C3A1A' }}>{inlineFormat(h3[1], i)}</h3>)
+      elements.push(<h3 key={i} style={{ fontWeight: 600, fontSize: '0.9em', margin: '0.6rem 0 0.25rem', color: '#5C3A1A' }}>{inlineFormat(h3[1], i, onCitation, activeCitation)}</h3>)
       i++; continue
     }
     if (/^---+$/.test(line.trim())) {
@@ -121,7 +194,7 @@ export function MarkdownFallbackRenderer({ lines }: { lines: string[] }) {
         const content = lines[i].replace(/^[-*•] /, '')
         items.push(<li key={i} style={{ marginBottom: '0.28rem', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
           <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 2, fontWeight: 700 }}>•</span>
-          <span>{inlineFormat(content, i)}</span>
+          <span>{inlineFormat(content, i, onCitation, activeCitation)}</span>
         </li>)
         i++
       }
@@ -135,7 +208,7 @@ export function MarkdownFallbackRenderer({ lines }: { lines: string[] }) {
         const content = lines[i].replace(/^\d+\. /, '')
         items.push(<li key={i} style={{ marginBottom: '0.32rem', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
           <span style={{ minWidth: 22, height: 22, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{num++}</span>
-          <span style={{ paddingTop: 2 }}>{inlineFormat(content, i)}</span>
+          <span style={{ paddingTop: 2 }}>{inlineFormat(content, i, onCitation, activeCitation)}</span>
         </li>)
         i++
       }
@@ -146,14 +219,22 @@ export function MarkdownFallbackRenderer({ lines }: { lines: string[] }) {
       if (elements.length > 0) elements.push(<div key={i} style={{ height: '0.35rem' }} />)
       i++; continue
     }
-    elements.push(<p key={i} style={{ marginBottom: '0.55rem', lineHeight: 1.85 }}>{inlineFormat(line, i)}</p>)
+    elements.push(<p key={i} style={{ marginBottom: '0.55rem', lineHeight: 1.85 }}>{inlineFormat(line, i, onCitation, activeCitation)}</p>)
     i++
   }
   return <>{elements}</>
 }
 
 // ── Structured section card ───────────────────────────────────
-export function AgentSectionCard({ header, lines, style }: { header: string; lines: string[]; style: ReturnType<typeof getSectionStyle> }) {
+export function AgentSectionCard({
+  header, lines, style, onCitation, activeCitation,
+}: {
+  header: string
+  lines: string[]
+  style: ReturnType<typeof getSectionStyle>
+  onCitation?: (n: number) => void
+  activeCitation?: number | null
+}) {
   if (!style || lines.every(l => !l.trim())) return null
   return (
     <div style={{ background: style.bg, border: `1.5px solid ${style.border}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10 }}>
@@ -162,7 +243,7 @@ export function AgentSectionCard({ header, lines, style }: { header: string; lin
         <span style={{ fontSize: 12.5, fontWeight: 800, color: style.labelColor }}>{header}</span>
       </div>
       <div style={{ fontSize: 13, lineHeight: 1.8, color: '#1A1208' }}>
-        <MarkdownFallbackRenderer lines={lines} />
+        <MarkdownFallbackRenderer lines={lines} onCitation={onCitation} activeCitation={activeCitation} />
       </div>
     </div>
   )
@@ -184,24 +265,52 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
   )
 }
 
-// ── Trust Badge (upgraded with sources + confidence) ──────────
+// ── Score color helper ────────────────────────────────────────
+function scoreStyle(score: number) {
+  if (score >= 0.75) return { color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' }
+  if (score >= 0.50) return { color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' }
+  return { color: '#6B7280', bg: '#F9FAFB', border: '#E5E7EB' }
+}
+
+// ── Trust Badge ───────────────────────────────────────────────
 export function TrustBadge({
-  isAr, sources, confidence, lastReviewed,
+  isAr, sources, confidence, lastReviewed, activeCitation, defaultExpanded,
 }: {
   isAr: boolean
   sources?: AgentSource[]
   confidence?: ConfidenceLevel
   lastReviewed?: string
+  activeCitation?: number | null
+  defaultExpanded?: boolean
 }) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(defaultExpanded ?? false)
+
   const hasSources = sources && sources.length > 0
-  const confLabel = { high: isAr ? 'عالية' : 'High', medium: isAr ? 'متوسطة' : 'Medium', low: isAr ? 'منخفضة' : 'Low', unknown: isAr ? 'غير محددة' : 'Unknown' }
+  const confLabel = {
+    high:    isAr ? 'عالية'      : 'High',
+    medium:  isAr ? 'متوسطة'    : 'Medium',
+    low:     isAr ? 'منخفضة'    : 'Low',
+    unknown: isAr ? 'غير محددة' : 'Unknown',
+  }
   const confColor = { high: '#15803D', medium: '#B45309', low: '#DC2626', unknown: '#6B7280' }
+
+  useEffect(() => {
+    if (activeCitation != null) setExpanded(true)
+  }, [activeCitation])
+
+  const activeRef = React.useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (activeCitation != null && activeRef.current) {
+      activeRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [activeCitation])
 
   return (
     <div style={{ marginTop: 10, padding: '8px 12px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #F0EBE0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: hasSources ? 'pointer' : 'default' }}
-        onClick={() => hasSources && setExpanded(e => !e)}>
+      <div
+        style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: hasSources ? 'pointer' : 'default' }}
+        onClick={() => hasSources && setExpanded(e => !e)}
+      >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2" style={{ flexShrink: 0 }}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
@@ -211,8 +320,8 @@ export function TrustBadge({
                 ? '⚠️ لم يتم ربط هذه الإجابة بمصدر موثّق. تحقق قبل التصرف.'
                 : '⚠️ This answer could not be linked to a verified source. Please verify before acting.')
             : (isAr
-                ? `تأكد دائماً من الجهة الرسمية. ${confidence ? `ثقة: ${confLabel[confidence]}` : ''}`
-                : `Always verify with official authority. ${confidence ? `Confidence: ${confLabel[confidence]}` : ''}`)}
+                ? `${sources!.length} مصادر · ${confidence ? `ثقة: ${confLabel[confidence]}` : ''} · تأكد من الجهة الرسمية`
+                : `${sources!.length} sources · ${confidence ? `Confidence: ${confLabel[confidence]}` : ''} · Verify with authority`)}
         </div>
         {confidence && (
           <span style={{ fontSize: 9.5, fontWeight: 700, color: confColor[confidence], background: confColor[confidence] + '15', borderRadius: 8, padding: '1px 6px', flexShrink: 0 }}>
@@ -220,45 +329,76 @@ export function TrustBadge({
           </span>
         )}
         {hasSources && (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', flexShrink: 0 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         )}
       </div>
 
-      {/* Expanded source list */}
       {expanded && hasSources && (
         <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #F0EBE0' }}>
           <p style={{ fontSize: 10, fontWeight: 700, color: '#5C3A1A', margin: '0 0 6px' }}>
             {isAr ? 'المصادر المستخدمة:' : 'Sources used:'}
           </p>
-          {sources!.map((src, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginBottom: 5 }}>
-              <SourceTypeBadge type={src.type} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>
-                  {src.title}
-                  {src.ministry && ` — ${src.ministry}`}
+          {sources!.map((src, i) => {
+            const citNum = i + 1
+            const isActive = activeCitation === citNum
+            const ss = src.score !== undefined ? scoreStyle(src.score) : null
+            return (
+              <div
+                key={i}
+                ref={isActive ? activeRef : undefined}
+                style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 7, marginBottom: 5,
+                  padding: '5px 7px', borderRadius: 8,
+                  background: isActive ? '#FEF2F2' : 'transparent',
+                  border: `1px solid ${isActive ? '#FECACA' : 'transparent'}`,
+                  transition: 'all 0.2s',
+                }}
+              >
+                <span style={{
+                  flexShrink: 0, width: 18, height: 18, borderRadius: '50%',
+                  background: isActive ? '#8B1A1A' : '#F3F4F6',
+                  color: isActive ? '#fff' : '#6B7280',
+                  fontSize: 10, fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.2s',
+                }}>
+                  {citNum}
                 </span>
-                {src.url && (
-                  <a href={src.url} target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'block', fontSize: 9.5, color: '#8B1A1A', marginTop: 1 }}>
-                    {src.url.replace(/^https?:\/\//, '').slice(0, 40)}
-                  </a>
-                )}
-                {src.lastUpdated && (
-                  <span style={{ fontSize: 9, color: '#9C8E80', display: 'block' }}>
-                    {isAr ? `آخر تحديث: ${src.lastUpdated}` : `Last updated: ${src.lastUpdated}`}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+                    <SourceTypeBadge type={src.type} />
+                    {ss && (
+                      <span style={{
+                        fontSize: 9, fontWeight: 700, flexShrink: 0,
+                        color: ss.color, background: ss.bg,
+                        border: `1px solid ${ss.border}`,
+                        borderRadius: 8, padding: '1px 5px',
+                      }}>
+                        {Math.round(src.score! * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: 10.5, color: '#374151', fontWeight: 600, display: 'block', marginTop: 2 }}>
+                    {src.title}
+                    {src.ministry && <span style={{ color: '#6B7280', fontWeight: 400 }}> — {src.ministry}</span>}
                   </span>
-                )}
+                  {src.url && (
+                    <a href={src.url} target="_blank" rel="noopener noreferrer"
+                      style={{ display: 'block', fontSize: 9.5, color: '#8B1A1A', marginTop: 1 }}>
+                      {src.url.replace(/^https?:\/\//, '').slice(0, 40)}
+                    </a>
+                  )}
+                  {src.lastUpdated && (
+                    <span style={{ fontSize: 9, color: '#9C8E80', display: 'block' }}>
+                      {isAr ? `آخر تحديث: ${src.lastUpdated}` : `Last updated: ${src.lastUpdated}`}
+                    </span>
+                  )}
+                </div>
               </div>
-              {src.score !== undefined && (
-                <span style={{ fontSize: 9, color: '#9C8E80', flexShrink: 0 }}>
-                  {Math.round(src.score * 100)}%
-                </span>
-              )}
-            </div>
-          ))}
+            )
+          })}
           {lastReviewed && (
             <p style={{ fontSize: 9, color: '#9C8E80', margin: '4px 0 0' }}>
               {isAr ? `آخر مراجعة: ${lastReviewed}` : `Last reviewed: ${lastReviewed}`}
@@ -306,7 +446,7 @@ export function ResponseActions({
     navigator.clipboard.writeText(docs).then(() => { setDocsCopied(true); setTimeout(() => setDocsCopied(false), 2000) })
   }
   const downloadChecklist = () => {
-    const clean = content.replace(/\[.*?\] /g, '')
+    const clean = content.replace(/\[\d+\]/g, '').replace(/\[.*?\] /g, '')
     const blob = new Blob([clean], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -391,7 +531,13 @@ export default function AgentResponseRenderer({
   const sections = !streaming ? parseSections(displayContent) : []
   const isStructured = sections.length > 0
 
-  // Convert SSE sources to AgentSource format for TrustBadge
+  const [activeCitation, setActiveCitation] = useState<number | null>(null)
+  const hasCitations = /\[\d{1,2}\]/.test(displayContent)
+
+  const handleCitation = (n: number) => {
+    setActiveCitation(prev => prev === n ? null : n)
+  }
+
   const agentSources: AgentSource[] | undefined = sources?.map(s => ({
     title: s.title,
     type: 'internal' as const,
@@ -409,23 +555,32 @@ export default function AgentResponseRenderer({
               if (!hasContent) return null
               return (
                 <div key={i} style={{ padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isAr ? 4 : 16, borderTopRightRadius: isAr ? 16 : 4, background: '#fff', border: '1px solid #F0EBE0', boxShadow: '0 1px 6px rgba(0,0,0,0.06)', fontSize: 13.5, lineHeight: 1.8, color: '#1A1208', marginBottom: 10 }}>
-                  <MarkdownFallbackRenderer lines={sec.lines} />
+                  <MarkdownFallbackRenderer lines={sec.lines} onCitation={handleCitation} activeCitation={activeCitation} />
                 </div>
               )
             }
             const style = getSectionStyle(sec.header)
-            if (style) return <AgentSectionCard key={i} header={sec.header} lines={sec.lines} style={style} />
+            if (style) return (
+              <AgentSectionCard
+                key={i}
+                header={sec.header}
+                lines={sec.lines}
+                style={style}
+                onCitation={handleCitation}
+                activeCitation={activeCitation}
+              />
+            )
             return (
               <div key={i} style={{ padding: '12px 16px', borderRadius: 14, marginBottom: 10, background: '#fff', border: '1px solid #F0EBE0', fontSize: 13.5, color: '#1A1208', lineHeight: 1.8 }}>
                 <strong style={{ color: '#8B1A1A', display: 'block', marginBottom: 6 }}>{sec.header}</strong>
-                <MarkdownFallbackRenderer lines={sec.lines} />
+                <MarkdownFallbackRenderer lines={sec.lines} onCitation={handleCitation} activeCitation={activeCitation} />
               </div>
             )
           })}
         </div>
       ) : (
         <div style={{ padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isAr ? 4 : 16, borderTopRightRadius: isAr ? 16 : 4, background: '#fff', border: '1px solid #F0EBE0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)', fontSize: 13.5, lineHeight: 1.8, color: '#1A1208' }}>
-          <MarkdownFallbackRenderer lines={displayContent.split('\n')} />
+          <MarkdownFallbackRenderer lines={displayContent.split('\n')} onCitation={handleCitation} activeCitation={activeCitation} />
           {streaming && (
             <span style={{ display: 'inline-block', width: 8, height: 15, background: '#8B1A1A', borderRadius: 2, animation: 'blink 0.9s step-end infinite', marginRight: 2 }} />
           )}
@@ -439,7 +594,13 @@ export default function AgentResponseRenderer({
       {!streaming && content.length > 30 && (
         <>
           <ResponseActions content={displayContent} isAr={isAr} onFollowUp={onFollowUp} />
-          <TrustBadge isAr={isAr} sources={agentSources} confidence={confidence} />
+          <TrustBadge
+            isAr={isAr}
+            sources={agentSources}
+            confidence={confidence}
+            activeCitation={activeCitation}
+            defaultExpanded={hasCitations && Boolean(agentSources?.length)}
+          />
         </>
       )}
 
