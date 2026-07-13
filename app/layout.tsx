@@ -20,19 +20,4 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         {/* DNS + TLS handshake early — fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* DNS prefetch for backend — wakes Render early */}
-        <link rel="dns-prefetch" href="https://dalilak-backend-bvb9.onrender.com" />
-        <link rel="preconnect" href="https://dalilak-backend-bvb9.onrender.com" crossOrigin="anonymous" />
-        {/* font-display=swap prevents render-blocking */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body style={{ fontFamily: "'Cairo', 'Inter', sans-serif" }} className="antialiased min-h-screen">
-        {children}
-      </body>
-    </html>
-  )
-}
+        <link r
