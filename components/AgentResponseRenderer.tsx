@@ -395,6 +395,16 @@ export function TrustBadge({
                       {isAr ? `آخر تحديث: ${src.lastUpdated}` : `Last updated: ${src.lastUpdated}`}
                     </span>
                   )}
+                  {isActive && (src as any).snippet && (
+                    <p style={{
+                      fontSize: 10, color: '#4B5563', margin: '5px 0 0',
+                      padding: '5px 7px', borderRadius: 6,
+                      background: '#FFF', border: '1px solid #FECACA',
+                      lineHeight: 1.6, direction: 'rtl', textAlign: 'right',
+                    }}>
+                      {(src as any).snippet}
+                    </p>
+                  )}
                 </div>
               </div>
             )
