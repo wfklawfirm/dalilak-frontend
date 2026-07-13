@@ -7,13 +7,24 @@ import BottomNav from '@/components/BottomNav'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 const CATEGORIES = [
-  { id: 'civil_status',  icon: '👤', label_ar: 'الأحوال الشخصية', label_en: 'Civil Status' },
-  { id: 'vehicles',      icon: '🚗', label_ar: 'المركبات والسير',  label_en: 'Vehicles & Traffic' },
-  { id: 'business',      icon: '🏢', label_ar: 'الأعمال والتجارة', label_en: 'Business' },
-  { id: 'real_estate',   icon: '🏠', label_ar: 'العقارات',         label_en: 'Real Estate' },
-  { id: 'education',     icon: '🎓', label_ar: 'التعليم والعمل',   label_en: 'Education & Work' },
-  { id: 'health',        icon: '🏥', label_ar: 'الصحة',            label_en: 'Health' },
+  { id: 'civil_status',  label_ar: 'الأحوال الشخصية', label_en: 'Civil Status' },
+  { id: 'vehicles',      label_ar: 'المركبات والسير',  label_en: 'Vehicles & Traffic' },
+  { id: 'business',      label_ar: 'الأعمال والتجارة', label_en: 'Business' },
+  { id: 'real_estate',   label_ar: 'العقارات',         label_en: 'Real Estate' },
+  { id: 'education',     label_ar: 'التعليم والعمل',   label_en: 'Education & Work' },
+  { id: 'health',        label_ar: 'الصحة',            label_en: 'Health' },
 ]
+
+function CatIcon({ id, active }: { id: string; active: boolean }) {
+  const c = active ? '#8B1A1A' : '#6B7280'
+  const s = { width: 22, height: 22 } as const
+  if (id === 'civil_status') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+  if (id === 'vehicles')     return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM1 3h2l2.4 9H19l2-6H7"/></svg>
+  if (id === 'business')     return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+  if (id === 'real_estate')  return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+  if (id === 'education')    return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+  return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+}
 
 interface Procedure {
   id: string
@@ -156,7 +167,7 @@ export default function ServicesPage() {
                   transition: 'all 0.15s',
                 }}
               >
-                <div style={{ fontSize: 22, marginBottom: 5 }}>{cat.icon}</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 5 }}><CatIcon id={cat.id} active={active} /></div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: active ? '#8B1A1A' : '#374151', lineHeight: 1.3 }}>
                   {lang === 'ar' ? cat.label_ar : cat.label_en}
                 </div>
@@ -194,7 +205,9 @@ export default function ServicesPage() {
           </div>
         ) : procedures.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <div style={{ fontSize: 52, marginBottom: 14 }}>🔍</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.4"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+            </div>
             <p style={{ color: '#9C8E80', fontSize: 14, margin: '0 0 16px' }}>
               {lang === 'ar' ? 'لم يُعثر على نتائج — جرّب مصطلحاً آخر' : 'No results — try a different search term'}
             </p>
@@ -202,7 +215,7 @@ export default function ServicesPage() {
               onClick={() => router.push(`/?q=${encodeURIComponent(search)}`)}
               style={{ padding: '10px 24px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
             >
-              🤖 {lang === 'ar' ? 'اسأل دليلك الذكي' : 'Ask Dalilak AI'}
+              {lang === 'ar' ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
           </div>
         ) : (
@@ -257,7 +270,9 @@ export default function ServicesPage() {
           borderRadius: 20, padding: '28px 24px', textAlign: 'center', color: '#fff',
           boxShadow: '0 4px 24px rgba(139,26,26,0.3)',
         }}>
-          <div style={{ fontSize: 30, marginBottom: 10 }}>⚖️</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M9 12H3m6 6H3m9-12v12m3-8l3 4m0 0l3-4m-3 4V6"/></svg>
+          </div>
           <h2 style={{ fontSize: 18, fontWeight: 800, margin: '0 0 8px' }}>
             {lang === 'ar' ? 'ابدأ متابعة معاملتك' : 'Start tracking your procedure'}
           </h2>

@@ -14,33 +14,43 @@ interface GuidedFlowProps {
 
 // ── Procedure list (for picker step) ──────────────────────────
 const PROCEDURES = [
-  { icon: '📘', ar: 'جواز سفر', en: 'Passport', slug: 'passport' },
-  { icon: '📋', ar: 'سجل عدلي', en: 'Criminal Record', slug: 'criminal-record' },
-  { icon: '👨‍👩‍👦', ar: 'إخراج قيد', en: 'Civil Registry Extract', slug: 'civil-registry-extract' },
-  { icon: '⚖️', ar: 'حصر إرث', en: 'Inheritance Certificate', slug: 'inheritance-certificate' },
-  { icon: '🏭', ar: 'تأسيس شركة', en: 'Company Registration', slug: 'company-registration' },
-  { icon: '🏗️', ar: 'رخصة بناء', en: 'Building Permit', slug: 'building-permit' },
-  { icon: '📜', ar: 'تصديق مستند', en: 'Document Attestation', slug: 'document-attestation' },
-  { icon: '🏠', ar: 'بيع / شراء عقار', en: 'Real Estate Sale/Buy', slug: 'property-transfer' },
-  { icon: '✈️', ar: 'معاملات المغتربين', en: 'Expat Procedures', slug: 'expat-services' },
-  { icon: '🚗', ar: 'تسجيل سيارة', en: 'Vehicle Registration', slug: 'vehicle-registration' },
-  { icon: '🪪', ar: 'بطاقة هوية', en: 'National ID Card', slug: 'national-id' },
-  { icon: '💍', ar: 'تسجيل زواج', en: 'Marriage Registration', slug: 'marriage-registration' },
-  { icon: '👶', ar: 'تسجيل مولود', en: 'Birth Registration', slug: 'birth-certificate' },
-  { icon: '🎓', ar: 'تصديق شهادة', en: 'Degree Attestation', slug: 'degree-attestation' },
-  { icon: '🏥', ar: 'الضمان الاجتماعي', en: 'Social Security', slug: 'social-security' },
-  { icon: '🚘', ar: 'رخصة قيادة', en: "Driver's License", slug: 'driver-license' },
-  { icon: '🏛️', ar: 'توكيل رسمي', en: 'Power of Attorney', slug: 'power-of-attorney' },
+  { ar: 'جواز سفر', en: 'Passport', slug: 'passport' },
+  { ar: 'سجل عدلي', en: 'Criminal Record', slug: 'criminal-record' },
+  { ar: 'إخراج قيد', en: 'Civil Registry Extract', slug: 'civil-registry-extract' },
+  { ar: 'حصر إرث', en: 'Inheritance Certificate', slug: 'inheritance-certificate' },
+  { ar: 'تأسيس شركة', en: 'Company Registration', slug: 'company-registration' },
+  { ar: 'رخصة بناء', en: 'Building Permit', slug: 'building-permit' },
+  { ar: 'تصديق مستند', en: 'Document Attestation', slug: 'document-attestation' },
+  { ar: 'بيع / شراء عقار', en: 'Real Estate Sale/Buy', slug: 'property-transfer' },
+  { ar: 'معاملات المغتربين', en: 'Expat Procedures', slug: 'expat-services' },
+  { ar: 'تسجيل سيارة', en: 'Vehicle Registration', slug: 'vehicle-registration' },
+  { ar: 'بطاقة هوية', en: 'National ID Card', slug: 'national-id' },
+  { ar: 'تسجيل زواج', en: 'Marriage Registration', slug: 'marriage-registration' },
+  { ar: 'تسجيل مولود', en: 'Birth Registration', slug: 'birth-certificate' },
+  { ar: 'تصديق شهادة', en: 'Degree Attestation', slug: 'degree-attestation' },
+  { ar: 'الضمان الاجتماعي', en: 'Social Security', slug: 'social-security' },
+  { ar: 'رخصة قيادة', en: "Driver's License", slug: 'driver-license' },
+  { ar: 'توكيل رسمي', en: 'Power of Attorney', slug: 'power-of-attorney' },
 ]
+
+// ── Intent SVG icons ───────────────────────────────────────────
+const INTENT_ICONS: Record<string, JSX.Element> = {
+  docs: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+  steps: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
+  authority: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+  form: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
+  checklist: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>,
+  expat: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+}
 
 // ── Fallback legacy intents (for slugs without a defined flow) ─
 const INTENTS = [
-  { icon: '📋', ar: 'المستندات المطلوبة', en: 'Required Documents', desc_ar: 'ما الأوراق التي أحتاجها؟', desc_en: "What documents do I need?", prefix_ar: 'ما هي كل المستندات والأوراق المطلوبة لإجراء معاملة', prefix_en: 'What are all the required documents for', suffix_ar: '؟ اعطني قائمة شاملة ومفصّلة.', suffix_en: '? Give me a comprehensive detailed list.' },
-  { icon: '📝', ar: 'الخطوات كاملة', en: 'Step-by-Step Guide', desc_ar: 'كيف أنجز المعاملة خطوة بخطوة؟', desc_en: 'How do I complete it step by step?', prefix_ar: 'اشرح لي خطوات إتمام معاملة', prefix_en: 'Explain the steps to complete', suffix_ar: ' بالتفصيل من البداية للنهاية مع الجهات والأوقات.', suffix_en: ' in detail from start to finish.' },
-  { icon: '🏛️', ar: 'الجهة المختصة', en: 'Responsible Authority', desc_ar: 'أين أراجع وكيف أتصل بهم؟', desc_en: 'Where to go and how to contact them?', prefix_ar: 'ما هي الجهة الرسمية المختصة بمعاملة', prefix_en: 'What is the official authority for', suffix_ar: '؟ أعطني العنوان وأوقات العمل وأرقام الاتصال.', suffix_en: '? Give me the address, working hours, and contact.' },
-  { icon: '📄', ar: 'النموذج الرسمي', en: 'Official Form', desc_ar: 'ما هو النموذج وكيف أملأه؟', desc_en: 'What form do I need?', prefix_ar: 'ما هو النموذج الرسمي المطلوب لمعاملة', prefix_en: 'What is the official form needed for', suffix_ar: '؟ وكيف أملأه بشكل صحيح؟', suffix_en: '? And how do I fill it correctly?' },
-  { icon: '✅', ar: 'Checklist جاهز', en: 'Ready Checklist', desc_ar: 'قائمة مرجعية لأتابع تقدّمي', desc_en: 'A reference list to track progress', prefix_ar: 'أعطني checklist شامل لإتمام معاملة', prefix_en: 'Give me a checklist to complete', suffix_ar: ' يشمل المستندات والخطوات والجهات.', suffix_en: ' including documents, steps, and authorities.' },
-  { icon: '✈️', ar: 'للمغتربين', en: 'For Expats Abroad', desc_ar: 'كيف أنجزها من خارج لبنان؟', desc_en: 'How to complete from outside Lebanon?', prefix_ar: 'كيف يستطيع المغترب إجراء معاملة', prefix_en: 'How can an expat complete', suffix_ar: '؟ ما الخيارات عبر السفارات أو التوكيل؟', suffix_en: '? Options via embassies or power of attorney?' },
+  { iconKey: 'docs',      ar: 'المستندات المطلوبة', en: 'Required Documents', desc_ar: 'ما الأوراق التي أحتاجها؟', desc_en: "What documents do I need?", prefix_ar: 'ما هي كل المستندات والأوراق المطلوبة لإجراء معاملة', prefix_en: 'What are all the required documents for', suffix_ar: '؟ اعطني قائمة شاملة ومفصّلة.', suffix_en: '? Give me a comprehensive detailed list.' },
+  { iconKey: 'steps',     ar: 'الخطوات كاملة', en: 'Step-by-Step Guide', desc_ar: 'كيف أنجز المعاملة خطوة بخطوة؟', desc_en: 'How do I complete it step by step?', prefix_ar: 'اشرح لي خطوات إتمام معاملة', prefix_en: 'Explain the steps to complete', suffix_ar: ' بالتفصيل من البداية للنهاية مع الجهات والأوقات.', suffix_en: ' in detail from start to finish.' },
+  { iconKey: 'authority', ar: 'الجهة المختصة', en: 'Responsible Authority', desc_ar: 'أين أراجع وكيف أتصل بهم؟', desc_en: 'Where to go and how to contact them?', prefix_ar: 'ما هي الجهة الرسمية المختصة بمعاملة', prefix_en: 'What is the official authority for', suffix_ar: '؟ أعطني العنوان وأوقات العمل وأرقام الاتصال.', suffix_en: '? Give me the address, working hours, and contact.' },
+  { iconKey: 'form',      ar: 'النموذج الرسمي', en: 'Official Form', desc_ar: 'ما هو النموذج وكيف أملأه؟', desc_en: 'What form do I need?', prefix_ar: 'ما هو النموذج الرسمي المطلوب لمعاملة', prefix_en: 'What is the official form needed for', suffix_ar: '؟ وكيف أملأه بشكل صحيح؟', suffix_en: '? And how do I fill it correctly?' },
+  { iconKey: 'checklist', ar: 'Checklist جاهز', en: 'Ready Checklist', desc_ar: 'قائمة مرجعية لأتابع تقدّمي', desc_en: 'A reference list to track progress', prefix_ar: 'أعطني checklist شامل لإتمام معاملة', prefix_en: 'Give me a checklist to complete', suffix_ar: ' يشمل المستندات والخطوات والجهات.', suffix_en: ' including documents, steps, and authorities.' },
+  { iconKey: 'expat',     ar: 'للمغتربين', en: 'For Expats Abroad', desc_ar: 'كيف أنجزها من خارج لبنان؟', desc_en: 'How to complete from outside Lebanon?', prefix_ar: 'كيف يستطيع المغترب إجراء معاملة', prefix_en: 'How can an expat complete', suffix_ar: '؟ ما الخيارات عبر السفارات أو التوكيل؟', suffix_en: '? Options via embassies or power of attorney?' },
 ]
 
 // ── Wizard states ──────────────────────────────────────────────
@@ -142,13 +152,13 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
 
   // ── Header label ──────────────────────────────────────────
   const headerLabel = () => {
-    if (phase === 'pick_procedure') return isAr ? '🗂️ ما هي معاملتك؟' : '🗂️ What is your procedure?'
+    if (phase === 'pick_procedure') return isAr ? 'ما هي معاملتك؟' : 'What is your procedure?'
     if (phase === 'flow_questions') {
       return isAr
-        ? `${selectedProc?.icon} ${selectedProc?.ar} — سؤال ${stepIndex + 1}/${totalFlowSteps}`
-        : `${selectedProc?.icon} ${selectedProc?.en} — Q${stepIndex + 1}/${totalFlowSteps}`
+        ? `${selectedProc?.ar} — سؤال ${stepIndex + 1}/${totalFlowSteps}`
+        : `${selectedProc?.en} — Q${stepIndex + 1}/${totalFlowSteps}`
     }
-    return isAr ? `${selectedProc?.icon} ${selectedProc?.ar} — ماذا تريد؟` : `${selectedProc?.icon} ${selectedProc?.en} — What do you need?`
+    return isAr ? `${selectedProc?.ar} — ماذا تريد؟` : `${selectedProc?.en} — What do you need?`
   }
 
   return (
@@ -232,7 +242,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
                   onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
-                    <span style={{ fontSize: 22, flexShrink: 0 }}>{p.icon}</span>
+                    <span style={{ display: 'flex', flexShrink: 0, color: '#8B1A1A' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                     <span style={{ fontSize: 12.5, fontWeight: 600, color: '#1A1208', lineHeight: 1.3 }}>{isAr ? p.ar : p.en}</span>
                   </button>
                 ))}
@@ -276,7 +286,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
               {Object.keys(answers).length > 0 && (
                 <div style={{ marginTop: 14, padding: '8px 12px', background: '#FEF9F9', border: '1px solid rgba(139,26,26,0.12)', borderRadius: 10 }}>
                   <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: 0, fontWeight: 600 }}>
-                    📌 {isAr ? Object.values(answers).join(' • ') : Object.values(answers).join(' • ')}
+                    {isAr ? Object.values(answers).join(' • ') : Object.values(answers).join(' • ')}
                   </p>
                 </div>
               )}
@@ -289,7 +299,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
               {Object.keys(answers).length > 0 && (
                 <div style={{ padding: '10px 14px', background: '#FEF9F9', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 12, marginBottom: 4 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 4px' }}>
-                    {isAr ? '📌 ملخص اختياراتك:' : '📌 Your context:'}
+                    {isAr ? 'ملخص اختياراتك:' : 'Your context:'}
                   </p>
                   <p style={{ fontSize: 11, color: '#5C3A1A', margin: 0 }}>
                     {Object.values(answers).join(' • ')}
@@ -310,8 +320,9 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                     width: 42, height: 42, borderRadius: 12, flexShrink: 0,
                     background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)',
                     border: '1px solid rgba(139,26,26,0.12)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
-                  }}>{intent.icon}</div>
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#8B1A1A',
+                  }}>{INTENT_ICONS[intent.iconKey]}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: '#1A1208' }}>{isAr ? intent.ar : intent.en}</div>
                     <div style={{ fontSize: 11, color: '#9C8E80', marginTop: 2 }}>{isAr ? intent.desc_ar : intent.desc_en}</div>
