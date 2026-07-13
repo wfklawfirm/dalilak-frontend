@@ -17,29 +17,49 @@ import type { AgentSource, ConfidenceLevel } from '@/lib/types'
 const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; labelColor: string }> = {
   'الخلاصة':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
   'الملخص':               { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
+  'معلومات عامة':         { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
+  'نظرة عامة':            { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
   'summary':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
+  'overview':             { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
   'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
+  'الوثائق':              { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
+  'المتطلبات':            { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
+  'الشروط':               { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'required documents':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
+  'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
+  'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
   'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
   'الجهة المختصة':        { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
   'الجهة':                { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
+  'الجهات':               { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
   'responsible authority':{ bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
   'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
   'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
   'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
   'الرسوم':               { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
+  'التكاليف':             { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
+  'الأتعاب':              { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
   'fees':                 { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
+  'المدة':                { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
+  'مدة الإجراء':          { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
+  'المهل':                { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
   'الخطوة التالية':       { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
+  'التوصية':              { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
   'next step':            { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
   'تنبيه مهم':            { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'تنبيه':                { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'ملاحظة مهمة':          { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
+  'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
+  'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'الأساس القانوني':      { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
+  'النص القانوني':        { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
+  'المرجع القانوني':      { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
   'legal basis':          { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
   'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
+  'المصادر':              { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
 }
 
 function getSectionStyle(header: string) {
@@ -144,7 +164,7 @@ function parseSections(text: string): Section[] {
   const sections: Section[] = []
   let current: Section = { header: null, lines: [] }
   for (const line of lines) {
-    if ((/^## /.test(line) || /^# /.test(line)) && getSectionStyle(line)) {
+    if (/^#{1,3} /.test(line) && getSectionStyle(line)) {
       if (current.header !== null || current.lines.some(l => l.trim())) sections.push(current)
       current = { header: line.replace(/^#+\s*/, ''), lines: [] }
     } else {

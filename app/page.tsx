@@ -420,6 +420,17 @@ export default function Home() {
         setLoading(false)
         return
       }
+      if (res.status === 429) {
+        const data = await res.json().catch(() => ({}))
+        const detail: string = data?.detail || 'استنفذت حصتك اليومية'
+        setMessages(prev => prev.slice(0, -1).concat({
+          role: 'assistant',
+          content: `⏰ **${detail}**\n\nللحصول على المزيد من الأسئلة، يمكنك الترقية إلى الاشتراك المدفوع (200 سؤال/يوم). تواصل معنا عبر البريد أو واتساب.`,
+          streaming: false,
+        }))
+        setLoading(false)
+        return
+      }
       if (!res.ok) throw new Error('HTTP ' + res.status)
 
       const reader = res.body!.getReader()
