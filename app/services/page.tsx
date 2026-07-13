@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import BottomNav from '@/components/BottomNav'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -269,6 +270,11 @@ export default function ServicesPage() {
             {lang === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
           </Link>
         </div>
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={lang === 'ar'} activeTab="services" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

@@ -2,13 +2,16 @@
 
 import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import BottomNav from '@/components/BottomNav'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
 
 export default function FAQPage() {
   const router = useRouter()
+  const [lang, setLang] = useState<'ar' | 'en'>('ar')
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
+  const isAr = lang === 'ar'
 
   const filtered = useMemo(() => {
     let items = searchFAQ(search)
@@ -182,6 +185,11 @@ export default function FAQPage() {
             🤖 اسأل دليلك الذكي
           </button>
         </div>
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="home" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

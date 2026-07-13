@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DraftingStudio from '@/components/DraftingStudio'
+import BottomNav from '@/components/BottomNav'
 
 export default function DraftingStudioPage() {
   const router = useRouter()
@@ -66,6 +67,11 @@ export default function DraftingStudioPage() {
           onSend={handleSend}
           onClose={() => router.push('/')}
         />
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="services" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

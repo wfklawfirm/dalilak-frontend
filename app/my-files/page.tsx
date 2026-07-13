@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
+import BottomNav from '@/components/BottomNav'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -395,6 +396,11 @@ export default function MyFilesPage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={true} activeTab="account" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

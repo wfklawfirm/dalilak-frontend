@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import { ALL_SERVICES, SERVICE_CATEGORIES, type ServiceItem } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
+import BottomNav from '@/components/BottomNav'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -249,42 +250,43 @@ export default function ProceduresPage() {
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
         {/* Stats banner */}
-        <div style={{ background: 'linear-gradient(135deg, #FEF2F2, #FFF7F7)', border: '1px solid rgba(139,26,26,0.1)', borderRadius: 16, padding: '12px 16px', marginBottom: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#8B1A1A' }}>201</div>
-            <div style={{ fontSize: 10, color: '#6B7280' }}>خدمة موثّقة</div>
-          </div>
-          <div style={{ width: 1, height: 36, background: 'rgba(139,26,26,0.15)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#8B1A1A' }}>45</div>
-            <div style={{ fontSize: 10, color: '#6B7280' }}>فئة حكومية</div>
-          </div>
-          <div style={{ width: 1, height: 36, background: 'rgba(139,26,26,0.15)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#8B1A1A' }}>52+</div>
-            <div style={{ fontSize: 10, color: '#6B7280' }}>جهة مختصة</div>
-          </div>
-          <div style={{ width: 1, height: 36, background: 'rgba(139,26,26,0.15)' }} />
-          <div style={{ flex: 1, fontSize: 11, color: '#9C8E80', lineHeight: 1.5 }}>
-            بيانات رسمية محدّثة تشمل الوثائق والرسوم والإجراءات
+        <div style={{ background: 'linear-gradient(135deg, #FEF2F2, #FFF7F7)', border: '1px solid rgba(139,26,26,0.1)', borderRadius: 16, padding: '12px 16px', marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            {[
+              { value: '201', label: isAr ? 'خدمة موثّقة' : 'Services' },
+              { value: '45',  label: isAr ? 'فئة حكومية' : 'Categories' },
+              { value: '52+', label: isAr ? 'جهة مختصة' : 'Authorities' },
+            ].map((stat, idx) => (
+              <React.Fragment key={stat.value}>
+                {idx > 0 && <div style={{ width: 1, height: 32, background: 'rgba(139,26,26,0.15)', flexShrink: 0 }} />}
+                <div style={{ textAlign: 'center', minWidth: 40 }}>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{stat.value}</div>
+                  <div style={{ fontSize: 9.5, color: '#6B7280', marginTop: 2, whiteSpace: 'nowrap' }}>{stat.label}</div>
+                </div>
+              </React.Fragment>
+            ))}
+            <div style={{ fontSize: 11, color: '#9C8E80', lineHeight: 1.5, flex: '1 1 120px', marginTop: 0 }}>
+              {isAr ? 'بيانات رسمية محدّثة — وثائق، رسوم، إجراءات' : 'Official data — docs, fees, procedures'}
+            </div>
           </div>
         </div>
 
         {/* View mode tabs */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
+        <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
           {[
-            { mode: 'all' as ViewMode, label: `خدمات (${ALL_SERVICES.length})`, icon: '📋' },
-            { mode: 'enriched' as ViewMode, label: `مفصّلة (${ENRICHED_PROCEDURES.length})`, icon: '🔍' },
-            { mode: 'detailed' as ViewMode, label: `مُرشدة (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, icon: '🧭' },
-          ].map(({ mode, label, icon }) => (
+            { mode: 'all' as ViewMode, labelAr: `خدمات (${ALL_SERVICES.length})`, labelEn: `Services (${ALL_SERVICES.length})`, icon: '📋' },
+            { mode: 'enriched' as ViewMode, labelAr: `مفصّلة (${ENRICHED_PROCEDURES.length})`, labelEn: `Detailed (${ENRICHED_PROCEDURES.length})`, icon: '🔍' },
+            { mode: 'detailed' as ViewMode, labelAr: `مُرشدة (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, labelEn: `Guided (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, icon: '🧭' },
+          ].map(({ mode, labelAr, labelEn, icon }) => (
             <button key={mode} onClick={() => setViewMode(mode)} style={{
-              flex: 1, padding: '8px 12px', borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: 'pointer',
-              fontFamily: 'inherit', border: 'none', transition: 'all 0.15s',
+              flex: 1, padding: '7px 6px', borderRadius: 9, fontSize: 11, fontWeight: 700, cursor: 'pointer',
+              fontFamily: 'inherit', border: 'none', transition: 'all 0.15s', textAlign: 'center',
               background: viewMode === mode ? '#fff' : 'transparent',
               color: viewMode === mode ? '#8B1A1A' : '#6B7280',
               boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             }}>
-              {icon} {label}
+              {icon} {isAr ? labelAr : labelEn}
             </button>
           ))}
         </div>
@@ -556,6 +558,11 @@ export default function ProceduresPage() {
             🤖 اسأل دليلك الذكي
           </button>
         </div>
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>
 
       {/* Service Detail Modal */}

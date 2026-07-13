@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
+import BottomNav from '@/components/BottomNav'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -111,7 +112,7 @@ export default function ProcedurePage() {
         </div>
       </header>
 
-      <div style={{ maxWidth:820, margin:'0 auto', padding:'16px 14px 80px' }}>
+      <div className="proc-page-content" style={{ maxWidth:820, margin:'0 auto', padding:'16px 14px 80px' }}>
 
         {/* ── Breadcrumb ───────────────────────────────────────────────── */}
         <nav style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#9C8E80', marginBottom:16 }}>
@@ -295,6 +296,11 @@ export default function ProcedurePage() {
           </Link>
         </div>
 
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={true} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

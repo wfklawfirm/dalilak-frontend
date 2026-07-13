@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import type { FormItem } from '@/lib/types'
 import { getProcedureBySlug } from '@/lib/procedures'
+import BottomNav from '@/components/BottomNav'
 
 interface Props {
   form: FormItem
@@ -156,6 +157,11 @@ export default function FormDetailClient({ form }: Props) {
           </p>
         </div>
 
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={true} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

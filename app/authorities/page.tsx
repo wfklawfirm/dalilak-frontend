@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import BottomNav from '@/components/BottomNav'
 import { authHeaders } from '@/lib/auth'
 import { PageHeader, EmptyState, LoadingSkeleton } from '@/components/ui'
 
@@ -37,7 +38,7 @@ const TYPE_ICONS: Record<string, string> = {
 }
 
 const TYPE_COLORS: Record<string, { color: string; bg: string }> = {
-  ministry: { color: '#6D28D9', bg: '#F5F3FF' },
+  ministry: { color: '#78350F', bg: '#FFFBEB' },
   registry: { color: '#8B1A1A', bg: '#FEF2F2' },
   notary: { color: '#B8860B', bg: '#FFFBEB' },
   court: { color: '#DC2626', bg: '#FEF2F2' },
@@ -201,6 +202,11 @@ export default function AuthoritiesPage() {
             })}
           </div>
         )}
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="home" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import BottomNav from '@/components/BottomNav'
 import { searchForms } from '@/lib/procedures'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES, filterTxAll, filterTxForms, type TxItem } from '@/lib/allTransactions'
 import type { FormItem } from '@/lib/types'
@@ -80,18 +81,19 @@ export default function FormsPage() {
         {/* View tabs */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
           {[
-            { tab: 'forms-tx' as ViewTab, label: `نماذج PDF (${TX_WITH_FORMS.length})`, icon: '📄' },
-            { tab: 'all-tx' as ViewTab, label: `كل المعاملات (${TX_ALL.length})`, icon: '🗂️' },
-            { tab: 'curated' as ViewTab, label: `منظّمة (${allForms.length})`, icon: '✅' },
-          ].map(({ tab, label, icon }) => (
+            { tab: 'forms-tx' as ViewTab, labelAr: `نماذج PDF (${TX_WITH_FORMS.length})`, labelEn: `PDF Forms (${TX_WITH_FORMS.length})`, icon: '📄' },
+            { tab: 'all-tx' as ViewTab, labelAr: `معاملات (${TX_ALL.length})`, labelEn: `All (${TX_ALL.length})`, icon: '🗂️' },
+            { tab: 'curated' as ViewTab, labelAr: `منظّمة (${allForms.length})`, labelEn: `Curated (${allForms.length})`, icon: '✅' },
+          ].map(({ tab, labelAr, labelEn, icon }) => (
             <button key={tab} onClick={() => setViewTab(tab)} style={{
-              flex: 1, padding: '8px 10px', borderRadius: 9, fontSize: 11.5, fontWeight: 700,
+              flex: 1, padding: '7px 6px', borderRadius: 9, fontSize: 11, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit', border: 'none', transition: 'all 0.15s',
               background: viewTab === tab ? '#fff' : 'transparent',
               color: viewTab === tab ? '#8B1A1A' : '#6B7280',
               boxShadow: viewTab === tab ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             }}>
-              {icon} {label}
+              {icon} {isAr ? labelAr : labelEn}
             </button>
           ))}
         </div>
@@ -278,6 +280,11 @@ export default function FormsPage() {
             🤖 اسأل دليلك الذكي
           </button>
         </div>
+      </div>
+
+      {/* Bottom Nav — mobile */}
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )
