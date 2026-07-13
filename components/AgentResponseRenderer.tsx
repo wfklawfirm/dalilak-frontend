@@ -18,12 +18,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9
 
 // ── Section style map ─────────────────────────────────────────
 const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; labelColor: string }> = {
-  'الخلاصة':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
-  'الملخص':               { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
-  'معلومات عامة':         { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
-  'نظرة عامة':            { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
-  'summary':              { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
-  'overview':             { bg: '#EFF6FF', border: '#BFDBFE', icon: '💡', labelColor: '#1D4ED8' },
+  'الخلاصة':              { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
+  'الملخص':               { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
+  'معلومات عامة':         { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
+  'نظرة عامة':            { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
+  'summary':              { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
+  'overview':             { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
   'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
   'الوثائق':              { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
@@ -57,10 +57,10 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; la
   'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
   'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'الأساس القانوني':      { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
-  'النص القانوني':        { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
-  'المرجع القانوني':      { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
-  'legal basis':          { bg: '#F0F9FF', border: '#BAE6FD', icon: '⚖️', labelColor: '#0369A1' },
+  'الأساس القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
+  'النص القانوني':        { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
+  'المرجع القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
+  'legal basis':          { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
   'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
   'المصادر':              { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
 }
@@ -276,7 +276,7 @@ export function AgentSectionCard({
 function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
   const map = {
     official:      { label: 'مصدر رسمي', color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' },
-    internal:      { label: 'قاعدة البيانات', color: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE' },
+    internal:      { label: 'قاعدة البيانات', color: '#8B1A1A', bg: '#FEF2F2', border: 'rgba(139,26,26,0.2)' },
     user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
     unknown:       { label: 'غير محدد', color: '#6B7280', bg: '#F9FAFB', border: '#E5E7EB' },
   }

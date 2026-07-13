@@ -179,7 +179,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                   {!compact && node.requiredDocuments && node.requiredDocuments.length > 0 && (
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                       {node.requiredDocuments.map((doc, di) => (
-                        <span key={di} style={{ fontSize: 9.5, color: '#3b82f6', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 6, padding: '1px 7px' }}>
+                        <span key={di} style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 6, padding: '1px 7px' }}>
                           📄 {doc}
                         </span>
                       ))}

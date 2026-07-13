@@ -407,8 +407,8 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
         ))}
       </div>
       {/* Trust statement */}
-      <div style={{ padding: '10px 12px', background: '#EFF6FF', borderRadius: 10, border: '1px solid #BFDBFE', marginBottom: 12 }}>
-        <p style={{ fontSize: 11, color: '#1E40AF', margin: 0, lineHeight: 1.6 }}>
+      <div style={{ padding: '10px 12px', background: '#FDF8F0', borderRadius: 10, border: '1px solid #EAE4D9', marginBottom: 12 }}>
+        <p style={{ fontSize: 11, color: '#7C5C1C', margin: 0, lineHeight: 1.6 }}>
           {isAr
             ? 'تم التحليل بناءً على المستند المرفوع وربطه بقاعدة دليلك للمعاملات. بعض النتائج إرشادية وقد تحتاج إلى تحقق من الجهة المختصة أو مراجعة محامٍ.'
             : 'Analysis is based on the uploaded document linked to Dalilak\'s procedures database. Some findings are advisory and may need verification with the competent authority or a lawyer.'}
@@ -481,7 +481,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
               background: i === 0
                 ? 'linear-gradient(135deg,#8B1A1A,#6b2737)'
                 : i === 1
-                ? 'linear-gradient(135deg,#1E40AF,#1e3a8a)'
+                ? 'linear-gradient(135deg,#5c1212,#8B1A1A)'
                 : '#F3F4F6',
               color: i < 2 ? '#fff' : '#374151',
               fontSize: 13, fontWeight: 700,
@@ -808,7 +808,7 @@ export default function UniversalDocumentAnalysisView({
             </span>
           )}
           {analysis.relatedProcedures.length > 0 && (
-            <span style={{ fontSize: 10.5, color: '#1D4ED8', background: '#EFF6FF', borderRadius: 20, padding: '3px 10px' }}>
+            <span style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '3px 10px' }}>
               🔗 {analysis.relatedProcedures.length} {isAr ? 'معاملة' : 'procedures'}
             </span>
           )}
@@ -846,7 +846,7 @@ export default function UniversalDocumentAnalysisView({
         icon="📊"
         title={isAr ? 'البيانات المستخرجة' : 'Extracted Facts'}
         count={analysis.extractedFacts.length}
-        badgeColor="#1D4ED8"
+        badgeColor="#8B1A1A"
         defaultOpen={true}
       >
         <ExtractedFactsTable facts={analysis.extractedFacts} isAr={isAr} />
@@ -857,7 +857,7 @@ export default function UniversalDocumentAnalysisView({
         icon="🔗"
         title={isAr ? 'المعاملات المرتبطة' : 'Related Procedures'}
         count={analysis.relatedProcedures.length}
-        badgeColor="#1E40AF"
+        badgeColor="#8B1A1A"
         defaultOpen={analysis.relatedProcedures.length > 0}
       >
         <RelatedProceduresPanel

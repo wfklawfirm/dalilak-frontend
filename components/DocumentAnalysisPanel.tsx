@@ -40,7 +40,7 @@ const CONF_AR: Record<string, string> = {
 const WARN_STYLE: Record<string, string> = {
   critical: 'bg-red-50 border-red-200 text-red-800',
   warning:  'bg-orange-50 border-orange-200 text-orange-800',
-  info:     'bg-blue-50 border-blue-200 text-blue-800',
+  info:     'bg-[#FEF2F2] border-[rgba(139,26,26,0.2)] text-[#8B1A1A]',
 }
 
 const RISK_CLAUSE_COLOR: Record<string, string> = {
@@ -56,7 +56,7 @@ const RISK_AR: Record<string, string> = {
 
 const STRENGTH_COLOR: Record<string, string> = {
   strong:     'text-green-700',
-  acceptable: 'text-blue-700',
+  acceptable: 'text-[#8B1A1A]',
   weak:       'text-yellow-700',
   missing:    'text-red-700',
   unclear:    'text-gray-500',
@@ -307,9 +307,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                       </span>
                     </div>
                     <p className="text-xs text-gray-600">{c.why_it_matters}</p>
-                    <div className="bg-blue-50 rounded-lg p-2.5">
-                      <p className="text-xs font-semibold text-blue-700 mb-0.5">التوصية</p>
-                      <p className="text-xs text-blue-800">{c.recommendation}</p>
+                    <div className="bg-[#FEF2F2] rounded-lg p-2.5">
+                      <p className="text-xs font-semibold text-[#8B1A1A] mb-0.5">التوصية</p>
+                      <p className="text-xs text-[#6E1515]">{c.recommendation}</p>
                     </div>
                     {c.suggested_clause_draft && (
                       <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-100">

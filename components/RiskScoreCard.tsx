@@ -26,7 +26,7 @@ const ACTION_CONFIG: Record<string, { label: string; btnClass: string }> = {
   continue:       { label: 'استمر في المعاملة',    btnClass: 'bg-green-600 hover:bg-green-700 text-white' },
   verify:         { label: 'تحقق من المعلومات',    btnClass: 'bg-yellow-500 hover:bg-yellow-600 text-white' },
   lawyer_review:  { label: 'راجع محامياً',          btnClass: 'bg-orange-600 hover:bg-orange-700 text-white' },
-  admin_review:   { label: 'راجع المشرف',           btnClass: 'bg-blue-600 hover:bg-blue-700 text-white' },
+  admin_review:   { label: 'راجع المشرف',           btnClass: 'bg-[#8B1A1A] hover:bg-[#6E1515] text-white' },
   human_support:  { label: 'اطلب دعم بشري',        btnClass: 'bg-red-600 hover:bg-red-700 text-white' },
 }
 

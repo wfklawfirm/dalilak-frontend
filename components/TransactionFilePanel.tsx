@@ -23,7 +23,7 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
 
 const STATUS_COLOR: Record<TransactionStatus, string> = {
   draft:        'bg-gray-100 text-gray-600 border-gray-200',
-  in_progress:  'bg-blue-100 text-blue-700 border-blue-200',
+  in_progress:  'bg-[#FEF2F2] text-[#8B1A1A] border-[rgba(139,26,26,0.2)]',
   ready:        'bg-green-100 text-green-700 border-green-200',
   needs_review: 'bg-yellow-100 text-yellow-700 border-yellow-200',
   completed:    'bg-[#6b2737]/10 text-[#6b2737] border-[#6b2737]/20',
