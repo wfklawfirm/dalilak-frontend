@@ -89,19 +89,21 @@ export default function TopNav({
           >
             <div style={{
               width: 34, height: 34, borderRadius: 9,
-              background: 'rgba(255,255,255,0.13)',
-              border: '1.5px solid rgba(255,255,255,0.25)',
+              background: 'rgba(255,255,255,0.18)',
+              border: '1.5px solid rgba(255,255,255,0.3)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 17,
-            }}>⚖️</div>
+              overflow: 'hidden',
+            }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
+            </div>
             <div>
               <div style={{
                 fontSize: 16, fontWeight: 900, color: '#fff',
                 lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap',
               }}>
-                دليلك<span style={{ color: '#fbbf24' }}> AI</span>
+                دليلك
               </div>
-              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.50)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.55)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
                 {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
               </div>
             </div>
@@ -156,16 +158,19 @@ export default function TopNav({
             }}
           >
             <div style={{
-              width: 30, height: 30, borderRadius: 8,
-              background: 'rgba(255,255,255,0.13)',
-              border: '1.5px solid rgba(255,255,255,0.22)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
-            }}>⚖️</div>
+              width: 32, height: 32, borderRadius: 9,
+              background: 'rgba(255,255,255,0.18)',
+              border: '1.5px solid rgba(255,255,255,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              overflow: 'hidden',
+            }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+            </div>
             <div style={{
               fontSize: 17, fontWeight: 900, color: '#fff',
               letterSpacing: '-0.3px', lineHeight: 1,
             }}>
-              دليلك<span style={{ color: '#fbbf24' }}> AI</span>
+              دليلك
             </div>
           </button>
 

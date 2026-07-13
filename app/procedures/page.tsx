@@ -224,7 +224,7 @@ export default function ProceduresPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo', 'Inter', sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir="rtl">
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }

@@ -83,14 +83,15 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: 'rgba(255,255,255,0.92)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      borderTop: '1px solid rgba(234,228,217,0.8)',
-      boxShadow: '0 -2px 20px rgba(0,0,0,0.07), 0 -1px 0 rgba(139,26,26,0.04)',
+      background: 'rgba(255,255,255,0.97)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderTop: '1px solid #F0EBE0',
+      boxShadow: '0 -4px 24px rgba(0,0,0,0.08)',
       display: 'flex', alignItems: 'stretch',
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       zIndex: 100,
+      minHeight: 56,
     }}>
       {TABS.map(tab => {
         const active = activeTab === tab.id
@@ -101,23 +102,28 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
             style={{
               flex: 1, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
-              gap: 3, padding: '8px 4px 6px',
+              gap: 3, padding: '7px 4px 5px',
               border: 'none', background: 'transparent', cursor: 'pointer',
-              color: active ? '#8B1A1A' : '#9C8E80',
-              fontFamily: 'inherit', transition: 'all 0.15s',
+              color: active ? '#8B1A1A' : '#A89D92',
+              fontFamily: 'inherit', transition: 'all 0.18s',
               position: 'relative',
             }}>
             {active && (
               <span style={{
-                position: 'absolute', top: 0, left: '25%', right: '25%',
-                height: 2.5, background: '#8B1A1A',
+                position: 'absolute', top: 0, left: '20%', right: '20%',
+                height: 2.5, background: 'linear-gradient(90deg, #6b2737, #8B1A1A)',
                 borderBottomLeftRadius: 3, borderBottomRightRadius: 3,
               }} />
             )}
-            <span style={{ color: active ? '#8B1A1A' : '#9C8E80', opacity: active ? 1 : 0.7 }}>
+            <span style={{
+              color: active ? '#8B1A1A' : '#B0A498',
+              opacity: 1,
+              transition: 'all 0.18s',
+              transform: active ? 'scale(1.05)' : 'scale(1)',
+            }}>
               {tab.icon}
             </span>
-            <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>
+            <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, letterSpacing: active ? '-0.1px' : 0 }}>
               {isAr ? tab.label_ar : tab.label_en}
             </span>
           </button>

@@ -38,7 +38,8 @@
 
 /* ── Reset ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+html { height: 100%; }
+body { min-height: 100%; overflow-x: hidden; }
 
 /* ── Base ───────────────────────────────────────────── */
 body {
@@ -308,4 +309,95 @@ textarea:focus { outline: none; }
 
   /* Services category: 6 cols on desktop */
   .cat-grid-mobile { grid-template-columns: repeat(6, 1fr) !important; }
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE — iOS zoom prevention + touch polish
+   ══════════════════════════════════════════════════════ */
+
+/* Prevent iOS from zooming in when input is focused (font < 16px triggers zoom) */
+@media (max-width: 767px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+  /* Auth inputs override back to readable size after preventing zoom */
+  .auth-input {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Markdown table overflow (AI responses with tables) ─── */
+.prose-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #EAE4D9;
+}
+.prose-table-wrap table {
+  width: 100%;
+  min-width: 360px;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.prose-table-wrap th {
+  background: #FEF2F2;
+  color: #8B1A1A;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-align: right;
+  border-bottom: 2px solid rgba(139,26,26,0.15);
+  white-space: nowrap;
+}
+.prose-table-wrap td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #F0EBE0;
+  color: #1A1208;
+  line-height: 1.5;
+}
+.prose-table-wrap tr:last-child td { border-bottom: none; }
+.prose-table-wrap tr:nth-child(even) { background: #FAFAF8; }
+
+/* ── Procedure page bottom padding on mobile ────────────── */
+@media (max-width: 767px) {
+  .proc-page-content {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 8px)) !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE — sub-page scroll container
+   ══════════════════════════════════════════════════════ */
+
+/* Sub-pages need a scrollable root when body overflow is not hidden */
+.sub-page-root {
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE — Typography & Readability
+   ══════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Minimum tap target for interactive elements */
+  button, a[role="button"] {
+    min-height: 36px;
+  }
+
+  /* Improve card readability */
+  .mobile-card-text {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Better badge contrast */
+  .status-badge {
+    font-size: 11px !important;
+    padding: 3px 10px !important;
+    border-radius: 20px !important;
+  }
 }
