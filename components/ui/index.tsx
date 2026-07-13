@@ -14,35 +14,50 @@ interface PageHeaderProps {
   rightSlot?: React.ReactNode
 }
 
-export function PageHeader({ icon, titleAr, titleEn, subtitleAr, subtitleEn, isAr, onBack, rightSlot }: PageHeaderProps) {
+export function PageHeader({ icon: _icon, titleAr, titleEn, subtitleAr, subtitleEn, isAr, onBack, rightSlot }: PageHeaderProps) {
   return (
     <header style={{
-      background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 60%, #7a1a1a 100%)',
-      padding: '12px 16px',
+      background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+      padding: '13px 16px',
+      position: 'sticky', top: 0, zIndex: 50,
+      boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
     }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {onBack && (
-            <button
-              onClick={onBack}
-              style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 10px', cursor: 'pointer', fontSize: 16, lineHeight: 1, fontFamily: 'inherit' }}
-            >
-              {isAr ? '→' : '←'}
-            </button>
-          )}
-          <div>
-            <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-              {icon && <span>{icon}</span>}
+      <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+        {onBack && (
+          <button
+            onClick={onBack}
+            style={{
+              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: 9, color: '#fff', cursor: 'pointer',
+              padding: '6px 8px', display: 'flex', flexShrink: 0,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
+            </svg>
+          </button>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 9, flexShrink: 0,
+            background: 'rgba(255,255,255,0.15)',
+            border: '1.5px solid rgba(255,255,255,0.25)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+          }}>
+            <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {isAr ? titleAr : (titleEn || titleAr)}
             </h1>
             {(subtitleAr || subtitleEn) && (
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0, marginTop: 1 }}>
                 {isAr ? subtitleAr : (subtitleEn || subtitleAr)}
               </p>
             )}
           </div>
         </div>
-        {rightSlot && <div>{rightSlot}</div>}
+        {rightSlot && <div style={{ flexShrink: 0 }}>{rightSlot}</div>}
       </div>
     </header>
   )

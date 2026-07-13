@@ -85,12 +85,17 @@ export default function ServicesPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
-              {lang === 'ar' ? 'دليل المعاملات الحكومية اللبنانية' : 'Lebanese Government Services Guide'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
-            <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>
-              {lang === 'ar' ? 'ابحث عن أي معاملة' : 'Find any procedure'}
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
+                {lang === 'ar' ? 'الخدمات الحكومية' : 'Government Services'}
+              </div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>
+                {lang === 'ar' ? 'كل المعاملات اللبنانية' : 'All Lebanese procedures'}
+              </div>
             </div>
           </div>
           <button
@@ -111,7 +116,7 @@ export default function ServicesPage() {
         <div style={{ maxWidth: 960, margin: '0 auto', position: 'relative' }}>
           <input
             type="text"
-            placeholder={lang === 'ar' ? '🔍  ابحث: جواز سفر، تسجيل سيارة، شهادة ولادة...' : '🔍  Search: passport, car registration, birth certificate...'}
+            placeholder={lang === 'ar' ? 'ابحث: جواز سفر، تسجيل سيارة، شهادة ولادة...' : 'Search: passport, car registration, birth certificate...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{
