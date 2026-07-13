@@ -10,6 +10,7 @@ export interface AgentSource {
   lastUpdated?: string
   ministry?: string
   score?: number   // relevance score from Qdrant (0–1)
+  snippet?: string // first 300 chars of source text, shown when citation is active
 }
 
 export interface AgentAuthority {
