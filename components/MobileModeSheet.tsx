@@ -179,7 +179,7 @@ export default function ModeSelector({
 
   return (
     <>
-      {/* Mobile: single button */}
+      {/* Mobile: single button — shown via globals.css .mode-mobile */}
       <div className="mode-mobile">
         <button
           type="button"

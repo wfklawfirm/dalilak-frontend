@@ -127,10 +127,10 @@ export default function ProcedurePage() {
           <p style={{ fontSize:13.5, color:'#374151', lineHeight:1.75, margin:'0 0 20px' }}>{procedure.summary_ar}</p>
 
           {/* Quick stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, marginBottom:20 }}>
+          <div style={{ display:'grid', gridTemplateColumns: procedure.fee_ar ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap:10, marginBottom:procedure.fee_ar ? 8 : 20 }}>
             {[
               { icon:'⏱️', label:'المدة',  value:procedure.duration_ar, bg:'#FEF2F2', border:'rgba(139,26,26,0.1)' },
-              { icon:'💰', label:'الرسوم', value:procedure.fee_ar,      bg:'#F0FDF4', border:'#BBF7D0' },
+              ...(procedure.fee_ar ? [{ icon:'💰', label:'الرسوم', value:procedure.fee_ar, bg:'#F0FDF4', border:'#BBF7D0' }] : []),
               { icon:'🏛️', label:'الجهة',  value:procedure.authority,   bg:'#FEF9EC', border:'#FDE68A' },
             ].map((stat, i) => (
               <div key={i} style={{ background:stat.bg, border:`1px solid ${stat.border}`, borderRadius:14, padding:'13px 10px', textAlign:'center' }}>
@@ -139,6 +139,20 @@ export default function ProcedurePage() {
                 <div style={{ fontSize:11.5, fontWeight:700, color:'#1A1208', lineHeight:1.3 }}>{stat.value || '—'}</div>
               </div>
             ))}
+          </div>
+
+          {/* Fee disclaimer — always shown */}
+          <div style={{
+            display:'flex', alignItems:'flex-start', gap:8,
+            background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:11,
+            padding:'9px 13px', marginBottom:16,
+          }}>
+            <span style={{ fontSize:14, flexShrink:0 }}>⚠️</span>
+            <p style={{ margin:0, fontSize:11, color:'#92400E', lineHeight:1.55 }}>
+              {procedure.fee_ar
+                ? 'الرسوم المذكورة تقديرية وقابلة للتغيير. يُرجى التأكد من الجهة المختصة قبل التقديم.'
+                : 'الرسوم تتفاوت وتتغير بشكل متكرر — يُرجى مراجعة الجهة المختصة مباشرةً للاطلاع على الرسوم الحالية.'}
+            </p>
           </div>
 
           {/* Tags */}

@@ -133,7 +133,7 @@ export default function ServicesPage() {
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '20px 14px 100px' }}>
 
         {/* ── Category grid ────────────────────────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 24 }}>
+        <div className="cat-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 24 }}>
           {CATEGORIES.map(cat => {
             const active = selectedCategory === cat.id
             return (

@@ -699,7 +699,7 @@ export default function Home() {
           {messages.length === 0 ? (
 
             /* ══ Welcome Screen — Phase 2 Redesign ══ */
-            <div style={{
+            <div className="welcome-bottom-pad" style={{
               display: 'flex', flexDirection: 'column',
               alignItems: 'center',
               minHeight: '100%', padding: '14px 14px 24px',

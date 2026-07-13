@@ -268,3 +268,44 @@ textarea:focus { outline: none; }
   .welcome-heading { font-size: 34px; }
   .welcome-sub     { font-size: 16px; max-width: 500px; }
 }
+
+/* ══════════════════════════════════════════════════════
+   MOBILE-SPECIFIC — bottom nav + mode selector
+   ══════════════════════════════════════════════════════ */
+
+/* Bottom nav wrapper — hidden on desktop, shown on mobile */
+.bottom-nav-wrapper { display: none !important; }
+
+/* Mode selector — mobile shows single button, desktop shows pills */
+.mode-mobile  { display: flex; }
+.mode-desktop { display: none; }
+
+@media (max-width: 767px) {
+  /* Show bottom nav */
+  .bottom-nav-wrapper { display: block !important; }
+
+  /* Add bottom padding to footer so input is never behind bottom nav */
+  .bottom-nav-padding {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 8px)) !important;
+  }
+
+  /* Welcome screen: account for bottom nav height */
+  .welcome-bottom-pad {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 8px)) !important;
+  }
+
+  /* Services / procedures grid: 3 cols max on mobile */
+  .cat-grid-mobile { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Make procedure stat cards wrap on very small screens */
+  .proc-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (min-width: 640px) {
+  /* Desktop: hide mobile mode button, show pill row */
+  .mode-mobile  { display: none; }
+  .mode-desktop { display: flex; }
+
+  /* Services category: 6 cols on desktop */
+  .cat-grid-mobile { grid-template-columns: repeat(6, 1fr) !important; }
+}
