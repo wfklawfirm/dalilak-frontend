@@ -37,7 +37,7 @@ const PLAN_LABELS: Record<string, string> = {
 }
 const PLAN_COLORS: Record<string, string> = {
   paid: 'bg-green-100 text-green-800',
-  trial: 'bg-blue-100 text-blue-800',
+  trial: 'bg-purple-100 text-purple-800',
   admin: 'bg-purple-100 text-purple-800',
   suspended: 'bg-red-100 text-red-800',
   expired: 'bg-gray-100 text-gray-600',
@@ -263,7 +263,7 @@ export default function AdminPage() {
               {[
                 { label: 'إجمالي المستخدمين', value: stats.total, color: 'bg-white', icon: '👥' },
                 { label: 'مشتركون مدفوعون', value: stats.paid, color: 'bg-green-50', icon: '💳' },
-                { label: 'تجريبي نشط', value: stats.trial_active, color: 'bg-blue-50', icon: '⏱️' },
+                { label: 'تجريبي نشط', value: stats.trial_active, color: 'bg-purple-50', icon: '⏱️' },
                 { label: 'تجريبي منتهي', value: stats.trial_expired, color: 'bg-orange-50', icon: '⚠️' },
                 { label: 'معطّلون', value: stats.suspended, color: 'bg-red-50', icon: '🚫' },
                 { label: 'معدل التحويل', value: stats.conversion_rate, color: 'bg-purple-50', icon: '📈' },
@@ -478,7 +478,7 @@ export default function AdminPage() {
                     </div>
                     <p className="text-sm text-gray-700 mb-1 line-clamp-2">{e.question}</p>
                     <div className="flex gap-3 mt-1">
-                      {e.user_email && <span className="text-xs text-blue-600">✉️ {e.user_email}</span>}
+                      {e.user_email && <span className="text-xs text-[#8B1A1A]">✉️ {e.user_email}</span>}
                       {e.user_phone && <span className="text-xs text-green-600">📱 {e.user_phone}</span>}
                       <span className="text-xs text-gray-500">@{e.username}</span>
                     </div>
@@ -564,7 +564,7 @@ export default function AdminPage() {
                               <span className={`text-xs px-2 py-0.5 rounded-full ${priorityColor}`}>
                                 {gap.priority}
                               </span>
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#8B1A1A]">
                                 {gapTypeLabel[gap.gap_type] || gap.gap_type}
                               </span>
                               {gap.detected_country && (
@@ -630,8 +630,8 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm text-blue-700">
-              💡 الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ 👎. لإضافة بيانات رسمية: حدّث <code className="bg-blue-100 px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.
+            <div className="bg-[#FEF2F2] border border-[rgba(139,26,26,0.15)] rounded-2xl p-4 text-sm text-[#8B1A1A]">
+              💡 الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ 👎. لإضافة بيانات رسمية: حدّث <code className="bg-[#EAE4D9] px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.
             </div>
           </div>
         )}

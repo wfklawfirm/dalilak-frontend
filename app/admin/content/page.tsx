@@ -9,7 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9
 const STATUS_CONFIG: Record<string, { label: string; color: string; next: string[] }> = {
   draft:     { label: 'مسودة',    color: 'bg-gray-100 text-gray-700',   next: ['review'] },
   review:    { label: 'مراجعة',   color: 'bg-yellow-100 text-yellow-700', next: ['approved', 'draft'] },
-  approved:  { label: 'معتمد',    color: 'bg-blue-100 text-blue-700',   next: ['published', 'review'] },
+  approved:  { label: 'معتمد',    color: 'bg-purple-100 text-purple-700',   next: ['published', 'review'] },
   published: { label: 'منشور',    color: 'bg-green-100 text-green-700', next: ['expired'] },
   expired:   { label: 'منتهي',    color: 'bg-red-100 text-red-700',     next: [] },
 }
@@ -164,7 +164,7 @@ export default function ContentGovernancePage() {
             </button>
             <button
               onClick={() => setShowCreate(true)}
-              className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors"
+              className="bg-[#8B1A1A] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#6E1515] transition-colors"
             >
               + إنشاء محتوى جديد
             </button>
@@ -181,7 +181,7 @@ export default function ContentGovernancePage() {
               onClick={() => setFilterStatus(filterStatus === status ? 'all' : status)}
               className={`p-4 rounded-xl border-2 text-center transition-all ${
                 filterStatus === status
-                  ? 'border-blue-500 shadow-md'
+                  ? 'border-[#8B1A1A] shadow-md'
                   : 'border-gray-100 bg-white hover:shadow-sm'
               }`}
             >
@@ -212,7 +212,7 @@ export default function ContentGovernancePage() {
                     onClick={() => setSelected(selected?.id === item.id ? null : item)}
                     className={`w-full text-right p-4 rounded-xl border-2 bg-white transition-all ${
                       selected?.id === item.id
-                        ? 'border-blue-500 shadow-md'
+                        ? 'border-[#8B1A1A] shadow-md'
                         : 'border-gray-100 hover:border-gray-300 hover:shadow-sm'
                     }`}
                   >
@@ -263,7 +263,7 @@ export default function ContentGovernancePage() {
                 <div className="p-5">
                   <h3 className="text-sm font-bold text-gray-800 mb-3">تغيير الحالة</h3>
                   <textarea
-                    className="w-full p-3 rounded-lg border border-gray-200 text-sm resize-none mb-3 focus:outline-none focus:border-blue-400"
+                    className="w-full p-3 rounded-lg border border-gray-200 text-sm resize-none mb-3 focus:outline-none focus:border-[#8B1A1A]"
                     rows={2}
                     placeholder="ملاحظة (اختياري)..."
                     value={transitionNote}
@@ -279,7 +279,7 @@ export default function ContentGovernancePage() {
                           target === 'published'
                             ? 'bg-green-600 text-white hover:bg-green-700'
                             : target === 'approved'
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            ? 'bg-purple-600 text-white hover:bg-purple-700'
                             : target === 'draft'
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             : 'bg-orange-600 text-white hover:bg-orange-700'
@@ -299,7 +299,7 @@ export default function ContentGovernancePage() {
                     <React.Fragment key={s}>
                       <span className={`px-2 py-1 rounded-full ${
                         s === selected.status
-                          ? STATUS_CONFIG[s].color + ' font-bold ring-2 ring-offset-1 ring-blue-400'
+                          ? STATUS_CONFIG[s].color + ' font-bold ring-2 ring-offset-1 ring-[#8B1A1A]'
                           : 'bg-gray-100 text-gray-400'
                       }`}>
                         {STATUS_CONFIG[s].label}
@@ -327,7 +327,7 @@ export default function ContentGovernancePage() {
                 <div key={i} className="p-4 flex items-start gap-4">
                   <div className={`text-xs px-2 py-1 rounded font-mono font-bold whitespace-nowrap ${
                     entry.action === 'CREATE' ? 'bg-green-100 text-green-700'
-                    : entry.action === 'TRANSITION' ? 'bg-blue-100 text-blue-700'
+                    : entry.action === 'TRANSITION' ? 'bg-purple-100 text-purple-700'
                     : 'bg-gray-100 text-gray-600'
                   }`}>
                     {entry.action}
@@ -369,7 +369,7 @@ export default function ContentGovernancePage() {
                   type="text"
                   value={newItem.title_ar}
                   onChange={e => setNewItem(p => ({ ...p, title_ar: e.target.value }))}
-                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-400"
+                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[#8B1A1A]"
                   placeholder="عنوان المحتوى..."
                 />
               </div>
@@ -378,7 +378,7 @@ export default function ContentGovernancePage() {
                 <select
                   value={newItem.content_type}
                   onChange={e => setNewItem(p => ({ ...p, content_type: e.target.value }))}
-                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-400"
+                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[#8B1A1A]"
                 >
                   <option value="procedure_update">تحديث إجراء</option>
                   <option value="announcement">إعلان</option>
@@ -392,7 +392,7 @@ export default function ContentGovernancePage() {
                   value={newItem.body_ar}
                   onChange={e => setNewItem(p => ({ ...p, body_ar: e.target.value }))}
                   rows={5}
-                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-400 resize-none"
+                  className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-[#8B1A1A] resize-none"
                   placeholder="اكتب المحتوى هنا..."
                 />
               </div>
@@ -401,7 +401,7 @@ export default function ContentGovernancePage() {
               <button
                 onClick={createItem}
                 disabled={creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()}
-                className="flex-1 bg-blue-700 text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors disabled:opacity-60"
+                className="flex-1 bg-[#8B1A1A] text-white py-3 rounded-lg font-medium hover:bg-[#6E1515] transition-colors disabled:opacity-60"
               >
                 {creating ? 'جارٍ الإنشاء...' : 'إنشاء كمسودة'}
               </button>
