@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -42,7 +42,7 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ── Base ───────────────────────────────────────────── */
 body {
-  font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+  font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
   direction: rtl;
   background: var(--bg);
   color: var(--text-1);
