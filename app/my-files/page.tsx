@@ -132,9 +132,14 @@ export default function MyFilesPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>🗂️ ملفاتي</div>
-            <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>متابعة معاملاتك الحكومية</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>ملفاتي</div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>متابعة معاملاتك الحكومية</div>
+            </div>
           </div>
           <Link
             href="/services"

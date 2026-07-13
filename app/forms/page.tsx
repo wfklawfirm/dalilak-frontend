@@ -59,18 +59,25 @@ export default function FormsPage() {
       `}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1a1a 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button onClick={() => router.push('/')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4, display: 'flex' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            </button>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+            </div>
             <div>
-              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0 }}>📄 مكتبة النماذج والمعاملات</h1>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>2,484 معاملة حكومية · 794 نموذج PDF · 52 جهة</p>
+              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
+                {isAr ? 'النماذج والمعاملات' : 'Forms & Procedures'}
+              </h1>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>
+                {isAr ? '2,484 معاملة · 794 نموذج PDF · 52 جهة' : '2,484 transactions · 794 PDF forms'}
+              </p>
             </div>
           </div>
-          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}>
+          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -100,7 +107,9 @@ export default function FormsPage() {
 
         {/* Search */}
         <div style={{ position: 'relative', marginBottom: 12 }}>
-          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: '#B0A090', fontSize: 15, pointerEvents: 'none' }}>🔍</span>
+          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: '#B0A090', pointerEvents: 'none', display: 'flex' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+          </span>
           <input type="text"
             placeholder={viewTab === 'all-tx' ? 'ابحث في 2,484 معاملة...' : viewTab === 'forms-tx' ? 'ابحث في 794 نموذج PDF...' : 'ابحث في النماذج المنظّمة...'}
             value={search} onChange={e => setSearch(e.target.value)}
