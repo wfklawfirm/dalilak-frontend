@@ -106,6 +106,10 @@ const QUESTION_POOL_EN = [
 const LS_KEY = 'dalilak_qa_cache'
 const LS_MAX = 30
 
+// ── localStorage chat history ───────────────────────────────────
+const CHAT_HISTORY_KEY = 'dalilak:chat:history'
+const CHAT_HISTORY_MAX = 50
+
 interface QAEntry { q: string; a: string; ts: number }
 
 function lsNormalize(s: string) {
@@ -173,6 +177,7 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
   const mainRef = useRef<HTMLDivElement>(null)
+  const historyLoaded = useRef(false)
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
 
@@ -208,7 +213,7 @@ export default function Home() {
     fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(async res => {
-      if (!res.ok) { clearToken(); router.push('/login'); return }
+      if (!res.ok) { clearToken(); localStorage.removeItem(CHAT_HISTORY_KEY); router.push('/login'); return }
       const data = await res.json()
       setUser(data)          // refresh localStorage cache
       setCurrentUser(data)
@@ -218,6 +223,39 @@ export default function Home() {
       if (!cached) setAuthChecked(true)
     })
   }, [])
+
+  // ── Load chat history from localStorage (after auth) ─────
+  useEffect(() => {
+    if (!authChecked || historyLoaded.current) return
+    historyLoaded.current = true
+    try {
+      const raw = localStorage.getItem(CHAT_HISTORY_KEY)
+      if (raw) {
+        const msgs = JSON.parse(raw) as Message[]
+        const clean = msgs
+          .filter(m => !m.streaming)
+          .slice(-CHAT_HISTORY_MAX)
+        if (clean.length > 0) setMessages(clean)
+      }
+    } catch {}
+  }, [authChecked])
+
+  // ── Save chat history on every change ────────────────────
+  useEffect(() => {
+    if (!historyLoaded.current) return   // don't save before first load
+    try {
+      const toSave = messages
+        .filter(m => !m.streaming)
+        .slice(-CHAT_HISTORY_MAX)
+        // Drop heavy documentAnalysis objects before serialising
+        .map(({ documentAnalysis: _da, ...rest }) => rest)
+      if (toSave.length > 0) {
+        localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(toSave))
+      } else {
+        localStorage.removeItem(CHAT_HISTORY_KEY)
+      }
+    } catch {}
+  }, [messages])
 
   // ── Auto-rotate questions + suggestion cards ──────────────
   useEffect(() => {
@@ -428,7 +466,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body,
       })
-      if (res.status === 401) { clearToken(); router.push('/login'); return }
+      if (res.status === 401) { clearToken(); localStorage.removeItem(CHAT_HISTORY_KEY); router.push('/login'); return }
       if (res.status === 402) {
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
