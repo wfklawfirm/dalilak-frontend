@@ -742,7 +742,7 @@ export default function Home() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, width: '100%', maxWidth: 400, marginBottom: 20 }}>
                 {[
                   { icon: '▶', bg: 'linear-gradient(135deg,#8B1A1A,#6b2737)', ar: 'ابدأ معاملة', en: 'Start', action: 'start' },
-                  { icon: '📎', bg: 'linear-gradient(135deg,#8B1A1A,#1e3a8a)', ar: 'حلّل مستنداً', en: 'Analyze', action: 'file' },
+                  { icon: '📎', bg: 'linear-gradient(135deg,#8B1A1A,#5c1212)', ar: 'حلّل مستنداً', en: 'Analyze', action: 'file' },
                   { icon: '💬', bg: 'linear-gradient(135deg,#374151,#1f2937)', ar: 'اسأل دليلك', en: 'Ask AI', action: 'ask' },
                 ].map(item => (
                   <button
@@ -1114,4 +1114,241 @@ export default function Home() {
                     <span key={n} style={{
                       width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
-   
+                      display: 'inline-block',
+                    }} />
+                  ))}
+                </span>
+                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>
+                  {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
+                </span>
+                <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
+                  {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
+                    <span key={n} style={{
+                      width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
+                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
+                      display: 'inline-block',
+                    }} />
+                  ))}
+                </span>
+              </div>
+            )}
+
+            {/* ── Mode selector — ModeSelector handles mobile/desktop ── */}
+            <div style={{ marginBottom: 10 }}>
+              <ModeSelector mode={mode} onSelect={setMode} isAr={isAr} />
+            </div>
+
+            {/* ── Input box ── */}
+            <form onSubmit={handleSubmit}>
+              <div className={inputFocused ? 'input-focused' : ''}
+                style={{
+                  display: 'flex', alignItems: 'flex-end', gap: 4,
+                  backgroundColor: '#fff',
+                  border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
+                  borderRadius: 20, padding: '6px 8px',
+                  boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
+                  transition: 'all 0.2s ease',
+                }}>
+
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
+
+                {/* Attach */}
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
+                  className="icon-btn"
+                  title={isAr ? 'إرفاق ملف أو صورة' : 'Attach file or image'}
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12,
+                    border: 'none', background: 'none', cursor: loading ? 'default' : 'pointer',
+                    color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.15s',
+                  }}
+                  onTouchStart={e => !loading && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+                <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt"
+                  style={{ display: 'none' }} onChange={handleFileChange} />
+
+                {/* Textarea */}
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={e => setInput(e.target.value.slice(0, MAX_INPUT))}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  placeholder={
+                    recording
+                      ? (isAr ? 'جاري الاستماع...' : 'Listening...')
+                      : attachedFile
+                        ? (isAr ? 'اسأل عن الوثيقة أو أرسل للتحليل...' : 'Ask about the document...')
+                        : (isAr ? 'اكتب سؤالك هنا...' : 'Type your question here...')
+                  }
+                  rows={1}
+                  disabled={loading}
+                  dir={isAr ? 'rtl' : 'ltr'}
+                  style={{
+                    flex: 1, resize: 'none', border: 'none', outline: 'none',
+                    fontSize: 14.5, color: 'var(--text)', background: 'transparent',
+                    padding: '7px 4px', lineHeight: 1.55, maxHeight: 120,
+                    fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
+                  }}
+                />
+
+                {/* Character counter — visible only when > 3000 chars */}
+                {showCharCount && (
+                  <span style={{
+                    flexShrink: 0, fontSize: 11, lineHeight: 1,
+                    color: input.length > 3800 ? '#b91c1c' : '#9ca3af',
+                    fontFamily: 'monospace', padding: '0 2px',
+                    alignSelf: 'flex-end', paddingBottom: 10,
+                  }}>
+                    {input.length}/{MAX_INPUT}
+                  </span>
+                )}
+
+                {/* Mic */}
+                <button type="button" onClick={recording ? stopRecording : startRecording} disabled={loading}
+                  className={recording ? '' : 'icon-btn'}
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
+                    cursor: loading ? 'default' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: recording
+                      ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+                      : 'none',
+                    color: recording ? '#fff' : 'var(--text-3)',
+                    boxShadow: recording ? '0 2px 8px rgba(239,68,68,0.4)' : 'none',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.2s',
+                  }}
+                  onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24"
+                    fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </button>
+
+                {/* Send */}
+                <button type="submit" disabled={!canSend}
+                  className="send-btn"
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
+                    cursor: canSend ? 'pointer' : 'default',
+                    background: canSend
+                      ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                      : 'var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: canSend ? '0 3px 10px rgba(139,26,26,0.35)' : 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
+                  onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
+                  {loading ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      style={{ animation: 'spin 0.8s linear infinite' }}>
+                      <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
+                      <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </footer>
+
+        {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
+        <div style={{ display: 'none' }} className="bottom-nav-wrapper">
+          <BottomNav
+            isAr={isAr}
+            activeTab={messages.length > 0 ? 'chat' : 'home'}
+            onHomeClick={() => setMessages([])}
+            onChatClick={() => { /* already in chat */ }}
+          />
+        </div>
+
+      </div>
+
+      {/* ══════════════ GUIDED FLOW MODAL ══════════════ */}
+      {showGuide && (
+        <GuidedFlow
+          isAr={isAr}
+          onSend={(msg) => { sendMessage(msg) }}
+          onClose={() => setShowGuide(false)}
+        />
+      )}
+
+      {/* ══ TRANSACTION STARTER (3-step wizard) ══════════ */}
+      {showTransactionStarter && (
+        <TransactionStarter
+          isAr={isAr}
+          onClose={() => setShowTransactionStarter(false)}
+          onResult={(result) => {
+            setShowTransactionStarter(false)
+            if (result.goal === 'analyze') {
+              fileInputRef.current?.click()
+            } else if (result.goal === 'human_review') {
+              const prompt = isAr
+                ? 'أريد طلب مراجعة بشرية من مختص قانوني'
+                : 'I want to request a human legal review'
+              sendMessage(prompt)
+            } else {
+              // Map goal to a contextual prompt
+              const goalPrompts: Record<string, [string, string]> = {
+                documents: ['ما هي المستندات المطلوبة لهذه المعاملة؟', 'What documents are required for this transaction?'],
+                checklist: ['أعطني checklist شامل لإتمام هذه المعاملة', 'Give me a comprehensive checklist to complete this transaction'],
+                authority: ['ما هي الجهة المختصة وكيف أتصل بها؟', 'What is the responsible authority and how do I contact them?'],
+              }
+              const [arPrompt, enPrompt] = goalPrompts[result.goal] ?? ['ابدأ معاملة', 'Start a transaction']
+              setShowGuide(true)
+            }
+          }}
+        />
+      )}
+
+      {/* ══ SERVICE GROUP SHEET ══════════════════════════ */}
+      <ServiceGroupSheet
+        group={activeServiceGroup}
+        isAr={isAr}
+        onClose={() => setActiveServiceGroup(null)}
+        onServiceSelect={(item: ServiceItem) => {
+          setActiveServiceGroup(null)
+          if (item.defaultAction === 'upload_document') {
+            fileInputRef.current?.click()
+          } else if (item.defaultAction === 'generate_checklist') {
+            const prompt = isAr
+              ? `أعطني checklist شامل لـ: ${item.titleAr}`
+              : `Give me a comprehensive checklist for: ${item.titleEn}`
+            sendMessage(prompt)
+          } else if (item.defaultAction === 'start_flow') {
+            setShowGuide(true)
+          } else {
+            const prompt = isAr ? (item.chatPromptAr ?? item.titleAr) : (item.chatPromptEn ?? item.titleEn)
+            sendMessage(prompt)
+          }
+        }}
+      />
+
+      {/* ══════════════ MOBILE MENU DRAWER ══════════════ */}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        isAr={isAr}
+        lang={lang}
+        onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+        onHome={() => setMessages([])}
+        currentUser={currentUser}
+      />
+    </>
+  )
+}
