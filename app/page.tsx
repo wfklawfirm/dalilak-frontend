@@ -166,6 +166,8 @@ export default function Home() {
   const [showMorePopular, setShowMorePopular] = useState(false)
   // Active document context — persists across follow-up questions (Phase 9)
   const [activeDocumentName, setActiveDocumentName] = useState<string | null>(null)
+  // Follow-up question suggestions — shown after each assistant answer
+  const [followupQuestions, setFollowupQuestions] = useState<string[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -303,6 +305,7 @@ export default function Home() {
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
+    setFollowupQuestions([])
 
     // ── Sanitize input ────────────────────────────────────────
     const { clean: cleanText, flagged } = sanitizeInput(text)
@@ -455,13 +458,20 @@ export default function Home() {
             const p = JSON.parse(d)
             if (p.type === 'meta') {
               if (Array.isArray(p.sources)) {
-                metaSources = p.sources.map((s: any) => ({
-                  title: s.title || s.ministry || 'مصدر',
-                  type: 'official' as const,
-                  ministry: s.ministry,
-                  score: s.score,
-                  snippet: s.snippet,
-                }))
+                const seen = new Set<string>()
+                metaSources = p.sources
+                  .map((s: any) => ({
+                    title: s.title || s.ministry || 'مصدر',
+                    type: 'official' as const,
+                    ministry: s.ministry,
+                    score: s.score,
+                    snippet: s.snippet,
+                  }))
+                  .filter((s: any) => {
+                    if (seen.has(s.title)) return false
+                    seen.add(s.title)
+                    return true
+                  })
               }
               if (p.confidence) metaConfidence = p.confidence
             }
@@ -492,6 +502,17 @@ export default function Home() {
       // Save to localStorage cache (text questions only)
       if (!file && accumulated) {
         lsSet(prefixedMessage, accumulated)
+      }
+      // Fetch follow-up question suggestions (fire-and-forget, no latency impact)
+      if (!file && accumulated && accumulated.length > 100) {
+        fetch(API_URL + '/suggest_followup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body: JSON.stringify({ question: prefixedMessage.slice(0, 300), answer: accumulated.slice(0, 600) }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => { if (d?.questions?.length) setFollowupQuestions(d.questions.slice(0, 3)) })
+          .catch(() => {})
       }
     } catch {
       setMessages(prev => {
@@ -852,6 +873,32 @@ export default function Home() {
             </div>
           )}
         </main>
+
+        {/* ══ Follow-up question chips ══ */}
+        {followupQuestions.length > 0 && !loading && (
+          <div style={{
+            maxWidth: 720, margin: '0 auto', padding: '4px 12px 2px',
+            display: 'flex', flexWrap: 'wrap', gap: 8, direction: 'rtl',
+          }}>
+            {followupQuestions.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => { setInput(q); sendMessage(q) }}
+                style={{
+                  background: '#FFF5F5', border: '1px solid rgba(139,26,26,0.18)',
+                  borderRadius: 20, padding: '6px 14px', fontSize: 12.5,
+                  color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
+                  lineHeight: 1.4, textAlign: 'right', transition: 'all 0.15s',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5' }}
+              >
+                <span style={{ opacity: 0.6, fontSize: 11 }}>💬</span> {q}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer className="bottom-nav-padding" style={{
