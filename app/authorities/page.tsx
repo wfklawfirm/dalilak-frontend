@@ -38,7 +38,7 @@ const TYPE_ICONS: Record<string, string> = {
 
 const TYPE_COLORS: Record<string, { color: string; bg: string }> = {
   ministry: { color: '#6D28D9', bg: '#F5F3FF' },
-  registry: { color: '#1E40AF', bg: '#EFF6FF' },
+  registry: { color: '#8B1A1A', bg: '#FEF2F2' },
   notary: { color: '#B8860B', bg: '#FFFBEB' },
   court: { color: '#DC2626', bg: '#FEF2F2' },
   municipality: { color: '#16a34a', bg: '#F0FDF4' },

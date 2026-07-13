@@ -140,20 +140,20 @@ export default function PlaybookPage() {
           return (
             <SectionCard
               title={isAr ? '📄 وثائق كل خطوة' : '📄 Documents per Step'}
-              bg="#EFF6FF"
-              border="#BFDBFE"
+              bg="#FEF2F2"
+              border="rgba(139,26,26,0.2)"
               collapsible={true}
               defaultOpen={false}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {docsNodes.map(node => (
                   <div key={node.id}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: '#1E40AF', margin: '0 0 6px' }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: '#8B1A1A', margin: '0 0 6px' }}>
                       📄 {isAr ? node.titleAr : (node.titleEn || node.titleAr)}
                     </p>
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                       {(node.requiredDocuments || []).map((doc, di) => (
-                        <span key={di} style={{ fontSize: 10.5, color: '#1E40AF', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 8, padding: '2px 9px' }}>{doc}</span>
+                        <span key={di} style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 8, padding: '2px 9px' }}>{doc}</span>
                       ))}
                     </div>
                   </div>

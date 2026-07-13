@@ -160,7 +160,7 @@ export default function FAQPage() {
                   )}
 
                   {item.duration && (
-                    <div style={{ fontSize: 10.5, color: '#1E40AF', marginBottom: 10 }}>⏱️ المدة: {item.duration}</div>
+                    <div style={{ fontSize: 10.5, color: '#8B1A1A', marginBottom: 10 }}>⏱️ المدة: {item.duration}</div>
                   )}
 
                   {item.authority && (

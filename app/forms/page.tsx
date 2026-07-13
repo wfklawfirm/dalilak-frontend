@@ -159,7 +159,7 @@ export default function FormsPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                     {tx.hasForm && tx.pdfUrl ? (
-                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#1E40AF', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>📄 PDF</a>
+                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>📄 PDF</a>
                     ) : (
                       <span style={{ padding: '5px 9px', background: '#F3F4F6', color: '#6B7280', borderRadius: 8, fontSize: 10 }}>بلا نموذج</span>
                     )}
@@ -200,7 +200,7 @@ export default function FormsPage() {
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 9.5, color: '#065F46', background: '#ECFDF5', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0', fontWeight: 600 }}>📄 نموذج متاح</span>
                         {tx.fee && <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>💰 {tx.fee}</span>}
-                        {tx.duration && <span style={{ fontSize: 9.5, color: '#1E40AF', background: '#EFF6FF', borderRadius: 6, padding: '1px 7px', border: '1px solid #BFDBFE' }}>⏱️ {tx.duration}</span>}
+                        {tx.duration && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>⏱️ {tx.duration}</span>}
                       </div>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ export default function FormsPage() {
                       🤖 اسأل AI
                     </button>
                     {tx.pdfUrl && (
-                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '7px', background: '#fff', color: '#1E40AF', border: '1.5px solid #BFDBFE', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '7px', background: '#fff', color: '#8B1A1A', border: '1.5px solid rgba(139,26,26,0.2)', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         📄 تحميل النموذج
                       </a>
                     )}

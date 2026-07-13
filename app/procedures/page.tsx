@@ -51,7 +51,7 @@ function ServiceModal({ service, onClose, onAsk }: {
               </span>
             )}
             {service.processing_time && (
-              <span style={{ fontSize: 11, color: '#1E40AF', background: '#EFF6FF', borderRadius: 8, padding: '3px 9px', border: '1px solid #BFDBFE', fontWeight: 600 }}>
+              <span style={{ fontSize: 11, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 8, padding: '3px 9px', border: '1px solid rgba(139,26,26,0.2)', fontWeight: 600 }}>
                 ⏱️ {service.processing_time}
               </span>
             )}
@@ -114,12 +114,12 @@ function ServiceModal({ service, onClose, onAsk }: {
               <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208' }}>📞 معلومات التواصل</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.phone && (
-                  <a href={`tel:${service.phone}`} style={{ fontSize: 12, color: '#1E40AF', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <a href={`tel:${service.phone}`} style={{ fontSize: 12, color: '#8B1A1A', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
                     📞 {service.phone}
                   </a>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#1E40AF', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#8B1A1A', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
                     🌐 {service.website}
                   </a>
                 )}
@@ -376,7 +376,7 @@ export default function ProceduresPage() {
                         </span>
                       )}
                       {svc.processing_time && (
-                        <span style={{ fontSize: 10, color: '#1E40AF', background: '#EFF6FF', borderRadius: 6, padding: '1px 7px', border: '1px solid #BFDBFE' }}>
+                        <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>
                           ⏱️ {svc.processing_time}
                         </span>
                       )}
@@ -425,7 +425,7 @@ export default function ProceduresPage() {
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{proc.title}</div>
                       <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginTop: 2 }}>{proc.ministry}</div>
                       <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
-                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#EFF6FF', color: '#1E40AF', borderRadius: 6, padding: '1px 7px', border: '1px solid #BFDBFE' }}>📁 {proc.requiredDocuments.length} وثيقة</span>}
+                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>📁 {proc.requiredDocuments.length} وثيقة</span>}
                         {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>📋 {proc.steps.length} خطوة</span>}
                         {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>📄 نموذج</span>}
                         {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>💰 رسوم</span>}
@@ -465,7 +465,7 @@ export default function ProceduresPage() {
                       {proc.pdfUrls.length > 0 && (
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
                           {proc.pdfUrls.map((url, i) => (
-                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#1E40AF', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
+                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
                               📄 تحميل النموذج {proc.pdfUrls.length > 1 ? i + 1 : ''}
                             </a>
                           ))}

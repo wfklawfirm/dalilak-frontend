@@ -22,7 +22,7 @@ type PackSection = {
 }
 
 const PACK_SECTIONS: PackSection[] = [
-  { id: 'expat', icon: '✈️', titleAr: 'المغتربون', titleEn: 'Expat Services', color: '#1E40AF', items: EXPAT_ITEMS },
+  { id: 'expat', icon: '✈️', titleAr: 'المغتربون', titleEn: 'Expat Services', color: '#8B1A1A', items: EXPAT_ITEMS },
   { id: 'property', icon: '🏛️', titleAr: 'العقارات', titleEn: 'Property', color: '#854D0E', items: PROPERTY_ITEMS },
   { id: 'contracts', icon: '📝', titleAr: 'العقود', titleEn: 'Contracts', color: '#7C3AED', items: CONTRACT_ITEMS },
 ]
@@ -75,7 +75,7 @@ export default function ExpatPropertyPackPage() {
 
       {/* Header */}
       <header style={{
-        background: 'linear-gradient(135deg, #1E3A5F 0%, #1E40AF 100%)',
+        background: 'linear-gradient(135deg, #5c1212 0%, #8B1A1A 100%)',
         padding: '14px 16px 18px', position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
@@ -134,7 +134,7 @@ export default function ExpatPropertyPackPage() {
               <div key={step.step} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{
                   width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                  background: '#1E40AF', color: '#fff',
+                  background: '#8B1A1A', color: '#fff',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 11, fontWeight: 800,
                 }}>{step.step}</div>
@@ -247,7 +247,7 @@ export default function ExpatPropertyPackPage() {
             onClick={() => router.push(`/?q=${encodeURIComponent(isAr ? 'أريد طلب مراجعة بشرية من مختص قانوني' : 'I want to request a human legal review')}`)}
             style={{
               padding: '9px 18px', borderRadius: 10,
-              background: 'linear-gradient(135deg, #1E3A5F, #1E40AF)',
+              background: 'linear-gradient(135deg, #5c1212, #8B1A1A)',
               border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit',
             }}
