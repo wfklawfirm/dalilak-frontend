@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   isAdmin, getUser, clearToken,
   adminListUsers, adminCreateUser, adminUpdateUser, adminDeactivateUser,
@@ -244,6 +245,12 @@ export default function AdminPage() {
               {t.label}
             </button>
           ))}
+          <Link
+            href="/admin/content"
+            className="px-4 py-2 rounded-xl text-sm font-medium transition-colors bg-white text-gray-600 hover:bg-gray-50 border border-dashed border-gray-300"
+          >
+            📝 إدارة المحتوى
+          </Link>
         </div>
       </div>
 
