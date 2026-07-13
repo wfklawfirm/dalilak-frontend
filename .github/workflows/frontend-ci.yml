@@ -1,0 +1,75 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  build:
+    name: next build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          # Use a placeholder — build must succeed without real backend URL
+          NEXT_PUBLIC_API_URL: https://dalilak-backend-bvb9.onrender.com
+        run: npm run build
+
+  security-headers:
+    name: Verify security headers on production
+    runs-on: ubuntu-latest
+    # Only run on pushes to main (not PRs — production hasn't changed yet)
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    # Run after build passes
+    needs: build
+
+    steps:
+      - name: Check X-Content-Type-Options
+        run: |
+          val=$(curl -sI https://dalilak-frontend.vercel.app/ | grep -i "^x-content-type-options:" | tr -d '\r' | awk '{print $2}')
+          if [ "$val" != "nosniff" ]; then
+            echo "FAIL: X-Content-Type-Options is '$val', expected 'nosniff'"
+            exit 1
+          fi
+          echo "PASS: X-Content-Type-Options: $val"
+
+      - name: Check X-Frame-Options
+        run: |
+          val=$(curl -sI https://dalilak-frontend.vercel.app/ | grep -i "^x-frame-options:" | tr -d '\r' | awk '{print $2}')
+          if [ "$val" != "DENY" ]; then
+            echo "FAIL: X-Frame-Options is '$val', expected 'DENY'"
+            exit 1
+          fi
+          echo "PASS: X-Frame-Options: $val"
+
+      - name: Check Referrer-Policy
+        run: |
+          val=$(curl -sI https://dalilak-frontend.vercel.app/ | grep -i "^referrer-policy:" | tr -d '\r' | awk '{print $2}')
+          if [ "$val" != "strict-origin-when-cross-origin" ]; then
+            echo "FAIL: Referrer-Policy is '$val'"
+            exit 1
+          fi
+          echo "PASS: Referrer-Policy: $val"
+
+      - name: Check viewport has no zoom-blocking
+        run: |
+          html=$(curl -sL https://dalilak-frontend.vercel.app/)
+          if echo "$html" | grep -qi "user-scalable=no\|user-scalable=0\|maximum-scale=1"; then
+            echo "FAIL: viewport contains zoom-blocking directive"
+            exit 1
+          fi
+          echo "PASS: viewport has no zoom-blocking directive"
