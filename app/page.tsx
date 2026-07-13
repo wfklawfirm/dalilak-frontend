@@ -973,7 +973,7 @@ export default function Home() {
         {retryMsg && !loading && (
           <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
             <button
-              onClick={() => sendMessage(retryMsg)}
+              onClick={() => sendMessage(retryMsg!)}
               style={{
                 background: '#fff5f5', border: '1px solid rgba(139,26,26,0.25)',
                 borderRadius: 20, padding: '6px 16px', fontSize: 12.5,
