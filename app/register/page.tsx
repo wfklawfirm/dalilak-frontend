@@ -42,161 +42,175 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-8">
-      <div className="w-full max-w-sm">
+    <div style={{
+      minHeight: '100dvh',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      background: 'linear-gradient(160deg, #6b2737 0%, #8B1A1A 40%, #f7f0eb 100%)',
+      padding: '20px 16px',
+      fontFamily: "'Cairo','Inter',sans-serif",
+    }}>
+      <style>{`
+        * { box-sizing: border-box; }
+        .auth-input {
+          width: 100%; padding: 12px 16px;
+          border: 1.5px solid #EAE4D9; border-radius: 14px;
+          font-size: 15px; outline: none;
+          font-family: inherit; background: #FAFAF8;
+          transition: border-color 0.18s, box-shadow 0.18s;
+          color: #1A1208;
+        }
+        .auth-input:focus {
+          border-color: #8B1A1A;
+          box-shadow: 0 0 0 3px rgba(139,26,26,0.10);
+          background: #fff;
+        }
+        .auth-btn {
+          width: 100%; padding: 14px;
+          background: linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%);
+          color: #fff; border: none; border-radius: 14px;
+          font-size: 15px; font-weight: 700; cursor: pointer;
+          font-family: inherit;
+          box-shadow: 0 4px 16px rgba(139,26,26,0.35);
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.4); }
+        .auth-btn:active:not(:disabled) { transform: scale(0.98); }
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      `}</style>
 
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-6">
-          <img src="/logo.PNG" alt="دليلك AI" width={120} height={120}
-            className="mb-2" style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
-          <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
-          <p className="text-sm text-gray-500 mt-1">دليل المواطن اللبناني الذكي</p>
+      {/* Logo + Brand */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: 20,
+          background: 'rgba(255,255,255,0.15)',
+          border: '2px solid rgba(255,255,255,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 12px', backdropFilter: 'blur(8px)',
+        }}>
+          <img src="/logo.PNG" alt="دليلك"
+            style={{ width: 50, height: 50, objectFit: 'contain', mixBlendMode: 'multiply' }} />
         </div>
-
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-1 text-center">إنشاء حساب جديد</h2>
-          <div className="flex justify-center mb-5">
-            <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-              🎁 مجاني لمدة 3 أيام
-            </span>
-          </div>
-
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
-              <input
-                type="text"
-                value={form.full_name}
-                onChange={e => update('full_name', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="أحمد علي"
-                dir="auto"
-              />
-            </div>
-
-            {/* Username */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                اسم المستخدم <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={form.username}
-                onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="username"
-                required
-                minLength={3}
-                dir="ltr"
-                style={{ textAlign: 'left' }}
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                البريد الإلكتروني <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => update('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="you@example.com"
-                required
-                dir="ltr"
-                style={{ textAlign: 'left' }}
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف</label>
-              <input
-                type="tel"
-                value={form.phone}
-                onChange={e => update('phone', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                placeholder="+961 xx xxx xxx"
-                dir="ltr"
-                style={{ textAlign: 'left' }}
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                كلمة المرور <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  value={form.password}
-                  onChange={e => update('password', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                  placeholder="min. 6 characters"
-                  required
-                  minLength={6}
-                  autoComplete="new-password"
-                  style={{ direction: 'ltr', textAlign: 'left', paddingRight: 44 }}
-                />
-                <button type="button" tabIndex={-1} onClick={() => setShowPass(s => !s)}
-                  style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#9ca3af', padding: 0 }}>
-                  {showPass ? '🙈' : '👁'}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                تأكيد كلمة المرور <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  value={form.confirm}
-                  onChange={e => update('confirm', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                  placeholder="repeat password"
-                  required
-                  autoComplete="new-password"
-                  style={{ direction: 'ltr', textAlign: 'left', paddingRight: 44 }}
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? 'جاري التسجيل...' : 'إنشاء الحساب'}
-            </button>
-          </form>
-
-          <p className="mt-3 text-center text-xs text-gray-400">
-            بالتسجيل توافق على شروط الاستخدام وسياسة الخصوصية
-          </p>
-
-          <div className="mt-4 text-center text-sm text-gray-500">
-            لديك حساب؟{' '}
-            <Link href="/login" className="text-[#6b2737] font-semibold hover:underline">
-              سجّل الدخول
-            </Link>
-          </div>
-        </div>
-
+        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>
+          دليلك
+        </h1>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
+          دليل المواطن اللبناني الذكي
+        </p>
       </div>
+
+      {/* Card */}
+      <div style={{
+        width: '100%', maxWidth: 380,
+        background: '#fff', borderRadius: 24,
+        padding: '24px 22px',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+      }}>
+        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', textAlign: 'center' }}>
+          إنشاء حساب جديد
+        </h2>
+        <div style={{ textAlign: 'center', marginBottom: 18 }}>
+          <span style={{
+            display: 'inline-block', fontSize: 11.5, fontWeight: 700,
+            background: '#F0FDF4', color: '#15803D',
+            border: '1px solid #BBF7D0', borderRadius: 20, padding: '3px 12px',
+          }}>
+            مجاني لمدة 3 أيام
+          </span>
+        </div>
+
+        {error && (
+          <div style={{
+            marginBottom: 14, padding: '10px 14px',
+            background: '#FEF2F2', border: '1.5px solid #FECACA',
+            borderRadius: 12, color: '#991B1B', fontSize: 13, textAlign: 'center',
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الاسم الكامل</label>
+            <input type="text" value={form.full_name} onChange={e => update('full_name', e.target.value)}
+              className="auth-input" placeholder="أحمد علي" dir="auto" />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+              اسم المستخدم <span style={{ color: '#8B1A1A' }}>*</span>
+            </label>
+            <input type="text" value={form.username}
+              onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
+              className="auth-input" placeholder="username" required minLength={3}
+              dir="ltr" style={{ textAlign: 'left' }} />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+              البريد الإلكتروني <span style={{ color: '#8B1A1A' }}>*</span>
+            </label>
+            <input type="email" value={form.email} onChange={e => update('email', e.target.value)}
+              className="auth-input" placeholder="you@example.com" required
+              dir="ltr" style={{ textAlign: 'left' }} />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>رقم الهاتف</label>
+            <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
+              className="auth-input" placeholder="+961 xx xxx xxx"
+              dir="ltr" style={{ textAlign: 'left' }} />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+              كلمة المرور <span style={{ color: '#8B1A1A' }}>*</span>
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input type={showPass ? 'text' : 'password'} value={form.password}
+                onChange={e => update('password', e.target.value)}
+                className="auth-input" placeholder="min. 6 characters" required minLength={6}
+                autoComplete="new-password" style={{ direction: 'ltr', textAlign: 'left', paddingLeft: 44 }} />
+              <button type="button" tabIndex={-1} onClick={() => setShowPass(s => !s)}
+                style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0, display: 'flex', alignItems: 'center' }}>
+                {showPass
+                  ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                }
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+              تأكيد كلمة المرور <span style={{ color: '#8B1A1A' }}>*</span>
+            </label>
+            <input type={showPass ? 'text' : 'password'} value={form.confirm}
+              onChange={e => update('confirm', e.target.value)}
+              className="auth-input" placeholder="repeat password" required
+              autoComplete="new-password" style={{ direction: 'ltr', textAlign: 'left' }} />
+          </div>
+
+          <button type="submit" disabled={loading} className="auth-btn" style={{ marginTop: 4 }}>
+            {loading ? 'جاري التسجيل...' : 'إنشاء الحساب'}
+          </button>
+        </form>
+
+        <p style={{ marginTop: 10, textAlign: 'center', fontSize: 10.5, color: '#B0A090' }}>
+          بالتسجيل توافق على شروط الاستخدام وسياسة الخصوصية
+        </p>
+        <div style={{ marginTop: 10, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
+          لديك حساب؟{' '}
+          <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
+            سجّل الدخول
+          </Link>
+        </div>
+      </div>
+
+      <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
+        ⚖️ خدمة دليلك AI — معلومات إرشادية لا تُغني عن المختص القانوني
+      </p>
     </div>
   )
 }

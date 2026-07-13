@@ -151,10 +151,10 @@ export default function FormsPage() {
         {viewTab === 'all-tx' && (
           filteredAllTx.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+              <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
               <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نتائج</p>
               <button onClick={() => askAI(`أريد معلومات عن معاملة: ${search}`)} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: '#8B1A1A', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-                🤖 اسأل الذكاء الاصطناعي
+                اسأل دليلك
               </button>
             </div>
           ) : (
@@ -170,7 +170,7 @@ export default function FormsPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                     {tx.hasForm && tx.pdfUrl ? (
-                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>📄 PDF</a>
+                      <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>PDF</a>
                     ) : (
                       <span style={{ padding: '5px 9px', background: '#F3F4F6', color: '#6B7280', borderRadius: 8, fontSize: 10 }}>بلا نموذج</span>
                     )}
@@ -191,10 +191,10 @@ export default function FormsPage() {
         {viewTab === 'forms-tx' && (
           filteredTx.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+              <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
               <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نتائج</p>
               <button onClick={() => askAI(`أريد معلومات عن نماذج ${search}`)} style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: '#8B1A1A', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-                🤖 اسأل الذكاء الاصطناعي
+                اسأل دليلك
               </button>
             </div>
           ) : (
@@ -209,19 +209,19 @@ export default function FormsPage() {
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', lineHeight: 1.4, marginBottom: 2 }}>{tx.title}</div>
                       <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginBottom: 6 }}>{tx.ministry}</div>
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 9.5, color: '#065F46', background: '#ECFDF5', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0', fontWeight: 600 }}>📄 نموذج متاح</span>
-                        {tx.fee && <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>💰 {tx.fee}</span>}
-                        {tx.duration && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>⏱️ {tx.duration}</span>}
+                        <span style={{ fontSize: 9.5, color: '#065F46', background: '#ECFDF5', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0', fontWeight: 600 }}>نموذج متاح</span>
+                        {tx.fee && <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>{tx.fee}</span>}
+                        {tx.duration && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{tx.duration}</span>}
                       </div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, marginTop: 10, paddingTop: 8, borderTop: '1px solid #F3F4F6' }}>
                     <button onClick={() => askAI(`ما هي متطلبات وإجراءات معاملة: ${tx.title}؟`)} style={{ flex: 1, padding: '7px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-                      🤖 اسأل AI
+                      اسأل دليلك
                     </button>
                     {tx.pdfUrl && (
                       <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '7px', background: '#fff', color: '#8B1A1A', border: '1.5px solid rgba(139,26,26,0.2)', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        📄 تحميل النموذج
+                        تحميل النموذج
                       </a>
                     )}
                     {!tx.pdfUrl && (
@@ -240,7 +240,7 @@ export default function FormsPage() {
         {viewTab === 'curated' && (
           filteredCurated.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+              <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
               <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نماذج</p>
             </div>
           ) : (
@@ -267,7 +267,7 @@ export default function FormsPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 10, borderTop: '1px solid #F0EBE0' }}>
                     <button onClick={() => askAI(isAr ? form.chatPrompt_ar : form.chatPrompt_en)} style={{ flex: 1, padding: '8px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 11.5, fontWeight: 700, cursor: 'pointer' }}>
-                      🤖 اسأل AI
+                      اسأل دليلك
                     </button>
                     {form.url && (
                       <a href={form.url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '8px', background: '#fff', color: '#8B1A1A', border: '1.5px solid #8B1A1A', borderRadius: 10, fontFamily: 'inherit', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

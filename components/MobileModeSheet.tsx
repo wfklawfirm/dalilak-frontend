@@ -6,7 +6,6 @@ type ResponseMode = 'quick' | 'detailed' | 'research'
 
 interface ModeOption {
   id: ResponseMode
-  icon: string
   label_ar: string
   label_en: string
   hint_ar: string
@@ -16,7 +15,6 @@ interface ModeOption {
 const MODES: ModeOption[] = [
   {
     id: 'quick',
-    icon: '⚡',
     label_ar: 'سريع',
     label_en: 'Quick',
     hint_ar: 'جواب مختصر وواضح في ثوانٍ',
@@ -24,7 +22,6 @@ const MODES: ModeOption[] = [
   },
   {
     id: 'detailed',
-    icon: '📋',
     label_ar: 'مفصّل',
     label_en: 'Detailed',
     hint_ar: 'المستندات + الخطوات + الجهة + الرسوم',
@@ -32,13 +29,30 @@ const MODES: ModeOption[] = [
   },
   {
     id: 'research',
-    icon: '🔍',
     label_ar: 'بحث وافٍ',
     label_en: 'Research',
     hint_ar: 'تقرير شامل مع مصادر وتحليل أعمق',
     hint_en: 'Full report with sources and deep analysis',
   },
 ]
+
+function ModeIcon({ id, size = 20 }: { id: ResponseMode; size?: number }) {
+  if (id === 'quick') return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+    </svg>
+  )
+  if (id === 'detailed') return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+    </svg>
+  )
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
+    </svg>
+  )
+}
 
 interface MobileModeSheetProps {
   isOpen: boolean
@@ -106,8 +120,8 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
                   width: 40, height: 40, borderRadius: 12, flexShrink: 0,
                   background: active ? 'rgba(139,26,26,0.1)' : '#F9FAFB',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 20,
-                }}>{m.icon}</div>
+                  color: active ? '#8B1A1A' : '#6B7280',
+                }}><ModeIcon id={m.id} size={20} /></div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#8B1A1A' : '#1A1208' }}>
                     {isAr ? m.label_ar : m.label_en}
@@ -157,7 +171,7 @@ export function DesktopModeSelector({
               boxShadow: active ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
               fontFamily: 'inherit', transition: 'all 0.18s ease',
             }}>
-            <span style={{ fontSize: 13 }}>{m.icon}</span>
+            <span style={{ display: 'flex', color: active ? '#8B1A1A' : '#9ca3af' }}><ModeIcon id={m.id} size={13} /></span>
             <span>{isAr ? m.label_ar : m.label_en}</span>
           </button>
         )
@@ -192,7 +206,7 @@ export default function ModeSelector({
             fontSize: 12, fontWeight: 600, color: '#8B1A1A',
           }}
         >
-          <span>{current.icon}</span>
+          <span style={{ display: 'flex', color: '#8B1A1A' }}><ModeIcon id={current.id} size={14} /></span>
           <span>{isAr ? current.label_ar : current.label_en}</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>

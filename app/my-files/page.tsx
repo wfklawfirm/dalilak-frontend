@@ -347,7 +347,7 @@ export default function MyFilesPage() {
                     {selected.documents && selected.documents.length > 0 && (
                       <div style={{ marginTop: 22 }}>
                         <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span>📄</span> المستندات المطلوبة
+                          المستندات المطلوبة
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                           {selected.documents.map((doc, i) => (

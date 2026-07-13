@@ -48,17 +48,17 @@ function ServiceModal({ service, onClose, onAsk }: {
           <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
             {service.fees && (
               <span style={{ fontSize: 11, color: '#854D0E', background: '#FEFCE8', borderRadius: 8, padding: '3px 9px', border: '1px solid #FEF08A', fontWeight: 600 }}>
-                💰 {service.fees}
+                {service.fees}
               </span>
             )}
             {service.processing_time && (
               <span style={{ fontSize: 11, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 8, padding: '3px 9px', border: '1px solid rgba(139,26,26,0.2)', fontWeight: 600 }}>
-                ⏱️ {service.processing_time}
+                {service.processing_time}
               </span>
             )}
             {service.online_available && (
               <span style={{ fontSize: 11, color: '#065F46', background: '#ECFDF5', borderRadius: 8, padding: '3px 9px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
-                🌐 متوفر أونلاين
+                متوفر أونلاين
               </span>
             )}
             <span style={{ fontSize: 11, color: '#6B7280', background: '#F9FAFB', borderRadius: 8, padding: '3px 9px', border: '1px solid #E5E7EB' }}>
@@ -78,7 +78,7 @@ function ServiceModal({ service, onClose, onAsk }: {
           {service.required_documents.length > 0 && (
             <div style={{ marginBottom: 16 }}>
               <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
-                📄 الوثائق المطلوبة
+                الوثائق المطلوبة
                 <span style={{ fontSize: 10, color: '#6B7280', fontWeight: 400 }}>({service.required_documents.length})</span>
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
@@ -94,10 +94,10 @@ function ServiceModal({ service, onClose, onAsk }: {
 
           {service.forms_needed.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208' }}>📋 النماذج المطلوبة</h3>
+              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208' }}>النماذج المطلوبة</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.forms_needed.map((form, i) => (
-                  <span key={i} style={{ fontSize: 12, color: '#854D0E', background: '#FFFBEB', borderRadius: 8, padding: '6px 10px', border: '1px solid #FEF3C7' }}>📝 {form}</span>
+                  <span key={i} style={{ fontSize: 12, color: '#854D0E', background: '#FFFBEB', borderRadius: 8, padding: '6px 10px', border: '1px solid #FEF3C7' }}>{form}</span>
                 ))}
               </div>
             </div>
@@ -105,27 +105,29 @@ function ServiceModal({ service, onClose, onAsk }: {
 
           {service.important_notes && (
             <div style={{ marginBottom: 16, padding: '10px 14px', background: '#FFF7ED', borderRadius: 12, border: '1px solid #FED7AA' }}>
-              <p style={{ margin: 0, fontSize: 12, color: '#92400E', lineHeight: 1.6 }}>⚠️ {service.important_notes}</p>
+              <p style={{ margin: 0, fontSize: 12, color: '#92400E', lineHeight: 1.6 }}>{service.important_notes}</p>
             </div>
           )}
 
           {/* Contact info */}
           {(service.phone || service.website || service.working_hours) && (
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208' }}>📞 معلومات التواصل</h3>
+              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208' }}>معلومات التواصل</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.phone && (
                   <a href={`tel:${service.phone}`} style={{ fontSize: 12, color: '#8B1A1A', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    📞 {service.phone}
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    {service.phone}
                   </a>
                 )}
                 {service.website && (
                   <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#8B1A1A', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    🌐 {service.website}
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                    {service.website}
                   </a>
                 )}
                 {service.working_hours && (
-                  <span style={{ fontSize: 12, color: '#374151' }}>🕐 {service.working_hours}</span>
+                  <span style={{ fontSize: 12, color: '#374151' }}>{service.working_hours}</span>
                 )}
               </div>
             </div>
@@ -352,14 +354,16 @@ export default function ProceduresPage() {
         {viewMode === 'all' && (
           filteredAll.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+              </div>
               <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
               <p style={{ fontSize: 12, marginTop: 4 }}>جرب كلمة بحث مختلفة أو اسأل الذكاء الاصطناعي مباشرة</p>
               <button onClick={() => handleAsk(search)} style={{
                 marginTop: 16, padding: '10px 20px', borderRadius: 12, background: '#8B1A1A',
                 border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
               }}>
-                🤖 اسأل الذكاء الاصطناعي عن: {search}
+                اسأل دليلك عن: {search}
               </button>
             </div>
           ) : (
@@ -385,22 +389,22 @@ export default function ProceduresPage() {
                     <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                       {svc.fees && (
                         <span style={{ fontSize: 10, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>
-                          💰 {svc.fees.length > 25 ? svc.fees.slice(0, 25) + '...' : svc.fees}
+                          {svc.fees.length > 25 ? svc.fees.slice(0, 25) + '...' : svc.fees}
                         </span>
                       )}
                       {svc.processing_time && (
                         <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>
-                          ⏱️ {svc.processing_time}
+                          {svc.processing_time}
                         </span>
                       )}
                       {svc.required_documents.length > 0 && (
                         <span style={{ fontSize: 10, color: '#6B7280', background: '#F9FAFB', borderRadius: 6, padding: '1px 7px', border: '1px solid #E5E7EB' }}>
-                          📄 {svc.required_documents.length} وثيقة
+                          {svc.required_documents.length} وثيقة
                         </span>
                       )}
                       {svc.online_available && (
                         <span style={{ fontSize: 10, color: '#065F46', background: '#ECFDF5', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>
-                          🌐 أونلاين
+                          أونلاين
                         </span>
                       )}
                     </div>
@@ -420,7 +424,9 @@ export default function ProceduresPage() {
           const procs = searchEnrichedProcedures(search)
           return procs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+              </div>
               <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
             </div>
           ) : (
@@ -438,10 +444,10 @@ export default function ProceduresPage() {
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{proc.title}</div>
                       <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginTop: 2 }}>{proc.ministry}</div>
                       <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
-                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>📁 {proc.requiredDocuments.length} وثيقة</span>}
-                        {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>📋 {proc.steps.length} خطوة</span>}
-                        {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>📄 نموذج</span>}
-                        {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>💰 رسوم</span>}
+                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.requiredDocuments.length} وثيقة</span>}
+                        {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>{proc.steps.length} خطوة</span>}
+                        {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>نموذج</span>}
+                        {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>رسوم</span>}
                       </div>
                     </div>
                     <span style={{ color: '#9C8E80', fontSize: 16, transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>▾</span>
@@ -450,7 +456,7 @@ export default function ProceduresPage() {
                     <div style={{ padding: '0 16px 16px', borderTop: '1px solid #F3F4F6' }}>
                       {proc.requiredDocuments.length > 0 && (
                         <div style={{ marginTop: 12, marginBottom: 10 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>📁 الوثائق المطلوبة:</div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>الوثائق المطلوبة:</div>
                           {proc.requiredDocuments.map((d, i) => (
                             <div key={i} style={{ fontSize: 11.5, color: '#374151', padding: '4px 0', borderBottom: '1px solid #F9FAFB', display: 'flex', gap: 6 }}>
                               <span style={{ color: '#8B1A1A', fontWeight: 700 }}>•</span><span>{d}</span>
@@ -460,7 +466,7 @@ export default function ProceduresPage() {
                       )}
                       {proc.steps.length > 0 && (
                         <div style={{ marginBottom: 10 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>📋 خطوات الإجراء:</div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>خطوات الإجراء:</div>
                           {proc.steps.map((s, i) => (
                             <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'flex-start' }}>
                               <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
@@ -471,7 +477,7 @@ export default function ProceduresPage() {
                       )}
                       {proc.fees && (
                         <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 12px', marginBottom: 10 }}>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#854D0E' }}>💰 الرسوم: </span>
+                          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#854D0E' }}>الرسوم:</span>
                           <span style={{ fontSize: 11, color: '#6B7280', whiteSpace: 'pre-line' }}>{proc.fees.slice(0, 200)}</span>
                         </div>
                       )}
@@ -479,13 +485,13 @@ export default function ProceduresPage() {
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
                           {proc.pdfUrls.map((url, i) => (
                             <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
-                              📄 تحميل النموذج {proc.pdfUrls.length > 1 ? i + 1 : ''}
+                              تحميل النموذج {proc.pdfUrls.length > 1 ? i + 1 : ''}
                             </a>
                           ))}
                         </div>
                       )}
                       <button onClick={() => router.push(`/?q=${encodeURIComponent(`ما هي خطوات ومتطلبات إجراء: ${proc.title}؟`)}`)} style={{ width: '100%', padding: '10px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-                        🤖 اسأل الذكاء الاصطناعي عن هذا الإجراء
+                        اسأل دليلك عن هذا الإجراء
                       </button>
                     </div>
                   )}
@@ -499,7 +505,9 @@ export default function ProceduresPage() {
         {viewMode === 'detailed' && (
           filteredDetailed.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🔍</div>
+              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+              </div>
               <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
               <p style={{ fontSize: 12, marginTop: 4 }}>جرب كلمة بحث مختلفة</p>
             </div>
@@ -526,7 +534,7 @@ export default function ProceduresPage() {
                         {getComplexityLabel(proc.complexity, isAr)}
                       </span>
                       <span style={{ fontSize: 10, color: '#065F46', background: '#ECFDF5', borderRadius: 8, padding: '1px 7px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
-                        🧭 مفصّل
+                        مفصّل
                       </span>
                     </div>
                     <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 6px', lineHeight: 1.5 }}>
@@ -538,12 +546,12 @@ export default function ProceduresPage() {
                       </span>
                       {proc.estimatedDuration_ar && (
                         <span style={{ fontSize: 10, color: '#6B7280', background: '#F5F5F5', borderRadius: 8, padding: '1px 7px' }}>
-                          ⏱️ {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
+                          {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
                         </span>
                       )}
                       {proc.forms.length > 0 && (
                         <span style={{ fontSize: 10, color: '#854D0E', background: '#FEFCE8', borderRadius: 8, padding: '1px 7px', border: '1px solid #FEF08A' }}>
-                          📄 نموذج متوفر
+                          نموذج متوفر
                         </span>
                       )}
                     </div>

@@ -164,21 +164,21 @@ export default function FAQPage() {
 
                   {item.fees && (
                     <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 10px', marginBottom: 10 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#854D0E' }}>💰 الرسوم: </span>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: '#854D0E' }}>الرسوم:</span>
                       <span style={{ fontSize: 10.5, color: '#6B7280' }}>{item.fees.slice(0, 150)}</span>
                     </div>
                   )}
 
                   {item.duration && (
-                    <div style={{ fontSize: 10.5, color: '#8B1A1A', marginBottom: 10 }}>⏱️ المدة: {item.duration}</div>
+                    <div style={{ fontSize: 10.5, color: '#8B1A1A', marginBottom: 10 }}>المدة: {item.duration}</div>
                   )}
 
                   {item.authority && (
-                    <div style={{ fontSize: 10.5, color: '#6B7280', marginBottom: 10 }}>🏛️ الجهة: {item.authority}</div>
+                    <div style={{ fontSize: 10.5, color: '#6B7280', marginBottom: 10 }}>الجهة: {item.authority}</div>
                   )}
 
                   <button onClick={() => askAI(item.chatPrompt)} style={{ width: '100%', padding: '9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-                    🤖 اسأل الذكاء الاصطناعي عن هذا الموضوع
+                    اسأل دليلك عن هذا الموضوع
                   </button>
                 </div>
               )}
@@ -189,7 +189,7 @@ export default function FAQPage() {
         {/* Back to home */}
         <div style={{ marginTop: 20, textAlign: 'center' }}>
           <button onClick={() => router.push('/')} style={{ padding: '10px 24px', borderRadius: 12, background: 'linear-gradient(135deg, #7a1a1a, #9B2335)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-            🤖 اسأل دليلك الذكي
+            اسأل دليلك
           </button>
         </div>
       </div>

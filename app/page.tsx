@@ -1053,7 +1053,7 @@ export default function Home() {
                 padding: '6px 10px', background: '#FEF2F2',
                 borderRadius: 10, border: '1px solid rgba(139,26,26,0.2)',
               }}>
-                <span style={{ fontSize: 13 }}>📄</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, flex: 1 }}>
                   {isAr ? 'يتم تحليل: ' : 'Analyzing: '}{activeDocumentName}
                 </span>
@@ -1082,7 +1082,7 @@ export default function Home() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 20, flexShrink: 0,
                   }}>
-                    {getFileIcon(attachedFile.type)}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
@@ -1091,7 +1091,7 @@ export default function Home() {
                   </div>
                   <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{formatSize(attachedFile.size)}</div>
                   <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 1 }}>
-                    {isAr ? '⚡ جاهز للتحليل' : '⚡ Ready to analyze'}
+                    {isAr ? 'جاهز للتحليل' : 'Ready to analyze'}
                   </div>
                 </div>
                 <button onClick={() => setAttachedFile(null)} style={{

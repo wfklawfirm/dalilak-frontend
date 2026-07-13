@@ -130,12 +130,12 @@ export default function ProcedurePage() {
           {/* Quick stats */}
           <div style={{ display:'grid', gridTemplateColumns: procedure.fee_ar ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap:10, marginBottom:procedure.fee_ar ? 8 : 20 }}>
             {[
-              { icon:'⏱️', label:'المدة',  value:procedure.duration_ar, bg:'#FEF2F2', border:'rgba(139,26,26,0.1)' },
-              ...(procedure.fee_ar ? [{ icon:'💰', label:'الرسوم', value:procedure.fee_ar, bg:'#F0FDF4', border:'#BBF7D0' }] : []),
-              { icon:'🏛️', label:'الجهة',  value:procedure.authority,   bg:'#FEF9EC', border:'#FDE68A' },
+              { svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>, label:'المدة',  value:procedure.duration_ar, bg:'#FEF2F2', border:'rgba(139,26,26,0.1)' },
+              ...(procedure.fee_ar ? [{ svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#065F46" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>, label:'الرسوم', value:procedure.fee_ar, bg:'#F0FDF4', border:'#BBF7D0' }] : []),
+              { svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>, label:'الجهة',  value:procedure.authority,   bg:'#FEF9EC', border:'#FDE68A' },
             ].map((stat, i) => (
               <div key={i} style={{ background:stat.bg, border:`1px solid ${stat.border}`, borderRadius:14, padding:'13px 10px', textAlign:'center' }}>
-                <div style={{ fontSize:20, marginBottom:5 }}>{stat.icon}</div>
+                <div style={{ display:'flex', justifyContent:'center', marginBottom:5 }}>{stat.svgPath}</div>
                 <div style={{ fontSize:10, color:'#9C8E80', marginBottom:3 }}>{stat.label}</div>
                 <div style={{ fontSize:11.5, fontWeight:700, color:'#1A1208', lineHeight:1.3 }}>{stat.value || '—'}</div>
               </div>
@@ -148,7 +148,7 @@ export default function ProcedurePage() {
             background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:11,
             padding:'9px 13px', marginBottom:16,
           }}>
-            <span style={{ fontSize:14, flexShrink:0 }}>⚠️</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2" style={{ flexShrink:0, marginTop:1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
             <p style={{ margin:0, fontSize:11, color:'#92400E', lineHeight:1.55 }}>
               {procedure.fee_ar
                 ? 'الرسوم المذكورة تقديرية وقابلة للتغيير. يُرجى التأكد من الجهة المختصة قبل التقديم.'

@@ -211,6 +211,43 @@ export function MarkdownFallbackRenderer({
       elements.push(<hr key={i} style={{ border: 'none', borderTop: '1px solid #f0e0e0', margin: '0.65rem 0' }} />)
       i++; continue
     }
+    // ── Markdown table ──────────────────────────────────────
+    if (/^\|/.test(line)) {
+      const tableLines: string[] = []
+      while (i < lines.length && /^\|/.test(lines[i])) {
+        tableLines.push(lines[i])
+        i++
+      }
+      // Filter out separator rows (|---|---|)
+      const headerRow = tableLines[0]
+      const dataRows = tableLines.slice(2) // skip header + separator
+      const parseCells = (row: string) =>
+        row.split('|').slice(1, -1).map(c => c.trim())
+      const headers = parseCells(headerRow)
+      elements.push(
+        <div key={'tbl' + i} className="prose-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                {headers.map((h, ci) => (
+                  <th key={ci}>{inlineFormat(h, `th-${ci}`, onCitation, activeCitation)}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {dataRows.map((row, ri) => (
+                <tr key={ri}>
+                  {parseCells(row).map((cell, ci) => (
+                    <td key={ci}>{inlineFormat(cell, `td-${ri}-${ci}`, onCitation, activeCitation)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+      continue
+    }
     if (/^[-*•] /.test(line)) {
       const items: ReactNode[] = []
       while (i < lines.length && /^[-*•] /.test(lines[i])) {

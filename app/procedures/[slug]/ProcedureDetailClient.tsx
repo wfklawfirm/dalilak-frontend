@@ -166,7 +166,7 @@ export default function ProcedureDetailClient() {
 
         {/* Fees */}
         {proc.fees.length > 0 && (
-          <Section title={isAr ? '💰 الرسوم' : '💰 Fees'} bg="#FAF5FF" border="#E9D5FF">
+          <Section title={isAr ? 'الرسوم' : 'Fees'} bg="#FAF5FF" border="#E9D5FF">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {proc.fees.map((fee, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: i < proc.fees.length - 1 ? '1px solid #E9D5FF' : 'none', paddingBottom: i < proc.fees.length - 1 ? 8 : 0 }}>
