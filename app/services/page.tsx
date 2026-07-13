@@ -1,198 +1,218 @@
 'use client'
-
-// ── /services — All Service Groups ──────────────────────────────────────────
-// Phase 4: Browse all 6 service groups and their services.
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem, getVerificationLabel } from '@/lib/serviceGroups'
+import Link from 'next/link'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
+
+const CATEGORIES = [
+  { id: 'civil_status', icon: '👤', label_ar: 'الأحوال الشخصية', label_en: 'Civil Status', color: 'bg-blue-50 border-blue-200' },
+  { id: 'vehicles', icon: '🚗', label_ar: 'المركبات والسير', label_en: 'Vehicles & Traffic', color: 'bg-green-50 border-green-200' },
+  { id: 'business', icon: '🏢', label_ar: 'الأعمال والتجارة', label_en: 'Business', color: 'bg-purple-50 border-purple-200' },
+  { id: 'real_estate', icon: '🏠', label_ar: 'العقارات', label_en: 'Real Estate', color: 'bg-yellow-50 border-yellow-200' },
+  { id: 'education', icon: '🎓', label_ar: 'التعليم والعمل', label_en: 'Education & Work', color: 'bg-red-50 border-red-200' },
+  { id: 'health', icon: '🏥', label_ar: 'الصحة', label_en: 'Health', color: 'bg-pink-50 border-pink-200' },
+]
+
+interface Procedure {
+  id: string
+  slug: string
+  title_ar: string
+  title_en: string
+  category: string
+  country: string
+  authority: string
+  summary_ar: string
+  status: string
+  last_verified: string
+}
 
 export default function ServicesPage() {
   const router = useRouter()
+  const [procedures, setProcedures] = useState<Procedure[]>([])
+  const [loading, setLoading] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
-  const [expandedGroup, setExpandedGroup] = useState<string | null>('expat')
-  const isAr = lang === 'ar'
-  const dir = isAr ? 'rtl' : 'ltr'
 
-  const handleService = (item: ServiceItem) => {
-    if (item.defaultAction === 'upload_document') {
-      router.push(`/?action=upload&service=${item.slug}`)
-    } else if (item.defaultAction === 'generate_checklist') {
-      const q = isAr ? `أعطني checklist لـ: ${item.titleAr}` : `Give me a checklist for: ${item.titleEn}`
-      router.push(`/?q=${encodeURIComponent(q)}`)
-    } else if (item.defaultAction === 'start_flow') {
-      router.push(`/?action=flow&procedure=${item.procedureSlug ?? ''}`)
-    } else {
-      const q = isAr ? (item.chatPromptAr ?? item.titleAr) : (item.chatPromptEn ?? item.titleEn)
-      router.push(`/?q=${encodeURIComponent(q)}`)
+  const fetchProcedures = async (cat?: string, q?: string) => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      params.set('country', 'lebanon')
+      if (cat) params.set('category', cat)
+      if (q) params.set('q', q)
+      params.set('limit', '50')
+      const res = await fetch(`${API_URL}/procedures?${params}`)
+      const data = await res.json()
+      setProcedures(data.procedures || [])
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const verBadge = (status: ServiceItem['verificationStatus']) => {
-    const map: Record<string, [string, string]> = {
-      verified: ['#DCFCE7', '#16A34A'],
-      partially_verified: ['#FEF3C7', '#B45309'],
-      needs_review: ['#FEE2E2', '#DC2626'],
-      draft: ['#F3F4F6', '#6B7280'],
-    }
-    const [bg, fg] = map[status] ?? ['#F3F4F6', '#6B7280']
-    return (
-      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 20, background: bg, color: fg }}>
-        {getVerificationLabel(status, isAr)}
-      </span>
-    )
-  }
+  useEffect(() => {
+    fetchProcedures(selectedCategory || undefined, search || undefined)
+  }, [selectedCategory, search])
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={dir}>
-      <style>{`
-        * { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 3px; }
-        .sg-btn:hover { background: #FAFAFA !important; }
-        .svc-row:hover { border-color: #8B1A1A !important; background: #FEFEFE !important; }
-      `}</style>
+    <div className="min-h-screen bg-gray-50" dir="rtl">
+      <style>{`* { box-sizing: border-box; }`}</style>
 
       {/* Header */}
-      <header style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
-        padding: '12px 16px', position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4, display: 'flex', flexShrink: 0 }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)', padding: '12px 16px', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            onClick={() => router.push('/')}
+            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4, display: 'flex', flexShrink: 0 }}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
-              {isAr ? 'الخدمات' : 'Services'}
+            <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', fontFamily: "'Cairo','Inter',sans-serif" }}>
+              {lang === 'ar' ? 'دليل المعاملات الحكومية اللبنانية' : 'Lebanese Government Services Guide'}
             </div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)' }}>
-              {isAr ? '6 مجموعات · 30+ خدمة' : '6 groups · 30+ services'}
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontFamily: "'Cairo','Inter',sans-serif" }}>
+              {lang === 'ar' ? 'ابحث عن أي معاملة' : 'Find any procedure'}
             </div>
           </div>
           <button
             onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
-            style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8, padding: '5px 10px', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
-          >{isAr ? 'EN' : 'AR'}</button>
+            style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8, padding: '5px 10px', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif" }}
+          >
+            {lang === 'ar' ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 
-      {/* Expat+Property Pack CTA */}
-      <div style={{ maxWidth: 720, margin: '12px auto 0', padding: '0 14px' }}>
-        <button
-          onClick={() => router.push('/services/expat-property')}
-          style={{
-            width: '100%', padding: '14px 16px', borderRadius: 16, cursor: 'pointer',
-            background: 'linear-gradient(135deg, #1E3A5F 0%, #1E40AF 100%)',
-            border: 'none', color: '#fff', fontFamily: 'inherit',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            gap: 10, boxShadow: '0 4px 16px rgba(30,64,175,0.2)',
-          }}
-        >
-          <div style={{ textAlign: isAr ? 'right' : 'left' }}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>
-              ✈️🏛️ {isAr ? 'حزمة المغتربين والعقارات والعقود' : 'Expat, Property & Contracts Pack'}
-            </div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
-              {isAr ? 'مسار موثّق · وكالات · بيع عقار · تحليل عقود · كشف ثغرات'
-                     : 'Verified path · POA · Property sale · Contract review · Gap detection'}
-            </div>
-          </div>
-          <span style={{ fontSize: 20 }}>{isAr ? '←' : '→'}</span>
-        </button>
+      {/* Search bar */}
+      <div style={{ background: 'linear-gradient(to bottom, #7a1a1a, #6b2737)', padding: '16px 16px 24px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+          <input
+            type="text"
+            placeholder={lang === 'ar' ? 'ابحث: جواز سفر، تسجيل سيارة، ولادة...' : 'Search: passport, car registration...'}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%', padding: '14px 48px 14px 16px', borderRadius: 16,
+              fontSize: 14, border: 'none', outline: 'none', fontFamily: "'Cairo','Inter',sans-serif",
+              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+            }}
+          />
+          <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF', fontSize: 18 }}>🔍</span>
+        </div>
       </div>
 
-      {/* Service Groups */}
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px 100px' }}>
-        {SERVICE_GROUPS.map(group => {
-          const isExpanded = expandedGroup === group.slug
-          return (
-            <div key={group.slug} style={{ marginBottom: 10, borderRadius: 16, overflow: 'hidden', border: '1.5px solid #F0F0F0', background: '#fff' }}>
-              {/* Group header */}
-              <button
-                className="sg-btn"
-                onClick={() => setExpandedGroup(isExpanded ? null : group.slug)}
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '20px 14px 100px', fontFamily: "'Cairo','Inter',sans-serif" }}>
+
+        {/* Categories */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 24 }}>
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(selectedCategory === cat.id ? null : cat.id)}
+              style={{
+                padding: '10px 6px', borderRadius: 14,
+                border: selectedCategory === cat.id ? '2px solid #3B82F6' : '1.5px solid #E5E7EB',
+                background: selectedCategory === cat.id ? '#EFF6FF' : '#fff',
+                cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
+                boxShadow: selectedCategory === cat.id ? '0 2px 8px rgba(59,130,246,0.2)' : 'none',
+              }}
+            >
+              <div style={{ fontSize: 22, marginBottom: 4 }}>{cat.icon}</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#374151', lineHeight: 1.3, fontFamily: "'Cairo','Inter',sans-serif" }}>
+                {lang === 'ar' ? cat.label_ar : cat.label_en}
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Results count */}
+        {!loading && procedures.length > 0 && (
+          <p style={{ fontSize: 12, color: '#9CA3AF', marginBottom: 14 }}>
+            {procedures.length} {lang === 'ar' ? 'معاملة' : 'procedures'}
+            {selectedCategory && ` · ${CATEGORIES.find(c => c.id === selectedCategory)?.[lang === 'ar' ? 'label_ar' : 'label_en']}`}
+          </p>
+        )}
+
+        {/* Procedures Grid */}
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '64px 0', color: '#9CA3AF', fontSize: 14 }}>
+            جارٍ التحميل...
+          </div>
+        ) : procedures.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '64px 0' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+            <p style={{ color: '#9CA3AF', fontSize: 14 }}>
+              {lang === 'ar' ? 'لم يُعثر على نتائج. جرّب مصطلحاً آخر.' : 'No results. Try a different search term.'}
+            </p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
+            {procedures.map(proc => (
+              <Link
+                key={proc.id}
+                href={`/procedures/${proc.slug || proc.id}`}
                 style={{
-                  width: '100%', padding: '14px 16px',
-                  background: '#fff', border: 'none', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
-                  transition: 'background 0.15s',
+                  display: 'block', background: '#fff', borderRadius: 18, padding: '18px',
+                  border: '1.5px solid #F0F0F0', textDecoration: 'none',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.05)', transition: 'all 0.15s',
                 }}
               >
-                <div style={{
-                  width: 42, height: 42, borderRadius: 12, flexShrink: 0,
-                  background: `${group.color}14`, border: `1.5px solid ${group.color}25`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-                }}>
-                  {group.icon}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: '#111827' }}>
-                    {isAr ? group.titleAr : group.titleEn}
-                  </div>
-                  <div style={{ fontSize: 10.5, color: '#6B7280', marginTop: 2 }}>
-                    {isAr ? group.descriptionAr : group.descriptionEn}
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: group.color, background: `${group.color}14`, borderRadius: 20, padding: '2px 8px' }}>
-                    {group.services.length} {isAr ? 'خدمة' : 'services'}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{
+                    fontSize: 10, padding: '3px 8px', borderRadius: 20,
+                    background: '#EFF6FF', color: '#1D4ED8', fontWeight: 700,
+                  }}>
+                    {CATEGORIES.find(c => c.id === proc.category)?.[lang === 'ar' ? 'label_ar' : 'label_en'] || proc.category}
                   </span>
-                  <span style={{ color: '#9CA3AF', fontSize: 18, transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▾</span>
+                  {proc.status === 'verified' && (
+                    <span style={{ fontSize: 10, color: '#16A34A', display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <span>✓</span> {lang === 'ar' ? 'محقق' : 'Verified'}
+                    </span>
+                  )}
                 </div>
-              </button>
+                <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#111827', margin: '0 0 8px', lineHeight: 1.4 }}>
+                  {proc.title_ar}
+                </h3>
+                <p style={{ fontSize: 11.5, color: '#6B7280', margin: '0 0 14px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {proc.summary_ar}
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 10.5, color: '#9CA3AF' }}>{proc.authority}</span>
+                  <span style={{ fontSize: 11, color: '#1D4ED8', fontWeight: 600 }}>{lang === 'ar' ? 'التفاصيل ←' : 'Details →'}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
-              {/* Services list */}
-              {isExpanded && (
-                <div style={{ borderTop: '1px solid #F3F4F6' }}>
-                  {group.services.map((item, i) => (
-                    <button
-                      key={item.id}
-                      className="svc-row"
-                      onClick={() => handleService(item)}
-                      style={{
-                        width: '100%', padding: '12px 16px',
-                        background: '#fff', border: 'none',
-                        borderBottom: i < group.services.length - 1 ? '1px solid #F9FAFB' : 'none',
-                        cursor: 'pointer', fontFamily: 'inherit',
-                        display: 'flex', alignItems: 'center', gap: 12,
-                        textAlign: isAr ? 'right' : 'left',
-                        transition: 'all 0.15s',
-                      }}
-                    >
-                      <div style={{
-                        width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                        background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.08)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
-                      }}>
-                        {item.icon ?? group.icon}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111827' }}>
-                            {isAr ? item.titleAr : item.titleEn}
-                          </span>
-                          {verBadge(item.verificationStatus)}
-                        </div>
-                        {(isAr ? item.descriptionAr : item.descriptionEn) && (
-                          <div style={{ fontSize: 10.5, color: '#6B7280', marginTop: 2, lineHeight: 1.4 }}>
-                            {isAr ? item.descriptionAr : item.descriptionEn}
-                          </div>
-                        )}
-                      </div>
-                      <span style={{ color: '#9CA3AF', fontSize: 14, flexShrink: 0 }}>
-                        {isAr ? '←' : '→'}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )
-        })}
+        {/* CTA for logged in */}
+        <div style={{
+          marginTop: 48, background: 'linear-gradient(135deg, #1E3A5F, #1E40AF)',
+          borderRadius: 20, padding: '28px 24px', textAlign: 'center', color: '#fff',
+        }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, margin: '0 0 8px' }}>
+            {lang === 'ar' ? 'ابدأ متابعة معاملتك' : 'Start tracking your procedure'}
+          </h2>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', margin: '0 0 16px' }}>
+            {lang === 'ar' ? 'سجّل دخولك لإنشاء ملف معاملة وتتبع تقدّمك' : 'Log in to create a procedure file and track your progress'}
+          </p>
+          <Link
+            href="/login"
+            style={{
+              display: 'inline-block', background: '#fff', color: '#1D4ED8',
+              fontWeight: 800, padding: '12px 32px', borderRadius: 14,
+              textDecoration: 'none', fontSize: 14,
+            }}
+          >
+            {lang === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
+          </Link>
+        </div>
       </div>
     </div>
   )
