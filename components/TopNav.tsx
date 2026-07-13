@@ -59,6 +59,7 @@ export default function TopNav({
           .tn-hamburger  { display: flex  !important; }
           .tn-mobile-brand { display: flex !important; }
           .tn-desk-brand { display: none  !important; }
+          .tn-lang-btn   { display: none  !important; }
         }
       `}</style>
 
@@ -250,7 +251,7 @@ export default function TopNav({
             {/* Language toggle */}
             <button
               onClick={onLangToggle}
-              className="tn-ibtn"
+              className="tn-ibtn tn-lang-btn"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 height: 32, width: 46, borderRadius: 9,

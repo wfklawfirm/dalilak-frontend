@@ -120,42 +120,81 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
 
         {/* Header */}
         <div style={{
-          background: 'linear-gradient(135deg, #7a1a1a 0%, #8B1A1A 100%)',
-          padding: '48px 20px 20px',
+          background: 'linear-gradient(155deg, #5a1515 0%, #8B1A1A 55%, #6b2737 100%)',
+          padding: '0 0 20px',
+          position: 'relative',
+          overflow: 'hidden',
         }}>
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute', top: 14,
-              [isAr ? 'left' : 'right']: 14,
-              width: 32, height: 32, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.18)', border: 'none',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontSize: 18, fontWeight: 700,
-            }}
-          >×</button>
+          {/* Subtle pattern overlay */}
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.04,
+            backgroundImage: 'radial-gradient(circle at 80% 20%, #fff 0%, transparent 50%)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Top bar: brand + close */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '14px 16px 16px',
+          }}>
+            {/* Brand */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <div style={{
+                width: 34, height: 34, borderRadius: 10,
+                background: 'rgba(255,255,255,0.15)',
+                border: '1.5px solid rgba(255,255,255,0.28)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden', flexShrink: 0,
+              }}>
+                <img src="/logo.PNG" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.3px' }}>دليلك</div>
+                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
+                  {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
+                </div>
+              </div>
+            </div>
+            {/* Close */}
+            <button
+              onClick={onClose}
+              style={{
+                width: 30, height: 30, borderRadius: '50%',
+                background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'rgba(255,255,255,0.8)', fontSize: 16, fontWeight: 700, flexShrink: 0,
+              }}
+            >×</button>
+          </div>
+
+          {/* Divider */}
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '0 16px 16px' }} />
 
           {/* User info */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px' }}>
             <div style={{
-              width: 44, height: 44, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              border: '2px solid rgba(255,255,255,0.4)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
-            }}>👤</div>
+              width: 42, height: 42, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.15)',
+              border: '1.5px solid rgba(255,255,255,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
                 {currentUser?.username || 'مستخدم'}
               </div>
               {currentUser?.plan && (
                 <span style={{
-                  fontSize: 10, fontWeight: 600,
-                  background: currentUser.plan === 'paid' ? 'rgba(52,211,153,0.25)' : 'rgba(251,191,36,0.25)',
+                  fontSize: 10, fontWeight: 700,
+                  background: currentUser.plan === 'paid' ? 'rgba(52,211,153,0.2)' : 'rgba(251,191,36,0.2)',
                   color: currentUser.plan === 'paid' ? '#6EE7B7' : '#FDE68A',
-                  border: `1px solid ${currentUser.plan === 'paid' ? 'rgba(52,211,153,0.4)' : 'rgba(251,191,36,0.4)'}`,
-                  borderRadius: 20, padding: '2px 8px',
+                  border: `1px solid ${currentUser.plan === 'paid' ? 'rgba(52,211,153,0.35)' : 'rgba(251,191,36,0.35)'}`,
+                  borderRadius: 20, padding: '2px 9px', letterSpacing: '0.2px',
                 }}>
-                  {currentUser.plan === 'paid' ? (isAr ? '✨ مشترك' : '✨ Paid') : (isAr ? '⏱️ تجريبي' : '⏱️ Trial')}
+                  {currentUser.plan === 'paid' ? (isAr ? 'مشترك' : 'Paid') : (isAr ? 'تجريبي' : 'Trial')}
                 </span>
               )}
             </div>
@@ -219,14 +258,17 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
           </button>
 
           {/* Contact */}
-          <div style={{ margin: '8px 20px', padding: '12px', background: '#FAFAF8', borderRadius: 12, border: '1px solid #F0EBE0' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#5C3A1A', margin: '0 0 8px' }}>
-              {isAr ? '📞 تواصل معنا' : '📞 Contact Us'}
+          <div style={{ margin: '8px 16px', padding: '12px 14px', background: '#FAFAF8', borderRadius: 12, border: '1px solid #F0EBE0' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 9px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+              </svg>
+              {isAr ? 'تواصل معنا' : 'Contact Us'}
             </p>
-            <a href="tel:+9613460608" style={{ display: 'block', fontSize: 12, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600, marginBottom: 4, direction: 'ltr', unicodeBidi: 'isolate' }}>
+            <a href="tel:+9613460608" style={{ display: 'block', fontSize: 12, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600, marginBottom: 5, direction: 'ltr', unicodeBidi: 'isolate' }}>
               +961 3 460 608
             </a>
-            <a href="mailto:wissam@aijur.ai" style={{ display: 'block', fontSize: 12, color: '#8B1A1A', textDecoration: 'none' }}>
+            <a href="mailto:wissam@aijur.ai" style={{ display: 'block', fontSize: 12, color: '#6B2737', textDecoration: 'none', fontWeight: 500 }}>
               wissam@aijur.ai
             </a>
           </div>

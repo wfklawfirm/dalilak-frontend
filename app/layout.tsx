@@ -3,12 +3,12 @@ import type { ReactNode } from 'react'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'دليلك AI — مساعدك في المعاملات اللبنانية',
-  description: 'دليلك AI هو دليلك الذكي لكل المعاملات الحكومية اللبنانية',
+  title: 'دليلك — مساعدك في المعاملات اللبنانية',
+  description: 'دليلك هو دليلك الذكي لكل المعاملات الحكومية اللبنانية',
   openGraph: {
-    title: 'دليلك AI',
+    title: 'دليلك',
     description: 'دليلك الذكي للمعاملات الحكومية اللبنانية',
-    siteName: 'دليلك AI',
+    siteName: 'دليلك',
     locale: 'ar_LB',
     type: 'website',
   },
