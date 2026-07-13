@@ -356,6 +356,21 @@ export default function Home() {
     setLoading(true)
     setMessages(prev => [...prev, { role: 'assistant', content: '', streaming: true }])
 
+    // ── Cold-start notice (Render free tier ~30-60 s wakeup) ───────────────
+    const coldStartTimer = setTimeout(() => {
+      setMessages(prev => {
+        const u = [...prev]
+        const last = u[u.length - 1]
+        if (last?.role === 'assistant' && last.streaming && !last.content) {
+          u[u.length - 1] = {
+            ...last,
+            content: '⏳ **النظام في وضع السكون، جاري التنشيط...**\n\nقد يستغرق الرد 30-60 ثانية في أول طلب. يُرجى الانتظار.',
+          }
+        }
+        return u
+      })
+    }, 12000)
+
     try {
       // ── Universal Document Analysis (parallel with stream) ──
       if (file) {
@@ -521,6 +536,7 @@ export default function Home() {
         return u
       })
     } finally {
+      clearTimeout(coldStartTimer)
       setLoading(false)
     }
   }
