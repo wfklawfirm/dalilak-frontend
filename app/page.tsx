@@ -1,12 +1,21 @@
 'use client'
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
+import BottomNav from '@/components/BottomNav'
+import GuidedFlow from '@/components/GuidedFlow'
+import MobileMenu from '@/components/MobileMenu'
+import ModeSelector from '@/components/MobileModeSheet'
+import TopNav from '@/components/TopNav'
+import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
+import { sanitizeInput } from '@/lib/sanitize'
+import TransactionStarter, { type StarterResult } from '@/components/TransactionStarter'
+import ServiceGroupSheet from '@/components/ServiceGroupSheet'
+import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
-/* ── Types ────────────────────────────────────────────────────── */
 interface AttachedFile {
   name: string
   type: string
@@ -16,218 +25,229 @@ interface AttachedFile {
 }
 
 type ResponseMode = 'quick' | 'detailed' | 'research'
+type Lang = 'ar' | 'en'
 
-interface AuthUser {
-  username: string
-  email: string
-  full_name: string
-  plan: 'trial' | 'paid' | 'admin' | 'guest'
-  role?: string
-  trial_expires_at?: string
-  paid_until?: string
-  days_left?: number
-  subscription_status?: string
-}
-
-/* ── Config ───────────────────────────────────────────────────── */
-
-const ALL_SUGGESTIONS = [
-  { icon: '📋', title: 'المعاملات الرسمية',  desc: 'جوازات · هويات · وثائق' },
-  { icon: '🏛️', title: 'الإجراءات الحكومية', desc: 'شركات · عقارات · سيارات' },
-  { icon: '👶', title: 'الأحوال الشخصية',   desc: 'ولادة · زواج · وفاة' },
-  { icon: '🎓', title: 'التعليم والعمل',     desc: 'شهادات · تصاريح · حقوق' },
-  { icon: '🏦', title: 'المصارف والمالية',   desc: 'حسابات · قروض · تحويل' },
-  { icon: '⚖️', title: 'القانون والقضاء',    desc: 'توثيق · تقاضٍ · عقود' },
-  { icon: '🏗️', title: 'البناء والعقارات',   desc: 'رخص · تسجيل · مخططات' },
-  { icon: '💼', title: 'تأسيس الشركات',      desc: 'ش.م.م · SAL · تراخيص' },
-  { icon: '🏥', title: 'الصحة والضمان',      desc: 'CNSS · مستشفيات · وصفات' },
-  { icon: '🚗', title: 'المركبات والنقل',    desc: 'لوحات · رخص · نقل ملكية' },
-  { icon: '🌿', title: 'الزراعة والبيئة',    desc: 'تراخيص · تصدير · مشاتل' },
-  { icon: '✈️', title: 'السفر والجنسية',     desc: 'تأشيرات · جوازات · إقامة' },
+const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: string; hint_ar: string; hint_en: string; prefix: string }[] = [
+  {
+    id: 'quick',
+    icon: '⚡',
+    label_ar: 'سريع', label_en: 'Quick',
+    hint_ar: 'إجابة مختصرة في ثوانٍ', hint_en: 'Short answer in seconds',
+    prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ',
+  },
+  {
+    id: 'detailed',
+    icon: '📋',
+    label_ar: 'مفصّل', label_en: 'Detailed',
+    hint_ar: 'خطوات وتفاصيل كاملة', hint_en: 'Full steps and details',
+    prefix: '[أجب بتنسيق منظّم مع عناوين ## واضحة: ## الخلاصة | ## المستندات المطلوبة | ## الخطوات | ## الجهة المختصة | ## الرسوم | ## تنبيه مهم] ',
+  },
+  {
+    id: 'research',
+    icon: '🔍',
+    label_ar: 'بحث وافٍ', label_en: 'Research',
+    hint_ar: 'تقرير شامل مع أدلة ونماذج', hint_en: 'Full report with evidence',
+    prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد، وتنبيهات العطل الرسمية] ',
+  },
 ]
 
-const ALL_QUICK_QUESTIONS = [
+const SUGGESTION_POOL = [
+  { icon: '📋', title_ar: 'المعاملات الرسمية', desc_ar: 'جوازات، هويات، وثائق رسمية', title_en: 'Official Transactions', desc_en: 'Passports, IDs, official documents' },
+  { icon: '🏛️', title_ar: 'الإجراءات الحكومية', desc_ar: 'تسجيل شركات، عقارات، سيارات', title_en: 'Gov. Procedures', desc_en: 'Companies, real estate, vehicles' },
+  { icon: '👶', title_ar: 'الأحوال الشخصية', desc_ar: 'ولادة، زواج، وفاة، طلاق', title_en: 'Civil Status', desc_en: 'Birth, marriage, death, divorce' },
+  { icon: '🎓', title_ar: 'التعليم والعمل', desc_ar: 'شهادات، تصاريح، حقوق العمال', title_en: 'Education & Work', desc_en: 'Degrees, permits, labor rights' },
+  { icon: '🏠', title_ar: 'العقارات والبناء', desc_ar: 'تصاريح، ملكية، رخص بناء', title_en: 'Real Estate', desc_en: 'Permits, ownership, construction' },
+  { icon: '🚗', title_ar: 'المركبات والسير', desc_ar: 'تسجيل، رخص قيادة، مخالفات', title_en: 'Vehicles & Traffic', desc_en: 'Registration, licenses, fines' },
+  { icon: '⚖️', title_ar: 'الحقوق القانونية', desc_ar: 'دعاوى، طعون، استئنافات', title_en: 'Legal Rights', desc_en: 'Lawsuits, appeals, disputes' },
+  { icon: '💼', title_ar: 'الأعمال والتجارة', desc_ar: 'تراخيص، ضرائب، شركات', title_en: 'Business & Trade', desc_en: 'Licenses, taxes, companies' },
+  { icon: '🏥', title_ar: 'الصحة والضمان', desc_ar: 'ضمان اجتماعي، تأمين، صحة', title_en: 'Health & Insurance', desc_en: 'Social security, coverage' },
+  { icon: '✈️', title_ar: 'السفر والإقامة', desc_ar: 'تأشيرات، إقامة، جوازات', title_en: 'Travel & Residency', desc_en: 'Visas, residency, passports' },
+  { icon: '🌍', title_ar: 'الأجانب في لبنان', desc_ar: 'إقامة، عمل، تجنيس', title_en: 'Foreigners in Lebanon', desc_en: 'Residency, work permits' },
+  { icon: '👴', title_ar: 'الضمان والتقاعد', desc_ar: 'معاشات، تقاعد، مستحقات', title_en: 'Pension & Retirement', desc_en: 'Pensions, benefits, rights' },
+]
+
+const QUESTION_POOL_AR = [
   'كيف أستخرج جواز سفر لبناني؟',
   'ما هي إجراءات تسجيل سيارة جديدة؟',
   'كيف أستخرج شهادة ميلاد؟',
   'كيف أسجل شركة في لبنان؟',
-  'كيف أفتح حساباً مصرفياً للشركة؟',
-  'ما هي إجراءات معادلة الشهادة الجامعية؟',
-  'كيف أسجل في الضمان الاجتماعي CNSS؟',
-  'كيف أستخرج رخصة بناء؟',
-  'كيف أسجل علامة تجارية في لبنان؟',
-  'ما هي شروط الحصول على إقامة في لبنان؟',
-  'كيف أنقل ملكية عقار؟',
-  'كيف أحصل على رخصة مهنية؟',
+  'ما إجراءات استخراج تصريح بناء؟',
+  'كيف أجدد رخصة القيادة؟',
+  'ما وثائق تسجيل الزواج الرسمي؟',
+  'كيف أستخرج بطاقة هوية لبنانية؟',
+  'ما هي إجراءات نقل ملكية العقار؟',
+  'كيف أستخرج شهادة عدم محكومية؟',
+  'ما الوثائق اللازمة لتسجيل مولود؟',
+  'كيف أحصل على إجازة مزاولة المهنة؟',
+  'ما هي رسوم التسجيل في الضمان الاجتماعي؟',
+  'كيف أطعن في قرار إداري؟',
+  'ما خطوات تجديد إقامة الأجانب في لبنان؟',
 ]
 
-const ALL_SUGGESTIONS_EN = [
-  { icon: '📋', title: 'Official Documents',     desc: 'Passports · IDs · Records' },
-  { icon: '🏛️', title: 'Gov. Procedures',        desc: 'Companies · Real Estate · Cars' },
-  { icon: '👶', title: 'Civil Status',            desc: 'Birth · Marriage · Death' },
-  { icon: '🎓', title: 'Education & Work',        desc: 'Degrees · Permits · Rights' },
-  { icon: '🏦', title: 'Banks & Finance',         desc: 'Accounts · Loans · Transfer' },
-  { icon: '⚖️', title: 'Law & Justice',           desc: 'Notary · Litigation · Contracts' },
-  { icon: '🏗️', title: 'Building & Real Estate', desc: 'Permits · Registration · Plans' },
-  { icon: '💼', title: 'Company Setup',           desc: 'LLC · SAL · Licenses' },
-  { icon: '🏥', title: 'Health & Insurance',      desc: 'CNSS · Hospitals · Prescriptions' },
-  { icon: '🚗', title: 'Vehicles & Transport',    desc: 'Plates · Licenses · Transfer' },
-  { icon: '🌿', title: 'Agriculture & Env.',      desc: 'Licenses · Export · Nurseries' },
-  { icon: '✈️', title: 'Travel & Nationality',    desc: 'Visas · Passports · Residency' },
-]
-
-const ALL_QUICK_QUESTIONS_EN = [
+const QUESTION_POOL_EN = [
   'How do I get a Lebanese passport?',
-  'How to register a new vehicle in Lebanon?',
-  'How to get a birth certificate?',
-  'How to register a company in Lebanon?',
-  'How to open a corporate bank account?',
-  'How to validate a foreign university degree?',
-  'How to register with CNSS social security?',
-  'How to get a building permit?',
-  'How to register a trademark in Lebanon?',
-  'What are the residency requirements in Lebanon?',
-  'How to transfer property ownership?',
-  'How to get a professional license?',
+  'How do I register a new car in Lebanon?',
+  'How do I get a birth certificate?',
+  'How do I register a company in Lebanon?',
+  'How do I get a building permit?',
+  'How do I renew my driver\'s license?',
+  'What are the civil marriage registration requirements?',
+  'How do I get a Lebanese national ID card?',
+  'What are the real estate transfer procedures?',
+  'How do I get a certificate of good conduct?',
+  'What documents are needed to register a newborn?',
+  'How do I get a professional practice license?',
+  'What are the social security registration fees?',
+  'How do I appeal an administrative decision?',
+  'What are the steps to renew a foreigner\'s residency?',
 ]
 
-/* ── UI Translations ─────────────────────────────────────────── */
-const UI = {
-  ar: {
-    dir: 'rtl' as const,
-    tagline: 'دليل المواطن اللبناني',
-    heading: 'كيف يمكنني مساعدتك؟',
-    subtitle: 'اسأل عن أي معاملة حكومية، ارفع وثيقة للتحليل، أو تحدث بصوتك مباشرةً',
-    stats: '35 قطاعاً · 2,484 معاملة · 1,206 نموذج رسمي',
-    placeholder: 'اكتب سؤالك هنا...',
-    newChat: 'جديد',
-    loginBtn: 'دخول',
-    features: ['📎 PDF · صور · وثائق', '🎤 تسجيل صوتي', '🔍 تحليل فوري'],
-    modes: [
-      { id: 'quick',    icon: '⚡', label: 'سريع',      hint: 'إجابة مختصرة في ثوانٍ',          prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ' },
-      { id: 'detailed', icon: '📋', label: 'مفصّل',     hint: 'خطوات وتفاصيل كاملة',             prefix: '[أجب بتفصيل كامل: الوثائق، الخطوات، الرسوم، ساعات العمل، والجهة المختصة] ' },
-      { id: 'research', icon: '🔍', label: 'بحث وافٍ',  hint: 'تقرير شامل مع أدلة ونماذج',     prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد] ' },
-    ],
-    langLabel: 'EN',
-    // auth
-    welcome: 'أهلاً بعودتك',
-    signInSub: 'سجّل الدخول للمتابعة',
-    newAccTitle: 'إنشاء حساب جديد',
-    trialSub: '3 أيام تجريبية مجانية',
-    tabLogin: 'تسجيل الدخول',
-    tabRegister: 'حساب جديد',
-    fullName: 'الاسم الكامل',
-    username: 'اسم المستخدم',
-    email: 'البريد الإلكتروني',
-    password: 'كلمة المرور',
-    submitLogin: 'دخول',
-    submitRegister: 'إنشاء الحساب',
-    trialNote: '✦ 3 أيام تجريبية مجانية · لا يلزم بطاقة ائتمان',
-    fillFields: 'يرجى ملء جميع الحقول المطلوبة',
-    langPrefix: '',
-  },
-  en: {
-    dir: 'ltr' as const,
-    tagline: 'Lebanese Citizen Guide',
-    heading: 'How can I help you?',
-    subtitle: 'Ask about any government service, upload a document for analysis, or speak directly',
-    stats: '35 Sectors · 2,484 Transactions · 1,206 Official Forms',
-    placeholder: 'Type your question here...',
-    newChat: 'New',
-    loginBtn: 'Sign In',
-    features: ['📎 PDF · Images · Documents', '🎤 Voice Recording', '🔍 Instant Analysis'],
-    modes: [
-      { id: 'quick',    icon: '⚡', label: 'Quick',    hint: 'Short answer in seconds',              prefix: '[Respond concisely in 4-6 lines, in English] ' },
-      { id: 'detailed', icon: '📋', label: 'Detailed', hint: 'Full steps and details',               prefix: '[Respond in full detail in English: documents, steps, fees, working hours, and the relevant authority] ' },
-      { id: 'research', icon: '🔍', label: 'Research', hint: 'Full report with references',          prefix: '[Respond in English with a comprehensive report: full analysis, all available options, official references, legal citations, and a ready-to-use template if applicable] ' },
-    ],
-    langLabel: 'ع',
-    welcome: 'Welcome back',
-    signInSub: 'Sign in to continue',
-    newAccTitle: 'Create new account',
-    trialSub: '3 free trial days',
-    tabLogin: 'Sign In',
-    tabRegister: 'New Account',
-    fullName: 'Full Name',
-    username: 'Username',
-    email: 'Email',
-    password: 'Password',
-    submitLogin: 'Sign In',
-    submitRegister: 'Create Account',
-    trialNote: '✦ 3 free trial days · No credit card required',
-    fillFields: 'Please fill in all required fields',
-    langPrefix: '[Respond in English only] ',
-  },
+// ── localStorage Q&A cache ─────────────────────────────────────
+const LS_KEY = 'dalilak_qa_cache'
+const LS_MAX = 30
+
+interface QAEntry { q: string; a: string; ts: number }
+
+function lsNormalize(s: string) {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
-const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
-
-/* Detect text direction from first meaningful character */
-const getDir = (text: string): 'rtl' | 'ltr' => {
-  const ch = text.trim()[0]
-  if (!ch) return 'rtl'
-  const code = ch.charCodeAt(0)
-  if (
-    (code >= 0x0600 && code <= 0x06FF) || // Arabic
-    (code >= 0x0590 && code <= 0x05FF) || // Hebrew
-    (code >= 0xFB50 && code <= 0xFDFF) || // Arabic Presentation A
-    (code >= 0xFE70 && code <= 0xFEFF)    // Arabic Presentation B
-  ) return 'rtl'
-  return 'ltr'
+function lsGet(question: string): string | null {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    if (!raw) return null
+    const entries: QAEntry[] = JSON.parse(raw)
+    const norm = lsNormalize(question)
+    const hit = entries.find(e => lsNormalize(e.q) === norm)
+    return hit ? hit.a : null
+  } catch { return null }
 }
 
-/* ── Component ────────────────────────────────────────────────── */
+function lsSet(question: string, answer: string) {
+  try {
+    const raw = localStorage.getItem(LS_KEY)
+    let entries: QAEntry[] = raw ? JSON.parse(raw) : []
+    const norm = lsNormalize(question)
+    entries = entries.filter(e => lsNormalize(e.q) !== norm)
+    entries.unshift({ q: question, a: answer, ts: Date.now() })
+    if (entries.length > LS_MAX) entries = entries.slice(0, LS_MAX)
+    localStorage.setItem(LS_KEY, JSON.stringify(entries))
+  } catch {}
+}
+
+function shufflePick<T>(arr: T[], n: number): T[] {
+  const copy = [...arr]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy.slice(0, n)
+}
+
 export default function Home() {
-  const [messages,      setMessages]     = useState<Message[]>([])
-  const [input,         setInput]        = useState('')
-  const [loading,       setLoading]      = useState(false)
-  const [recording,     setRecording]    = useState(false)
-  const [attachedFile,  setAttachedFile] = useState<AttachedFile | null>(null)
-  const [mode,          setMode]         = useState<ResponseMode>('detailed')
-  const [footerBottom,  setFooterBottom] = useState(0)
-  const [inputFocused,  setInputFocused] = useState(false)
-  const [lang,          setLang]         = useState<'ar' | 'en'>('ar')
-  const [suggestions,   setSuggestions]  = useState(() => shuffle(ALL_SUGGESTIONS).slice(0, 4))
-  const [quickQuestions,setQuickQuestions] = useState(() => shuffle(ALL_QUICK_QUESTIONS).slice(0, 4))
-
-  /* Derived from lang (updated every render) */
-  const t           = UI[lang]
-  const currentMode = t.modes.find(m => m.id === mode) ?? t.modes[1]
-
-  /* Auth state */
-  const [authToken,     setAuthToken]    = useState<string | null>(null)
-  const [currentUser,   setCurrentUser]  = useState<AuthUser | null>(null)
-  const [showAuth,      setShowAuth]     = useState(false)
-  const [authTab,       setAuthTab]      = useState<'login' | 'register'>('login')
-  const [authLoading,   setAuthLoading]  = useState(false)
-  const [authError,     setAuthError]    = useState('')
-  const [authForm,      setAuthForm]     = useState({ username: '', email: '', password: '', full_name: '' })
-
-  const bottomRef      = useRef<HTMLDivElement>(null)
-  const textareaRef    = useRef<HTMLTextAreaElement>(null)
-  const fileInputRef   = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+  const [lang, setLang] = useState<Lang>('ar')
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const [attachedFile, setAttachedFile] = useState<AttachedFile | null>(null)
+  const [mode, setMode] = useState<ResponseMode>('detailed')
+  const [footerBottom, setFooterBottom] = useState(0)
+  const [inputFocused, setInputFocused] = useState(false)
+  const [visibleQ, setVisibleQ] = useState<string[]>([])
+  const [visibleS, setVisibleS] = useState<typeof SUGGESTION_POOL>([])
+  const [showGuide, setShowGuide] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showTransactionStarter, setShowTransactionStarter] = useState(false)
+  const [activeServiceGroup, setActiveServiceGroup] = useState<ServiceGroup | null>(null)
+  const [showMorePopular, setShowMorePopular] = useState(false)
+  // Active document context — persists across follow-up questions (Phase 9)
+  const [activeDocumentName, setActiveDocumentName] = useState<string | null>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
+  const mainRef = useRef<HTMLDivElement>(null)
 
-  /* iOS keyboard fix */
+  const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
+
+  // ── Handle ?q= param from procedures/forms pages ─────────
+  useEffect(() => {
+    if (!authChecked) return
+    const params = new URLSearchParams(window.location.search)
+    const q = params.get('q')
+    if (q) {
+      window.history.replaceState({}, '', '/')
+      sendMessage(q)
+    }
+  }, [authChecked])
+
+  // ── Auth guard ────────────────────────────────────────────
+  // Strategy: show UI instantly from cached user, validate in background.
+  // This hides the Render cold-start delay (up to 30s on free tier).
+  useEffect(() => {
+    const token = getToken()
+    if (!token) { router.push('/login'); return }
+
+    // Wake the backend early (fire-and-forget — don't await)
+    fetch(`${API_URL}/ping`).catch(() => {})
+
+    // Instant render: use cached user if available
+    const cached = getUser()
+    if (cached) {
+      setCurrentUser(cached)
+      setAuthChecked(true)
+    }
+
+    // Background validation — update user data silently
+    fetch(`${API_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(async res => {
+      if (!res.ok) { clearToken(); router.push('/login'); return }
+      const data = await res.json()
+      setUser(data)          // refresh localStorage cache
+      setCurrentUser(data)
+      if (!cached) setAuthChecked(true)   // first login: no cache yet
+    }).catch(() => {
+      // Network error — keep showing cached user
+      if (!cached) setAuthChecked(true)
+    })
+  }, [])
+
+  // ── Auto-rotate questions + suggestion cards ──────────────
+  useEffect(() => {
+    const refresh = () => {
+      setVisibleQ(shufflePick(pool, 4))
+      setVisibleS(shufflePick(SUGGESTION_POOL, 4))
+    }
+    refresh()
+    const interval = setInterval(refresh, 8000)
+    return () => clearInterval(interval)
+  }, [lang])
+
+  // ── Keyboard / visualViewport fix ────────────────────────
   useEffect(() => {
     const vv = (window as any).visualViewport
     if (!vv) return
-    const onVP = () => {
+    const onViewport = () => {
       const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
       setFooterBottom(offset)
-      if (offset > 50) setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
+      if (offset > 50) {
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
+      }
     }
-    vv.addEventListener('resize', onVP)
-    vv.addEventListener('scroll', onVP)
-    return () => { vv.removeEventListener('resize', onVP); vv.removeEventListener('scroll', onVP) }
+    vv.addEventListener('resize', onViewport)
+    vv.addEventListener('scroll', onViewport)
+    return () => { vv.removeEventListener('resize', onViewport); vv.removeEventListener('scroll', onViewport) }
   }, [])
 
-  /* Auto-scroll */
   useEffect(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 80)
   }, [messages])
 
-  /* Auto-resize textarea */
   useEffect(() => {
     const ta = textareaRef.current
     if (!ta) return
@@ -235,110 +255,36 @@ export default function Home() {
     ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'
   }, [input])
 
-  /* Load auth + lang from localStorage */
-  useEffect(() => {
-    try {
-      const tok  = localStorage.getItem('dalilak_token')
-      const user = localStorage.getItem('dalilak_user')
-      if (tok && user) { setAuthToken(tok); setCurrentUser(JSON.parse(user)) }
-      const savedLang = localStorage.getItem('dalilak_lang') as 'ar' | 'en' | null
-      if (savedLang) {
-        setLang(savedLang)
-        const pool = savedLang === 'en' ? ALL_SUGGESTIONS_EN : ALL_SUGGESTIONS
-        const qPool = savedLang === 'en' ? ALL_QUICK_QUESTIONS_EN : ALL_QUICK_QUESTIONS
-        setSuggestions(shuffle(pool).slice(0, 4))
-        setQuickQuestions(shuffle(qPool).slice(0, 4))
-      }
-    } catch {}
-  }, [])
-
-  /* ── Auth helpers ──────────────────────────────────────────── */
-  const toggleLang = () => {
-    const next = lang === 'ar' ? 'en' : 'ar'
-    setLang(next)
-    localStorage.setItem('dalilak_lang', next)
-    const pool  = next === 'en' ? ALL_SUGGESTIONS_EN : ALL_SUGGESTIONS
-    const qPool = next === 'en' ? ALL_QUICK_QUESTIONS_EN : ALL_QUICK_QUESTIONS
-    setSuggestions(shuffle(pool).slice(0, 4))
-    setQuickQuestions(shuffle(qPool).slice(0, 4))
-    setMessages([])
-  }
-
-  const saveAuth = (token: string, user: AuthUser) => {
-    localStorage.setItem('dalilak_token', token)
-    localStorage.setItem('dalilak_user',  JSON.stringify(user))
-    setAuthToken(token)
-    setCurrentUser(user)
-  }
-
-  const logout = () => {
-    localStorage.removeItem('dalilak_token')
-    localStorage.removeItem('dalilak_user')
-    setAuthToken(null)
-    setCurrentUser(null)
-    setMessages([])
-  }
-
-  const submitAuth = async () => {
-    setAuthError('')
-    if (!authForm.username.trim() || !authForm.password.trim()) {
-      setAuthError(t.fillFields)
-      return
-    }
-    setAuthLoading(true)
-    try {
-      const endpoint = authTab === 'login' ? '/auth/login' : '/auth/register'
-      const body = authTab === 'login'
-        ? { username: authForm.username.trim(), password: authForm.password }
-        : { username: authForm.username.trim(), email: authForm.email.trim(), password: authForm.password, full_name: authForm.full_name.trim() }
-
-      const res  = await fetch(API_URL + endpoint, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.detail || 'حدث خطأ')
-
-      const user: AuthUser = data.user
-      saveAuth(data.token, user)
-      setShowAuth(false)
-      setAuthForm({ username: '', email: '', password: '', full_name: '' })
-    } catch (e: any) {
-      setAuthError(e.message || 'حدث خطأ في الاتصال')
-    } finally {
-      setAuthLoading(false)
-    }
-  }
-
-  /* Voice */
+  // ── Voice ─────────────────────────────────────────────────
   const startRecording = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) { alert('التعرف على الصوت غير مدعوم. استخدم Chrome أو Edge.'); return }
-    const r = new SR()
-    r.lang = navigator.language || 'ar'
-    r.continuous = false
-    r.interimResults = true
-    r.onresult = (e: any) => setInput(Array.from(e.results as any[]).map((x: any) => x[0].transcript).join(''))
-    r.onerror  = () => setRecording(false)
-    r.onend    = () => setRecording(false)
-    r.start()
-    recognitionRef.current = r
+    const recognition = new SR()
+    recognition.lang = lang === 'ar' ? 'ar-LB' : 'en-US'
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.onresult = (e: any) => {
+      setInput(Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(''))
+    }
+    recognition.onerror = () => setRecording(false)
+    recognition.onend = () => setRecording(false)
+    recognition.start()
+    recognitionRef.current = recognition
     setRecording(true)
-  }, [])
+  }, [lang])
 
   const stopRecording = useCallback(() => {
     recognitionRef.current?.stop()
     setRecording(false)
   }, [])
 
-  /* File attach */
+  // ── File ──────────────────────────────────────────────────
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const maxMB = file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|m4a|ogg|flac|webm|aac)$/i) ? 25 : 10
-    if (file.size > maxMB * 1024 * 1024) { alert(`الحد الأقصى ${maxMB}MB لهذا النوع.`); return }
+    if (file.size > 10 * 1024 * 1024) { alert('الحد الأقصى 10MB.'); return }
     const reader = new FileReader()
-    reader.onload = ev => {
+    reader.onload = (ev) => {
       const result = ev.target?.result as string
       setAttachedFile({
         name: file.name, type: file.type, size: file.size,
@@ -350,63 +296,138 @@ export default function Home() {
     e.target.value = ''
   }, [])
 
-  const formatSize = (b: number) =>
-    b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
+  const formatSize = (b: number) => b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
+  const getFileIcon = (t: string) => t.startsWith('image/') ? '🖼️' : t === 'application/pdf' ? '📄' : t.includes('word') ? '📝' : '📎'
 
-  const getFileIcon = (t: string, name?: string) => {
-    const n = (name || '').toLowerCase()
-    if (t.startsWith('image/')) return '🖼️'
-    if (t === 'application/pdf' || n.endsWith('.pdf')) return '📄'
-    if (t.includes('word') || n.match(/\.docx?$/)) return '📝'
-    if (t.includes('excel') || t.includes('spreadsheet') || n.match(/\.xlsx?$/)) return '📊'
-    if (t.includes('presentation') || n.match(/\.pptx?$/)) return '📽️'
-    if (t === 'text/csv' || n.endsWith('.csv')) return '📈'
-    if (t.startsWith('audio/') || n.match(/\.(mp3|wav|m4a|ogg|flac|webm|aac)$/)) return '🎵'
-    if (t.includes('zip') || n.match(/\.(zip|rar|7z)$/)) return '🗜️'
-    if (t.startsWith('text/') || n.match(/\.(txt|md|json|xml|html|js|ts|py|sh|css)$/)) return '📃'
-    return '📎'
-  }
-
-  /* Send */
+  // ── Send ──────────────────────────────────────────────────
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
 
-    const activeMode = t.modes.find(m => m.id === (overrideMode || mode)) ?? t.modes[1]
-    const langPrefix = t.langPrefix
+    // ── Sanitize input ────────────────────────────────────────
+    const { clean: cleanText, flagged } = sanitizeInput(text)
+    if (flagged) {
+      setMessages(prev => [...prev,
+        { role: 'user', content: cleanText },
+        { role: 'assistant', content: '⚠️ تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.', streaming: false },
+      ])
+      return
+    }
+
+    const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
+    const langInstruction = lang === 'en'
+      ? '[IMPORTANT: The user is writing in English. You MUST respond entirely in English. Do not use Arabic at all.] '
+      : ''
     const prefixedMessage = file
-      ? langPrefix + (text.trim() || (lang === 'en' ? 'Analyze this document and suggest the appropriate actions' : 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'))
-      : activeMode.prefix + text.trim()
+      ? cleanText || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
+      : langInstruction + activeMode.prefix + cleanText
 
     const displayText = file
-      ? (text.trim()
-          ? `${getFileIcon(file.type, file.name)} **${file.name}**\n${text.trim()}`
-          : `${getFileIcon(file.type, file.name)} **${file.name}** — طلب تحليل الوثيقة`)
-      : text.trim()
+      ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
+      : cleanText
 
-    const history = messages.map(m => ({ role: m.role, content: m.content }))
+    // ── Check localStorage cache (text-only, no file) ─────
+    if (!file) {
+      const cached = lsGet(prefixedMessage)
+      if (cached) {
+        setMessages(prev => [
+          ...prev,
+          { role: 'user', content: displayText },
+          { role: 'assistant', content: cached, streaming: false },
+        ])
+        setInput('')
+        return
+      }
+    }
+
+    // Filter out empty-content messages (e.g. documentAnalysis placeholders) and cap at 18
+    const history = messages
+      .filter(m => m.content && m.content.trim().length > 0)
+      .slice(-18)
+      .map(m => ({ role: m.role, content: m.content }))
     setMessages(prev => [...prev, { role: 'user', content: displayText }])
     setInput('')
+    // Persist document name for follow-up context chip
+    if (attachedFile) setActiveDocumentName(attachedFile.name)
     setAttachedFile(null)
     setLoading(true)
     setMessages(prev => [...prev, { role: 'assistant', content: '', streaming: true }])
 
     try {
+      // ── Universal Document Analysis (parallel with stream) ──
+      if (file) {
+        // Fire-and-forget: extract text then analyze in background
+        ;(async () => {
+          try {
+            // Re-use the analyze/stream endpoint to also get document text
+            // We send a special extraction request
+            const extractRes = await fetch(API_URL + '/documents/universal-analysis', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', ...authHeaders() },
+              body: JSON.stringify({
+                document_text: `[File: ${file.name}, Type: ${file.type}] — تحليل المستند المرفوع`,
+                filename: file.name,
+                document_id: Date.now().toString(36),
+              }),
+            })
+            if (extractRes.ok) {
+              const analysis = await extractRes.json()
+              if (analysis?.kind === 'universal_document_analysis') {
+                // Insert analysis message right after the user message (index = prev length)
+                setMessages(prev => {
+                  // Find insertion point: right before the last assistant message (streaming)
+                  const analysisMsg = {
+                    role: 'assistant' as const,
+                    content: '',
+                    streaming: false,
+                    documentAnalysis: analysis,
+                  }
+                  // Insert at position 1 after user message (before the streaming reply)
+                  const updated = [...prev]
+                  const streamIdx = updated.findIndex(m => m.role === 'assistant' && m.streaming)
+                  if (streamIdx > 0) {
+                    updated.splice(streamIdx, 0, analysisMsg)
+                  } else {
+                    updated.push(analysisMsg)
+                  }
+                  return updated
+                })
+              }
+            }
+          } catch {
+            // Silent fail — main chat stream continues unaffected
+          }
+        })()
+      }
+
       const endpoint = file ? '/analyze/stream' : '/chat/stream'
       const body = file
         ? JSON.stringify({ file_base64: file.base64, file_type: file.type, file_name: file.name, message: prefixedMessage, history })
         : JSON.stringify({ message: prefixedMessage, history })
 
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
-
-      const res = await fetch(API_URL + endpoint, { method: 'POST', headers, body })
+      const res = await fetch(API_URL + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body,
+      })
+      if (res.status === 401) { clearToken(); router.push('/login'); return }
+      if (res.status === 402) {
+        setMessages(prev => prev.slice(0, -1).concat({
+          role: 'assistant',
+          content: '⏰ **انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك AI، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
+          streaming: false,
+        }))
+        setLoading(false)
+        return
+      }
       if (!res.ok) throw new Error('HTTP ' + res.status)
 
-      const reader  = res.body!.getReader()
+      const reader = res.body!.getReader()
       const decoder = new TextDecoder()
       let accumulated = ''
-      let buffer      = ''
+      let buffer = ''
+      let metaSources: import('@/lib/types').AgentSource[] = []
+      let metaConfidence: import('@/lib/types').ConfidenceLevel = 'unknown'
 
       while (true) {
         const { done, value } = await reader.read()
@@ -415,12 +436,23 @@ export default function Home() {
         const lines = buffer.split('\n')
         buffer = lines.pop() || ''
         for (const line of lines) {
-          const ln = line.trim()
-          if (!ln.startsWith('data: ')) continue
-          const d = ln.slice(6).trim()
+          const t = line.trim()
+          if (!t.startsWith('data: ')) continue
+          const d = t.slice(6).trim()
           if (d === '[DONE]') continue
           try {
-            const p   = JSON.parse(d)
+            const p = JSON.parse(d)
+            if (p.type === 'meta') {
+              if (Array.isArray(p.sources)) {
+                metaSources = p.sources.map((s: any) => ({
+                  title: s.title || s.ministry || 'مصدر',
+                  type: 'official' as const,
+                  ministry: s.ministry,
+                  score: s.score,
+                }))
+              }
+              if (p.confidence) metaConfidence = p.confidence
+            }
             const tok = p.type === 'token' ? p.text : p.choices?.[0]?.delta?.content
             if (tok) {
               accumulated += tok
@@ -433,11 +465,22 @@ export default function Home() {
           } catch {}
         }
       }
+      const finalAnswer = accumulated || 'عذراً، لم أتلقَّ ردّاً.'
       setMessages(prev => {
         const u = [...prev]
-        u[u.length - 1] = { role: 'assistant', content: accumulated || 'عذراً، لم أتلقَّ ردّاً.', streaming: false }
+        u[u.length - 1] = {
+          role: 'assistant',
+          content: finalAnswer,
+          streaming: false,
+          sources: metaSources.length > 0 ? metaSources : undefined,
+          confidence: metaConfidence !== 'unknown' ? metaConfidence : undefined,
+        }
         return u
       })
+      // Save to localStorage cache (text questions only)
+      if (!file && accumulated) {
+        lsSet(prefixedMessage, accumulated)
+      }
     } catch {
       setMessages(prev => {
         const u = [...prev]
@@ -449,785 +492,657 @@ export default function Home() {
     }
   }
 
-  const handleSubmit  = (e: FormEvent) => { e.preventDefault(); sendMessage(input, attachedFile) }
+  const handleSubmit = (e: FormEvent) => { e.preventDefault(); sendMessage(input, attachedFile) }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input, attachedFile) }
   }
 
-  const canSend     = Boolean((input.trim() || attachedFile) && !loading)
+  const canSend = Boolean((input.trim() || attachedFile) && !loading)
+  const isAr = lang === 'ar'
 
-  /* ── Render ─────────────────────────────────────────────────── */
+  if (!authChecked) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
+      <div style={{ fontSize: 14, color: '#9ca3af' }}>جاري التحقق...</div>
+    </div>
+  )
+
   return (
-    <div dir={t.dir} style={{
-      position: 'fixed', inset: 0,
-      bottom: footerBottom,
-      display: 'flex', flexDirection: 'column',
-      backgroundColor: '#fff',
-      paddingTop: 'var(--safe-top)',
-    }}>
+    <>
+      <style>{`
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        textarea { font-family: inherit; }
+        :root {
+          --safe-top: env(safe-area-inset-top, 0px);
+          --safe-bottom: env(safe-area-inset-bottom, 0px);
+          --red: #8B1A1A;
+          --red-dark: #6B1313;
+          --red-light: #FEF2F2;
+          --gold: #B8860B;
+          --gold-light: #FDF8E8;
+          --bg: #ffffff;
+          --card: #FFFFFF;
+          --border: #F0F0F0;
+          --border-strong: #E0E0E0;
+          --text: #1A1208;
+          --text-2: #5C5044;
+          --text-3: #9C8E80;
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+        @keyframes slideQ {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .msg-in { animation: fadeUp 0.25s ease; }
+        .quick-btn { animation: slideQ 0.3s ease; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+        .suggestion-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,26,26,0.10) !important; border-color: rgba(139,26,26,0.25) !important; }
+        .quick-btn:hover { background: var(--red-light) !important; border-color: rgba(139,26,26,0.3) !important; color: var(--red) !important; }
+        .mode-btn { transition: all 0.18s ease; }
+        .mode-btn:hover { transform: scale(1.04); }
+        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
+        .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
+        .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
+        .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
+        /* ── Bottom nav (mobile only) ── */
+        .bottom-nav-wrapper { display: none !important; }
+        @media (max-width: 640px) {
+          .bottom-nav-wrapper { display: block !important; position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 100; }
+          .bottom-nav-padding { padding-bottom: 64px !important; }
+        }
+        /* ── Mode selector responsive ── */
+        .mode-mobile { display: none; }
+        .mode-desktop { display: flex; justify-content: center; }
+        @media (max-width: 640px) {
+          .mode-mobile { display: flex; justify-content: center; }
+          .mode-desktop { display: none; }
+        }
+      `}</style>
 
-      {/* ══════════════ HEADER ══════════════ */}
-      <header style={{
-        flexShrink: 0,
-        background: '#fff',
-        borderBottom: '1px solid #F0EAEA',
-        boxShadow: '0 1px 0 #F0EAEA, 0 2px 8px rgba(0,0,0,0.04)',
-        position: 'relative', zIndex: 10,
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0,
+        bottom: footerBottom,
+        display: 'flex', flexDirection: 'column',
+        backgroundColor: '#ffffff',
+        paddingTop: 'var(--safe-top)',
       }}>
-        <div style={{
-          maxWidth: 880, margin: '0 auto',
-          padding: '0 20px',
-          height: 60,
-          display: 'flex', alignItems: 'center',
-          gap: 0,
+
+        {/* ══════════════ HEADER ══════════════ */}
+        <TopNav
+          isAr={isAr}
+          currentUser={currentUser}
+          messages={messages}
+          onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+          onNewChat={() => setMessages([])}
+          onMenuOpen={() => setMobileMenuOpen(true)}
+          onStartGuide={() => setShowGuide(true)}
+          showGuideBtn={messages.length === 0}
+        />
+
+
+        {/* ══════════════ MAIN ══════════════ */}
+        <main ref={mainRef} style={{
+          flex: 1, overflowY: 'auto',
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch' as any,
         }}>
+          {messages.length === 0 ? (
 
-          {/* ── BRAND ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            /* ══ Welcome Screen — Phase 2 Redesign ══ */
             <div style={{
-              width: 34, height: 34, borderRadius: 9,
-              background: 'linear-gradient(145deg, #9B1E1E 0%, #C41E1E 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 6px rgba(139,26,26,0.35)',
-              flexShrink: 0,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center',
+              minHeight: '100%', padding: '14px 14px 24px',
+              direction: isAr ? 'rtl' : 'ltr',
             }}>
-              <span style={{ fontSize: 14, fontWeight: 900, color: '#fff', letterSpacing: '-0.03em' }}>د</span>
-            </div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#111827', letterSpacing: '-0.025em', lineHeight: 1.15 }}>
-                {lang === 'en' ? 'Dalilak' : 'دليلك'}{' '}<span style={{ background: 'linear-gradient(135deg, #8B1A1A, #C12020)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI</span>
-              </div>
-              <div style={{ fontSize: 10, color: '#B8BEC8', fontWeight: 500, lineHeight: 1, marginTop: 1 }}>
-                {t.tagline} · <a href="https://aijur.ai" target="_blank" rel="noopener noreferrer"
-                  style={{ color: '#A0695A', fontWeight: 600, textDecoration: 'none' }}>AIJUR</a>
-              </div>
-            </div>
-          </div>
 
-          {/* ── CENTER: Contacts (desktop only) ── */}
-          <div className="header-contacts" style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <a href="mailto:wissam@aijur.ai"
-              style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
-                padding: '5px 11px', borderRadius: 20,
-                border: '1px solid #F0EAEA', background: '#FAFAFA',
-                transition: 'border-color 0.15s, background 0.15s',
-              }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B1E1E" strokeWidth="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              <span style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, direction: 'ltr', unicodeBidi: 'embed' }}>wissam@aijur.ai</span>
-            </a>
-            <a href="tel:+9613460608"
-              style={{ display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
-                padding: '5px 11px', borderRadius: 20,
-                border: '1px solid #F0EAEA', background: '#FAFAFA',
-                transition: 'border-color 0.15s, background 0.15s',
-              }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9B1E1E" strokeWidth="2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
-              <span dir="ltr" style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, unicodeBidi: 'isolate' }}>+961 3 460 608</span>
-            </a>
-          </div>
+              {/* ── Hero ────────────────────────────────────── */}
+              <div style={{ textAlign: 'center', marginBottom: 20, maxWidth: 420, width: '100%' }}>
 
-          {/* ── RIGHT: Actions ── */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, marginRight: 'auto', marginLeft: 'auto' }}>
-            {/* Spacer so actions are pushed to end */}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-
-            {/* Language toggle */}
-            <button
-              onClick={toggleLang}
-              className="chip-btn"
-              title={lang === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
-              style={{
-                minWidth: 38, height: 32, paddingInline: 10, borderRadius: 7,
-                border: '1.5px solid #E2D6D6', background: '#FDF6F6',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11.5, fontWeight: 800, color: '#8B1A1A',
-                letterSpacing: lang === 'en' ? '0.02em' : '0',
-                flexShrink: 0,
-              }}
-            >
-              {t.langLabel}
-            </button>
-
-            {/* New chat */}
-            {messages.length > 0 && (
-              <button
-                onClick={() => setMessages([])}
-                className="chip-btn"
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 4,
-                  height: 32, paddingInline: 11, borderRadius: 7,
-                  border: '1px solid #E5E7EB', background: '#F9FAFB',
-                  fontSize: 11.5, color: '#6B7280', fontWeight: 500,
-                  cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
-                }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                {t.newChat}
-              </button>
-            )}
-
-            {/* Separator */}
-            <div style={{ width: 1, height: 20, background: '#E5DEDE', flexShrink: 0, marginInline: 2 }} />
-
-            {/* Auth section */}
-            {currentUser ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                {currentUser.plan === 'paid' && (
-                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
-                    <span style={{ fontSize: 10, color: '#15803D', fontWeight: 700 }}>✓ مشترك</span>
-                  </div>
-                )}
-                {currentUser.plan === 'trial' && (
-                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#FFFBEB', border: '1px solid #FDE68A' }}>
-                    <span style={{ fontSize: 10, color: '#92400E', fontWeight: 600 }}>تجريبي {currentUser.days_left ?? '?'}ي</span>
-                  </div>
-                )}
-                {currentUser.plan === 'admin' && (
-                  <div style={{ padding: '2px 8px', borderRadius: 999, background: '#FDF4FF', border: '1px solid #E9D5FF' }}>
-                    <span style={{ fontSize: 10, color: '#7C3AED', fontWeight: 700 }}>مشرف</span>
-                  </div>
-                )}
-                <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: 'linear-gradient(145deg, #9B1E1E, #C41E1E)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12.5, fontWeight: 800, color: '#fff',
-                  boxShadow: '0 1px 6px rgba(139,26,26,0.3)',
-                  flexShrink: 0, border: '1.5px solid rgba(255,255,255,0.9)',
-                  outline: '1.5px solid #EDD0D0',
-                }}>
-                  {(currentUser.full_name || currentUser.username).charAt(0).toUpperCase()}
-                </div>
-                <span className="header-contacts" style={{
-                  fontSize: 12, color: '#374151', fontWeight: 600,
-                  maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {currentUser.full_name || currentUser.username}
-                </span>
-                <button onClick={logout} className="chip-btn" title="تسجيل الخروج"
+                {/* Logo */}
+                <img
+                  src="/logo.PNG"
+                  alt="Dalilak AI"
                   style={{
-                    width: 30, height: 30, borderRadius: 7,
-                    border: '1px solid #F0E8E8', background: '#FDF8F8',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C08070" strokeWidth="2.2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                  </svg>
-                </button>
+                    width: 'clamp(140px, 42vw, 200px)',
+                    height: 'clamp(140px, 42vw, 200px)',
+                    objectFit: 'contain',
+                    mixBlendMode: 'multiply',
+                    display: 'block',
+                    margin: '0 auto 10px',
+                  }}
+                />
+
+                {/* Title & subtitle */}
+                <h2 style={{
+                  fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 800,
+                  color: 'var(--text)', margin: '0 0 6px',
+                  letterSpacing: '-0.2px', lineHeight: 1.35,
+                }}>
+                  {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What do you need to complete?'}
+                </h2>
+                <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.55 }}>
+                  {isAr
+                    ? 'اختر نوع المعاملة، أو ارفع مستنداً، وسنرشدك خطوة بخطوة.'
+                    : 'Choose a procedure, upload a document, or let Dalilak guide you step by step.'}
+                </p>
               </div>
-            ) : (
-              <button
-                onClick={() => { setShowAuth(true); setAuthTab('login'); setAuthError('') }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  height: 34, paddingInline: 16, borderRadius: 8,
-                  background: 'linear-gradient(145deg, #9B1E1E, #C41E1E)',
-                  color: '#fff', fontSize: 12.5, fontWeight: 700,
-                  border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
-                  whiteSpace: 'nowrap', letterSpacing: '0.01em',
-                }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                  <polyline points="10 17 15 12 10 7"/>
-                  <line x1="15" y1="12" x2="3" y2="12"/>
-                </svg>
-                {t.loginBtn}
-              </button>
-            )}
-          </div>
-        </div>
 
-        {/* Brand accent line */}
-        <div style={{
-          height: 1,
-          background: 'linear-gradient(to right, transparent, #C41E1E40 30%, #C41E1E40 70%, transparent)',
-        }} />
-      </header>
-
-      {/* ╔══════════════════════════════════╗
-          ║  MAIN — scrollable               ║
-          ╚══════════════════════════════════╝ */}
-      <main style={{
-        flex: 1, overflowY: 'auto',
-        overscrollBehavior: 'contain',
-        WebkitOverflowScrolling: 'touch' as any,
-      }}>
-
-        {messages.length === 0 ? (
-
-          /* ── Welcome Screen ───────────────────────────────── */
-          <div style={{
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            minHeight: '100%',
-            padding: '24px 18px 12px',
-            textAlign: 'center',
-          }}>
-
-            {/* Logo */}
-            <Image
-              src="/logo.PNG"
-              alt="Dalilak AI"
-              className="logo-welcome"
-              width={140}
-              height={140}
-              style={{ objectFit: 'contain', display: 'block', marginBottom: 14 }}
-              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-            />
-
-            {/* Heading */}
-            <h1 className="welcome-heading" style={{ color: '#111827', margin: '0 0 6px' }}>
-              {t.heading}
-            </h1>
-
-            {/* Decorative divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '10px 0 12px' }}>
-              <div style={{ height: 1, width: 52, background: 'linear-gradient(to left, transparent, #8B1A1A66)' }} />
-              <div style={{ width: 5, height: 5, background: '#8B1A1A', transform: 'rotate(45deg)', opacity: 0.65 }} />
-              <div style={{ height: 1, width: 52, background: 'linear-gradient(to right, transparent, #8B1A1A66)' }} />
-            </div>
-
-            {/* Subtitle */}
-            <p className="welcome-sub" style={{ margin: '0 0 22px', fontWeight: 400 }}>
-              {t.subtitle}
-            </p>
-
-            {/* Category cards — responsive grid */}
-            <div className="welcome-grid">
-              {suggestions.map((s, i) => (
-                <button
-                  key={i}
-                  className="card-btn"
-                  onClick={() => sendMessage(s.title + ' — ' + s.desc)}
-                  style={{
-                    gap: 6, padding: '16px 8px',
-                    backgroundColor: '#fff',
-                    borderRadius: 14,
-                    border: '1px solid #E5E7EB',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                    cursor: 'pointer', fontFamily: 'inherit',
-                    width: '100%', minHeight: 90,
-                  }}>
-                  <span style={{ fontSize: 22, lineHeight: 1, display: 'block', textAlign: 'center' }}>{s.icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1F2937', lineHeight: 1.35, display: 'block', textAlign: 'center', width: '100%' }}>
-                    {s.title}
-                  </span>
-                  <span style={{ fontSize: 11.5, color: '#9CA3AF', lineHeight: 1.4, display: 'block', textAlign: 'center', width: '100%' }}>
-                    {s.desc}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {/* Quick questions */}
-            <div className="quick-list">
-              {quickQuestions.map((q, i) => (
-                <button
-                  key={i}
-                  className="chip-btn"
-                  onClick={() => sendMessage(q)}
-                  style={{
-                    width: '100%',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    padding: '11px 16px',
-                    backgroundColor: '#fff',
-                    borderRadius: 10,
-                    border: '1px solid #E5E7EB',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-                    fontSize: 12.5, color: '#374151',
-                    cursor: 'pointer', fontFamily: 'inherit',
-                    textAlign: 'center',
-                    gap: 8,
-                  }}>
-                  <span style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    backgroundColor: '#8B1A1A', opacity: 0.5, flexShrink: 0,
-                  }} />
-                  <span style={{ textAlign: 'center', flex: 1 }}>{q}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Capabilities */}
-            <div style={{
-              marginTop: 18, marginBottom: 6,
-              display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center',
-            }}>
-              {t.features.map((c, i) => (
-                <span key={i} style={{
-                  fontSize: 10.5, color: '#9CA3AF',
-                  padding: '3px 11px', borderRadius: 999,
-                  border: '1px solid #F3F4F6', backgroundColor: '#F9FAFB',
-                  fontWeight: 400,
-                }}>
-                  {c}
-                </span>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <p className="welcome-stats">{t.stats}</p>
-
-
-          </div>
-
-        ) : (
-
-          /* ── Chat Messages ─────────────────────────────────── */
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 8px' }}>
-            {messages.map((msg, i) => (
-              <div key={i} className="msg-in">
-                <ChatMessage msg={msg} />
-              </div>
-            ))}
-            <div ref={bottomRef} style={{ height: 8 }} />
-          </div>
-
-        )}
-      </main>
-
-      {/* ╔══════════════════════════════════╗
-          ║  FOOTER — input                  ║
-          ╚══════════════════════════════════╝ */}
-      <footer style={{
-        flexShrink: 0,
-        backgroundColor: '#fff',
-        borderTop: '1px solid #F3F4F6',
-        paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
-      }}>
-        <div style={{ maxWidth: 720, margin: '0 auto', padding: '8px 14px 6px' }}>
-
-          {/* ── Mode pills ─────────────────────────────────── */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: 6, marginBottom: 9,
-          }}>
-            {t.modes.map(m => {
-              const active = mode === m.id
-              return (
-                <button
-                  key={m.id}
-                  type="button"
-                  className={`mode-btn${active ? ' active' : ''}`}
-                  onClick={() => setMode(m.id as ResponseMode)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    padding: '5px 13px', borderRadius: 999,
-                    fontSize: 11.5, fontWeight: 500,
-                    cursor: 'pointer', border: 'none',
-                    backgroundColor: active ? '#8B1A1A' : '#F5F5F5',
-                    color:           active ? '#fff'    : '#6B7280',
-                    outline:         active ? 'none'    : '1px solid #E5E7EB',
-                    boxShadow:       active ? '0 1px 6px rgba(139,26,26,0.28)' : 'none',
-                    fontFamily: 'inherit',
-                  }}>
-                  <span style={{ fontSize: 12 }}>{m.icon}</span>
-                  <span>{m.label}</span>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* ── File preview ───────────────────────────────── */}
-          {attachedFile && (
-            <div style={{
-              marginBottom: 8,
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '8px 12px',
-              backgroundColor: '#F9FAFB',
-              borderRadius: 12, border: '1px solid #E5E7EB',
-            }}>
-              {attachedFile.preview ? (
-                <img src={attachedFile.preview} alt="preview"
-                  style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
-              ) : (
-                <div style={{
-                  width: 40, height: 40, borderRadius: 8, flexShrink: 0,
-                  backgroundColor: '#FEF2F2', border: '1px solid #FECACA',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 18,
-                }}>
-                  {getFileIcon(attachedFile.type, attachedFile.name)}
-                </div>
-              )}
-              <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
-                <div style={{
-                  fontSize: 12, fontWeight: 600, color: '#1F2937',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {attachedFile.name}
-                </div>
-                <div style={{ fontSize: 10.5, color: '#9CA3AF', marginTop: 2 }}>
-                  {formatSize(attachedFile.size)} · سيتم التحليل بواسطة AI
-                </div>
-              </div>
-              <button
-                onClick={() => setAttachedFile(null)}
-                style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  backgroundColor: '#E5E7EB', border: 'none',
-                  cursor: 'pointer', fontSize: 15, color: '#6B7280',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0, lineHeight: 1,
-                }}>
-                ×
-              </button>
-            </div>
-          )}
-
-          {/* ── Recording indicator ────────────────────────── */}
-          {recording && (
-            <div style={{
-              marginBottom: 8,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 10, padding: '9px 14px',
-              backgroundColor: '#FEF2F2',
-              borderRadius: 12, border: '1px solid #FEE2E2',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                {[5, 9, 7, 11, 8, 6, 10].map((h, n) => (
-                  <span key={n} style={{
-                    width: 3, height: h, backgroundColor: '#EF4444',
-                    borderRadius: 2, display: 'block',
-                    animation: 'wave 0.75s ease infinite',
-                    animationDelay: `${n * 0.08}s`,
-                    transformOrigin: 'center',
-                  }} />
+              {/* ── 3 Primary Actions ───────────────────────── */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, width: '100%', maxWidth: 400, marginBottom: 20 }}>
+                {[
+                  { icon: '▶', bg: 'linear-gradient(135deg,#8B1A1A,#6b2737)', ar: 'ابدأ معاملة', en: 'Start', action: 'start' },
+                  { icon: '📎', bg: 'linear-gradient(135deg,#1E40AF,#1e3a8a)', ar: 'حلّل مستنداً', en: 'Analyze', action: 'file' },
+                  { icon: '💬', bg: 'linear-gradient(135deg,#374151,#1f2937)', ar: 'اسأل دليلك', en: 'Ask AI', action: 'ask' },
+                ].map(item => (
+                  <button
+                    key={item.action}
+                    onClick={() => {
+                      if (item.action === 'start') setShowTransactionStarter(true)
+                      else if (item.action === 'file') fileInputRef.current?.click()
+                      else textareaRef.current?.focus()
+                    }}
+                    style={{
+                      padding: '14px 8px', borderRadius: 16, cursor: 'pointer',
+                      background: item.bg, border: 'none', color: '#fff',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                      fontFamily: 'inherit', boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
+                      transition: 'transform 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.96)' }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}
+                  >
+                    <span style={{ fontSize: 22 }}>{item.icon}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>
+                      {isAr ? item.ar : item.en}
+                    </span>
+                  </button>
                 ))}
               </div>
-              <span style={{ fontSize: 12, color: '#DC2626', fontWeight: 600 }}>
-                جاري الاستماع... تحدث الآن
-              </span>
+
+              {/* ── Service Groups (6 cards, 2-col) ─────────── */}
+              <div style={{ width: '100%', maxWidth: 400, marginBottom: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)' }}>
+                    {isAr ? 'الخدمات' : 'Services'}
+                  </span>
+                  <button onClick={() => router.push('/services')} style={{
+                    fontSize: 10.5, color: 'var(--red)', background: 'none',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                  }}>
+                    {isAr ? 'كل الخدمات' : 'All Services'}
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  {SERVICE_GROUPS.map(group => (
+                    <button
+                      key={group.slug}
+                      onClick={() => setActiveServiceGroup(group)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 10,
+                        padding: '12px 13px', borderRadius: 14, cursor: 'pointer',
+                        background: '#fff', border: '1.5px solid var(--border)',
+                        fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
+                        transition: 'all 0.15s',
+                        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = group.color; e.currentTarget.style.boxShadow = `0 4px 14px ${group.color}22` }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)' }}
+                      onTouchStart={e => { e.currentTarget.style.background = '#FAFAFA'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                      onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+                    >
+                      <div style={{
+                        width: 34, height: 34, borderRadius: 9, flexShrink: 0,
+                        background: `${group.color}14`, border: `1px solid ${group.color}25`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 17,
+                      }}>
+                        {group.icon}
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {isAr ? group.titleAr : group.titleEn}
+                        </div>
+                        <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1 }}>
+                          {group.services.length} {isAr ? 'خدمة' : 'services'}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Most Requested ───────────────────────────── */}
+              <div style={{ width: '100%', maxWidth: 400, marginBottom: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-2)' }}>
+                    {isAr ? '⭐ الأكثر طلباً' : '⭐ Most Requested'}
+                  </span>
+                  <button onClick={() => setShowMorePopular(v => !v)} style={{
+                    fontSize: 10.5, color: 'var(--red)', background: 'none',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
+                  }}>
+                    {showMorePopular ? (isAr ? 'أقل' : 'Less') : (isAr ? 'عرض المزيد' : 'Show more')}
+                  </button>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 }}>
+                  {([
+                    { icon: '📘', ar: 'جواز سفر', en: 'Passport', slug: 'passport' },
+                    { icon: '📋', ar: 'سجل عدلي', en: 'Criminal Record', slug: 'criminal-record' },
+                    { icon: '👨‍👩‍👦', ar: 'إخراج قيد', en: 'Civil Extract', slug: 'civil-registry-extract' },
+                    { icon: '⚖️', ar: 'حصر إرث', en: 'Inheritance', slug: 'inheritance-certificate' },
+                    { icon: '🏭', ar: 'تأسيس شركة', en: 'Company Reg.', slug: 'company-registration' },
+                    { icon: '🏗️', ar: 'رخصة بناء', en: 'Building Permit', slug: 'building-permit' },
+                    ...(showMorePopular ? [
+                      { icon: '📜', ar: 'تصديق مستند', en: 'Attestation', slug: 'document-attestation' },
+                      { icon: '🏠', ar: 'بيع عقار', en: 'Real Estate', slug: 'property-transfer' },
+                      { icon: '✈️', ar: 'مغتربين', en: 'Expats', slug: 'expat-services' },
+                    ] : []),
+                  ] as { icon: string; ar: string; en: string; slug: string }[]).map((p, i) => (
+                    <button key={p.slug} onClick={() => setShowGuide(true)} style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+                      padding: '10px 6px', background: '#fff', borderRadius: 13,
+                      border: '1.5px solid var(--border)', cursor: 'pointer',
+                      fontFamily: 'inherit', transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
+                    onTouchStart={e => { e.currentTarget.style.background = 'var(--red-light)'; e.currentTarget.style.transform = 'scale(0.95)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
+                      <span style={{ fontSize: 20 }}>{p.icon}</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-2)', textAlign: 'center', lineHeight: 1.3 }}>
+                        {isAr ? p.ar : p.en}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Expat Pack CTA ───────────────────────────── */}
+              <div style={{ width: '100%', maxWidth: 400 }}>
+                <button
+                  onClick={() => router.push('/services/expat-property')}
+                  style={{
+                    width: '100%', padding: '14px 16px', borderRadius: 16, cursor: 'pointer',
+                    background: 'linear-gradient(135deg, #1E3A5F 0%, #1E40AF 100%)',
+                    border: 'none', color: '#fff', fontFamily: 'inherit',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    gap: 10, boxShadow: '0 4px 16px rgba(30,64,175,0.25)',
+                    transition: 'transform 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
+                >
+                  <div style={{ textAlign: isAr ? 'right' : 'left' }}>
+                    <div style={{ fontSize: 13, fontWeight: 800 }}>
+                      {isAr ? '✈️🏛️ حزمة المغتربين والعقارات' : '✈️🏛️ Expat & Property Pack'}
+                    </div>
+                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+                      {isAr ? 'وكالات · بيع عقارات · عقود · كشف ثغرات' : 'POA · Property sale · Contracts · Gap detection'}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 18, flexShrink: 0 }}>{isAr ? '←' : '→'}</span>
+                </button>
+              </div>
+            </div>
+
+          ) : (
+
+            /* ── Chat Messages ── */
+            <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
+              {/* Home button — visible on mobile inside chat */}
+              <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
+                <button
+                  onClick={() => setMessages([])}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '6px 14px', borderRadius: 20,
+                    background: '#fff', border: '1.5px solid #e5e7eb',
+                    fontSize: 12, color: '#6b7280', fontWeight: 600,
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.color = '#6b7280' }}
+                  onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#8B1A1A' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#6b7280' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
+                  </svg>
+                  {isAr ? 'الرئيسية' : 'Home'}
+                </button>
+              </div>
+
+              {messages.map((msg, i) => (
+                <div key={i} className="msg-in">
+                  <ChatMessage
+                    msg={msg}
+                    isAr={isAr}
+                    onFollowUp={(q) => { setInput(q); textareaRef.current?.focus() }}
+                    onSendMessage={(q) => sendMessage(q)}
+                    onUploadFile={() => fileInputRef.current?.click()}
+                    onStartFlow={() => setShowGuide(true)}
+                  />
+                </div>
+              ))}
+              <div ref={bottomRef} style={{ height: 8 }} />
             </div>
           )}
+        </main>
 
-          {/* ── Input form ─────────────────────────────────── */}
-          <form onSubmit={handleSubmit}>
-            <div
-              className={`input-wrap${inputFocused ? ' focused' : ''}`}
-              style={{
-                display: 'flex', alignItems: 'flex-end', gap: 4,
-                backgroundColor: '#fff',
-                border: '1.5px solid #E5E7EB',
-                borderRadius: 16, padding: '4px 5px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+        {/* ══════════════ FOOTER / INPUT ══════════════ */}
+        <footer className="bottom-nav-padding" style={{
+          flexShrink: 0,
+          backgroundColor: 'transparent',
+          paddingBottom: footerBottom > 0 ? 4 : 'var(--safe-bottom)',
+        }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 12px 10px' }}>
+
+            {/* ── Active Document Context Chip (Phase 9) ── */}
+            {activeDocumentName && messages.length > 0 && !attachedFile && (
+              <div style={{
+                marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8,
+                padding: '6px 10px', background: '#EFF6FF',
+                borderRadius: 10, border: '1px solid #BFDBFE',
               }}>
-
-              {/* Attach button */}
-              <button
-                type="button"
-                className="icon-btn"
-                disabled={loading}
-                onClick={() => fileInputRef.current?.click()}
-                title="إرفاق ملف أو صورة"
-                style={{
-                  flexShrink: 0, width: 36, height: 36,
-                  borderRadius: 10, border: 'none',
-                  background: 'none', cursor: 'pointer',
-                  color: '#9CA3AF',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  opacity: loading ? 0.4 : 1,
-                }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                </svg>
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,.pdf,.doc,.docx,.xlsx,.xls,.pptx,.ppt,.csv,.txt,.md,.json,.xml,.html,.js,.ts,.py,.mp3,.wav,.m4a,.ogg,.flac,.webm,.aac,.zip"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
-
-              {/* Textarea */}
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                placeholder={
-                  recording    ? (lang === 'en' ? 'Listening...' : 'جاري الاستماع...') :
-                  attachedFile ? (lang === 'en' ? 'Ask about this file or press send to analyze...' : 'اسأل عن الملف أو اضغط إرسال للتحليل...') :
-                                 t.placeholder
-                }
-                rows={1}
-                disabled={loading}
-                dir={getDir(input)}
-                style={{
-                  flex: 1, resize: 'none', border: 'none', outline: 'none',
-                  fontSize: 14, color: '#1F2937',
-                  background: 'transparent',
-                  padding: '9px 4px', lineHeight: 1.6,
-                  maxHeight: 120, fontFamily: 'inherit',
-                  opacity: loading ? 0.55 : 1,
-                }}
-              />
-
-              {/* Mic button */}
-              <button
-                type="button"
-                disabled={loading}
-                onClick={recording ? stopRecording : startRecording}
-                style={{
-                  flexShrink: 0, width: 36, height: 36,
-                  borderRadius: 10, border: 'none', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  backgroundColor: recording ? '#EF4444' : 'transparent',
-                  color: recording ? '#fff' : '#9CA3AF',
-                  opacity: loading ? 0.4 : 1,
-                  transition: 'all 0.15s ease',
-                }}>
-                <svg width="17" height="17" viewBox="0 0 24 24"
-                  fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-              </button>
-
-              {/* Send button */}
-              <button
-                type="submit"
-                className="send-btn"
-                disabled={!canSend}
-                style={{
-                  flexShrink: 0, width: 36, height: 36,
-                  borderRadius: 10, border: 'none',
-                  cursor: canSend ? 'pointer' : 'default',
-                  backgroundColor: canSend ? '#8B1A1A' : '#E5E7EB',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: canSend ? '0 1px 6px rgba(139,26,26,0.3)' : 'none',
-                }}>
-                {loading ? (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                    style={{ animation: 'spin 0.8s linear infinite' }}>
-                    <circle cx="12" cy="12" r="10" stroke="#9CA3AF" strokeWidth="3" strokeOpacity="0.2" />
-                    <path fill="#9CA3AF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                ) : (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                    stroke={canSend ? '#fff' : '#9CA3AF'} strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            {/* Bottom hints */}
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              marginTop: 5, padding: '0 2px',
-            }}>
-              <span style={{ fontSize: 10, color: '#D1D5DB' }}>
-                {currentMode.icon} {currentMode.label} — {currentMode.hint}
-              </span>
-              <span style={{ fontSize: 10, color: '#D1D5DB' }}>
-                ↵ إرسال · ⇧↵ سطر جديد
-              </span>
-            </div>
-          </form>
-
-        </div>
-      </footer>
-
-      {/* ╔══════════════════════════════════════════════════╗
-          ║  AUTH MODAL                                      ║
-          ╚══════════════════════════════════════════════════╝ */}
-      {showAuth && (
-        <div
-          onClick={e => { if (e.target === e.currentTarget) setShowAuth(false) }}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            background: 'rgba(0,0,0,0.45)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 16,
-          }}>
-          <div dir={t.dir} style={{
-            background: '#fff', borderRadius: 20, width: '100%', maxWidth: 400,
-            boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
-            overflow: 'hidden',
-            animation: 'fadeUp 0.22s ease forwards',
-          }}>
-            {/* Header */}
-            <div style={{
-              padding: '22px 28px 0',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            }}>
-              <div>
-                <div style={{ fontSize: 19, fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
-                  {authTab === 'login' ? t.welcome : t.newAccTitle}
-                </div>
-                <div style={{ fontSize: 12.5, color: '#9CA3AF', marginTop: 4, fontWeight: 400 }}>
-                  {authTab === 'login' ? t.signInSub : t.trialSub}
-                </div>
-              </div>
-              <button
-                onClick={() => setShowAuth(false)}
-                style={{
-                  width: 32, height: 32, borderRadius: 8, border: '1px solid #E5E7EB',
-                  background: '#F9FAFB', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2.5">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Tabs */}
-            <div style={{ display: 'flex', gap: 6, padding: '18px 28px 0' }}>
-              {(['login', 'register'] as const).map(tab => (
+                <span style={{ fontSize: 13 }}>📄</span>
+                <span style={{ fontSize: 10.5, color: '#1E40AF', fontWeight: 600, flex: 1 }}>
+                  {isAr ? 'يتم تحليل: ' : 'Analyzing: '}{activeDocumentName}
+                </span>
                 <button
-                  key={tab}
-                  onClick={() => { setAuthTab(tab); setAuthError('') }}
-                  style={{
-                    flex: 1, padding: '9px 0', borderRadius: 10,
-                    border: authTab === tab ? '1.5px solid #8B1A1A' : '1.5px solid #E5E7EB',
-                    background: authTab === tab ? '#FDF4F4' : '#F9FAFB',
-                    color: authTab === tab ? '#8B1A1A' : '#6B7280',
-                    fontWeight: authTab === tab ? 700 : 500,
-                    fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit',
+                  onClick={() => { setActiveDocumentName(null) }}
+                  style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 13, padding: 2 }}
+                  title={isAr ? 'مسح' : 'Clear'}
+                >✕</button>
+              </div>
+            )}
+
+            {/* File preview */}
+            {attachedFile && (
+              <div style={{
+                marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 12px', backgroundColor: 'var(--red-light)',
+                borderRadius: 12, border: '1.5px solid rgba(139,26,26,0.15)',
+              }}>
+                {attachedFile.preview ? (
+                  <img src={attachedFile.preview} alt="preview"
+                    style={{ width: 42, height: 42, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+                ) : (
+                  <div style={{
+                    width: 42, height: 42, borderRadius: 10, background: '#fff',
+                    border: '1.5px solid rgba(139,26,26,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 20, flexShrink: 0,
                   }}>
-                  {tab === 'login' ? t.tabLogin : t.tabRegister}
-                </button>
-              ))}
+                    {getFileIcon(attachedFile.type)}
+                  </div>
+                )}
+                <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {attachedFile.name}
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{formatSize(attachedFile.size)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 1 }}>
+                    {isAr ? '⚡ جاهز للتحليل' : '⚡ Ready to analyze'}
+                  </div>
+                </div>
+                <button onClick={() => setAttachedFile(null)} style={{
+                  width: 24, height: 24, borderRadius: '50%',
+                  backgroundColor: 'rgba(139,26,26,0.1)', border: 'none',
+                  cursor: 'pointer', fontSize: 15, color: 'var(--red)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  fontWeight: 700,
+                }}>×</button>
+              </div>
+            )}
+
+            {/* Recording indicator */}
+            {recording && (
+              <div style={{
+                marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 10, padding: '8px 14px',
+                background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)',
+                borderRadius: 12, border: '1.5px solid #FECACA',
+              }}>
+                <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
+                  {[8, 14, 10, 16, 11, 14, 9].map((h, n) => (
+                    <span key={n} style={{
+                      width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
+                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
+                      display: 'inline-block',
+                    }} />
+                  ))}
+                </span>
+                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>
+                  {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
+                </span>
+                <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
+                  {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
+                    <span key={n} style={{
+                      width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
+                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
+                      display: 'inline-block',
+                    }} />
+                  ))}
+                </span>
+              </div>
+            )}
+
+            {/* ── Mode selector — ModeSelector handles mobile/desktop ── */}
+            <div style={{ marginBottom: 10 }}>
+              <ModeSelector mode={mode} onSelect={setMode} isAr={isAr} />
             </div>
 
-            {/* Form */}
-            <div style={{ padding: '20px 28px 28px', display: 'flex', flexDirection: 'column', gap: 13 }}>
-
-              {/* Error */}
-              {authError && (
-                <div style={{
-                  padding: '10px 14px', borderRadius: 10,
-                  background: '#FEF2F2', border: '1px solid #FECACA',
-                  fontSize: 13, color: '#DC2626', fontWeight: 500,
-                }}>
-                  {authError}
-                </div>
-              )}
-
-              {/* Full name — register only */}
-              {authTab === 'register' && (
-                <div>
-                  <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                    {t.fullName}
-                  </label>
-                  <input
-                    value={authForm.full_name}
-                    onChange={e => setAuthForm(p => ({ ...p, full_name: e.target.value }))}
-                    placeholder="وسيم خالد"
-                    style={{
-                      width: '100%', padding: '11px 14px', borderRadius: 10,
-                      border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
-                      outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Username */}
-              <div>
-                <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  {t.username}
-                </label>
-                <input
-                  value={authForm.username}
-                  onChange={e => setAuthForm(p => ({ ...p, username: e.target.value }))}
-                  placeholder="wissam"
-                  dir="ltr"
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: 10,
-                    border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
-                    outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-
-              {/* Email — register only */}
-              {authTab === 'register' && (
-                <div>
-                  <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                    {t.email}
-                  </label>
-                  <input
-                    value={authForm.email}
-                    onChange={e => setAuthForm(p => ({ ...p, email: e.target.value }))}
-                    placeholder="you@example.com"
-                    type="email"
-                    dir="ltr"
-                    style={{
-                      width: '100%', padding: '11px 14px', borderRadius: 10,
-                      border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
-                      outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Password */}
-              <div>
-                <label style={{ fontSize: 12, color: '#6B7280', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  {t.password}
-                </label>
-                <input
-                  value={authForm.password}
-                  onChange={e => setAuthForm(p => ({ ...p, password: e.target.value }))}
-                  onKeyDown={e => { if (e.key === 'Enter') submitAuth() }}
-                  placeholder="••••••••"
-                  type="password"
-                  dir="ltr"
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: 10,
-                    border: '1.5px solid #E5E7EB', fontSize: 14, fontFamily: 'inherit',
-                    outline: 'none', background: '#FAFAFA', boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-
-              {/* Submit */}
-              <button
-                onClick={submitAuth}
-                disabled={authLoading}
+            {/* ── Input box ── */}
+            <form onSubmit={handleSubmit}>
+              <div className={inputFocused ? 'input-focused' : ''}
                 style={{
-                  width: '100%', padding: '13px 0', borderRadius: 12,
-                  background: authLoading
-                    ? '#D1D5DB'
-                    : 'linear-gradient(135deg, #8B1A1A, #B91C1C)',
-                  color: '#fff', fontSize: 15, fontWeight: 700,
-                  border: 'none', cursor: authLoading ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit', marginTop: 4,
-                  boxShadow: authLoading ? 'none' : '0 3px 12px rgba(139,26,26,0.3)',
-                  transition: 'all 0.15s ease',
+                  display: 'flex', alignItems: 'flex-end', gap: 4,
+                  backgroundColor: '#fff',
+                  border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
+                  borderRadius: 20, padding: '6px 8px',
+                  boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
+                  transition: 'all 0.2s ease',
                 }}>
-                {authLoading ? '...' : authTab === 'login' ? t.submitLogin : t.submitRegister}
-              </button>
 
-              {/* Trial note */}
-              {authTab === 'register' && (
-                <div style={{ textAlign: 'center', fontSize: 11.5, color: '#9CA3AF' }}>
-                  {t.trialNote}
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
+
+                {/* Attach */}
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
+                  className="icon-btn"
+                  title={isAr ? 'إرفاق ملف أو صورة' : 'Attach file or image'}
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12,
+                    border: 'none', background: 'none', cursor: loading ? 'default' : 'pointer',
+                    color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.15s',
+                  }}
+                  onTouchStart={e => !loading && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+                <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt"
+                  style={{ display: 'none' }} onChange={handleFileChange} />
+
+                {/* Textarea */}
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  placeholder={
+                    recording
+                      ? (isAr ? 'جاري الاستماع...' : 'Listening...')
+                      : attachedFile
+                        ? (isAr ? 'اسأل عن الوثيقة أو أرسل للتحليل...' : 'Ask about the document...')
+                        : (isAr ? 'اكتب سؤالك هنا...' : 'Type your question here...')
+                  }
+                  rows={1}
+                  disabled={loading}
+                  dir={isAr ? 'rtl' : 'ltr'}
+                  style={{
+                    flex: 1, resize: 'none', border: 'none', outline: 'none',
+                    fontSize: 14.5, color: 'var(--text)', background: 'transparent',
+                    padding: '7px 4px', lineHeight: 1.55, maxHeight: 120,
+                    fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
+                  }}
+                />
+
+                {/* Mic */}
+                <button type="button" onClick={recording ? stopRecording : startRecording} disabled={loading}
+                  className={recording ? '' : 'icon-btn'}
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
+                    cursor: loading ? 'default' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: recording
+                      ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+                      : 'none',
+                    color: recording ? '#fff' : 'var(--text-3)',
+                    boxShadow: recording ? '0 2px 8px rgba(239,68,68,0.4)' : 'none',
+                    opacity: loading ? 0.4 : 1, transition: 'all 0.2s',
+                  }}
+                  onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
+                  onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
+                  <svg width="19" height="19" viewBox="0 0 24 24"
+                    fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </button>
+
+                {/* Send */}
+                <button type="submit" disabled={!canSend}
+                  className="send-btn"
+                  style={{
+                    flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
+                    cursor: canSend ? 'pointer' : 'default',
+                    background: canSend
+                      ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
+                      : 'var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: canSend ? '0 3px 10px rgba(139,26,26,0.35)' : 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
+                  onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
+                  {loading ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      style={{ animation: 'spin 0.8s linear infinite' }}>
+                      <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
+                      <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
                 </div>
-              )}
-            </div>
+              </div>
+            </form>
+
           </div>
+        </footer>
+
+        {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
+        <div style={{ display: 'none' }} className="bottom-nav-wrapper">
+          <BottomNav
+            isAr={isAr}
+            activeTab={messages.length > 0 ? 'chat' : 'home'}
+            onHomeClick={() => setMessages([])}
+            onChatClick={() => { /* already in chat */ }}
+          />
         </div>
+
+      </div>
+
+      {/* ══════════════ GUIDED FLOW MODAL ══════════════ */}
+      {showGuide && (
+        <GuidedFlow
+          isAr={isAr}
+          onSend={(msg) => { sendMessage(msg) }}
+          onClose={() => setShowGuide(false)}
+        />
       )}
 
-    </div>
+      {/* ══ TRANSACTION STARTER (3-step wizard) ══════════ */}
+      {showTransactionStarter && (
+        <TransactionStarter
+          isAr={isAr}
+          onClose={() => setShowTransactionStarter(false)}
+          onResult={(result) => {
+            setShowTransactionStarter(false)
+            if (result.goal === 'analyze') {
+              fileInputRef.current?.click()
+            } else if (result.goal === 'human_review') {
+              const prompt = isAr
+                ? 'أريد طلب مراجعة بشرية من مختص قانوني'
+                : 'I want to request a human legal review'
+              sendMessage(prompt)
+            } else {
+              // Map goal to a contextual prompt
+              const goalPrompts: Record<string, [string, string]> = {
+                documents: ['ما هي المستندات المطلوبة لهذه المعاملة؟', 'What documents are required for this transaction?'],
+                checklist: ['أعطني checklist شامل لإتمام هذه المعاملة', 'Give me a comprehensive checklist to complete this transaction'],
+                authority: ['ما هي الجهة المختصة وكيف أتصل بها؟', 'What is the responsible authority and how do I contact them?'],
+              }
+              const [arPrompt, enPrompt] = goalPrompts[result.goal] ?? ['ابدأ معاملة', 'Start a transaction']
+              setShowGuide(true)
+            }
+          }}
+        />
+      )}
+
+      {/* ══ SERVICE GROUP SHEET ══════════════════════════ */}
+      <ServiceGroupSheet
+        group={activeServiceGroup}
+        isAr={isAr}
+        onClose={() => setActiveServiceGroup(null)}
+        onServiceSelect={(item: ServiceItem) => {
+          setActiveServiceGroup(null)
+          if (item.defaultAction === 'upload_document') {
+            fileInputRef.current?.click()
+          } else if (item.defaultAction === 'generate_checklist') {
+            const prompt = isAr
+              ? `أعطني checklist شامل لـ: ${item.titleAr}`
+              : `Give me a comprehensive checklist for: ${item.titleEn}`
+            sendMessage(prompt)
+          } else if (item.defaultAction === 'start_flow') {
+            setShowGuide(true)
+          } else {
+            const prompt = isAr ? (item.chatPromptAr ?? item.titleAr) : (item.chatPromptEn ?? item.titleEn)
+            sendMessage(prompt)
+          }
+        }}
+      />
+
+      {/* ══════════════ MOBILE MENU DRAWER ══════════════ */}
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        isAr={isAr}
+        lang={lang}
+        onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+        onHome={() => setMessages([])}
+        currentUser={currentUser}
+      />
+    </>
   )
 }

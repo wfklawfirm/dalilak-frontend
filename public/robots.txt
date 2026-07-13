@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /procedures/
+Allow: /forms/
+
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /my-files
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /api/
+
+Sitemap: https://dalilak-frontend.vercel.app/sitemap.xml

@@ -1,279 +1,87 @@
 'use client'
 
-import React, { ReactNode } from 'react'
+import React from 'react'
+import AgentResponseRenderer from './AgentResponseRenderer'
+import UniversalDocumentAnalysisView from './DocumentIntelligenceView'
+import type { AgentSource, ConfidenceLevel } from '@/lib/types'
 
 export interface Message {
   role: 'user' | 'assistant'
   content: string
   streaming?: boolean
+  /** Sources from SSE meta event */
+  sources?: AgentSource[]
+  confidence?: ConfidenceLevel
+  /** Universal document analysis result */
+  documentAnalysis?: import('@/lib/documentIntelligence').UniversalDocumentAnalysis
 }
 
-/* ── Language direction detection ────────────────────────────── */
-function getDir(text: string): 'rtl' | 'ltr' {
-  const ch = text.trim()[0]
-  if (!ch) return 'rtl'
-  const code = ch.charCodeAt(0)
-  if (
-    (code >= 0x0600 && code <= 0x06FF) ||
-    (code >= 0x0590 && code <= 0x05FF) ||
-    (code >= 0xFB50 && code <= 0xFDFF) ||
-    (code >= 0xFE70 && code <= 0xFEFF)
-  ) return 'rtl'
-  return 'ltr'
-}
-
-/* ── Inline markdown (bold + code) ──────────────────────────── */
-function Inline({ text, idx }: { text: string; idx: number }): ReactNode {
-  const parts: ReactNode[] = []
-  let rest = text
-  let k = 0
-
-  while (rest.length > 0) {
-    const bold = rest.match(/^(.*?)\*\*(.+?)\*\*/)
-    const code = rest.match(/^(.*?)`([^`]+)`/)
-
-    if (bold && (!code || bold[0].length <= code[0].length)) {
-      if (bold[1]) parts.push(<span key={k++}>{bold[1]}</span>)
-      parts.push(
-        <strong key={k++} style={{ color: '#8B1A1A', fontWeight: 700 }}>
-          {bold[2]}
-        </strong>
-      )
-      rest = rest.slice(bold[0].length)
-    } else if (code) {
-      if (code[1]) parts.push(<span key={k++}>{code[1]}</span>)
-      parts.push(
-        <code key={k++} style={{
-          background: '#FDF2F2', color: '#8B1A1A',
-          padding: '1px 6px', borderRadius: 4,
-          fontSize: '0.82em', fontFamily: 'monospace',
-          fontStyle: 'normal',
-        }}>
-          {code[2]}
-        </code>
-      )
-      rest = rest.slice(code[0].length)
-    } else {
-      parts.push(<span key={k++}>{rest}</span>)
-      break
-    }
-  }
-  return <>{parts}</>
-}
-
-/* ── Full markdown renderer ──────────────────────────────────── */
-function MarkdownRenderer({ text }: { text: string }) {
-  const lines    = text.split('\n')
-  const elements: ReactNode[] = []
-  let i = 0
-
-  while (i < lines.length) {
-    const line    = lines[i]
-    const trimmed = line.trim()
-
-    /* Empty line → small spacer */
-    if (trimmed === '') {
-      elements.push(<div key={i} style={{ height: '0.4rem' }} />)
-      i++; continue
-    }
-
-    /* Horizontal rule */
-    if (/^---+$/.test(trimmed)) {
-      elements.push(
-        <hr key={i} style={{
-          border: 'none', borderTop: '1px solid #F0E0E0', margin: '0.7rem 0',
-        }} />
-      )
-      i++; continue
-    }
-
-    /* H1 */
-    const h1 = trimmed.match(/^# (.+)/)
-    if (h1) {
-      elements.push(
-        <h2 key={i} style={{
-          fontWeight: 800, fontSize: '1.08em',
-          margin: '1.1rem 0 0.45rem',
-          color: '#111827',
-          borderBottom: '1.5px solid #F0E0E0', paddingBottom: '0.3rem',
-          lineHeight: 1.45, letterSpacing: '-0.01em',
-        }}>
-          <Inline text={h1[1]} idx={i} />
-        </h2>
-      )
-      i++; continue
-    }
-
-    /* H2 */
-    const h2 = trimmed.match(/^## (.+)/)
-    if (h2) {
-      elements.push(
-        <h3 key={i} style={{
-          fontWeight: 700, fontSize: '1em',
-          margin: '0.9rem 0 0.3rem',
-          color: '#8B1A1A', lineHeight: 1.45,
-          display: 'flex', alignItems: 'center', gap: '0.4em',
-        }}>
-          <span style={{ width: 3, height: '1em', background: '#8B1A1A', borderRadius: 2, flexShrink: 0, display: 'inline-block' }} />
-          <Inline text={h2[1]} idx={i} />
-        </h3>
-      )
-      i++; continue
-    }
-
-    /* H3 */
-    const h3 = trimmed.match(/^### (.+)/)
-    if (h3) {
-      elements.push(
-        <h4 key={i} style={{
-          fontWeight: 600, fontSize: '0.94em',
-          margin: '0.7rem 0 0.22rem',
-          color: '#374151', lineHeight: 1.45,
-        }}>
-          <Inline text={h3[1]} idx={i} />
-        </h4>
-      )
-      i++; continue
-    }
-
-    /* Unordered list */
-    if (/^[-*•] /.test(trimmed)) {
-      const items: ReactNode[] = []
-      while (i < lines.length && /^[-*•] /.test(lines[i].trim())) {
-        const content = lines[i].trim().replace(/^[-*•] /, '')
-        items.push(
-          <li key={i} style={{ marginBottom: '0.32rem', paddingRight: '0.2rem', lineHeight: 1.85, fontSize: '0.96em' }}>
-            <Inline text={content} idx={i} />
-          </li>
-        )
-        i++
-      }
-      elements.push(
-        <ul key={'ul-' + i} style={{
-          listStyle: 'disc', paddingRight: '1.5rem', paddingLeft: '0.5rem',
-          marginBottom: '0.6rem', marginTop: '0.15rem',
-        }}>
-          {items}
-        </ul>
-      )
-      continue
-    }
-
-    /* Ordered list */
-    if (/^\d+\. /.test(trimmed)) {
-      const items: ReactNode[] = []
-      while (i < lines.length && /^\d+\. /.test(lines[i].trim())) {
-        const content = lines[i].trim().replace(/^\d+\. /, '')
-        items.push(
-          <li key={i} style={{ marginBottom: '0.35rem', paddingRight: '0.2rem', lineHeight: 1.85, fontSize: '0.96em' }}>
-            <Inline text={content} idx={i} />
-          </li>
-        )
-        i++
-      }
-      elements.push(
-        <ol key={'ol-' + i} style={{
-          listStyle: 'decimal', paddingRight: '1.5rem', paddingLeft: '0.5rem',
-          marginBottom: '0.6rem', marginTop: '0.15rem',
-        }}>
-          {items}
-        </ol>
-      )
-      continue
-    }
-
-    /* Blockquote */
-    if (/^> /.test(trimmed)) {
-      const content = trimmed.slice(2)
-      elements.push(
-        <div key={i} style={{
-          borderRight: '3px solid #8B1A1A',
-          paddingRight: '0.8rem', margin: '0.45rem 0',
-          color: '#6B7280', fontSize: '0.88em',
-          fontStyle: 'italic', lineHeight: 1.8,
-        }}>
-          <Inline text={content} idx={i} />
-        </div>
-      )
-      i++; continue
-    }
-
-    /* Paragraph */
-    elements.push(
-      <p key={i} style={{ marginBottom: '0.5rem', lineHeight: 1.92, fontSize: '0.96em' }}>
-        <Inline text={trimmed} idx={i} />
-      </p>
-    )
-    i++
-  }
-
-  return <div style={{ fontSize: 14 }}>{elements}</div>
-}
-
-/* ── ChatMessage component ───────────────────────────────────── */
-export default function ChatMessage({ msg }: { msg: Message }) {
-  const isUser  = msg.role === 'user'
-  const msgDir  = getDir(msg.content)
+export default function ChatMessage({
+  msg, isAr, onFollowUp, onSendMessage, onUploadFile, onStartFlow,
+}: {
+  msg: Message
+  isAr?: boolean
+  onFollowUp?: (q: string) => void
+  onSendMessage?: (q: string) => void
+  onUploadFile?: () => void
+  onStartFlow?: (slug: string) => void
+}) {
+  const isUser = msg.role === 'user'
+  const ar = isAr !== false
 
   return (
     <div style={{
-      display: 'flex',
-      alignItems: 'flex-end',
-      gap: 9,
-      marginBottom: 18,
-      flexDirection: isUser ? 'row' : 'row-reverse',
+      display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 20,
+      flexDirection: isUser ? 'row-reverse' : 'row',
     }}>
-
       {/* Avatar */}
       <div style={{
-        flexShrink: 0,
-        width: 30, height: 30,
-        borderRadius: '50%',
-        backgroundColor: isUser ? '#8B1A1A' : '#F3F4F6',
-        border: isUser ? 'none' : '1px solid #E5E7EB',
+        flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: isUser ? 10 : 14,
-        fontWeight: 700,
-        color: isUser ? '#fff' : undefined,
-        marginBottom: 2,
-        boxShadow: isUser ? '0 1px 4px rgba(139,26,26,0.2)' : 'none',
-        userSelect: 'none',
+        fontSize: 11, fontWeight: 700, color: '#fff',
+        background: isUser
+          ? 'linear-gradient(135deg, #C9982A 0%, #B8860B 100%)'
+          : 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
+        boxShadow: isUser ? '0 2px 6px rgba(201,152,42,0.3)' : '0 2px 6px rgba(139,26,26,0.3)',
       }}>
-        {isUser ? 'أنت' : '🌲'}
+        {isUser ? (ar ? 'أنت' : 'You') : 'AI'}
       </div>
 
-      {/* Bubble */}
-      <div style={{
-        maxWidth: '80%',
-        padding: isUser ? '10px 15px' : '13px 16px',
-        borderRadius: isUser
-          ? '18px 18px 4px 18px'   /* user: flat bottom-left */
-          : '18px 18px 18px 4px',  /* AI:   flat bottom-right (RTL visual) */
-        fontSize: 13.5,
-        lineHeight: 1.75,
-        fontWeight: 400,
-        backgroundColor: isUser ? '#8B1A1A' : '#FFFFFF',
-        color:           isUser ? '#FFFFFF' : '#1F2937',
-        border:          isUser ? 'none'    : '1px solid #E5E7EB',
-        boxShadow: isUser
-          ? '0 2px 8px rgba(139,26,26,0.18)'
-          : '0 1px 4px rgba(0,0,0,0.06)',
-      }}>
-
-        {isUser ? (
-          <p style={{ whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.8, direction: msgDir, textAlign: msgDir === 'rtl' ? 'right' : 'left' }}>
-            {msg.content}
-          </p>
-        ) : (
-          <div dir={msgDir} style={{ textAlign: msgDir === 'rtl' ? 'right' : 'left' }}>
-            <MarkdownRenderer text={msg.content} />
-            {msg.streaming && (
-              <span className="cursor" />
-            )}
+      {isUser ? (
+        <div style={{ maxWidth: '86%', minWidth: 60 }}>
+          <div style={{
+            padding: '11px 15px', borderRadius: 16,
+            borderTopRightRadius: ar ? 4 : 16, borderTopLeftRadius: ar ? 16 : 4,
+            background: 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
+            color: '#fff', fontSize: 13.5, lineHeight: 1.75,
+            boxShadow: '0 2px 10px rgba(139,26,26,0.2)',
+          }}>
+            <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+              {msg.content.replace(/^\[.*?\]\n?/, '')}
+            </p>
           </div>
-        )}
-
-      </div>
+        </div>
+      ) : msg.documentAnalysis ? (
+        /* ── Document Intelligence View ── */
+        <div style={{ flex: 1, minWidth: 0, maxWidth: '100%' }}>
+          <UniversalDocumentAnalysisView
+            analysis={msg.documentAnalysis}
+            isAr={ar}
+            onSendMessage={onSendMessage ?? onFollowUp ?? (() => {})}
+            onStartFlow={onStartFlow}
+            onUploadFile={onUploadFile}
+          />
+        </div>
+      ) : (
+        <AgentResponseRenderer
+          content={msg.content}
+          isAr={ar}
+          streaming={msg.streaming}
+          sources={msg.sources}
+          confidence={msg.confidence}
+          onFollowUp={onFollowUp}
+        />
+      )}
     </div>
   )
 }
