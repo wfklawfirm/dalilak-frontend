@@ -652,6 +652,16 @@ export default function AgentResponseRenderer({
             activeCitation={activeCitation}
             defaultExpanded={hasCitations && Boolean(agentSources?.length)}
           />
+          {/* ── Legal disclaimer ──────────────────────── */}
+          <p style={{
+            margin: '10px 0 0', fontSize: 10.5, color: '#9ca3af', lineHeight: 1.5,
+            direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left',
+            borderTop: '1px solid #f3f4f6', paddingTop: 8,
+          }}>
+            {isAr
+              ? '⚖️ المعلومات أعلاه للاستئناس فقط وليست استشارة قانونية ملزمة — يُنصح باستشارة محامٍ مختص قبل اتخاذ أي إجراء قانوني.'
+              : '⚖️ The above is for informational purposes only and does not constitute legal advice. Consult a qualified lawyer before taking legal action.'}
+          </p>
         </>
       )}
 

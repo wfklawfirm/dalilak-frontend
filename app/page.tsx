@@ -592,6 +592,8 @@ export default function Home() {
 
   const canSend = Boolean((input.trim() || attachedFile) && !loading)
   const isAr = lang === 'ar'
+  const MAX_INPUT = 4000
+  const showCharCount = input.length > 3000
 
   if (!authChecked) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
@@ -1121,7 +1123,7 @@ export default function Home() {
                 <textarea
                   ref={textareaRef}
                   value={input}
-                  onChange={e => setInput(e.target.value)}
+                  onChange={e => setInput(e.target.value.slice(0, MAX_INPUT))}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
@@ -1142,6 +1144,18 @@ export default function Home() {
                     fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
                   }}
                 />
+
+                {/* Character counter — visible only when > 3000 chars */}
+                {showCharCount && (
+                  <span style={{
+                    flexShrink: 0, fontSize: 11, lineHeight: 1,
+                    color: input.length > 3800 ? '#b91c1c' : '#9ca3af',
+                    fontFamily: 'monospace', padding: '0 2px',
+                    alignSelf: 'flex-end', paddingBottom: 10,
+                  }}>
+                    {input.length}/{MAX_INPUT}
+                  </span>
+                )}
 
                 {/* Mic */}
                 <button type="button" onClick={recording ? stopRecording : startRecording} disabled={loading}
