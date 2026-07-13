@@ -866,6 +866,9 @@ export default function Home() {
                     onSendMessage={(q) => sendMessage(q)}
                     onUploadFile={() => fileInputRef.current?.click()}
                     onStartFlow={() => setShowGuide(true)}
+                    question={msg.role === 'assistant' && i > 0 && messages[i - 1]?.role === 'user'
+                      ? messages[i - 1].content.replace(/^\[.*?\]\n?/, '').slice(0, 300)
+                      : undefined}
                   />
                 </div>
               ))}

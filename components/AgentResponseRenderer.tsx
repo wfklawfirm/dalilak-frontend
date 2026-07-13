@@ -12,6 +12,9 @@
 
 import React, { ReactNode, useState, useEffect } from 'react'
 import type { AgentSource, ConfidenceLevel } from '@/lib/types'
+import { authHeaders } from '@/lib/auth'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 // ── Section style map ─────────────────────────────────────────
 const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; labelColor: string }> = {
@@ -457,15 +460,32 @@ function extractDocsList(text: string): string {
 
 // ── Response Actions ──────────────────────────────────────────
 export function ResponseActions({
-  content, isAr, onFollowUp,
+  content, isAr, onFollowUp, question, confidence,
 }: {
   content: string
   isAr: boolean
   onFollowUp?: (q: string) => void
+  question?: string
+  confidence?: ConfidenceLevel
 }) {
   const [copied, setCopied] = useState(false)
   const [docsCopied, setDocsCopied] = useState(false)
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
+
+  const submitFeedback = (rating: 'up' | 'down') => {
+    if (feedback) return  // already rated
+    setFeedback(rating)
+    fetch(API_URL + '/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({
+        question: question || '',
+        answer: content.slice(0, 800),
+        rating,
+        confidence: confidence || 'unknown',
+      }),
+    }).catch(() => {})
+  }
 
   const copy = () => {
     navigator.clipboard.writeText(content).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
@@ -526,18 +546,18 @@ export function ResponseActions({
         isAr ? 'اسأل متابعة' : 'Follow-up',
       )}
       <span style={{ color: '#E5E7EB', alignSelf: 'center' }}>|</span>
-      {btn(() => setFeedback('up'),
+      {btn(() => submitFeedback('up'),
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'up' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
         </svg>,
-        isAr ? 'مفيد' : 'Helpful',
+        isAr ? (feedback === 'up' ? '✓ مفيد' : 'مفيد') : (feedback === 'up' ? '✓ Helpful' : 'Helpful'),
         feedback === 'up', '#16a34a', '#F0FDF4', '#22c55e',
       )}
-      {btn(() => setFeedback('down'),
+      {btn(() => submitFeedback('down'),
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'down' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/>
         </svg>,
-        isAr ? 'غير مفيد' : 'Not helpful',
+        isAr ? (feedback === 'down' ? '✓ غير مفيد' : 'غير مفيد') : (feedback === 'down' ? '✓ Not helpful' : 'Not helpful'),
         feedback === 'down', '#dc2626', '#FEF2F2', '#ef4444',
       )}
     </div>
@@ -552,10 +572,11 @@ interface AgentResponseRendererProps {
   sources?: AgentSource[]
   confidence?: ConfidenceLevel
   onFollowUp?: (q: string) => void
+  question?: string   // user's original question — passed to feedback
 }
 
 export default function AgentResponseRenderer({
-  content, isAr, streaming, sources, confidence, onFollowUp,
+  content, isAr, streaming, sources, confidence, onFollowUp, question,
 }: AgentResponseRendererProps) {
   const displayContent = content.replace(/^\[.*?\]\n?/, '')
   const sections = !streaming ? parseSections(displayContent) : []
@@ -623,7 +644,7 @@ export default function AgentResponseRenderer({
 
       {!streaming && content.length > 30 && (
         <>
-          <ResponseActions content={displayContent} isAr={isAr} onFollowUp={onFollowUp} />
+          <ResponseActions content={displayContent} isAr={isAr} onFollowUp={onFollowUp} question={question} confidence={confidence} />
           <TrustBadge
             isAr={isAr}
             sources={agentSources}
