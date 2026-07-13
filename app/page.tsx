@@ -172,6 +172,8 @@ export default function Home() {
   const [activeDocumentName, setActiveDocumentName] = useState<string | null>(null)
   // Follow-up question suggestions — shown after each assistant answer
   const [followupQuestions, setFollowupQuestions] = useState<string[]>([])
+  // Remaining daily quota — null = unknown, -1 = unlimited (admin)
+  const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -495,6 +497,7 @@ export default function Home() {
       let buffer = ''
       let metaSources: import('@/lib/types').AgentSource[] = []
       let metaConfidence: import('@/lib/types').ConfidenceLevel = 'unknown'
+      let metaRemaining: number | null = null
 
       while (true) {
         const { done, value } = await reader.read()
@@ -527,6 +530,7 @@ export default function Home() {
                   })
               }
               if (p.confidence) metaConfidence = p.confidence
+              if (typeof p.remaining === 'number') metaRemaining = p.remaining
             }
             const tok = p.type === 'token' ? p.text : p.choices?.[0]?.delta?.content
             if (tok) {
@@ -556,6 +560,8 @@ export default function Home() {
       if (!file && accumulated) {
         lsSet(prefixedMessage, accumulated)
       }
+      // Update remaining quota display
+      if (metaRemaining !== null) setQuotaRemaining(metaRemaining)
       // Fetch follow-up question suggestions (fire-and-forget, no latency impact)
       if (!file && accumulated && accumulated.length > 100) {
         fetch(API_URL + '/suggest_followup', {
@@ -954,6 +960,23 @@ export default function Home() {
                 <span style={{ opacity: 0.6, fontSize: 11 }}>💬</span> {q}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* ══ Quota remaining warning ══ */}
+        {quotaRemaining !== null && quotaRemaining >= 0 && quotaRemaining <= 10 && (
+          <div style={{
+            maxWidth: 720, margin: '0 auto', padding: '0 12px 2px',
+            direction: 'rtl', textAlign: 'right',
+          }}>
+            <span style={{
+              display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#b91c1c' : '#92400e',
+              background: quotaRemaining <= 3 ? '#fef2f2' : '#fffbeb',
+              border: `1px solid ${quotaRemaining <= 3 ? '#fecaca' : '#fde68a'}`,
+              borderRadius: 20, padding: '2px 10px', fontFamily: 'inherit',
+            }}>
+              {quotaRemaining <= 3 ? '⚠️' : 'ℹ️'} {quotaRemaining === 0 ? 'استنفذت حصتك اليومية' : `${quotaRemaining} سؤال متبقٍ اليوم`}
+            </span>
           </div>
         )}
 
