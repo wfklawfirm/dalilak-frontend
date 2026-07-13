@@ -174,6 +174,8 @@ export default function Home() {
   const [followupQuestions, setFollowupQuestions] = useState<string[]>([])
   // Remaining daily quota — null = unknown, -1 = unlimited (admin)
   const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null)
+  // Last failed message — shown as retry chip on error
+  const [retryMsg, setRetryMsg] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -346,6 +348,7 @@ export default function Home() {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
     setFollowupQuestions([])
+    setRetryMsg(null)
 
     // ── Sanitize input ────────────────────────────────────────
     const { clean: cleanText, flagged } = sanitizeInput(text)
@@ -576,9 +579,10 @@ export default function Home() {
     } catch {
       setMessages(prev => {
         const u = [...prev]
-        u[u.length - 1] = { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال. حاول مرة أخرى.', streaming: false }
+        u[u.length - 1] = { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال. تحقق من اتصالك وأعد المحاولة.', streaming: false }
         return u
       })
+      if (!file) setRetryMsg(text)   // offer retry chip for text-only queries
     } finally {
       clearTimeout(coldStartTimer)
       setLoading(false)
@@ -962,6 +966,24 @@ export default function Home() {
                 <span style={{ opacity: 0.6, fontSize: 11 }}>💬</span> {q}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* ══ Retry chip on connection error ══ */}
+        {retryMsg && !loading && (
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
+            <button
+              onClick={() => sendMessage(retryMsg)}
+              style={{
+                background: '#fff5f5', border: '1px solid rgba(139,26,26,0.25)',
+                borderRadius: 20, padding: '6px 16px', fontSize: 12.5,
+                color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5' }}
+            >
+              🔄 إعادة المحاولة
+            </button>
           </div>
         )}
 
