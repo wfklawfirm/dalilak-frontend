@@ -287,14 +287,13 @@ export default function TopNav({
               <button
                 onClick={() => router.push('/admin')}
                 className="tn-ibtn tn-desk-only"
-                title="Admin"
+                title={isAr ? 'لوحة الإدارة' : 'Admin'}
                 style={{
                   display: 'none', alignItems: 'center', justifyContent: 'center',
                   height: 32, width: 32, borderRadius: 9,
                   border: '1.5px solid rgba(255,255,255,0.22)',
                   background: 'rgba(255,255,255,0.09)',
                   color: '#fff', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

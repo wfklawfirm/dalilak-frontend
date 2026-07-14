@@ -634,15 +634,18 @@ export default function Home() {
   const showCharCount = input.length > 3000
 
   if (!authChecked) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ffffff' }}>
-      <div style={{ fontSize: 14, color: '#9ca3af' }}>جاري التحقق...</div>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAFAF8', gap: 14 }}>
+      <img src="/logo.PNG" alt="دليلك" style={{ width: 52, height: 52, objectFit: 'contain', opacity: 0.7 }} />
+      <div style={{ display: 'flex', gap: 6 }}>
+        {[0,1,2].map(i => <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: '#8B1A1A', display: 'inline-block', animation: `typing-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
+      </div>
     </div>
   )
 
   return (
     <>
       <style>{`
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #ffffff; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #FAFAF8; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         textarea { font-family: inherit; }
         :root {
@@ -653,10 +656,10 @@ export default function Home() {
           --red-light: #FEF2F2;
           --gold: #B8860B;
           --gold-light: #FDF8E8;
-          --bg: #ffffff;
+          --bg: #FAFAF8;
           --card: #FFFFFF;
-          --border: #F0F0F0;
-          --border-strong: #E0E0E0;
+          --border: #EAE4D9;
+          --border-strong: #D5CEC4;
           --text: #1A1208;
           --text-2: #5C5044;
           --text-3: #9C8E80;
@@ -675,13 +678,20 @@ export default function Home() {
           from { opacity: 0; transform: translateY(6px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes heroIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
         .msg-in { animation: fadeUp 0.25s ease; }
         .quick-btn { animation: slideQ 0.3s ease; }
+        .wlc-hero-band { animation: heroIn 0.35s ease; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
         .suggestion-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,26,26,0.10) !important; border-color: rgba(139,26,26,0.25) !important; }
         .quick-btn:hover { background: var(--red-light) !important; border-color: rgba(139,26,26,0.3) !important; color: var(--red) !important; }
+        .action-card:hover { transform: translateY(-3px) !important; box-shadow: 0 10px 28px rgba(0,0,0,0.10) !important; border-color: rgba(139,26,26,0.22) !important; }
+        .action-card:active { transform: scale(0.96) !important; }
         .mode-btn { transition: all 0.18s ease; }
         .mode-btn:hover { transform: scale(1.04); }
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
@@ -690,18 +700,14 @@ export default function Home() {
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
 
         /* ── Welcome screen responsive layout ─────────────────────── */
-        .wlc-wrap { width: 100%; max-width: 420px; }
         .wlc-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .wlc-most-req { display: none; }
-        .wlc-svc-btn:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 14px rgba(139,26,26,0.10) !important; }
+        .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; }
 
         @media (min-width: 768px) {
-          .wlc-wrap { max-width: 720px; }
           .wlc-desktop-cols { display: grid !important; grid-template-columns: 280px 1fr; gap: 36px; align-items: start; }
           .wlc-svc-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-          .wlc-most-req { display: block; }
-          .wlc-hero { text-align: inherit !important; align-items: flex-start !important; margin-bottom: 0 !important; }
-          .wlc-logo { margin-left: 0 !important; margin-right: 0 !important; }
+          .wlc-most-req { display: flex !important; }
         }
       `}</style>
 
@@ -709,7 +715,7 @@ export default function Home() {
         position: 'fixed', top: 0, left: 0, right: 0,
         bottom: footerBottom,
         display: 'flex', flexDirection: 'column',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#FAFAF8',
         paddingTop: 'var(--safe-top)',
       }}>
 
@@ -734,204 +740,236 @@ export default function Home() {
         }}>
           {messages.length === 0 ? (
 
-            /* ══ Welcome Screen v3 — Clean & Professional ══ */
-            <div className="welcome-bottom-pad" style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              minHeight: '100%', padding: '16px 14px 24px',
-              direction: isAr ? 'rtl' : 'ltr',
-            }}>
-              <div className="wlc-wrap">
+            /* ══ Welcome Screen — Big Four Premium Edition ══ */
+            <div style={{ minHeight: '100%', background: '#FAFAF8', direction: isAr ? 'rtl' : 'ltr' }}>
 
-                {/* ── Desktop: 2-col layout / Mobile: column ── */}
+              {/* ── Hero Band (full-width gradient) ── */}
+              <div className="wlc-hero-band" style={{
+                background: 'linear-gradient(150deg, #8B1A1A 0%, #6b2737 52%, #4a1020 100%)',
+                padding: 'clamp(18px,5vw,28px) clamp(16px,4vw,24px) clamp(22px,5vw,32px)',
+                position: 'relative', overflow: 'hidden',
+              }}>
+                {/* Decorative rings */}
+                <div style={{ position:'absolute', top:-90, right:-90, width:260, height:260, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.07)', pointerEvents:'none' }} />
+                <div style={{ position:'absolute', top:-50, right:-50, width:160, height:160, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.05)', pointerEvents:'none' }} />
+                <div style={{ position:'absolute', bottom:-60, left:-40, width:180, height:180, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.04)', pointerEvents:'none' }} />
+
+                <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative' }}>
+                  {/* Top row: logo wordmark + online badge */}
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 14 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap: 10 }}>
+                      <div style={{ width:38, height:38, borderRadius:11, background:'rgba(255,255,255,0.13)', display:'flex', alignItems:'center', justifyContent:'center', border:'1px solid rgba(255,255,255,0.2)', flexShrink:0 }}>
+                        <img src="/logo.PNG" alt="دليلك" style={{ width:27, height:27, objectFit:'contain' }} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize:16, fontWeight:900, color:'#fff', letterSpacing:'-0.4px', lineHeight:1 }}>دليلك</div>
+                        <div style={{ fontSize:9.5, color:'rgba(255,255,255,0.5)', marginTop:2 }}>
+                          {isAr ? 'المرشد القانوني اللبناني' : 'Lebanese Legal Guide'}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display:'flex', alignItems:'center', gap:5, background:'rgba(74,222,128,0.1)', borderRadius:20, padding:'4px 10px', border:'1px solid rgba(74,222,128,0.2)', flexShrink:0 }}>
+                      <span style={{ width:6, height:6, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 5px #4ade80', display:'block' }} />
+                      <span style={{ fontSize:10, color:'#4ade80', fontWeight:700 }}>{isAr ? 'متاح الآن' : 'Available'}</span>
+                    </div>
+                  </div>
+
+                  {/* User greeting */}
+                  {currentUser && (
+                    <p style={{ fontSize:11, color:'rgba(255,255,255,0.55)', margin:'0 0 4px', fontWeight:500 }}>
+                      {isAr
+                        ? `مرحباً، ${currentUser.name || currentUser.email?.split('@')[0]}`
+                        : `Hello, ${currentUser.name || currentUser.email?.split('@')[0]}`}
+                    </p>
+                  )}
+
+                  {/* Main headline */}
+                  <h1 style={{ fontSize:'clamp(18px,5.5vw,25px)', fontWeight:900, color:'#fff', margin:'0 0 6px', lineHeight:1.2, letterSpacing:'-0.5px' }}>
+                    {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What can we help you with today?'}
+                  </h1>
+                  <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.58)', margin:0, lineHeight:1.55 }}>
+                    {isAr
+                      ? 'معاملات حكومية · وثائق رسمية · إجراءات قانونية · تحليل مستندات'
+                      : 'Government transactions · Official documents · Legal procedures · Document analysis'}
+                  </p>
+                </div>
+              </div>
+
+              {/* ── Content Area ── */}
+              <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
                 <div className="wlc-desktop-cols" style={{ display: 'block' }}>
 
-                  {/* ════ LEFT COL (hero + actions) ════ */}
+                  {/* ════ LEFT / TOP COL ════ */}
                   <div>
-                    {/* Hero */}
-                    <div className="wlc-hero" style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'center',
-                      textAlign: 'center', marginBottom: 18,
-                    }}>
-                      <img
-                        src="/logo.PNG" alt="دليلك"
-                        className="wlc-logo"
-                        style={{
-                          width: 'clamp(72px, 16vw, 96px)',
-                          height: 'clamp(72px, 16vw, 96px)',
-                          objectFit: 'contain', mixBlendMode: 'multiply',
-                          display: 'block', margin: '0 auto 12px',
-                        }}
-                      />
-                      <h2 style={{
-                        fontSize: 'clamp(15px, 4.2vw, 21px)', fontWeight: 800,
-                        color: 'var(--text)', margin: '0 0 6px',
-                        letterSpacing: '-0.3px', lineHeight: 1.3,
-                      }}>
-                        {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What do you need to complete?'}
-                      </h2>
-                      <p style={{ fontSize: 11, color: 'var(--text-3)', margin: 0, lineHeight: 1.6, maxWidth: 280 }}>
-                        {isAr
-                          ? 'اختر خدمة أو اكتب سؤالك مباشرة'
-                          : 'Choose a service or type your question directly'}
-                      </p>
-                    </div>
-
-                    {/* 3 Primary Actions */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 18 }}>
+                    {/* 3 Premium White Action Cards */}
+                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:9, marginBottom:20 }}>
                       {[
                         {
-                          bg: 'linear-gradient(135deg,#8B1A1A,#6b2737)',
-                          ar: 'ابدأ معاملة', en: 'Start',
-                          action: 'start',
-                          svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/></svg>,
+                          ar:'ابدأ معاملة', en:'Start',
+                          sub_ar:'مسار موجّه', sub_en:'Guided path',
+                          action:'start', color:'#8B1A1A',
+                          svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/></svg>,
                         },
                         {
-                          bg: 'linear-gradient(135deg,#7a1818,#5c1212)',
-                          ar: 'حلّل مستنداً', en: 'Analyze',
-                          action: 'file',
-                          svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>,
+                          ar:'حلّل مستنداً', en:'Analyze',
+                          sub_ar:'PDF أو صورة', sub_en:'PDF or image',
+                          action:'file', color:'#9a3412',
+                          svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
                         },
                         {
-                          bg: 'linear-gradient(135deg,#374151,#1f2937)',
-                          ar: 'اسأل دليلك', en: 'Ask',
-                          action: 'ask',
-                          svg: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>,
+                          ar:'اسأل دليلك', en:'Ask',
+                          sub_ar:'سؤال مباشر', sub_en:'Free-form question',
+                          action:'ask', color:'#374151',
+                          svg:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>,
                         },
                       ].map(item => (
                         <button
                           key={item.action}
+                          className="action-card"
                           onClick={() => {
                             if (item.action === 'start') setShowTransactionStarter(true)
                             else if (item.action === 'file') fileInputRef.current?.click()
                             else textareaRef.current?.focus()
                           }}
                           style={{
-                            padding: '13px 6px 11px', borderRadius: 14, cursor: 'pointer',
-                            background: item.bg, border: 'none', color: '#fff',
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
-                            fontFamily: 'inherit', boxShadow: '0 3px 12px rgba(0,0,0,0.14)',
-                            transition: 'transform 0.15s, box-shadow 0.15s',
+                            padding:'14px 8px 12px', borderRadius:15, cursor:'pointer',
+                            background:'#fff', border:`1.5px solid ${item.color}18`,
+                            display:'flex', flexDirection:'column', alignItems:'center', gap:9,
+                            fontFamily:'inherit', boxShadow:'0 2px 10px rgba(0,0,0,0.055)',
+                            transition:'all 0.16s',
                           }}
-                          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.2)' }}
-                          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 12px rgba(0,0,0,0.14)' }}
-                          onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)' }}
-                          onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}
                         >
-                          <span style={{ opacity: 0.95 }}>{item.svg}</span>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>
-                            {isAr ? item.ar : item.en}
-                          </span>
+                          <div style={{ width:44, height:44, borderRadius:13, background:`${item.color}0f`, border:`1.5px solid ${item.color}1c`, display:'flex', alignItems:'center', justifyContent:'center', color:item.color }}>
+                            {item.svg}
+                          </div>
+                          <div style={{ textAlign:'center' }}>
+                            <div style={{ fontSize:11, fontWeight:800, color:'#1A1208', lineHeight:1.15 }}>
+                              {isAr ? item.ar : item.en}
+                            </div>
+                            <div style={{ fontSize:9.5, color:'#9C8E80', marginTop:3, lineHeight:1.25 }}>
+                              {isAr ? item.sub_ar : item.sub_en}
+                            </div>
+                          </div>
                         </button>
                       ))}
                     </div>
 
-                    {/* Quick nav pills — desktop only */}
-                    <div className="wlc-most-req" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
-                      {[
-                        { ar: 'جواز سفر', en: 'Passport', slug: 'passport' },
-                        { ar: 'سجل عدلي', en: 'Criminal Record', slug: 'criminal-record' },
-                        { ar: 'إخراج قيد', en: 'Civil Extract', slug: 'civil-registry-extract' },
-                        { ar: 'حصر إرث', en: 'Inheritance', slug: 'inheritance-certificate' },
-                        { ar: 'تأسيس شركة', en: 'Company Reg.', slug: 'company-registration' },
-                        { ar: 'رخصة بناء', en: 'Building Permit', slug: 'building-permit' },
-                      ].map(p => (
-                        <button key={p.slug} onClick={() => setShowGuide(true)} style={{
-                          padding: '5px 12px', borderRadius: 20, border: '1.5px solid var(--border)',
-                          background: '#fff', fontSize: 11, fontWeight: 600, color: 'var(--text-2)',
-                          cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
-                          whiteSpace: 'nowrap',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-2)'; e.currentTarget.style.background = '#fff' }}>
-                          {isAr ? p.ar : p.en}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* ════ RIGHT COL (service groups + CTA) ════ */}
-                  <div>
-                    {/* Service Groups */}
-                    <div style={{ marginBottom: 14 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                        <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text-2)' }}>
-                          {isAr ? 'الخدمات' : 'Services'}
+                    {/* Divider + Quick nav pills (desktop) */}
+                    <div className="wlc-most-req" style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:4 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                        <div style={{ flex:1, height:1, background:'#EAE4D9' }} />
+                        <span style={{ fontSize:9.5, color:'#9C8E80', fontWeight:700, whiteSpace:'nowrap', letterSpacing:'0.4px', textTransform:'uppercase' as const }}>
+                          {isAr ? 'الأكثر طلباً' : 'Most requested'}
                         </span>
-                        <button onClick={() => router.push('/services')} style={{
-                          fontSize: 10.5, color: 'var(--red)', background: 'none',
-                          border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600,
-                        }}>
-                          {isAr ? 'كل الخدمات ←' : 'All Services →'}
-                        </button>
+                        <div style={{ flex:1, height:1, background:'#EAE4D9' }} />
                       </div>
-                      <div className="wlc-svc-grid">
-                        {SERVICE_GROUPS.map(group => (
-                          <button
-                            key={group.slug}
-                            className="wlc-svc-btn"
-                            onClick={() => setActiveServiceGroup(group)}
-                            style={{
-                              display: 'flex', alignItems: 'center', gap: 9,
-                              padding: '10px 12px', borderRadius: 12, cursor: 'pointer',
-                              background: '#fff', border: '1.5px solid var(--border)',
-                              fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
-                              transition: 'all 0.14s', boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                            }}
-                            onTouchStart={e => { e.currentTarget.style.background = '#FAFAFA'; e.currentTarget.style.transform = 'scale(0.97)' }}
-                            onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
-                          >
-                            <div style={{
-                              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                              background: `${group.color}13`, border: `1px solid ${group.color}22`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', color: group.color,
-                            }}>
-                              <ServiceGroupIcon slug={group.slug} />
-                            </div>
-                            <div style={{ minWidth: 0 }}>
-                              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {isAr ? group.titleAr : group.titleEn}
-                              </div>
-                              <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1 }}>
-                                {group.services.length} {isAr ? 'خدمة' : 'services'}
-                              </div>
-                            </div>
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' as const }}>
+                        {[
+                          { ar:'جواز سفر', en:'Passport', slug:'passport' },
+                          { ar:'سجل عدلي', en:'Criminal Record', slug:'criminal-record' },
+                          { ar:'إخراج قيد', en:'Civil Extract', slug:'civil-registry-extract' },
+                          { ar:'حصر إرث', en:'Inheritance', slug:'inheritance-certificate' },
+                          { ar:'تأسيس شركة', en:'Company Reg.', slug:'company-registration' },
+                          { ar:'رخصة بناء', en:'Building Permit', slug:'building-permit' },
+                        ].map(p => (
+                          <button key={p.slug} onClick={() => setShowGuide(true)} style={{
+                            padding:'5px 12px', borderRadius:20, border:'1.5px solid #EAE4D9',
+                            background:'#fff', fontSize:11, fontWeight:600, color:'#5C5044',
+                            cursor:'pointer', fontFamily:'inherit', transition:'all 0.12s',
+                            whiteSpace:'nowrap' as const,
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.color='#8B1A1A'; e.currentTarget.style.background='#FEF2F2' }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.color='#5C5044'; e.currentTarget.style.background='#fff' }}>
+                            {isAr ? p.ar : p.en}
                           </button>
                         ))}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* ════ RIGHT / BOTTOM COL ════ */}
+                  <div>
+                    {/* Section header */}
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+                      <span style={{ fontSize:12, fontWeight:700, color:'#5C5044', letterSpacing:'-0.1px' }}>
+                        {isAr ? 'الخدمات' : 'Services'}
+                      </span>
+                      <button onClick={() => router.push('/services')} style={{
+                        fontSize:11, color:'#8B1A1A', background:'none',
+                        border:'none', cursor:'pointer', fontFamily:'inherit', fontWeight:700,
+                        display:'flex', alignItems:'center', gap:3,
+                      }}>
+                        {isAr ? 'عرض الكل' : 'View all'}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Service group grid */}
+                    <div className="wlc-svc-grid" style={{ marginBottom:14 }}>
+                      {SERVICE_GROUPS.map(group => (
+                        <button
+                          key={group.slug}
+                          className="wlc-svc-btn"
+                          onClick={() => setActiveServiceGroup(group)}
+                          style={{
+                            display:'flex', alignItems:'center', gap:10,
+                            padding:'11px 12px', borderRadius:13, cursor:'pointer',
+                            background:'#fff', border:'1.5px solid #EAE4D9',
+                            fontFamily:'inherit', textAlign:isAr?'right':'left',
+                            transition:'all 0.14s', boxShadow:'0 1px 4px rgba(0,0,0,0.04)',
+                          }}
+                          onTouchStart={e => { e.currentTarget.style.background='#F5F1EC'; e.currentTarget.style.transform='scale(0.97)' }}
+                          onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='scale(1)' }}
+                        >
+                          <div style={{ width:32, height:32, borderRadius:9, flexShrink:0, background:`${group.color}12`, border:`1px solid ${group.color}22`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
+                            <ServiceGroupIcon slug={group.slug} />
+                          </div>
+                          <div style={{ minWidth:0 }}>
+                            <div style={{ fontSize:11, fontWeight:700, color:'#1A1208', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                              {isAr ? group.titleAr : group.titleEn}
+                            </div>
+                            <div style={{ fontSize:9.5, color:'#9C8E80', marginTop:1 }}>
+                              {group.services.length}{isAr ? ' خدمة' : ' services'}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
                     </div>
 
                     {/* Expat CTA */}
                     <button
                       onClick={() => router.push('/services/expat-property')}
                       style={{
-                        width: '100%', padding: '13px 16px', borderRadius: 14, cursor: 'pointer',
-                        background: 'linear-gradient(135deg, #5c1212 0%, #8B1A1A 55%, #6b2737 100%)',
-                        border: 'none', color: '#fff', fontFamily: 'inherit',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        gap: 10, boxShadow: '0 3px 14px rgba(139,26,26,0.22)',
-                        transition: 'transform 0.15s, box-shadow 0.15s',
+                        width:'100%', padding:'14px 16px', borderRadius:14, cursor:'pointer',
+                        background:'linear-gradient(135deg, #5c1212 0%, #8B1A1A 55%, #6b2737 100%)',
+                        border:'none', color:'#fff', fontFamily:'inherit',
+                        display:'flex', alignItems:'center', justifyContent:'space-between',
+                        gap:10, boxShadow:'0 4px 16px rgba(139,26,26,0.22)',
+                        transition:'transform 0.15s, box-shadow 0.15s',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(139,26,26,0.3)' }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 14px rgba(139,26,26,0.22)' }}
-                      onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
-                      onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 8px 24px rgba(139,26,26,0.32)' }}
+                      onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 16px rgba(139,26,26,0.22)' }}
+                      onTouchStart={e => { e.currentTarget.style.transform='scale(0.97)' }}
+                      onTouchEnd={e => { e.currentTarget.style.transform='scale(1)' }}
                     >
-                      <div style={{ textAlign: isAr ? 'right' : 'left' }}>
-                        <div style={{ fontSize: 12.5, fontWeight: 800 }}>
+                      <div style={{ textAlign:isAr?'right':'left' }}>
+                        <div style={{ fontSize:13, fontWeight:800 }}>
                           {isAr ? 'حزمة المغتربين والعقارات' : 'Expat & Property Pack'}
                         </div>
-                        <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.72)', marginTop: 2 }}>
-                          {isAr ? 'وكالات · بيع عقارات · عقود · كشف ثغرات' : 'POA · Property sale · Contracts'}
+                        <div style={{ fontSize:10, color:'rgba(255,255,255,0.65)', marginTop:3 }}>
+                          {isAr ? 'وكالات · بيع عقارات · عقود · كشف ثغرات' : 'POA · Property sale · Contracts · Gap analysis'}
                         </div>
                       </div>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink: 0, opacity: 0.8 }}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink:0, opacity:0.8 }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d={isAr?'M15 19l-7-7 7-7':'M9 5l7 7-7 7'}/>
                       </svg>
                     </button>
                   </div>
 
                 </div>{/* end desktop-cols */}
-              </div>{/* end wlc-wrap */}
+              </div>{/* end content area */}
             </div>
 
           ) : (
@@ -945,16 +983,16 @@ export default function Home() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '6px 14px', borderRadius: 20,
-                    background: '#fff', border: '1.5px solid #e5e7eb',
-                    fontSize: 12, color: '#6b7280', fontWeight: 600,
+                    background: '#fff', border: '1.5px solid #EAE4D9',
+                    fontSize: 12, color: '#9C8E80', fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
                     transition: 'all 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.color = '#6b7280' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.color = '#9C8E80' }}
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#8B1A1A' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#6b7280' }}>
+                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#9C8E80' }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
