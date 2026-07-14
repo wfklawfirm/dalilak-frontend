@@ -22,12 +22,12 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
 }
 
 const STATUS_STYLE: Record<TransactionStatus, React.CSSProperties> = {
-  draft:        { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
+  draft:        { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
   in_progress:  { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
   ready:        { background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' },
   needs_review: { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
   completed:    { background: 'rgba(107,39,55,0.08)', color: '#6b2737', border: '1px solid rgba(107,39,55,0.2)' },
-  archived:     { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
+  archived:     { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
 }
 
 const RISK_LABEL: Record<RiskLevel, string> = {
@@ -43,7 +43,7 @@ const RISK_DOT_COLOR: Record<RiskLevel, string> = {
   medium:  '#B8860B',
   high:    '#ea580c',
   critical:'#8B1A1A',
-  unknown: '#9CA3AF',
+  unknown: '#9C8E80',
 }
 
 function formatDate(iso?: string) {
@@ -165,7 +165,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: RISK_DOT_COLOR[riskLevel], flexShrink: 0 }} />
-            <p style={{ fontSize: 13, color: '#6B7280', margin: 0 }}>
+            <p style={{ fontSize: 13, color: '#5C4A3A', margin: 0 }}>
               مستوى المخاطرة: <span style={{ fontWeight: 700, color: '#1A1208' }}>{RISK_LABEL[riskLevel]}</span>
             </p>
           </div>
@@ -206,57 +206,4 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
                   </div>
                 </li>
               ))}
-              {tx.steps.length > 4 && (
-                <li style={{ fontSize: 11, color: '#9C8E80', paddingRight: 34 }}>... و{tx.steps.length - 4} خطوات أخرى</li>
-              )}
-            </ol>
-          </div>
-        )}
-
-        {/* Sources */}
-        {sourcesCount > 0 && !compact && (
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 6px' }}>
-              المصادر ({sourcesCount})
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {tx.sources.slice(0, 3).map((s, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#6B7280' }}>
-                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#B8860B', flexShrink: 0 }} />
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</span>
-                  {s.ministry && <span style={{ color: '#9C8E80', flexShrink: 0 }}>— {s.ministry}</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Notes */}
-        {tx.notes && !compact && (
-          <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12, padding: '10px 14px' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#B8860B', margin: '0 0 4px' }}>ملاحظات</p>
-            <p style={{ fontSize: 12, color: '#92400E', lineHeight: 1.6, margin: 0 }}>{tx.notes}</p>
-          </div>
-        )}
-
-        {/* Dates */}
-        <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#9C8E80', paddingTop: 4 }}>
-          {tx.created_at && <span>أُنشئ: {formatDate(tx.created_at)}</span>}
-          {tx.updated_at && <span>آخر تحديث: {formatDate(tx.updated_at)}</span>}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; valueColor?: string }) {
-  return (
-    <div style={{
-      background: '#FAFAF8', borderRadius: 12, padding: '10px 14px',
-      textAlign: 'center', border: '1px solid #EAE4D9',
-    }}>
-      <p style={{ fontSize: 22, fontWeight: 800, color: valueColor, margin: '0 0 2px' }}>{value}</p>
-      <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{label}</p>
-    </div>
-  )
-}
+          

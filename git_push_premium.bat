@@ -4,72 +4,65 @@ cd /d "%~dp0"
 echo === Staging all frontend changes ===
 git add .
 
-echo === Commit: Premium frontend polish — Big Four standards ===
-git commit -m "design: premium frontend — Big Four standards, homepage declutter, dead-code purge
+echo === Commit: Frontend premium polish — restore truncated files + utility CSS + UX improvements ===
+git commit -m "feat: premium frontend polish — restored pages + design system upgrade
 
-Homepage (app/page.tsx):
-- Moved 2 primary CTAs (ابدأ مساراً / حلّل مستنداً) INTO hero band
-  → White solid button (primary) + ghost button (secondary) on dark gradient
-  → Elevated hierarchy: hero now has headline + subtitle + chips + CTAs
-- Removed 2 duplicate action chips from content area below hero
-- Removed wlc-most-req section entirely (6 redundant pills; hero chips cover this)
-- Removed wlc-desktop-cols 2-col grid wrapper (left col was wlc-most-req only)
-- Simplified content area: service section now direct child (no grid wrapper)
-- CSS cleanup: removed .wlc-most-req, .wlc-desktop-cols rules from inline style block
-- Updated @media breakpoint for .wlc-svc-grid: 768px → 640px (sooner on desktop)
-- Removed unused icon property from MODES array type + all 3 MODES entries
-- Removed redundant inline style={{ display:'none' }} from .bottom-nav-wrapper div
-- Fixed .wlc-most-req { display: none !important; } CSS specificity bug
-  (inline style={{ display:'flex' }} was overriding class-level display:none)
+RESTORED TRUNCATED FILES (3 pages, previously broken mid-JSX):
+  app/faq/page.tsx:
+  - Completed SVG clear button, category filter pills (10 categories),
+    FAQ accordion with expand/collapse, answer text display,
+    Ask AI button per item, BottomNav integration
 
-Result: ~12 fewer interactive elements on homepage, cleaner visual hierarchy,
-hero band carries both the question chips AND the primary CTAs.
+  app/forms/page.tsx:
+  - Completed curated form card (icon, title, ministry, type/category badges,
+    PDF badge), Ask AI + Download action buttons, BottomNav integration
 
-globals.css (app/globals.css):
-- Complete dead-code removal: 404 → 216 lines
-- Removed dead classes: .cursor, .card-btn, .chip-btn, .input-wrap,
-  .header-contacts, .topbar-*, .header-inner, .welcome-grid, .quick-list,
-  .logo-welcome, .welcome-heading, .welcome-sub, .welcome-stats,
-  .welcome-bottom-pad, .proc-stats-grid, .sub-page-root, .mobile-card-text,
-  .status-badge, both legacy @media (min-width: 640px/1024px) blocks
-- Restored .bottom-nav-wrapper CSS (was incorrectly removed — critical for BottomNav)
-  Pattern: display:none default → display:block at max-width:767px
+  app/procedures/page.tsx:
+  - Completed enriched view PDF download links, Ask AI button in expanded panel,
+    full detailed procedures view (expand/collapse, steps, required docs,
+    estimatedDuration, complexity badge), ServiceModal integration, BottomNav
 
-ChatMessage (components/ChatMessage.tsx):
-- Assistant avatar: replaced 'AI' text with /logo.PNG image (white circle, brand border)
+DESIGN SYSTEM (app/globals.css):
+  + @keyframes fadeInUp + .page-enter entrance animation
+  + .section-header utility class (consistent section headings)
+  + .badge, .badge-brand, .badge-green, .badge-amber, .badge-neutral
+  + .btn-primary (gradient CTA with hover lift + shadow)
+  + .btn-ghost (outlined ghost button)
+  + .skeleton shimmer animation
+  + .empty-state (centered empty state layout)
+  + .search-wrap:focus-within brand ring highlight
+  + .card-hover translateY + brand border transition
 
-Homepage previous session (app/page.tsx):
-- Removed SUGGESTION_POOL constant (12 items, no longer used)
-- Removed visibleS state and setVisibleS from useEffect
-- Removed showMorePopular dead state
-- Removed .suggestion-card:hover + .action-card:hover/:active dead CSS
-- Removed 3 large action cards (ابدا معاملة / حلل مستندا / اسال دليلك)
-- Removed duplicate logo/wordmark + 'Available now' badge from hero
-- Added rotating quick-question chips inside hero band
+SERVICES PAGE (app/services/page.tsx):
+  - Full rewrite: srv-fade entrance animation, proc-grid mobile class,
+    search icon inside input, status dot on active procedures,
+    authority row with building SVG icon, two-line -webkit-line-clamp on title/summary,
+    hover transitions on all interactive elements
 
-Admin (app/admin/page.tsx):
-- Complete Tailwind-to-inline-styles migration (108 classes eliminated)
-- PLAN_STYLE as Record<string, React.CSSProperties>
+MODE SELECTOR (components/MobileModeSheet.tsx):
+  - Restored: MobileModeSheet, DesktopModeSelector, ModeSelector default export
+  - Mobile button: icon + label + chevron, opens bottom sheet
+  - Desktop: pill row with brand active state, whiteSpace nowrap
 
-Content Admin (app/admin/content/page.tsx):
-- STATUS_CONFIG, TRANSITION_CONFIG as React.CSSProperties
+COLD GREY AUDIT COMPLETE:
+  login/page.tsx: eye icon #9ca3af -> #9C8E80
+  page.tsx: active doc chip close #6B7280 -> #9C8E80
+  Zero cold grey tokens remaining across entire src/
 
-Shared components:
-- DocumentAnalysisPanel.tsx: CONF_STYLE/WARN_CSS/RISK_CLAUSE_STYLE/STRENGTH_STYLE
-- TransactionFilePanel.tsx: STATUS_STYLE CSSProperties
-- MissingDocumentsChecklist.tsx: PRIORITY_STYLE CSSProperties
+HOMEPAGE (app/page.tsx):
+  - Reduced quick-q pills to 3, removed redundant 'عرض الكل' button
+  - Cleaned dead CSS (SUGGESTION_POOL, wlc-most-req, stale animations)
+  - Moved CTAs into hero section
 
-procedures/page.tsx:
-- detailed view icon: replaced {proc.icon} emoji with inline SVG clipboard-check icon
-- removed fontSize:22 from icon container, added color:'#8B1A1A'
+TOP NAV (components/TopNav.tsx):
+  - Improved visual hierarchy and spacing
+  - Language toggle removed from mobile (cleaner mobile header)
 
-services/page.tsx:
-- added .proc-card + .proc-card:hover (border shadow translateY transition)
-- added .cat-btn + .cat-btn:hover (border color background transition)
-- removed duplicate conflicting !important hover rules (CSS conflict cleanup)
-
-All: zero Tailwind utilities, all SVG icons inline, parchment #FAFAF8 bg,
-Cairo font, maroon #8B1A1A/#6b2737 brand throughout"
+GLOBAL CSS polish:
+  - input focus-within brand ring
+  - .card-hover consistency across pages
+  - .send-btn active scale 0.95
+  - Minimum tap target 36px on mobile"
 
 echo === Push to GitHub ===
 git push origin main

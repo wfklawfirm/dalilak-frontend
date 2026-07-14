@@ -142,7 +142,7 @@ export default function LoginPage() {
               <button type="button" tabIndex={-1} onClick={() => setShowPass(s => !s)}
                 style={{
                   position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0,
+                  background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0,
                   display: 'flex', alignItems: 'center',
                 }}>
                 {showPass

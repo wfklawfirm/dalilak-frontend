@@ -203,16 +203,16 @@ export interface DocCategoryMeta {
 }
 
 export const DOC_CATEGORY_META: DocCategoryMeta[] = [
-  { category: 'contract',        titleAr: 'عقد',                   titleEn: 'Contract',           icon: '📝', color: '#7C3AED', subtypes: ['عقد إيجار','عقد بيع','عقد خدمات','عقد عمل','عقد شراكة','اتفاقية تسوية','وعد بالبيع'] },
+  { category: 'contract',        titleAr: 'عقد',                   titleEn: 'Contract',           icon: '📝', color: '#6B4226', subtypes: ['عقد إيجار','عقد بيع','عقد خدمات','عقد عمل','عقد شراكة','اتفاقية تسوية','وعد بالبيع'] },
   { category: 'property',        titleAr: 'مستند عقاري',           titleEn: 'Property Document',  icon: '🏛️', color: '#854D0E', subtypes: ['سند ملكية','إفادة عقارية','كشف مساحي','ملف بيع','ضريبة عقارية','براءة ذمة','رخصة بناء'] },
   { category: 'civil_status',    titleAr: 'قيد مدني',              titleEn: 'Civil Status',        icon: '👤', color: '#065F46', subtypes: ['إخراج قيد فردي','إخراج قيد عائلي','شهادة ميلاد','عقد زواج','شهادة وفاة','طلاق','حصر إرث'] },
-  { category: 'notarial',        titleAr: 'وثيقة كتابة عدل',      titleEn: 'Notarial Document',   icon: '⚖️', color: '#0369A1', subtypes: ['وكالة عامة','وكالة خاصة','وكالة بيع','إقرار','تعهد','توكيل','وكالة من الخارج'] },
+  { category: 'notarial',        titleAر: 'وثيقة كتابة عدل',      titleEn: 'Notarial Document',   icon: '⚖️', color: '#1A5276', subtypes: ['وكالة عامة','وكالة خاصة','وكالة بيع','إقرار','تعهد','توكيل','وكالة من الخارج'] },
   { category: 'company',         titleAr: 'مستند شركة',            titleEn: 'Company Document',    icon: '🏢', color: '#9D174D', subtypes: ['سجل تجاري','عقد تأسيس','نظام داخلي','تسجيل ضريبي','قرار مجلس إدارة','شهادة تسجيل'] },
-  { category: 'tax',             titleAr: 'مستند ضريبي',           titleEn: 'Tax Document',        icon: '💰', color: '#7E22CE', subtypes: ['براءة ذمة ضريبية','ضريبة عقارية','ضريبة دخل','ضريبة قيمة مضافة','اعتراض ضريبي'] },
+  { category: 'tax',             titleAر: 'مستند ضريبي',           titleEn: 'Tax Document',        icon: '💰', color: '#5F3A2E', subtypes: ['براءة ذمة ضريبية','ضريبة عقارية','ضريبة دخل','ضريبة قيمة مضافة','اعتراض ضريبي'] },
   { category: 'judicial',        titleAr: 'مستند قضائي',           titleEn: 'Judicial Document',   icon: '🔨', color: '#B91C1C', subtypes: ['إنذار قضائي','لائحة دعوى','حكم','أمر تنفيذ','إعلام','تبليغ','وثيقة تسوية'] },
-  { category: 'administrative',  titleAr: 'مستند إداري',           titleEn: 'Administrative',      icon: '📋', color: '#374151', subtypes: ['طلب وزارة','طلب بلدية','رخصة','شكوى','اعتراض','رسالة رسمية','قرار إداري'] },
-  { category: 'expat_consular',  titleAr: 'مستند مغترب/قنصلي',    titleEn: 'Expat / Consular',   icon: '✈️', color: '#1E40AF', subtypes: ['وكالة من الخارج','تصديق','تسجيل واقعة','ترجمة معتمدة','وثيقة سفارة'] },
-  { category: 'unknown',         titleAr: 'غير محدد',              titleEn: 'Unknown',             icon: '❓', color: '#6B7280', subtypes: [] },
+  { category: 'administrative',  titleAr: 'مستند إداري',           titleEn: 'Administrative',      icon: '📋', color: '#2D1B0E', subtypes: ['طلب وزارة','طلب بلدية','رخصة','شكوى','اعتراض','رسالة رسمية','قرار إداري'] },
+  { category: 'expat_consular',  titleAr: 'مستند مغترب/قنصلي',    titleEn: 'Expat / Consular',   icon: '✈️', color: '#1A5276', subtypes: ['وكالة من الخارج','تصديق','تسجيل واقعة','ترجمة معتمدة','وثيقة سفارة'] },
+  { category: 'unknown',         titleAr: 'غير محدد',              titleEn: 'Unknown',             icon: '❓', color: '#5C4A3A', subtypes: [] },
 ]
 
 // ── Configurable Draft Templates Map ──────────────────────────────────────────
@@ -340,7 +340,7 @@ export function riskColors(level: string): [string, string] {
     high:     ['#FEE2E2', '#DC2626'],
     medium:   ['#FEF3C7', '#B45309'],
     low:      ['#DCFCE7', '#16A34A'],
-    unknown:  ['#F3F4F6', '#6B7280'],
+    unknown:  ['#EAE4D9', '#5C4A3A'],
   }
   return map[level] ?? map.unknown
 }

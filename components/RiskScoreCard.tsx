@@ -26,7 +26,7 @@ const LEVEL_CONFIG: Record<string, {
   medium:   { label: 'متوسط',    bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
   high:     { label: 'عالٍ',     bg: '#FFF7ED', text: '#ea580c', border: '#FED7AA', barColor: '#ea580c', iconBg: '#ea580c' },
   critical: { label: 'حرج',      bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
-  unknown:  { label: 'غير محدد', bg: '#F9FAFB', text: '#6B7280', border: '#E5E7EB', barColor: '#9CA3AF', iconBg: '#9CA3AF' },
+  unknown:  { label: 'غير محدد', bg: '#EAE4D9', text: '#5C4A3A', border: '#D5CEC4', barColor: '#9C8E80', iconBg: '#9C8E80' },
 }
 
 const ACTION_COLORS: Record<string, string> = {
@@ -98,7 +98,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
 
       {/* Score bar */}
       {score !== null && !compact && (
-        <div style={{ width: '100%', background: '#E5E7EB', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+        <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 4, height: 8, overflow: 'hidden' }}>
           <div style={{
             height: '100%',
             width: `${Math.min(100, score)}%`,

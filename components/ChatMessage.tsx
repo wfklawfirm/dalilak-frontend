@@ -64,7 +64,7 @@ export default function ChatMessage({
           <div style={{
             padding: '11px 15px', borderRadius: 16,
             borderTopRightRadius: ar ? 4 : 16, borderTopLeftRadius: ar ? 16 : 4,
-            background: 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
+            background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
             color: '#fff', fontSize: 13.5, lineHeight: 1.75,
             boxShadow: '0 2px 10px rgba(139,26,26,0.2)',
           }}>

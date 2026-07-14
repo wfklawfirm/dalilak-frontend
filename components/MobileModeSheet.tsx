@@ -79,14 +79,15 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         background: '#fff',
         borderTopLeftRadius: 22, borderTopRightRadius: 22,
         boxShadow: '0 -6px 32px rgba(0,0,0,0.15)',
-        padding: '0 0 32px',
+        padding: '0 0 calc(32px + env(safe-area-inset-bottom, 0px))',
         animation: 'sheetUp 0.22s cubic-bezier(0.34,1.1,0.64,1)',
+        direction: isAr ? 'rtl' : 'ltr',
       }}>
         <style>{`@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
 
         {/* Handle */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 4px' }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E5E7EB' }} />
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
         </div>
 
         {/* Title */}
@@ -118,15 +119,17 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                  background: active ? 'rgba(139,26,26,0.1)' : '#F9FAFB',
+                  background: active ? 'rgba(139,26,26,0.1)' : '#EAE4D9',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: active ? '#8B1A1A' : '#6B7280',
-                }}><ModeIcon id={m.id} size={20} /></div>
-                <div style={{ flex: 1 }}>
+                  color: active ? '#8B1A1A' : '#5C4A3A',
+                }}>
+                  <ModeIcon id={m.id} size={20} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#8B1A1A' : '#1A1208' }}>
                     {isAr ? m.label_ar : m.label_en}
                   </div>
-                  <div style={{ fontSize: 11, color: '#9C8E80', marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: '#9C8E80', marginTop: 2, lineHeight: 1.45 }}>
                     {isAr ? m.hint_ar : m.hint_en}
                   </div>
                 </div>
@@ -155,7 +158,7 @@ export function DesktopModeSelector({
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center',
-      background: '#F3F4F6', borderRadius: 999, padding: '3px', gap: 2,
+      background: '#EAE4D9', borderRadius: 999, padding: '3px', gap: 2,
     }}>
       {MODES.map(m => {
         const active = mode === m.id
@@ -164,14 +167,18 @@ export function DesktopModeSelector({
             onClick={() => onSelect(m.id)}
             style={{
               display: 'flex', alignItems: 'center', gap: 5,
-              padding: '6px 16px', borderRadius: 999, fontSize: 12,
+              padding: '6px 14px', borderRadius: 999, fontSize: 12,
               fontWeight: 600, cursor: 'pointer', border: 'none',
               background: active ? '#fff' : 'transparent',
-              color: active ? '#8B1A1A' : '#9ca3af',
+              color: active ? '#8B1A1A' : '#9C8E80',
               boxShadow: active ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
               fontFamily: 'inherit', transition: 'all 0.18s ease',
-            }}>
-            <span style={{ display: 'flex', color: active ? '#8B1A1A' : '#9ca3af' }}><ModeIcon id={m.id} size={13} /></span>
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span style={{ display: 'flex', color: active ? '#8B1A1A' : '#9C8E80' }}>
+              <ModeIcon id={m.id} size={13} />
+            </span>
             <span>{isAr ? m.label_ar : m.label_en}</span>
           </button>
         )
@@ -199,34 +206,40 @@ export default function ModeSelector({
           type="button"
           onClick={() => setSheetOpen(true)}
           style={{
-            display: 'flex', alignItems: 'center', gap: 7,
-            padding: '6px 14px', borderRadius: 20,
-            background: '#F3F4F6', border: '1.5px solid #E5E7EB',
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '7px 12px', borderRadius: 10,
+            border: '1.5px solid #EAE4D9', background: '#fff',
             cursor: 'pointer', fontFamily: 'inherit',
-            fontSize: 12, fontWeight: 600, color: '#8B1A1A',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            transition: 'border-color 0.15s',
           }}
+          onTouchStart={e => (e.currentTarget.style.borderColor = '#8B1A1A')}
+          onTouchEnd={e => (e.currentTarget.style.borderColor = '#EAE4D9')}
         >
-          <span style={{ display: 'flex', color: '#8B1A1A' }}><ModeIcon id={current.id} size={14} /></span>
-          <span>{isAr ? current.label_ar : current.label_en}</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5">
+          <span style={{ color: '#8B1A1A', display: 'flex', alignItems: 'center' }}>
+            <ModeIcon id={current.id} size={15} />
+          </span>
+          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>
+            {isAr ? current.label_ar : current.label_en}
+          </span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
+
+        <MobileModeSheet
+          isOpen={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          mode={mode}
+          onSelect={onSelect}
+          isAr={isAr}
+        />
       </div>
 
-      {/* Desktop: pill row */}
+      {/* Desktop: pill row — shown via globals.css .mode-desktop */}
       <div className="mode-desktop">
         <DesktopModeSelector mode={mode} onSelect={onSelect} isAr={isAr} />
       </div>
-
-      {/* Sheet */}
-      <MobileModeSheet
-        isOpen={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        mode={mode}
-        onSelect={onSelect}
-        isAr={isAr}
-      />
     </>
   )
 }

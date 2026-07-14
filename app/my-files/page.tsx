@@ -94,9 +94,9 @@ export default function MyFilesPage() {
     const map: Record<string, React.CSSProperties> = {
       active:    { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
       completed: { background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' },
-      cancelled: { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
+      cancelled: { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
     }
-    return map[s] || { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' }
+    return map[s] || { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' }
   }
 
   const statusLabel = (s: string) => ({ active: 'جارية', completed: 'مكتملة', cancelled: 'ملغاة' }[s] || s)
@@ -176,7 +176,7 @@ export default function MyFilesPage() {
             <Link
               href="/services"
               style={{
-                display: 'inline-block', background: 'linear-gradient(135deg, #7a1a1a, #8B1A1A)',
+                display: 'inline-block', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                 color: '#fff', padding: '12px 32px', borderRadius: 14,
                 fontWeight: 700, textDecoration: 'none', fontSize: 14,
                 boxShadow: '0 4px 16px rgba(139,26,26,0.3)',
@@ -277,7 +277,7 @@ export default function MyFilesPage() {
                     {/* Big progress */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                        <span style={{ fontSize: 13, color: '#6B7280' }}>التقدم الكلي</span>
+                        <span style={{ fontSize: 13, color: '#5C4A3A' }}>التقدم الكلي</span>
                         <span style={{ fontSize: 24, fontWeight: 900, color: pctColor(selected.completion_pct) }}>
                           {selected.completion_pct}%
                         </span>
@@ -337,7 +337,7 @@ export default function MyFilesPage() {
                             }}>
                               {step.title_ar}
                             </p>
-                            <p style={{ fontSize: 11.5, color: '#6B7280', margin: 0, lineHeight: 1.5 }}>{step.desc_ar}</p>
+                            <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{step.desc_ar}</p>
                             {step.done && step.done_at && (
                               <p style={{ fontSize: 10.5, color: '#16A34A', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -355,71 +355,4 @@ export default function MyFilesPage() {
                         <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
                           المستندات المطلوبة
                         </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                          {selected.documents.map((doc, i) => (
-                            <div
-                              key={i}
-                              style={{
-                                display: 'flex', alignItems: 'center', gap: 10, padding: '10px 13px', borderRadius: 10,
-                                border: doc.uploaded ? '1.5px solid #BBF7D0' : '1.5px solid #EAE4D9',
-                                background: doc.uploaded ? '#F0FDF4' : '#FAFAF8',
-                              }}
-                            >
-                              <span style={{ display: 'flex', alignItems: 'center' }}>
-                                {doc.uploaded
-                                  ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                  : doc.required
-                                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                }
-                              </span>
-                              <span style={{ flex: 1, fontSize: 12.5, color: doc.uploaded ? '#15803D' : '#374151' }}>{doc.name_ar}</span>
-                              {!doc.required && <span style={{ fontSize: 10, color: '#9C8E80', background: '#F0EBE0', borderRadius: 20, padding: '1px 7px' }}>اختياري</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Notes */}
-                    <div style={{ marginTop: 22 }}>
-                      <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> ملاحظات
-                      </h3>
-                      <textarea
-                        style={{
-                          width: '100%', padding: '11px 13px', borderRadius: 12,
-                          border: '1.5px solid #EAE4D9', fontSize: 13, resize: 'none',
-                          outline: 'none', background: '#FAFAF8',
-                          fontFamily: "'Cairo','Inter',sans-serif", lineHeight: 1.6,
-                          color: '#1A1208',
-                        }}
-                        rows={3}
-                        placeholder="أضف ملاحظات خاصة بك..."
-                        defaultValue={selected.notes}
-                        onBlur={async (e) => {
-                          const token = getToken()
-                          if (!token) return
-                          await fetch(`${API_URL}/my-procedures/${selected.id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                            body: JSON.stringify({ notes: e.target.value }),
-                          })
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Bottom Nav — mobile */}
-      <div className="bottom-nav-wrapper">
-        <BottomNav isAr={true} activeTab="account" onHomeClick={() => router.push('/')} />
-      </div>
-    </div>
-  )
-}
+               

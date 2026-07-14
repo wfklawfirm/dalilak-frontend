@@ -278,7 +278,7 @@ export default function Home() {
 
   // ── Auto-rotate quick questions in hero ──────────────────
   useEffect(() => {
-    const refresh = () => setVisibleQ(shufflePick(pool, 4))
+    const refresh = () => setVisibleQ(shufflePick(pool, 3))
     refresh()
     const interval = setInterval(refresh, 8000)
     return () => clearInterval(interval)
@@ -630,7 +630,7 @@ export default function Home() {
           --safe-top: env(safe-area-inset-top, 0px);
           --safe-bottom: env(safe-area-inset-bottom, 0px);
           --red: #8B1A1A;
-          --red-dark: #6B1313;
+          --red-dark: #6b2737;
           --red-light: #FEF2F2;
           --gold: #B8860B;
           --gold-light: #FDF8E8;
@@ -668,7 +668,7 @@ export default function Home() {
         ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
         /* quick-btn hover is handled via inline onMouseEnter/Leave */
         .mode-btn { transition: all 0.18s ease; }
-        .mode-btn:hover { transform: scale(1.04); }
+        .mode-btn:hover { background: rgba(255,255,255,0.22) !important; }
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
@@ -772,48 +772,28 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* ── Primary action CTAs ── */}
-                  <div style={{ display:'flex', gap:8, marginTop:18, flexWrap:'wrap' }}>
+                  {/* ── Primary action CTA — single, prominent ── */}
+                  <div style={{ marginTop:18 }}>
                     <button
                       onClick={() => setShowTransactionStarter(true)}
                       style={{
-                        display:'inline-flex', alignItems:'center', gap:7,
-                        padding:'9px 20px', borderRadius:12,
-                        background:'rgba(255,255,255,0.95)', border:'1.5px solid rgba(255,255,255,0.6)',
-                        fontSize:12.5, fontWeight:700, color:'#8B1A1A',
-                        cursor:'pointer', fontFamily:'inherit',
-                        boxShadow:'0 2px 10px rgba(0,0,0,0.18)',
+                        display:'inline-flex', alignItems:'center', gap:8,
+                        padding:'11px 26px', borderRadius:14,
+                        background:'rgba(255,255,255,0.97)', border:'none',
+                        fontSize:13.5, fontWeight:700, color:'#8B1A1A',
+                        cursor:'pointer', fontFamily:'inherit', letterSpacing:'-0.2px',
+                        boxShadow:'0 4px 18px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.35)',
                         transition:'all 0.14s',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 4px 14px rgba(0,0,0,0.22)' }}
-                      onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.95)'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 2px 10px rgba(0,0,0,0.18)' }}
+                      onMouseEnter={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 6px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.35)' }}
+                      onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.97)'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 18px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.35)' }}
                       onTouchStart={e => { e.currentTarget.style.transform='scale(0.97)' }}
                       onTouchEnd={e => { e.currentTarget.style.transform='scale(1)' }}
                     >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/>
                       </svg>
                       {isAr ? 'ابدأ مساراً موجّهاً' : 'Start guided path'}
-                    </button>
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      style={{
-                        display:'inline-flex', alignItems:'center', gap:7,
-                        padding:'9px 18px', borderRadius:12,
-                        background:'rgba(255,255,255,0.10)', border:'1.5px solid rgba(255,255,255,0.28)',
-                        fontSize:12.5, fontWeight:600, color:'rgba(255,255,255,0.88)',
-                        cursor:'pointer', fontFamily:'inherit',
-                        transition:'all 0.14s',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.18)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.45)'; e.currentTarget.style.color='#fff' }}
-                      onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.10)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.28)'; e.currentTarget.style.color='rgba(255,255,255,0.88)' }}
-                      onTouchStart={e => { e.currentTarget.style.background='rgba(255,255,255,0.22)' }}
-                      onTouchEnd={e => { e.currentTarget.style.background='rgba(255,255,255,0.10)' }}
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                      </svg>
-                      {isAr ? 'حلّل مستنداً' : 'Analyze document'}
                     </button>
                   </div>
                 </div>
@@ -822,27 +802,35 @@ export default function Home() {
               {/* ── Content Area ── */}
               <div style={{ maxWidth: 720, margin: '0 auto', padding: '18px 14px 100px' }}>
 
+                {/* ── Stats trust strip — premium grid ── */}
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:0, marginBottom:22, borderBottom:'1px solid #EAE4D9' }}>
+                  {[
+                    { num:'2,484', lAr:'إجراء حكومي', lEn:'Procedures' },
+                    { num:'794',   lAr:'نموذج رسمي',  lEn:'Official forms' },
+                    { num:'52',    lAr:'وزارة وجهة',   lEn:'Ministries' },
+                  ].map((s,i) => (
+                    <div key={i} style={{
+                      display:'flex', flexDirection:'column', alignItems:'center',
+                      padding:'14px 8px 16px',
+                      borderRight: i < 2 ? '1px solid #EAE4D9' : 'none',
+                    }}>
+                      <span style={{ fontSize:20, fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.6px', lineHeight:1 }}>{s.num}</span>
+                      <span style={{ fontSize:10, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center' }}>{isAr ? s.lAr : s.lEn}</span>
+                    </div>
+                  ))}
+                </div>
+
                 {/* ── Services section ── */}
                 <div>
                   {/* Section header */}
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
-                    <span style={{ fontSize:12, fontWeight:700, color:'#5C5044', letterSpacing:'-0.1px' }}>
-                      {isAr ? 'الخدمات' : 'Services'}
+                  <div style={{ marginBottom:12 }}>
+                    <span style={{ fontSize:13, fontWeight:800, color:'#1A1208', letterSpacing:'-0.2px' }}>
+                      {isAr ? 'استعرض الخدمات' : 'Browse services'}
                     </span>
-                    <button onClick={() => router.push('/services')} style={{
-                      fontSize:11, color:'#8B1A1A', background:'none',
-                      border:'none', cursor:'pointer', fontFamily:'inherit', fontWeight:700,
-                      display:'flex', alignItems:'center', gap:3,
-                    }}>
-                      {isAr ? 'عرض الكل' : 'View all'}
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
-                      </svg>
-                    </button>
                   </div>
 
                   {/* Service group grid */}
-                  <div className="wlc-svc-grid" style={{ marginBottom:16 }}>
+                  <div className="wlc-svc-grid" style={{ marginBottom:0 }}>
                     {SERVICE_GROUPS.map(group => (
                       <button
                         key={group.slug}
@@ -854,53 +842,31 @@ export default function Home() {
                           background:'#fff', border:'1.5px solid #EAE4D9',
                           fontFamily:'inherit', textAlign:isAr?'right':'left',
                           transition:'all 0.14s', boxShadow:'0 1px 4px rgba(0,0,0,0.04)',
+                          width:'100%',
                         }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 4px 14px rgba(139,26,26,0.09)' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)' }}
                         onTouchStart={e => { e.currentTarget.style.background='#F5F1EC'; e.currentTarget.style.transform='scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='scale(1)' }}
                       >
-                        <div style={{ width:32, height:32, borderRadius:9, flexShrink:0, background:`${group.color}12`, border:`1px solid ${group.color}22`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
+                        <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:`${group.color}14`, border:`1px solid ${group.color}28`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
                           <ServiceGroupIcon slug={group.slug} />
                         </div>
-                        <div style={{ minWidth:0 }}>
-                          <div style={{ fontSize:11, fontWeight:700, color:'#1A1208', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                        <div style={{ minWidth:0, flex:1 }}>
+                          <div style={{ fontSize:12, fontWeight:700, color:'#1A1208', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                             {isAr ? group.titleAr : group.titleEn}
                           </div>
-                          <div style={{ fontSize:9.5, color:'#9C8E80', marginTop:1 }}>
+                          <div style={{ fontSize:10, color:'#9C8E80', marginTop:2 }}>
                             {group.services.length}{isAr ? ' خدمة' : ' services'}
                           </div>
                         </div>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C4B5A5" strokeWidth="2.5" style={{ flexShrink:0 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+                        </svg>
                       </button>
                     ))}
                   </div>
 
-                  {/* Expat CTA */}
-                  <button
-                    onClick={() => router.push('/services/expat-property')}
-                    style={{
-                      width:'100%', padding:'14px 16px', borderRadius:14, cursor:'pointer',
-                      background:'linear-gradient(135deg, #5c1212 0%, #8B1A1A 55%, #6b2737 100%)',
-                      border:'none', color:'#fff', fontFamily:'inherit',
-                      display:'flex', alignItems:'center', justifyContent:'space-between',
-                      gap:10, boxShadow:'0 4px 16px rgba(139,26,26,0.22)',
-                      transition:'transform 0.15s, box-shadow 0.15s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 8px 24px rgba(139,26,26,0.32)' }}
-                    onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 16px rgba(139,26,26,0.22)' }}
-                    onTouchStart={e => { e.currentTarget.style.transform='scale(0.97)' }}
-                    onTouchEnd={e => { e.currentTarget.style.transform='scale(1)' }}
-                  >
-                    <div style={{ textAlign:isAr?'right':'left' }}>
-                      <div style={{ fontSize:13, fontWeight:800 }}>
-                        {isAr ? 'حزمة المغتربين والعقارات' : 'Expat & Property Pack'}
-                      </div>
-                      <div style={{ fontSize:10, color:'rgba(255,255,255,0.65)', marginTop:3 }}>
-                        {isAr ? 'وكالات · بيع عقارات · عقود · كشف ثغرات' : 'POA · Property sale · Contracts · Gap analysis'}
-                      </div>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ flexShrink:0, opacity:0.8 }}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d={isAr?'M15 19l-7-7 7-7':'M9 5l7 7-7 7'}/>
-                    </svg>
-                  </button>
                 </div>
               </div>{/* end content area */}
             </div>
@@ -1068,7 +1034,7 @@ export default function Home() {
                 </span>
                 <button
                   onClick={() => { setActiveDocumentName(null) }}
-                  style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
+                  style={{ background: 'none', border: 'none', color: '#9C8E80', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
                   title={isAr ? 'مسح' : 'Clear'}
                 ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
@@ -1214,7 +1180,7 @@ export default function Home() {
                 {showCharCount && (
                   <span style={{
                     flexShrink: 0, fontSize: 11, lineHeight: 1,
-                    color: input.length > 3800 ? '#b91c1c' : '#9ca3af',
+                    color: input.length > 3800 ? '#b91c1c' : '#9C8E80',
                     fontFamily: 'monospace', padding: '0 2px',
                     alignSelf: 'flex-end', paddingBottom: 10,
                   }}>
@@ -1364,3 +1330,4 @@ export default function Home() {
     </>
   )
 }
+                                                                                           

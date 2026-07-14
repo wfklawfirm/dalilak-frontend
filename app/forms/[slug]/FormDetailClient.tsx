@@ -106,7 +106,7 @@ export default function FormDetailClient({ form }: Props) {
               {form.type === 'official' ? (isAr ? 'نموذج رسمي' : 'Official Form') : isAr ? 'مسودة' : 'Draft'}
             </span>
             {form.lastReviewed && (
-              <span style={{ background: '#F5F5F5', color: '#666', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
+              <span style={{ background: '#EAE4D9', color: '#5C4A3A', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
                 {isAr ? `آخر مراجعة: ${form.lastReviewed}` : `Last reviewed: ${form.lastReviewed}`}
               </span>
             )}

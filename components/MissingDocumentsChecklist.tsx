@@ -21,7 +21,7 @@ const PRIORITY_STYLE: Record<string, React.CSSProperties> = {
   critical: { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.25)' },
   high:     { background: '#FFF7ED', color: '#ea580c', border: '1px solid #FED7AA' },
   medium:   { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
-  low:      { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
+  low:      { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
 }
 
 const PRIORITY_AR: Record<string, string> = {
@@ -105,7 +105,7 @@ export default function MissingDocumentsChecklist({
 
               {/* Title + notes */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 12.5, fontWeight: 600, color: isUploaded ? '#6B7280' : '#1A1208', margin: '0 0 1px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontSize: 12.5, fontWeight: 600, color: isUploaded ? '#5C4A3A' : '#1A1208', margin: '0 0 1px', display: 'flex', alignItems: 'center', gap: 4 }}>
                   {doc.title}
                   {doc.required && !isUploaded && (
                     <span style={{ color: '#8B1A1A', fontSize: 11, fontWeight: 800 }}>*</span>
@@ -116,42 +116,4 @@ export default function MissingDocumentsChecklist({
                 )}
                 {doc.notes && (
                   <p style={{ fontSize: 11, color: '#B0A090', margin: 0 }}>{doc.notes}</p>
-                )}
-              </div>
-
-              {/* Priority badge + upload button */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                {isMissing && doc.missing?.priority && (
-                  <span style={{
-                    fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700,
-                    ...(PRIORITY_STYLE[doc.missing.priority] || PRIORITY_STYLE.low),
-                  }}>
-                    {PRIORITY_AR[doc.missing.priority] || doc.missing.priority}
-                  </span>
-                )}
-                {isMissing && onUpload && (
-                  <button
-                    onClick={() => onUpload(doc.title)}
-                    style={{
-                      fontSize: 11, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                      color: '#fff', padding: '4px 12px', borderRadius: 8,
-                      border: 'none', cursor: 'pointer', fontWeight: 700,
-                      fontFamily: "'Cairo','Inter',sans-serif",
-                    }}
-                  >
-                    رفع
-                  </button>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Disclaimer */}
-      <p style={{ fontSize: 11, color: '#9C8E80', textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
-        القائمة أولية — تأكد من المصادر الرسمية قبل تقديم الطلب
-      </p>
-    </div>
-  )
-}
+         

@@ -12,15 +12,15 @@ interface Props {
 
 const NODE_COLORS: Record<NodeType, string> = {
   start: '#22c55e',
-  question: '#6366f1',
-  document: '#3b82f6',
+  question: '#5C4A7A',
+  document: '#1A5276',
   action: '#8B1A1A',
   authority: '#B8860B',
-  risk: '#f97316',
-  draft: '#8b5cf6',
-  human_review: '#ec4899',
+  risk: '#c2592e',
+  draft: '#6B4226',
+  human_review: '#9B4444',
   completion: '#22c55e',
-  warning: '#ef4444',
+  warning: '#DC2626',
 }
 
 const NODE_ICONS: Record<NodeType, React.ReactNode> = {
@@ -50,7 +50,7 @@ const NODE_LABELS_AR: Record<NodeType, string> = {
 }
 
 const STATUS_COLORS: Record<NonNullable<NodeStatus>, string> = {
-  not_started: '#9CA3AF',
+  not_started: '#9C8E80',
   current: '#B8860B',
   completed: '#16a34a',
   blocked: '#DC2626',
@@ -91,15 +91,15 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
       {!compact && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#6B7280' }}>{isAr ? 'تقدم الإجراء' : 'Procedure Progress'}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#5C4A3A' }}>{isAr ? 'تقدم الإجراء' : 'Procedure Progress'}</span>
             <span style={{ fontSize: 12, fontWeight: 800, color: progressPct >= 80 ? '#16a34a' : progressPct >= 50 ? '#B8860B' : '#8B1A1A' }}>{progressPct}%</span>
           </div>
-          <div style={{ height: 8, background: '#F3F4F6', borderRadius: 4, overflow: 'hidden' }}>
+          <div style={{ height: 8, background: '#EAE4D9', borderRadius: 4, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${progressPct}%`, background: progressPct >= 80 ? '#16a34a' : progressPct >= 50 ? '#B8860B' : '#8B1A1A', borderRadius: 4, transition: 'width 0.5s ease' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-            <span style={{ fontSize: 10, color: '#9CA3AF' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>
-            <span style={{ fontSize: 10, color: '#9CA3AF' }}>{isAr ? `${nodes.length} خطوة` : `${nodes.length} steps`}</span>
+            <span style={{ fontSize: 10, color: '#9C8E80' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>
+            <span style={{ fontSize: 10, color: '#9C8E80' }}>{isAr ? `${nodes.length} خطوة` : `${nodes.length} steps`}</span>
           </div>
         </div>
       )}
@@ -117,7 +117,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
         {nodes.map((node, idx) => {
           const effectiveStatus: NodeStatus = currentNodeId === node.id ? 'current' : (node.status || 'not_started')
           const isCurrent = effectiveStatus === 'current'
-          const nodeColor = NODE_COLORS[node.type] || '#6B7280'
+          const nodeColor = NODE_COLORS[node.type] || '#5C4A3A'
           const statusColor = STATUS_COLORS[effectiveStatus]
           const outgoingEdges = edgesByFrom[node.id] || []
           const isLast = idx === nodes.length - 1
@@ -171,7 +171,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
 
                   {/* Description */}
                   {!compact && node.descriptionAr && (
-                    <p style={{ fontSize: 11.5, color: '#6B7280', margin: '0 0 6px', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: '0 0 6px', lineHeight: 1.5 }}>
                       {isAr ? node.descriptionAr : (node.descriptionEn || node.descriptionAr)}
                     </p>
                   )}
@@ -181,56 +181,4 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                       {node.requiredDocuments.map((doc, di) => (
                         <span key={di} style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                          {doc}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Risk level */}
-                  {node.riskLevel && node.riskLevel !== 'low' && (
-                    <div style={{ marginTop: 4 }}>
-                      <span style={{ fontSize: 9.5, fontWeight: 700, color: node.riskLevel === 'critical' ? '#DC2626' : node.riskLevel === 'high' ? '#ea580c' : '#CA8A04', background: node.riskLevel === 'critical' ? '#FEF2F2' : node.riskLevel === 'high' ? '#FFF7ED' : '#FFFBEB', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                        {node.riskLevel === 'critical' ? 'خطر حرج' : node.riskLevel === 'high' ? 'خطر عالٍ' : 'خطر متوسط'}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Connector between nodes */}
-              {!isLast && (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4px 0' }}>
-                  <div style={{ width: 2, height: 16, background: '#EAE4D9' }} />
-                  {outgoingEdges.length > 0 && outgoingEdges[0].labelAr && (
-                    <div style={{ fontSize: 9.5, color: '#9CA3AF', background: '#F9FAFB', border: '1px solid #EAE4D9', borderRadius: 20, padding: '2px 10px', margin: '2px 0', fontWeight: 600 }}>
-                      {isAr ? outgoingEdges[0].labelAr : (outgoingEdges[0].labelEn || outgoingEdges[0].labelAr)}
-                    </div>
-                  )}
-                  <div style={{ width: 2, height: 16, background: '#EAE4D9' }} />
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Verification status */}
-      {!compact && (
-        <div style={{ marginTop: 16, padding: '8px 12px', background: '#FAFAF8', border: '1px solid #F0EBE0', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: 9.5, color: flowchart.verificationStatus === 'verified' ? '#16a34a' : '#B8860B', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-            {flowchart.verificationStatus === 'verified'
-              ? <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> موثّق</>
-              : flowchart.verificationStatus === 'partially_verified'
-              ? <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 8v4M12 15h.01"/></svg> موثّق جزئياً</>
-              : <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> مسودة</>
-            }
-          </span>
-          <span style={{ fontSize: 9.5, color: '#9CA3AF' }}>· v{flowchart.version}</span>
-        </div>
-      )}
-    </div>
-  )
-}
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1

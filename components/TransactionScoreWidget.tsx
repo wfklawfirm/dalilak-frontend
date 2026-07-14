@@ -70,7 +70,7 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
       </div>
 
       {/* Score bar */}
-      <div style={{ height: 6, background: '#F3F4F6', borderRadius: 3, overflow: 'hidden', marginBottom: 14 }}>
+      <div style={{ height: 6, background: '#EAE4D9', borderRadius: 3, overflow: 'hidden', marginBottom: 14 }}>
         <div style={{
           height: '100%',
           width: `${score.score}%`,
@@ -85,10 +85,10 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
         {breakdownItems.map(item => (
           <div key={item.key}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-              <span style={{ fontSize: 10.5, color: '#6B7280', fontWeight: 600 }}>{item.key}</span>
+              <span style={{ fontSize: 10.5, color: '#5C4A3A', fontWeight: 600 }}>{item.key}</span>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: item.value >= 70 ? '#16a34a' : item.value >= 40 ? '#B8860B' : '#DC2626' }}>{item.value}%</span>
             </div>
-            <div style={{ height: 4, background: '#F3F4F6', borderRadius: 2, overflow: 'hidden' }}>
+            <div style={{ height: 4, background: '#EAE4D9', borderRadius: 2, overflow: 'hidden' }}>
               <div style={{
                 height: '100%',
                 width: `${item.value}%`,
@@ -116,35 +116,5 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
 
       {/* Recommended action */}
       {score.recommendedNextAction && (
-        <div style={{ fontSize: 11.5, color: '#6B7280', background: '#F9FAFB', borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>{score.recommendedNextAction}</span>
-        </div>
-      )}
-
-      {/* CTA */}
-      {onAction && (
-        <button
-          onClick={onAction}
-          style={{
-            width: '100%',
-            padding: '10px',
-            background: 'linear-gradient(135deg, #8B1A1A, #6B1313)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 12,
-            fontFamily: 'inherit',
-            fontSize: 13,
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
-            {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
-            {isAr ? 'الخطوة التالية' : 'Next Step'}
-            {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
-          </span>
-        </button>
-      )}
-    </div>
-  )
-}
+        <div style={{ fontSize: 11.5, color: '#5C4A3A', background: '#FAFAF8', borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.

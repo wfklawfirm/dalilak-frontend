@@ -178,7 +178,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
 
         {/* Handle */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 4px' }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E5E7EB' }} />
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
         </div>
 
         {/* Header */}
@@ -188,7 +188,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
             {Array.from({ length: Math.max(progressDenominator, 1) }).map((_, i) => (
               <div key={i} style={{
                 flex: 1, height: 3, borderRadius: 2,
-                background: i < progressNumerator ? '#8B1A1A' : '#E5E7EB',
+                background: i < progressNumerator ? '#8B1A1A' : '#EAE4D9',
                 transition: 'background 0.3s',
               }} />
             ))}
@@ -216,7 +216,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 </p>
               )}
             </div>
-            <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+            <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
         </div>
 
@@ -226,7 +226,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           {/* ── Phase 1: Pick procedure ── */}
           {phase === 'pick_procedure' && (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F9FAFB', border: '1.5px solid #E5E7EB', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
+              <div className="search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '8px 12px', marginBottom: 14, transition: 'border-color 0.18s, box-shadow 0.18s' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder={isAr ? 'ابحث عن معاملتك...' : 'Search your procedure...'} dir={isAr ? 'rtl' : 'ltr'}
                   style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }} />
@@ -274,7 +274,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 ))}
                 {!currentFlowStep.required && (
                   <button onClick={handleSkipStep} style={{
-                    padding: '12px 16px', borderRadius: 14, border: '1.5px dashed #E5E7EB',
+                    padding: '12px 16px', borderRadius: 14, border: '1.5px dashed #D5CEC4',
                     background: 'none', cursor: 'pointer', fontFamily: 'inherit',
                     fontSize: 12, color: '#9C8E80',
                   }}>

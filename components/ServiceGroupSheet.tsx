@@ -39,9 +39,9 @@ export default function ServiceGroupSheet({
       verified: ['#DCFCE7', '#16A34A'],
       partially_verified: ['#FEF3C7', '#B45309'],
       needs_review: ['#FEE2E2', '#DC2626'],
-      draft: ['#F3F4F6', '#6B7280'],
+      draft: ['#EAE4D9', '#5C4A3A'],
     }
-    const [bg, fg] = colors[status] ?? ['#F3F4F6', '#6B7280']
+    const [bg, fg] = colors[status] ?? ['#EAE4D9', '#5C4A3A']
     return (
       <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: bg, color: fg, flexShrink: 0 }}>
         {getVerificationLabel(status, isAr)}
@@ -74,13 +74,13 @@ export default function ServiceGroupSheet({
       }}>
         {/* Drag handle */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4, flexShrink: 0 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E5E7EB' }} />
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
         </div>
 
         {/* Group header */}
         <div style={{
           padding: '8px 20px 14px',
-          borderBottom: '1px solid #F3F4F6',
+          borderBottom: '1px solid #EAE4D9',
           flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
@@ -97,7 +97,7 @@ export default function ServiceGroupSheet({
               <div style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>
                 {isAr ? group.titleAr : group.titleEn}
               </div>
-              <div style={{ fontSize: 10.5, color: '#6B7280', marginTop: 1 }}>
+              <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 1 }}>
                 {isAr ? group.descriptionAr : group.descriptionEn}
               </div>
             </div>
@@ -106,9 +106,9 @@ export default function ServiceGroupSheet({
             onClick={onClose}
             style={{
               width: 32, height: 32, borderRadius: 8,
-              background: '#F3F4F6', border: 'none', cursor: 'pointer',
+              background: '#EAE4D9', border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#6B7280', fontSize: 16, flexShrink: 0,
+              color: '#5C4A3A', fontSize: 16, flexShrink: 0,
             }}
             aria-label={T.close}
           ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
@@ -130,7 +130,7 @@ export default function ServiceGroupSheet({
                 textAlign: isAr ? 'right' : 'left',
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FAFAFA' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FAFAF8' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0F0F0'; e.currentTarget.style.background = '#fff' }}
               onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
@@ -163,10 +163,11 @@ export default function ServiceGroupSheet({
               {/* CTA */}
               <div style={{
                 padding: '5px 10px', borderRadius: 8,
-                background: '#8B1A1A', color: '#fff',
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
                 fontSize: 10.5, fontWeight: 700,
                 whiteSpace: 'nowrap', flexShrink: 0,
                 display: 'flex', alignItems: 'center', gap: 4,
+                boxShadow: '0 2px 6px rgba(139,26,26,0.2)',
               }}>
                 {actionLabel(item)}
               </div>

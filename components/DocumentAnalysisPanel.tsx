@@ -31,7 +31,7 @@ const CONF_STYLE: Record<string, React.CSSProperties> = {
   high:    { color: '#16a34a', background: '#F0FDF4', border: '1px solid #BBF7D0' },
   medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
   low:     { color: '#ea580c', background: '#FFF7ED', border: '1px solid #FED7AA' },
-  unknown: { color: '#6B7280', background: '#F3F4F6', border: '1px solid #E5E7EB' },
+  unknown: { color: '#5C4A3A', background: '#EAE4D9', border: '1px solid #D5CEC4' },
 }
 
 const CONF_AR: Record<string, string> = {
@@ -48,7 +48,7 @@ const RISK_CLAUSE_STYLE: Record<string, React.CSSProperties> = {
   critical: { color: '#991B1B', background: '#FEF2F2' },
   high:     { color: '#9A3412', background: '#FFF7ED' },
   medium:   { color: '#B8860B', background: '#FFFBEB' },
-  low:      { color: '#6B7280', background: '#F3F4F6' },
+  low:      { color: '#5C4A3A', background: '#EAE4D9' },
 }
 
 const RISK_AR: Record<string, string> = {
@@ -60,7 +60,7 @@ const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
   acceptable: { color: '#8B1A1A' },
   weak:       { color: '#B8860B' },
   missing:    { color: '#991B1B' },
-  unclear:    { color: '#6B7280' },
+  unclear:    { color: '#5C4A3A' },
 }
 
 const STRENGTH_AR: Record<string, string> = {
@@ -97,17 +97,17 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
               {DOC_TYPE_AR[analysis.document_type] || analysis.document_type}
             </span>
             {analysis.detected_country && analysis.detected_country !== 'unknown' && (
-              <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '2px 8px', borderRadius: 99 }}>
+              <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_country === 'lebanon' ? 'لبنان' : analysis.detected_country}
               </span>
             )}
             {analysis.detected_language && (
-              <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '2px 8px', borderRadius: 99 }}>
+              <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_language === 'ar' ? 'عربي' : analysis.detected_language === 'en' ? 'إنجليزي' : analysis.detected_language}
               </span>
             )}
           </div>
-          {fileName && <p style={{ fontSize: 11, color: '#9CA3AF', margin: '3px 0 0' }}>{fileName}</p>}
+          {fileName && <p style={{ fontSize: 11, color: '#9C8E80', margin: '3px 0 0' }}>{fileName}</p>}
         </div>
         <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, fontWeight: 600, whiteSpace: 'nowrap', ...CONF_STYLE[confLevel] }}>
           دقة {CONF_AR[confLevel]}
@@ -150,7 +150,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                     ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#16A34A"/></svg>
                     : f.confidence === 'medium'
                     ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
-                    : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9CA3AF" strokeWidth="1.5"/></svg>}
+                    : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>}
                 </span>
               </div>
             ))}
@@ -179,7 +179,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           <p style={LABEL_S}>الحقائق الأساسية</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             {analysis.key_facts.map((fact, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#374151' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#2D1B0E' }}>
                 <svg width="5" height="5" viewBox="0 0 10 10" style={{ flexShrink: 0, marginTop: 5 }}><circle cx="5" cy="5" r="3.5" fill="#B8860B"/></svg>
                 {fact}
               </div>
@@ -317,70 +317,6 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                         {RISK_AR[c.risk_level] || c.risk_level}
                       </span>
                     </div>
-                    <p style={{ fontSize: 12, color: '#6B7280', margin: 0 }}>{c.why_it_matters}</p>
+                    <p style={{ fontSize: 12, color: '#5C4A3A', margin: 0 }}>{c.why_it_matters}</p>
                     <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '10px 12px' }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</p>
-                      <p style={{ fontSize: 11, color: '#6b2737', margin: 0 }}>{c.recommendation}</p>
-                    </div>
-                    {c.suggested_clause_draft && (
-                      <div style={{ background: '#FAFAF8', borderRadius: 10, padding: '10px 12px', border: '1px solid #EAE4D9' }}>
-                        <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 4px' }}>نص مقترح</p>
-                        <p style={{ fontSize: 11, color: '#374151', lineHeight: 1.7, margin: 0 }}>{c.suggested_clause_draft}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Practical recommendations */}
-          {reviewResult.practical_recommendations?.length > 0 && (
-            <div>
-              <p style={LABEL_S}>توصيات عملية</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {reviewResult.practical_recommendations.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#374151' }}>
-                    <span style={{
-                      flexShrink: 0, width: 20, height: 20, borderRadius: '50%',
-                      background: 'rgba(107,39,55,0.08)', color: '#6b2737',
-                      fontSize: 11, fontWeight: 800,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
-                    }}>
-                      {i + 1}
-                    </span>
-                    {r}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Questions for lawyer */}
-          {reviewResult.questions_for_lawyer?.length > 0 && (
-            <div style={{ background: 'rgba(184,134,11,0.05)', border: '1px solid rgba(184,134,11,0.2)', borderRadius: 14, padding: '14px 16px' }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#B8860B', margin: '0 0 8px' }}>أسئلة لمحاميك</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {reviewResult.questions_for_lawyer.map((q, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#374151' }}>
-                    <span style={{ color: '#B8860B', flexShrink: 0, display: 'inline-flex', alignItems: 'center', marginTop: 2 }}>
-                      <svg width="6" height="6" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" fill="#B8860B" transform="rotate(45 5 5)"/></svg>
-                    </span>
-                    {q}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Disclaimer */}
-          {reviewResult.disclaimer && (
-            <p style={{ fontSize: 11, color: '#9C8E80', background: '#FAFAF8', borderRadius: 10, padding: '10px 12px', lineHeight: 1.6, margin: 0 }}>
-              {reviewResult.disclaimer}
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</

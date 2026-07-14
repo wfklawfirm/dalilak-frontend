@@ -104,7 +104,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}
           </h2>
-          <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+          <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         {submitted ? (
@@ -117,10 +117,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             <p style={{ fontSize: 14, fontWeight: 700, color: '#15803D', margin: '0 0 6px' }}>
               {isAr ? 'تم إرسال طلبك بنجاح' : 'Request sent successfully'}
             </p>
-            <p style={{ fontSize: 12, color: '#6B7280', margin: '0 0 20px' }}>
+            <p style={{ fontSize: 12, color: '#5C4A3A', margin: '0 0 20px' }}>
               {isAr ? 'سيتواصل معك أحد المختصين خلال 24 ساعة عمل.' : 'A specialist will contact you within 24 business hours.'}
             </p>
-            <button onClick={onClose} style={{ padding: '10px 32px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={onClose} style={{ padding: '10px 32px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
               {isAr ? 'إغلاق' : 'Close'}
             </button>
           </div>
@@ -138,7 +138,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
 
             {/* Question preview */}
             {question && (
-              <div style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 10, padding: '8px 12px', marginBottom: 12, fontSize: 11.5, color: '#6B7280', lineHeight: 1.5 }}>
+              <div style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 10, padding: '8px 12px', marginBottom: 12, fontSize: 11.5, color: '#5C4A3A', lineHeight: 1.5 }}>
                 <strong style={{ color: '#9C8E80', display: 'block', marginBottom: 2 }}>{isAr ? 'سؤالك:' : 'Your question:'}</strong>
                 {question.slice(0, 150)}{question.length > 150 ? '...' : ''}
               </div>
@@ -156,37 +156,4 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             {/* Contact preference */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
               {CONTACT_PREFS.map(p => (
-                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#B8860B' : '#EAE4D9', background: contactPref === p.id ? '#FFFBEB' : '#fff', borderRadius: 10, fontFamily: 'inherit', fontSize: 11, fontWeight: 600, color: contactPref === p.id ? '#B8860B' : '#6B7280', cursor: 'pointer' }}>
-                  {isAr ? p.ar : p.en}
-                </button>
-              ))}
-            </div>
-
-            {/* Contact input */}
-            <input
-              type={contactPref === 'email' ? 'email' : 'tel'}
-              placeholder={contactPref === 'email'
-                ? (isAr ? 'بريدك الإلكتروني' : 'Your email')
-                : (isAr ? 'رقم هاتفك (واتساب)' : 'Your phone (WhatsApp)')}
-              value={contact}
-              onChange={e => setContact(e.target.value)}
-              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 12, fontSize: 13, fontFamily: 'inherit', color: '#1A1208', outline: 'none', marginBottom: 12, direction: 'ltr', boxSizing: 'border-box' }}
-            />
-
-            {error && <p style={{ fontSize: 11.5, color: '#DC2626', margin: '0 0 8px' }}>{error}</p>}
-
-            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: '0 0 12px', lineHeight: 1.5 }}>
-              {isAr
-                ? 'هذه الخدمة لأغراض الإرشاد. الرد ليس استشارة قانونية رسمية.'
-                : 'This service is for guidance purposes. Response is not official legal advice.'}
-            </p>
-
-            <button onClick={handleSubmit} disabled={loading} style={{ width: '100%', padding: '13px', background: loading ? '#ccc' : 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : '0 3px 12px rgba(139,26,26,0.3)' }}>
-              {loading ? (isAr ? 'جاري الإرسال...' : 'Sending...') : (isAr ? 'إرسال الطلب' : 'Send Request')}
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
+                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPr

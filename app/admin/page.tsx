@@ -37,7 +37,7 @@ const PLAN_STYLE: Record<string, React.CSSProperties> = {
   trial:     { background: 'rgba(107,39,55,0.1)', color: '#6b2737' },
   admin:     { background: 'rgba(107,39,55,0.15)', color: '#4a1020' },
   suspended: { background: '#FEF2F2', color: '#8B1A1A' },
-  expired:   { background: '#F3F4F6', color: '#6B7280' },
+  expired:   { background: '#EAE4D9', color: '#5C4A3A' },
 }
 
 const PLAN_LABELS: Record<string, string> = {
@@ -254,7 +254,7 @@ export default function AdminPage() {
                 padding: '7px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                 fontFamily: 'inherit', border: 'none', transition: 'all 0.15s',
                 background: tab === t.id ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
-                color: tab === t.id ? '#fff' : '#4B5563',
+                color: tab === t.id ? '#fff' : '#5C4A3A',
                 boxShadow: tab === t.id ? '0 2px 8px rgba(139,26,26,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
                 border: tab === t.id ? 'none' : '1px solid #EAE4D9',
               } as React.CSSProperties}>
@@ -280,7 +280,7 @@ export default function AdminPage() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px,1fr))', gap: 12 }}>
               {[
-                { label: 'إجمالي المستخدمين', value: stats.total,           bg: '#fff',                 ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
+                { label: 'إجمالي المستخدمين', value: stats.total,           bg: '#fff',                 ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
                 { label: 'مدفوعون',            value: stats.paid,            bg: '#F0FDF4',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
                 { label: 'تجريبي نشط',         value: stats.trial_active,    bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
                 { label: 'تجريبي منتهي',       value: stats.trial_expired,   bg: '#FFF7ED',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
@@ -324,18 +324,18 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {filtered.map((u, i) => (
-                      <tr key={u.username} className="adm-tr" style={{ borderBottom: i < filtered.length - 1 ? '1px solid #F3F4F6' : 'none', opacity: u.active ? 1 : 0.5, background: '#fff' }}>
+                      <tr key={u.username} className="adm-tr" style={{ borderBottom: i < filtered.length - 1 ? '1px solid #EAE4D9' : 'none', opacity: u.active ? 1 : 0.5, background: '#fff' }}>
                         <td style={{ padding: '10px 14px' }}>
                           <div style={{ fontWeight: 700, color: '#1A1208', fontSize: 13 }}>{u.username}</div>
                           <div style={{ fontSize: 11, color: '#9C8E80' }}>{u.full_name}</div>
                         </td>
-                        <td style={{ padding: '10px 14px', color: '#6B7280', fontSize: 11 }}>{u.email}</td>
+                        <td style={{ padding: '10px 14px', color: '#5C4A3A', fontSize: 11 }}>{u.email}</td>
                         <td style={{ padding: '10px 14px' }}>
-                          <span style={{ fontSize: 11, padding: '2px 9px', borderRadius: 99, fontWeight: 700, ...(PLAN_STYLE[u.status] || PLAN_STYLE[u.plan] || { background: '#F3F4F6', color: '#6B7280' }) }}>
+                          <span style={{ fontSize: 11, padding: '2px 9px', borderRadius: 99, fontWeight: 700, ...(PLAN_STYLE[u.status] || PLAN_STYLE[u.plan] || { background: '#EAE4D9', color: '#5C4A3A' }) }}>
                             {PLAN_LABELS[u.status] || PLAN_LABELS[u.plan] || u.plan}
                           </span>
                         </td>
-                        <td style={{ padding: '10px 14px', color: '#6B7280', fontSize: 13 }}>
+                        <td style={{ padding: '10px 14px', color: '#5C4A3A', fontSize: 13 }}>
                           {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? `${u.days_left} يوم` : '—'}
                         </td>
                         <td style={{ padding: '10px 14px', color: '#9C8E80', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
@@ -467,10 +467,10 @@ export default function AdminPage() {
                         }
                       </span>
                       <span style={{ fontSize: 11, color: '#9C8E80' }}>{f.username} · {fmtTs(f.timestamp)}</span>
-                      {f.confidence && <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '1px 8px', borderRadius: 99 }}>{f.confidence}</span>}
+                      {f.confidence && <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '1px 8px', borderRadius: 99 }}>{f.confidence}</span>}
                     </div>
                     <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 4px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{f.question}</p>
-                    <p style={{ fontSize: 12, color: '#6B7280', margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const }}>{f.answer}</p>
+                    <p style={{ fontSize: 12, color: '#5C4A3A', margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const }}>{f.answer}</p>
                   </div>
                 ))}
               </div>
@@ -498,7 +498,7 @@ export default function AdminPage() {
                       <span style={{ fontSize: 13, fontWeight: 700, color: '#6b2737' }}>{e.request_type?.replace('_', ' ')}</span>
                       <span style={{ fontSize: 11, color: '#9C8E80' }}>{fmtTs(e.timestamp)}</span>
                     </div>
-                    <p style={{ fontSize: 13, color: '#374151', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{e.question}</p>
+                    <p style={{ fontSize: 13, color: '#2D1B0E', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{e.question}</p>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                       {e.user_email && <span style={{ fontSize: 11, color: '#8B1A1A', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
                       {e.user_phone && <span style={{ fontSize: 11, color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
@@ -537,7 +537,7 @@ export default function AdminPage() {
                 { k: 'open',      dot: '#DC2626', label: 'مفتوح' },
                 { k: 'in_review', dot: '#CA8A04', label: 'قيد المراجعة' },
                 { k: 'resolved',  dot: '#16A34A', label: 'محلول' },
-                { k: 'ignored',   dot: '#9CA3AF', label: 'متجاهَل' },
+                { k: 'ignored',   dot: '#9C8E80', label: 'متجاهَل' },
               ].map(f => (
                 <button key={f.k}
                   onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
@@ -545,155 +545,4 @@ export default function AdminPage() {
                     padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'inherit', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 5,
                     background: gapFilter === f.k ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
-                    color: gapFilter === f.k ? '#fff' : '#6B7280',
-                    boxShadow: gapFilter === f.k ? '0 2px 8px rgba(139,26,26,0.2)' : '0 1px 2px rgba(0,0,0,0.05)',
-                    outline: gapFilter === f.k ? 'none' : '1px solid #EAE4D9',
-                  } as React.CSSProperties}>
-                  <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: gapFilter === f.k ? 'rgba(255,255,255,0.6)' : f.dot }} />
-                  {f.label}
-                </button>
-              ))}
-              <button onClick={() => loadContentGaps(gapFilter)}
-                style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit', marginRight: 'auto' }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                {loading ? '...' : 'تحديث'}
-              </button>
-            </div>
-
-            {/* Gaps list */}
-            <div style={{ ...SECTION, padding: 0, overflow: 'hidden' }}>
-              {loading && contentGaps.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>جارٍ التحميل...</div>
-              ) : contentGaps.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>لا توجد ثغرات بهذا الفلتر</div>
-              ) : (
-                <div>
-                  {contentGaps.map((gap, gi) => {
-                    const prStyle: React.CSSProperties =
-                      gap.priority === 'critical' ? { background: '#FEF2F2', color: '#991B1B' } :
-                      gap.priority === 'high'     ? { background: '#FEF2F2', color: '#B91C1C' } :
-                      gap.priority === 'medium'   ? { background: '#FFFBEB', color: '#B8860B' } :
-                                                    { background: '#F3F4F6', color: '#6B7280' }
-                    const gapTypeLabel: Record<string, string> = {
-                      low_confidence: 'ثقة منخفضة', user_reported_error: 'خطأ مُبلَّغ',
-                      missing_procedure: 'إجراء مفقود', missing_form: 'نموذج مفقود',
-                      missing_fee: 'رسوم مفقودة', unclear_authority: 'جهة غير واضحة',
-                    }
-                    return (
-                      <div key={gap.id} className="adm-gap-row" style={{ padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 12, borderBottom: gi < contentGaps.length - 1 ? '1px solid #F3F4F6' : 'none', background: '#fff' }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{gap.user_question}</p>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 6 }}>
-                            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, ...prStyle }}>{gap.priority}</span>
-                            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#FEF2F2', color: '#8B1A1A' }}>{gapTypeLabel[gap.gap_type] || gap.gap_type}</span>
-                            {gap.detected_country && (
-                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F3F4F6', color: '#6B7280', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-                                {gap.detected_country}
-                              </span>
-                            )}
-                            {gap.detected_procedure && (
-                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: 'rgba(107,39,55,0.08)', color: '#6b2737', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                {gap.detected_procedure}
-                              </span>
-                            )}
-                            {gap.confidence_score != null && (
-                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F3F4F6', color: '#9C8E80' }}>ثقة {(gap.confidence_score * 100).toFixed(0)}%</span>
-                            )}
-                          </div>
-                          {gap.admin_notes && (
-                            <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 4px', fontStyle: 'italic', display: 'flex', alignItems: 'flex-start', gap: 4 }}>
-                              <span style={{ display: 'inline-flex', flexShrink: 0, marginTop: 1 }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></span>
-                              {gap.admin_notes}
-                            </p>
-                          )}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#9C8E80' }}>
-                            {gap.username && <span>@{gap.username}</span>}
-                            {gap.created_at && <span>· {new Date(gap.created_at).toLocaleDateString('ar-LB')}</span>}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, flexShrink: 0 }}>
-                          {gap.status === 'open' && (
-                            <button onClick={() => handleGapUpdate(gap.id, 'in_review')} className="adm-btn"
-                              style={{ fontSize: 11, background: '#FFFBEB', color: '#B8860B', padding: '4px 10px', borderRadius: 8, border: '1px solid #FDE68A', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                              مراجعة
-                            </button>
-                          )}
-                          {(gap.status === 'open' || gap.status === 'in_review') && (
-                            <>
-                              <button onClick={() => handleGapUpdate(gap.id, 'resolved')} className="adm-btn"
-                                style={{ fontSize: 11, background: '#F0FDF4', color: '#16A34A', padding: '4px 10px', borderRadius: 8, border: '1px solid #BBF7D0', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                                حُلّ <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                              </button>
-                              <button onClick={() => handleGapUpdate(gap.id, 'ignored')} className="adm-btn"
-                                style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '4px 10px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                                تجاهل
-                              </button>
-                            </>
-                          )}
-                          {(gap.status === 'resolved' || gap.status === 'ignored') && (
-                            <button onClick={() => handleGapUpdate(gap.id, 'open')} className="adm-btn"
-                              style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '4px 10px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                              إعادة فتح
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div style={{ background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '14px 16px', fontSize: 13, color: '#8B1A1A', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-              <span style={{ display: 'inline-flex', flexShrink: 0, marginTop: 2 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></span>
-              <span>الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم سلبي. لإضافة بيانات رسمية: حدّث <code style={{ background: '#EAE4D9', padding: '1px 5px', borderRadius: 4, fontSize: 12 }}>procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── EDIT MODAL ── */}
-      {editUser && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }} dir="rtl">
-          <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', width: '100%', maxWidth: 380 }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>تعديل: {editUser.username}</h3>
-              <button onClick={() => setEditUser(null)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-            <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label style={LBL}>الخطة</label>
-                <select value={editPlan} onChange={e => setEditPlan(e.target.value)} style={INP}>
-                  <option value="trial">تجريبي</option>
-                  <option value="paid">مدفوع</option>
-                  <option value="admin">مشرف</option>
-                  <option value="suspended">موقوف</option>
-                </select>
-              </div>
-              {editPlan === 'paid' && (
-                <div>
-                  <label style={LBL}>مدفوع حتى تاريخ</label>
-                  <input type="date" value={editPaidUntil} onChange={e => setEditPaidUntil(e.target.value)} style={INP} dir="ltr" />
-                </div>
-              )}
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                <button onClick={handleUpdate} disabled={loading}
-                  style={{ flex: 1, padding: '10px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}>
-                  {loading ? 'جارٍ الحفظ...' : 'حفظ'}
-                </button>
-                <button onClick={() => setEditUser(null)}
-                  style={{ flex: 1, padding: '10px 0', background: '#F3F4F6', color: '#4B5563', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-                  إلغاء
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+ 

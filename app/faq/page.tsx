@@ -46,7 +46,7 @@ export default function FAQPage() {
       `}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1a1a 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -78,132 +78,154 @@ export default function FAQPage() {
             <div key={labelAr} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '14px 10px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
               <div style={{ marginBottom: 6, display: 'flex', justifyContent: 'center' }}>{icon}</div>
               <div style={{ fontSize: 20, fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{value}</div>
-              <div style={{ fontSize: 9.5, color: '#6B7280', marginTop: 4, fontWeight: 600 }}>{isAr ? labelAr : labelEn}</div>
+              <div style={{ fontSize: 9.5, color: '#5C4A3A', marginTop: 4, fontWeight: 600 }}>{isAr ? labelAr : labelEn}</div>
             </div>
           ))}
         </div>
 
         {/* Search */}
-        <div style={{ position: 'relative', marginBottom: 12 }}>
+        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: '1.5px solid #EAE4D9', borderRadius: 14, background: '#fff', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
           <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: '#B0A090', pointerEvents: 'none', display: 'flex' }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
           </span>
           <input type="text" placeholder="ابحث... (طوارئ، بناء، عمل، أجانب...)"
             value={search} onChange={e => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '11px 42px 11px 14px', border: '1.5px solid #EAE4D9', borderRadius: 14, fontSize: 13, background: '#fff', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
+            style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
           />
-          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
-        {/* Category filter */}
+        {/* Category filters */}
         <div style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 14 }}>
           <button onClick={() => setCatFilter('all')} style={{
-            padding: '4px 12px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap', fontSize: 10.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+            padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
+            fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
             borderColor: catFilter === 'all' ? '#8B1A1A' : '#EAE4D9',
             background: catFilter === 'all' ? '#FEF2F2' : '#fff',
-            color: catFilter === 'all' ? '#8B1A1A' : '#6B7280',
-          }}>الكل ({SERVICE_FAQ.length})</button>
+            color: catFilter === 'all' ? '#8B1A1A' : '#5C4A3A',
+          }}>
+            {isAr ? `الكل (${SERVICE_FAQ.length})` : `All (${SERVICE_FAQ.length})`}
+          </button>
           {FAQ_CATEGORIES.map(cat => (
             <button key={cat} onClick={() => setCatFilter(cat)} style={{
-              padding: '4px 11px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+              padding: '4px 10px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
+              fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+              display: 'inline-flex', alignItems: 'center', gap: 4,
               borderColor: catFilter === cat ? '#8B1A1A' : '#EAE4D9',
               background: catFilter === cat ? '#FEF2F2' : '#fff',
-              color: catFilter === cat ? '#8B1A1A' : '#6B7280',
+              color: catFilter === cat ? '#8B1A1A' : '#5C4A3A',
             }}>
-              <FaqCatIcon cat={cat} size={12} /> {cat}
+              <FaqCatIcon cat={cat} size={11} />
+              {cat.length > 20 ? cat.slice(0, 20) + '…' : cat}
             </button>
           ))}
         </div>
 
-        <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 10px' }}>{filtered.length} نتيجة</p>
+        {/* Results count */}
+        <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 10px' }}>
+          {filtered.length} {isAr ? 'سؤال' : 'questions'}
+          {catFilter !== 'all' && ` · ${catFilter}`}
+        </p>
 
-        {/* FAQ Cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {filtered.map((item: FAQItem) => (
-            <div key={item.id} className="faq-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, overflow: 'hidden', transition: 'border-color 0.15s' }}>
-              {/* Header */}
-              <button
-                onClick={() => setExpanded(expanded === item.id ? null : item.id)}
-                style={{ width: '100%', padding: '12px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
-              >
-                <div style={{ width: 36, height: 36, borderRadius: 9, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
-                  <FaqCatIcon cat={item.category} size={18} />
-                </div>
-                <div style={{ flex: 1, textAlign: 'right' }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{item.title}</div>
-                  <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, marginTop: 1 }}>{item.category}</div>
-                </div>
-                <span style={{ color: '#9C8E80', flexShrink: 0, display: 'inline-flex', transform: expanded === item.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
-              </button>
-
-              {/* Expanded content */}
-              {expanded === item.id && (
-                <div style={{ padding: '0 14px 14px', borderTop: '1px solid #F3F4F6' }}>
-
-                  {item.summary && (
-                    <p style={{ fontSize: 11.5, color: '#4B5563', margin: '10px 0 8px', lineHeight: 1.6 }}>{item.summary}</p>
-                  )}
-
-                  {item.steps.length > 0 && (
-                    <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg> الخطوات:</div>
-                      {item.steps.map((s, i) => (
-                        <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'flex-start' }}>
-                          <span style={{ width: 18, height: 18, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
-                          <span style={{ fontSize: 11, color: '#374151', lineHeight: 1.5 }}>{s}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {item.requiredDocuments.length > 0 && (
-                    <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg> الوثائق المطلوبة:</div>
-                      {item.requiredDocuments.map((d, i) => (
-                        <div key={i} style={{ fontSize: 11, color: '#374151', padding: '3px 0', borderBottom: '1px solid #F9FAFB', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
-                          <span style={{ flexShrink: 0, marginTop: 3, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.6"/></svg></span><span>{d}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {item.fees && (
-                    <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 10px', marginBottom: 10 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#854D0E' }}>الرسوم:</span>
-                      <span style={{ fontSize: 10.5, color: '#6B7280' }}>{item.fees.slice(0, 150)}</span>
-                    </div>
-                  )}
-
-                  {item.duration && (
-                    <div style={{ fontSize: 10.5, color: '#8B1A1A', marginBottom: 10 }}>المدة: {item.duration}</div>
-                  )}
-
-                  {item.authority && (
-                    <div style={{ fontSize: 10.5, color: '#6B7280', marginBottom: 10 }}>الجهة: {item.authority}</div>
-                  )}
-
-                  <button onClick={() => askAI(item.chatPrompt)} style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg, #7a1a1a, #8B1A1A)', color: '#fff', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
-                    {isAr ? 'اسأل دليلك عن هذا الموضوع' : 'Ask Dalilak about this topic'}
-                  </button>
-                </div>
-              )}
+        {/* FAQ Accordion */}
+        {filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
+            <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
+              </svg>
             </div>
-          ))}
-        </div>
+            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>لم يُعثر على نتائج</p>
+            <p style={{ fontSize: 12, margin: '0 0 14px' }}>جرّب كلمة مختلفة أو اسأل الذكاء الاصطناعي مباشرة</p>
+            <button onClick={() => askAI(search)} style={{
+              padding: '9px 22px', borderRadius: 12,
+              background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+              border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
+              cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+            }}>
+              {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {filtered.map((item: FAQItem) => {
+              const isOpen = expanded === item.id
+              return (
+                <div key={item.id} className="faq-card" style={{
+                  background: '#fff',
+                  border: `1.5px solid ${isOpen ? '#8B1A1A' : '#EAE4D9'}`,
+                  borderRadius: 14, overflow: 'hidden',
+                  boxShadow: isOpen ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
+                  transition: 'all 0.18s',
+                }}>
+                  {/* Question row */}
+                  <button
+                    onClick={() => setExpanded(isOpen ? null : item.id)}
+                    style={{
+                      width: '100%', padding: '12px 14px', background: 'none', border: 'none',
+                      cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right',
+                      display: 'flex', alignItems: 'center', gap: 10,
+                    }}
+                  >
+                    <div style={{
+                      width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                      background: isOpen ? 'rgba(139,26,26,0.1)' : '#F4F0EB',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: isOpen ? '#8B1A1A' : '#5C4A3A', transition: 'all 0.15s',
+                    }}>
+                      <FaqCatIcon cat={item.category} size={16} />
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'right' }}>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8B1A1A' : '#1A1208', lineHeight: 1.5 }}>
+                        {isAr ? item.question_ar : item.question_en}
+                      </div>
+                      <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 2 }}>{item.category}</div>
+                    </div>
+                    <span style={{
+                      color: isOpen ? '#8B1A1A' : '#9C8E80',
+                      transform: isOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex',
+                    }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </span>
+                  </button>
 
-        {/* Back to home */}
-        <div style={{ marginTop: 24, textAlign: 'center' }}>
-          <button onClick={() => router.push('/')} style={{ padding: '11px 28px', borderRadius: 14, background: 'linear-gradient(135deg, #7a1a1a, #8B1A1A)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(139,26,26,0.25)', display: 'inline-flex', alignItems: 'center', gap: 7 }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
-            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-          </button>
-        </div>
+                  {/* Answer */}
+                  {isOpen && (
+                    <div style={{ padding: '0 14px 14px', borderTop: '1px solid #EAE4D9' }}>
+                      <p style={{ margin: '12px 0 14px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.8 }}>
+                        {isAr ? item.answer_ar : item.answer_en}
+                      </p>
+                      <button
+                        onClick={() => askAI(isAr ? item.question_ar : item.question_en)}
+                        style={{
+                          padding: '7px 18px', borderRadius: 10,
+                          background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                          border: 'none', color: '#fff', fontSize: 11.5, fontWeight: 700,
+                          cursor: 'pointer', fontFamily: 'inherit',
+                          display: 'inline-flex', alignItems: 'center', gap: 6,
+                          boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                        }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        {isAr ? 'اسأل دليلك تفصيلاً' : 'Ask Dalilak'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
       </div>
 
-      {/* Bottom Nav — mobile */}
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={isAr} activeTab="home" onHomeClick={() => router.push('/')} />
+        <BottomNav isAr={lang === 'ar'} activeTab="faq" />
       </div>
     </div>
   )

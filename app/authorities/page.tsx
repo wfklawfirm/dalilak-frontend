@@ -44,7 +44,7 @@ const TYPE_COLORS: Record<string, { color: string; bg: string }> = {
   notary: { color: '#B8860B', bg: '#FFFBEB' },
   court: { color: '#DC2626', bg: '#FEF2F2' },
   municipality: { color: '#16a34a', bg: '#F0FDF4' },
-  other: { color: '#6B7280', bg: '#F5F5F5' },
+  other: { color: '#5C4A3A', bg: '#EAE4D9' },
 }
 
 export default function AuthoritiesPage() {
@@ -121,7 +121,7 @@ export default function AuthoritiesPage() {
               flexShrink: 0,
               borderColor: typeFilter === f.key ? '#8B1A1A' : '#EAE4D9',
               background: typeFilter === f.key ? '#FEF2F2' : '#fff',
-              color: typeFilter === f.key ? '#8B1A1A' : '#6B7280',
+              color: typeFilter === f.key ? '#8B1A1A' : '#5C4A3A',
             }}>
               {isAr ? f.labelAr : f.labelEn}
             </button>
@@ -171,53 +171,4 @@ export default function AuthoritiesPage() {
                       <p style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', lineHeight: 1.3 }}>
                         {isAr ? auth.nameAr : auth.nameEn}
                       </p>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: typeInfo.color, background: typeInfo.bg, borderRadius: 8, padding: '2px 8px' }}>
-                        {isAr ? (TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || auth.type) : (TYPE_FILTERS.find(f => f.key === auth.type)?.labelEn || auth.type)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Procedures count */}
-                  {auth.proceduresHandled.length > 0 && (
-                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
-                      <span style={{ fontSize: 10, color: '#6B7280', background: '#F5F5F5', borderRadius: 6, padding: '2px 8px' }}>
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> {auth.proceduresHandled.length} {isAr ? 'معاملة' : 'procedures'}
-                      </span>
-                      {auth.confidence === 'high' && (
-                        <span style={{ fontSize: 10, color: '#16a34a', background: '#F0FDF4', borderRadius: 6, padding: '2px 8px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{isAr ? 'موثوق' : 'Verified'}</span>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Procedures list (first 3) */}
-                  {auth.proceduresHandled.length > 0 && (
-                    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
-                      {auth.proceduresHandled.slice(0, 3).map(proc => (
-                        <span key={proc} style={{ fontSize: 9.5, color: '#6B7280', background: '#F9FAFB', border: '1px solid #EAE4D9', borderRadius: 6, padding: '1px 7px' }}>{proc}</span>
-                      ))}
-                      {auth.proceduresHandled.length > 3 && (
-                        <span style={{ fontSize: 9.5, color: '#9CA3AF', borderRadius: 6, padding: '1px 7px' }}>+{auth.proceduresHandled.length - 3}</span>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Website */}
-                  {auth.website && (
-                    <a href={auth.website} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600 }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {isAr ? 'الموقع الرسمي' : 'Official Website'}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight:2 }}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    </a>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Bottom Nav — mobile */}
-      <div className="bottom-nav-wrapper">
-        <BottomNav isAr={isAr} activeTab="home" onHomeClick={() => router.push('/')} />
-      </div>
-    </div>
-  )
-}
+                      <span style={{ fontSize: 10, fontWei

@@ -7,7 +7,7 @@ import { getToken, isAdmin } from '@/lib/auth'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 const STATUS_CONFIG: Record<string, { label: string; style: React.CSSProperties; next: string[] }> = {
-  draft:     { label: 'مسودة',    style: { background: '#F3F4F6', color: '#4B5563' },          next: ['review'] },
+  draft:     { label: 'مسودة',    style: { background: '#EAE4D9', color: '#5C4A3A' },          next: ['review'] },
   review:    { label: 'مراجعة',   style: { background: '#FFFBEB', color: '#B8860B' },           next: ['approved', 'draft'] },
   approved:  { label: 'معتمد',    style: { background: 'rgba(107,39,55,0.1)', color: '#6b2737' }, next: ['published', 'review'] },
   published: { label: 'منشور',    style: { background: '#F0FDF4', color: '#16A34A' },           next: ['expired'] },
@@ -17,7 +17,7 @@ const STATUS_CONFIG: Record<string, { label: string; style: React.CSSProperties;
 const TRANSITION_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
   review:    { label: 'إرسال للمراجعة', bg: '#B8860B', color: '#fff' },
   approved:  { label: 'اعتماد',         bg: '#6b2737', color: '#fff' },
-  draft:     { label: 'إرجاع للمسودة',  bg: '#EAE4D9', color: '#4B5563' },
+  draft:     { label: 'إرجاع للمسودة',  bg: '#EAE4D9', color: '#5C4A3A' },
   published: { label: 'نشر',            bg: '#16A34A', color: '#fff' },
   expired:   { label: 'تحديد كمنتهي',  bg: '#8B1A1A', color: '#fff' },
 }
@@ -212,7 +212,7 @@ export default function ContentGovernancePage() {
                       <span style={{ fontSize: 11, color: '#9C8E80' }}>{new Date(item.updated_at).toLocaleDateString('ar-LB')}</span>
                     </div>
                     <h3 style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', textAlign: 'right' }}>{item.title_ar}</h3>
-                    <p style={{ fontSize: 12, color: '#6B7280', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{item.body_ar}</p>
+                    <p style={{ fontSize: 12, color: '#5C4A3A', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{item.body_ar}</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#9C8E80' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -236,12 +236,12 @@ export default function ContentGovernancePage() {
                   <span style={{ fontSize: 12, padding: '3px 12px', borderRadius: 99, fontWeight: 700, ...STATUS_CONFIG[selected.status]?.style }}>
                     {STATUS_CONFIG[selected.status]?.label}
                   </span>
-                  <button onClick={() => setSelected(null)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
+                  <button onClick={() => setSelected(null)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#EAE4D9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                   </button>
                 </div>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: '0 0 10px' }}>{selected.title_ar}</h2>
-                <p style={{ fontSize: 13, color: '#4B5563', lineHeight: 1.7, margin: '0 0 10px' }}>{selected.body_ar}</p>
+                <p style={{ fontSize: 13, color: '#5C4A3A', lineHeight: 1.7, margin: '0 0 10px' }}>{selected.body_ar}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#9C8E80' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -273,7 +273,7 @@ export default function ContentGovernancePage() {
                   />
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {STATUS_CONFIG[selected.status].next.map(target => {
-                      const t = TRANSITION_CONFIG[target] || { label: target, bg: '#EAE4D9', color: '#4B5563' }
+                      const t = TRANSITION_CONFIG[target] || { label: target, bg: '#EAE4D9', color: '#5C4A3A' }
                       return (
                         <button
                           key={target}
@@ -299,127 +299,6 @@ export default function ContentGovernancePage() {
                         fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: s === selected.status ? 800 : 500,
                         outline: s === selected.status ? '2px solid #8B1A1A' : 'none',
                         outlineOffset: 1,
-                        ...(s === selected.status ? STATUS_CONFIG[s].style : { background: '#F3F4F6', color: '#9CA3AF' }),
+                        ...(s === selected.status ? STATUS_CONFIG[s].style : { background: '#EAE4D9', color: '#9C8E80' }),
                       }}>
-                        {STATUS_CONFIG[s].label}
-                      </span>
-                      {i < 4 && (
-                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="2.5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/>
-                        </svg>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Audit log */}
-        {showAudit && (
-          <div style={{ marginTop: 20, background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', overflow: 'hidden' }}>
-            <div style={{ padding: '14px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>سجل التغييرات</h2>
-              <button onClick={() => setShowAudit(false)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-            <div>
-              {auditLog.length === 0 ? (
-                <div style={{ padding: 24, textAlign: 'center', color: '#9C8E80', fontSize: 13 }}>لا توجد سجلات بعد</div>
-              ) : auditLog.map((entry, i) => (
-                <div key={i} style={{ padding: '12px 20px', display: 'flex', alignItems: 'flex-start', gap: 14, borderBottom: i < auditLog.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
-                  <div style={{
-                    fontSize: 10, padding: '3px 8px', borderRadius: 6, fontWeight: 800, whiteSpace: 'nowrap', fontFamily: 'monospace',
-                    ...(entry.action === 'CREATE' ? { background: '#F0FDF4', color: '#16A34A' }
-                      : entry.action === 'TRANSITION' ? { background: 'rgba(107,39,55,0.1)', color: '#6b2737' }
-                      : { background: '#F3F4F6', color: '#6B7280' }),
-                  }}>
-                    {entry.action}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 700, color: '#1A1208' }}>{entry.actor}</span>
-                      {entry.before && entry.after && (
-                        <span style={{ color: '#6B7280', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          {STATUS_CONFIG[entry.before]?.label || entry.before}
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
-                          {STATUS_CONFIG[entry.after]?.label || entry.after}
-                        </span>
-                      )}
-                      <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#9C8E80' }}>{entry.item_id.slice(0, 8)}</span>
-                    </div>
-                    {entry.note && <p style={{ fontSize: 11, color: '#9C8E80', margin: '3px 0 0' }}>{entry.note}</p>}
-                  </div>
-                  <span style={{ fontSize: 11, color: '#9C8E80', whiteSpace: 'nowrap' }}>{new Date(entry.ts).toLocaleString('ar-LB')}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Create modal */}
-      {showCreate && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }} dir="rtl">
-          <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', width: '100%', maxWidth: 500 }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: 0 }}>إنشاء محتوى جديد</h2>
-              <button onClick={() => setShowCreate(false)} style={{ width: 28, height: 28, borderRadius: '50%', background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>نوع المحتوى</label>
-                <select
-                  value={newItem.content_type}
-                  onChange={e => setNewItem(p => ({ ...p, content_type: e.target.value }))}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', background: '#FAFAF8', color: '#1A1208', outline: 'none' }}
-                >
-                  <option value="procedure_update">تحديث إجراء</option>
-                  <option value="legal_note">ملاحظة قانونية</option>
-                  <option value="authority_info">معلومات جهة</option>
-                  <option value="fee_update">تحديث رسوم</option>
-                </select>
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>العنوان</label>
-                <input
-                  type="text"
-                  placeholder="عنوان المحتوى..."
-                  value={newItem.title_ar}
-                  onChange={e => setNewItem(p => ({ ...p, title_ar: e.target.value }))}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', background: '#FAFAF8', color: '#1A1208', outline: 'none' }}
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>المحتوى</label>
-                <textarea
-                  rows={5}
-                  placeholder="اكتب المحتوى هنا..."
-                  value={newItem.body_ar}
-                  onChange={e => setNewItem(p => ({ ...p, body_ar: e.target.value }))}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', background: '#FAFAF8', color: '#1A1208', outline: 'none', resize: 'vertical' }}
-                />
-              </div>
-            </div>
-            <div style={{ padding: '14px 20px', borderTop: '1px solid #EAE4D9', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <button onClick={() => setShowCreate(false)} style={{ padding: '8px 18px', borderRadius: 9, border: '1.5px solid #EAE4D9', background: '#FAFAF8', color: '#4B5563', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-                إلغاء
-              </button>
-              <button
-                onClick={createItem}
-                disabled={creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()}
-                style={{ padding: '8px 20px', borderRadius: 9, border: 'none', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: (creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()) ? 0.6 : 1 }}
-              >
-                {creating ? 'جارٍ الإنشاء...' : 'إنشاء'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+              

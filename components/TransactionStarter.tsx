@@ -122,7 +122,7 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
         </div>
 
         {/* Progress bar */}
-        <div style={{ height: 3, background: '#F3F4F6', flexShrink: 0 }}>
+        <div style={{ height: 3, background: '#EAE4D9', flexShrink: 0 }}>
           <div style={{ height: '100%', background: '#8B1A1A', width: `${(step / 3) * 100}%`, transition: 'width 0.3s ease' }} />
         </div>
 
@@ -138,14 +138,14 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   onClick={() => { setUserType(ut.id); setStep(2) }}
                   style={{
                     padding: '16px 12px', borderRadius: 14,
-                    background: userType === ut.id ? '#FEF2F2' : '#FAFAFA',
-                    border: `1.5px solid ${userType === ut.id ? '#8B1A1A' : '#E5E7EB'}`,
+                    background: userType === ut.id ? '#FEF2F2' : '#FAFAF8',
+                    border: `1.5px solid ${userType === ut.id ? '#8B1A1A' : '#EAE4D9'}`,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                     transition: 'all 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
-                  onMouseLeave={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#FAFAFA' } }}
+                  onMouseLeave={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
                 >
                   <span style={{ display: 'flex' }}>{ut.icon}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{isAr ? ut.ar : ut.en}</span>
@@ -163,14 +163,14 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   onClick={() => { setTxType(tt.id); setStep(3) }}
                   style={{
                     padding: '14px 12px', borderRadius: 14,
-                    background: txType === tt.id ? '#FEF2F2' : '#FAFAFA',
-                    border: `1.5px solid ${txType === tt.id ? '#8B1A1A' : '#E5E7EB'}`,
+                    background: txType === tt.id ? '#FEF2F2' : '#FAFAF8',
+                    border: `1.5px solid ${txType === tt.id ? '#8B1A1A' : '#EAE4D9'}`,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                     transition: 'all 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
-                  onMouseLeave={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#FAFAFA' } }}
+                  onMouseLeave={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
                 >
                   <span style={{ display: 'flex' }}>{tt.icon}</span>
                   <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111827', textAlign: 'center' }}>{isAr ? tt.ar : tt.en}</span>
@@ -188,15 +188,15 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   onClick={() => handleGoalSelect(g.id)}
                   style={{
                     padding: '12px 14px', borderRadius: 14,
-                    background: '#FAFAFA',
-                    border: '1.5px solid #E5E7EB',
+                    background: '#FAFAF8',
+                    border: '1.5px solid #EAE4D9',
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 12,
                     textAlign: isAr ? 'right' : 'left',
                     transition: 'all 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = '#FAFAFA' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' }}
                 >
                   <span style={{ flexShrink: 0, display: 'flex' }}>{g.icon}</span>
                   <div>
@@ -211,13 +211,13 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
 
         {/* Footer */}
         {step > 1 && (
-          <div style={{ padding: '10px 16px 14px', borderTop: '1px solid #F3F4F6', flexShrink: 0 }}>
+          <div style={{ padding: '10px 16px 14px', borderTop: '1px solid #EAE4D9', flexShrink: 0 }}>
             <button
               onClick={() => setStep(s => (s - 1) as Step)}
               style={{
-                background: 'none', border: '1.5px solid #E5E7EB',
+                background: 'none', border: '1.5px solid #EAE4D9',
                 borderRadius: 10, padding: '8px 18px',
-                fontSize: 12, fontWeight: 600, color: '#6B7280',
+                fontSize: 12, fontWeight: 600, color: '#5C4A3A',
                 cursor: 'pointer', fontFamily: 'inherit',
               }}
             >

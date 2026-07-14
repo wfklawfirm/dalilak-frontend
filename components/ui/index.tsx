@@ -95,7 +95,7 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
           {title}
         </h3>
         {collapsible && (
-          <span style={{ display:'inline-flex', alignItems:'center', color: '#9CA3AF', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
+          <span style={{ display:'inline-flex', alignItems:'center', color: '#9C8E80', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
         )}
       </div>
       {open && (
@@ -114,19 +114,19 @@ interface StatusBadgeProps {
 }
 
 const STATUS_MAP: Record<string, { labelAr: string; labelEn: string; color: string; bg: string }> = {
-  draft: { labelAr: 'مسودة', labelEn: 'Draft', color: '#6B7280', bg: '#F5F5F5' },
+  draft: { labelAr: 'مسودة', labelEn: 'Draft', color: '#5C4A3A', bg: '#EAE4D9' },
   in_progress: { labelAr: 'قيد التنفيذ', labelEn: 'In Progress', color: '#B8860B', bg: '#FFFBEB' },
   ready: { labelAr: 'جاهزة', labelEn: 'Ready', color: '#16a34a', bg: '#F0FDF4' },
   needs_review: { labelAr: 'تحتاج مراجعة', labelEn: 'Needs Review', color: '#CA8A04', bg: '#FFFBEB' },
   completed: { labelAr: 'مكتملة', labelEn: 'Completed', color: '#16a34a', bg: '#F0FDF4' },
-  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#9CA3AF', bg: '#F5F5F5' },
+  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#9C8E80', bg: '#EAE4D9' },
   pending: { labelAr: 'معلّق', labelEn: 'Pending', color: '#B8860B', bg: '#FFFBEB' },
   verified: { labelAr: 'موثّق', labelEn: 'Verified', color: '#16a34a', bg: '#F0FDF4' },
   partially_verified: { labelAr: 'موثّق جزئياً', labelEn: 'Partially Verified', color: '#B8860B', bg: '#FFFBEB' },
 }
 
 export function StatusBadge({ status, isAr = true }: StatusBadgeProps) {
-  const info = STATUS_MAP[status] || { labelAr: status, labelEn: status, color: '#6B7280', bg: '#F5F5F5' }
+  const info = STATUS_MAP[status] || { labelAr: status, labelEn: status, color: '#5C4A3A', bg: '#EAE4D9' }
   return (
     <span style={{ fontSize: 10.5, fontWeight: 700, color: info.color, background: info.bg, borderRadius: 8, padding: '2px 9px' }}>
       {isAr ? info.labelAr : info.labelEn}
@@ -202,46 +202,4 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
           {isAr ? subtitleAr : (subtitleEn || subtitleAr)}
         </p>
       )}
-      {action && actionLabel && (
-        <button
-          onClick={action}
-          style={{ padding: '10px 24px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 14, fontFamily: "'Cairo','Inter',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-        >
-          {actionLabel}
-        </button>
-      )}
-    </div>
-  )
-}
-
-// ── LoadingSkeleton ──────────────────────────────────────────────────────────
-interface LoadingSkeletonProps {
-  lines?: number
-  height?: number
-}
-
-export function LoadingSkeleton({ lines = 3, height = 60 }: LoadingSkeletonProps) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {Array.from({ length: lines }).map((_, i) => (
-        <div
-          key={i}
-          style={{
-            height,
-            background: 'linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%)',
-            backgroundSize: '200% 100%',
-            borderRadius: 12,
-            animation: 'shimmer 1.5s infinite',
-            animationDelay: `${i * 0.1}s`,
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
-    </div>
-  )
-}
+      {

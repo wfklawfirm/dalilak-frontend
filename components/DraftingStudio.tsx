@@ -182,12 +182,12 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
           </p>
         </div>
         {onClose && (
-          <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+          <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         )}
       </div>
 
       {/* Stage indicator */}
-      <div style={{ display: 'flex', gap: 0, marginBottom: 20, background: '#F3F4F6', borderRadius: 10, padding: 4 }}>
+      <div style={{ display: 'flex', gap: 0, marginBottom: 20, background: '#EAE4D9', borderRadius: 10, padding: 4 }}>
         {stageLabels.map((label, i) => {
           const s = (i + 1) as Stage
           return (
@@ -199,7 +199,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               fontSize: 11,
               fontWeight: 700,
               background: stage === s ? '#fff' : 'transparent',
-              color: stage === s ? '#8B1A1A' : stage > s ? '#16a34a' : '#9CA3AF',
+              color: stage === s ? '#8B1A1A' : stage > s ? '#16a34a' : '#9C8E80',
               boxShadow: stage === s ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
               cursor: stage > s ? 'pointer' : 'default',
               transition: 'all 0.15s',
@@ -213,7 +213,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {/* STAGE 1: Template Picker */}
       {stage === 1 && (
         <div>
-          <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 14 }}>
+          <p style={{ fontSize: 13, color: '#5C4A3A', marginBottom: 14 }}>
             {isAr ? 'اختر نوع الوثيقة التي تريد إنشاءها:' : 'Choose the type of document you want to create:'}
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -254,7 +254,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {fields.map(field => (
               <div key={field.key}>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 4 }}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#2D1B0E', marginBottom: 4 }}>
                   {isAr ? field.labelAr : field.labelEn}
                   {field.required && <span style={{ color: '#DC2626', marginRight: 3 }}>*</span>}
                 </label>
@@ -272,56 +272,4 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                     value={fieldValues[field.key] || ''}
                     onChange={e => setFieldValues(v => ({ ...v, [field.key]: e.target.value }))}
                     placeholder={field.placeholder || ''}
-                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', color: '#1A1208', direction: field.type === 'date' ? 'ltr' : 'rtl' }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-            <button onClick={() => setStage(1)} style={{ padding: '11px 20px', background: '#fff', color: '#6B7280', border: '1.5px solid #EAE4D9', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, cursor: 'pointer' }}>
-              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>{isAr ? 'رجوع' : 'Back'}</span>
-            </button>
-            <button onClick={handleGeneratePreview} style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>{!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}{isAr ? 'معاينة المسودة' : 'Preview Draft'}{isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* STAGE 3: Preview */}
-      {stage === 3 && (
-        <div>
-          <div style={{ background: '#F9FAFB', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '14px 16px', marginBottom: 16, maxHeight: 280, overflowY: 'auto' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {isAr ? 'الطلب الذي سيُرسل للذكاء الاصطناعي:' : 'Prompt to be sent to AI:'}
-            </p>
-            <pre style={{ fontSize: 12, color: '#374151', margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.6, fontFamily: 'inherit', direction: 'rtl' }}>
-              {previewPrompt}
-            </pre>
-          </div>
-
-          {/* Disclaimer */}
-          <div style={{ background: '#FFFBEB', border: '1px solid #FEF08A', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
-            <p style={{ fontSize: 11, color: '#854D0E', margin: 0, lineHeight: 1.5, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#854D0E" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-              {isAr
-                ? 'هذه مسودة أولية للإرشاد فقط. يُنصح بمراجعة محامٍ مرخّص قبل استخدام أي وثيقة رسمية.'
-                : 'This is a preliminary draft for guidance only. Please consult a licensed lawyer before using any official document.'}
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => setStage(2)} style={{ padding: '11px 20px', background: '#fff', color: '#6B7280', border: '1.5px solid #EAE4D9', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, cursor: 'pointer' }}>
-              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>{isAr ? 'تعديل' : 'Edit'}</span>
-            </button>
-            <button onClick={handleSend} style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 14, fontWeight: 800, cursor: 'pointer', boxShadow: '0 3px 12px rgba(139,26,26,0.3)' }}>
-              {isAr ? 'توليد المسودة' : 'Generate Draft'}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+                    style={{ width: '100%', p

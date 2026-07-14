@@ -56,7 +56,7 @@ const sectionHeader = (expanded: boolean): React.CSSProperties => ({
 })
 
 const sectionBody: React.CSSProperties = {
-  borderTop: '1px solid #F3F4F6',
+  borderTop: '1px solid #EAE4D9',
   padding: '14px 16px',
 }
 
@@ -81,11 +81,11 @@ function CollapsibleSection({
         {count !== undefined && (
           <span style={{
             fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20,
-            background: badgeColor ? `${badgeColor}18` : '#F3F4F6',
-            color: badgeColor ?? '#6B7280',
+            background: badgeColor ? `${badgeColor}18` : '#EAE4D9',
+            color: badgeColor ?? '#5C4A3A',
           }}>{count}</span>
         )}
-        <span style={{ color: '#9CA3AF', display: 'inline-flex', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
+        <span style={{ color: '#9C8E80', display: 'inline-flex', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
       </button>
       {open && <div style={sectionBody}>{children}</div>}
     </div>
@@ -101,7 +101,7 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
   isAr: boolean
 }) {
   const meta = getDocCategoryMeta(category)
-  const confColor = confidence === 'high' ? '#16A34A' : confidence === 'medium' ? '#B45309' : '#9CA3AF'
+  const confColor = confidence === 'high' ? '#16A34A' : confidence === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
       <div style={{
@@ -115,7 +115,7 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
         </span>
       </div>
       {subtype && (
-        <span style={{ fontSize: 11, color: '#6B7280', background: '#F3F4F6', borderRadius: 12, padding: '3px 10px' }}>
+        <span style={{ fontSize: 11, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 12, padding: '3px 10px' }}>
           {subtype}
         </span>
       )}
@@ -130,21 +130,21 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
 
 export function ExtractedFactsTable({ facts, isAr }: { facts: ExtractedFact[]; isAr: boolean }) {
   if (!facts.length) return (
-    <p style={{ fontSize: 11.5, color: '#9CA3AF', margin: 0 }}>
+    <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
       {isAr ? 'لم يتم استخراج بيانات محددة.' : 'No specific facts extracted.'}
     </p>
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       {facts.map((f, i) => {
-        const confColor = f.confidence === 'high' ? '#16A34A' : f.confidence === 'medium' ? '#B45309' : '#9CA3AF'
+        const confColor = f.confidence === 'high' ? '#16A34A' : f.confidence === 'medium' ? '#B45309' : '#9C8E80'
         return (
           <div key={i} style={{
             display: 'flex', gap: 10, padding: '9px 12px',
             background: '#FAFAF9', borderRadius: 10, border: '1px solid #F0F0F0',
             flexDirection: isAr ? 'row' : 'row',
           }}>
-            <div style={{ flex: '0 0 120px', fontSize: 11.5, color: '#6B7280', fontWeight: 600 }}>{f.label}</div>
+            <div style={{ flex: '0 0 120px', fontSize: 11.5, color: '#5C4A3A', fontWeight: 600 }}>{f.label}</div>
             <div style={{ flex: 1, fontSize: 12, color: '#111827', fontWeight: 600 }}>{f.value}</div>
             <div style={{ flexShrink: 0 }}>
               <span style={{ fontSize: 9, color: confColor, background: `${confColor}14`, borderRadius: 10, padding: '2px 7px', fontWeight: 700 }}>
@@ -166,11 +166,11 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
   onStartFlow?: (slug: string) => void
 }) {
   if (!procedures.length) return (
-    <p style={{ fontSize: 11.5, color: '#9CA3AF', margin: 0 }}>
+    <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
       {isAr ? 'لا توجد معاملات مرتبطة محددة.' : 'No related procedures identified.'}
     </p>
   )
-  const relevColor = (r: string) => r === 'high' ? '#16A34A' : r === 'medium' ? '#B45309' : '#9CA3AF'
+  const relevColor = (r: string) => r === 'high' ? '#16A34A' : r === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {procedures.map((p, i) => (
@@ -191,15 +191,16 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#111827' }}>
               {isAr ? p.titleAr : p.titleEn}
             </div>
-            <div style={{ fontSize: 11, color: '#6B7280', marginTop: 3 }}>{p.reason}</div>
+            <div style={{ fontSize: 11, color: '#5C4A3A', marginTop: 3 }}>{p.reason}</div>
           </div>
           {onStartFlow && (
             <button
               onClick={() => onStartFlow(p.procedureSlug)}
               style={{
                 padding: '5px 12px', borderRadius: 8, border: 'none',
-                background: '#8B1A1A', color: '#fff', fontSize: 10.5,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10.5,
                 fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                boxShadow: '0 1px 4px rgba(139,26,26,0.2)',
               }}
             >
               <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
@@ -226,7 +227,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
     if (p === 'critical') return ['#FEE2E2', '#B91C1C']
     if (p === 'high')     return ['#FEE2E2', '#DC2626']
     if (p === 'medium')   return ['#FEF3C7', '#B45309']
-    return ['#F3F4F6', '#6B7280']
+    return ['#EAE4D9', '#5C4A3A']
   }
   if (!fields.length && !documents.length) return (
     <p style={{ fontSize: 11.5, color: '#16A34A', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -238,7 +239,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       {fields.length > 0 && (
         <>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 4 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#2D1B0E', marginBottom: 4 }}>
             {isAr ? 'معلومات ناقصة:' : 'Missing Information:'}
           </div>
           {fields.map((f, i) => {
@@ -251,7 +252,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
                   </span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#111827' }}>{f.field}</span>
                 </div>
-                <div style={{ fontSize: 11, color: '#6B7280' }}>{f.whyItMatters}</div>
+                <div style={{ fontSize: 11, color: '#5C4A3A' }}>{f.whyItMatters}</div>
                 {f.requiredFor && (
                   <div style={{ fontSize: 10, color: fg, marginTop: 3, fontWeight: 600 }}>
                     {isAr ? 'مطلوب لـ: ' : 'Required for: '}{f.requiredFor}
@@ -264,7 +265,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
       )}
       {documents.length > 0 && (
         <>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#374151', marginTop: fields.length ? 10 : 0, marginBottom: 4 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#2D1B0E', marginTop: fields.length ? 10 : 0, marginBottom: 4 }}>
             {isAr ? 'مستندات ناقصة:' : 'Missing Documents:'}
           </div>
           {documents.map((d, i) => {
@@ -273,7 +274,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
               ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg>
               : d.status === 'unclear'
               ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             return (
               <div key={i} style={{ padding: '9px 12px', borderRadius: 10, border: `1px solid ${fg}25`, background: bg }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
@@ -285,7 +286,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
                     {priorityLabel(d.priority, isAr)}
                   </span>
                 </div>
-                <div style={{ fontSize: 11, color: '#6B7280' }}>{d.reason}</div>
+                <div style={{ fontSize: 11, color: '#5C4A3A' }}>{d.reason}</div>
               </div>
             )
           })}
@@ -321,7 +322,7 @@ export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr
               </span>
               <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111827' }}>{r.title}</span>
             </div>
-            <p style={{ fontSize: 11, color: '#374151', margin: '0 0 7px', lineHeight: 1.55 }}>{r.explanation}</p>
+            <p style={{ fontSize: 11, color: '#2D1B0E', margin: '0 0 7px', lineHeight: 1.55 }}>{r.explanation}</p>
             <div style={{ fontSize: 11, color: fg, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={fg} strokeWidth="2.5" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>{r.recommendedAction}
             </div>
@@ -340,7 +341,7 @@ export function RecommendedDraftsPanel({ drafts, isAr, onGenerate }: {
   onGenerate: (draft: RecommendedDraft) => void
 }) {
   if (!drafts.length) return (
-    <p style={{ fontSize: 11.5, color: '#9CA3AF', margin: 0 }}>
+    <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
       {isAr ? 'لا توجد نماذج مقترحة.' : 'No draft recommendations.'}
     </p>
   )
@@ -376,7 +377,7 @@ export function RecommendedDraftsPanel({ drafts, isAr, onGenerate }: {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#111827', marginBottom: 3 }}>
               {isAr ? d.titleAr : d.titleEn}
             </div>
-            <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.45 }}>{d.recommendedBecause}</div>
+            <div style={{ fontSize: 11, color: '#5C4A3A', lineHeight: 1.45 }}>{d.recommendedBecause}</div>
             {d.requiresLawyerReview && (
               <div style={{ fontSize: 10, color: '#B45309', fontWeight: 600, marginTop: 4, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -412,7 +413,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
   confidence: UniversalDocumentAnalysis['confidence']
   isAr: boolean
 }) {
-  const confColor = (c: string) => c === 'high' ? '#16A34A' : c === 'medium' ? '#B45309' : '#9CA3AF'
+  const confColor = (c: string) => c === 'high' ? '#16A34A' : c === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div>
       {/* Confidence summary */}
@@ -423,8 +424,8 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
           { label: isAr ? 'التفسير القانوني' : 'Legal Interpretation', level: confidence.legalInterpretation },
           { label: isAr ? 'الإجمالي' : 'Overall',                   level: confidence.overall },
         ].map((row, i) => (
-          <div key={i} style={{ padding: '8px 11px', borderRadius: 10, background: '#F9FAFB', border: '1px solid #F0F0F0' }}>
-            <div style={{ fontSize: 10, color: '#6B7280', marginBottom: 3 }}>{row.label}</div>
+          <div key={i} style={{ padding: '8px 11px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #F0F0F0' }}>
+            <div style={{ fontSize: 10, color: '#5C4A3A', marginBottom: 3 }}>{row.label}</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: confColor(row.level) }}>
               {confidenceLabel(row.level, isAr)}
             </div>
@@ -447,7 +448,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
             return (
               <div key={i} style={{ padding: '8px 12px', borderRadius: 10, background: '#FAFAF9', border: '1px solid #F0F0F0' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: '#6B7280', background: '#F3F4F6', borderRadius: 10, padding: '2px 7px' }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 10, padding: '2px 7px' }}>
                     {sourceTypeLabel(e.sourceType, isAr)}
                   </span>
                   {e.verified && (
@@ -459,7 +460,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
                 </div>
                 <div style={{ fontSize: 11.5, color: '#111827' }}>{e.claim}</div>
                 {e.excerpt && (
-                  <div style={{ fontSize: 10.5, color: '#6B7280', marginTop: 5, fontStyle: 'italic', borderRight: '3px solid #E5E7EB', paddingRight: 8 }}>
+                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 5, fontStyle: 'italic', borderRight: '3px solid #D5CEC4', paddingRight: 8 }}>
                     "{e.excerpt}"
                   </div>
                 )}
@@ -509,9 +510,9 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
               background: i === 0
                 ? 'linear-gradient(135deg,#8B1A1A,#6b2737)'
                 : i === 1
-                ? 'linear-gradient(135deg,#5c1212,#8B1A1A)'
-                : '#F3F4F6',
-              color: i < 2 ? '#fff' : '#374151',
+                ? 'linear-gradient(135deg,#6b2737,#8B1A1A)'
+                : '#EAE4D9',
+              color: i < 2 ? '#fff' : '#2D1B0E',
               fontSize: 13, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', gap: 8,
@@ -529,7 +530,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
         onClick={onRequestHumanReview}
         style={{
           marginTop: 10, width: '100%', padding: '10px 16px', borderRadius: 12,
-          border: '1.5px solid #E5E7EB', background: '#fff', color: '#374151',
+          border: '1.5px solid #EAE4D9', background: '#fff', color: '#2D1B0E',
           fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
           display: 'flex', alignItems: 'center', gap: 8,
         }}
@@ -545,7 +546,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
             onClick={() => setShowSecondary(s => !s)}
             style={{
               marginTop: 8, width: '100%', padding: '8px 12px',
-              border: 'none', background: 'none', color: '#6B7280',
+              border: 'none', background: 'none', color: '#5C4A3A',
               fontSize: 11.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
@@ -565,7 +566,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
                   style={{
                     padding: '9px 14px', borderRadius: 10,
                     border: '1.5px solid #F0F0F0', background: '#FAFAF9',
-                    color: '#374151', fontSize: 11.5, fontWeight: 600,
+                    color: '#2D1B0E', fontSize: 11.5, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 8,
                   }}
@@ -669,13 +670,13 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         maxHeight: '85vh', overflowY: 'auto',
       }}>
         {/* Handle */}
-        <div style={{ width: 36, height: 4, borderRadius: 2, background: '#E5E7EB', margin: '0 auto 16px' }} />
+        <div style={{ width: 36, height: 4, borderRadius: 2, background: '#EAE4D9', margin: '0 auto 16px' }} />
 
         <div style={{ fontSize: 15, fontWeight: 800, color: '#111827', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 7 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           {isAr ? draft.titleAr : draft.titleEn}
         </div>
-        <div style={{ fontSize: 11.5, color: '#6B7280', marginBottom: 16 }}>
+        <div style={{ fontSize: 11.5, color: '#5C4A3A', marginBottom: 16 }}>
           {isAr ? 'مسودة أولية — تحقق قبل الاستخدام' : 'Draft only — verify before use'}
         </div>
 
@@ -693,12 +694,12 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         {/* Fields */}
         {template && template.requiredFields.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: '#374151' }}>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: '#2D1B0E' }}>
               {isAr ? 'تأكد أو أضف البيانات التالية:' : 'Confirm or add the following:'}
             </div>
             {template.requiredFields.map((f, i) => (
               <div key={i}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: 4 }}>{f}</label>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#5C4A3A', display: 'block', marginBottom: 4 }}>{f}</label>
                 <input
                   type="text"
                   value={fields[f] ?? ''}
@@ -732,6 +733,4 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
           style={{
             width: '100%', padding: '13px', borderRadius: 13,
             background: 'linear-gradient(135deg,#8B1A1A,#6b2737)',
-            border: 'none', color: '#fff', fontSize: 14, fontWeight: 800,
-            cursor: 'pointer', fontFamily: 'inherit',
-            disp
+            border: 'none', color: '#fff', fontSiz

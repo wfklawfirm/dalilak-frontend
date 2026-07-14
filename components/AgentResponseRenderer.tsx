@@ -74,8 +74,8 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'النص القانوني':        { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
   'المرجع القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
   'legal basis':          { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
-  'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: SvgLink,     labelColor: '#374151' },
-  'المصادر':              { bg: '#F9FAFB', border: '#E5E7EB', icon: SvgLink,     labelColor: '#374151' },
+  'المصدر':               { bg: '#FAFAF8', border: '#EAE4D9', icon: SvgLink,     labelColor: '#2D1B0E' },
+  'المصادر':              { bg: '#FAFAF8', border: '#EAE4D9', icon: SvgLink,     labelColor: '#2D1B0E' },
 }
 
 function getSectionStyle(header: string) {
@@ -328,7 +328,7 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
     official:      { label: 'مصدر رسمي', color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' },
     internal:      { label: 'قاعدة البيانات', color: '#8B1A1A', bg: '#FEF2F2', border: 'rgba(139,26,26,0.2)' },
     user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
-    unknown:       { label: 'غير محدد', color: '#6B7280', bg: '#F9FAFB', border: '#E5E7EB' },
+    unknown:       { label: 'غير محدد', color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' },
   }
   const s = map[type || 'unknown']
   return (
@@ -342,7 +342,7 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
 function scoreStyle(score: number) {
   if (score >= 0.75) return { color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' }
   if (score >= 0.50) return { color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' }
-  return { color: '#6B7280', bg: '#F9FAFB', border: '#E5E7EB' }
+  return { color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' }
 }
 
 // ── Trust Badge ───────────────────────────────────────────────
@@ -365,7 +365,7 @@ export function TrustBadge({
     low:     isAr ? 'منخفضة'    : 'Low',
     unknown: isAr ? 'غير محددة' : 'Unknown',
   }
-  const confColor = { high: '#15803D', medium: '#B45309', low: '#DC2626', unknown: '#6B7280' }
+  const confColor = { high: '#15803D', medium: '#B45309', low: '#DC2626', unknown: '#5C4A3A' }
 
   useEffect(() => {
     if (activeCitation != null) setExpanded(true)
@@ -431,8 +431,8 @@ export function TrustBadge({
               >
                 <span style={{
                   flexShrink: 0, width: 18, height: 18, borderRadius: '50%',
-                  background: isActive ? '#8B1A1A' : '#F3F4F6',
-                  color: isActive ? '#fff' : '#6B7280',
+                  background: isActive ? '#8B1A1A' : '#EAE4D9',
+                  color: isActive ? '#fff' : '#5C4A3A',
                   fontSize: 10, fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.2s',
@@ -453,9 +453,9 @@ export function TrustBadge({
                       </span>
                     )}
                   </div>
-                  <span style={{ fontSize: 10.5, color: '#374151', fontWeight: 600, display: 'block', marginTop: 2 }}>
+                  <span style={{ fontSize: 10.5, color: '#2D1B0E', fontWeight: 600, display: 'block', marginTop: 2 }}>
                     {src.title}
-                    {src.ministry && <span style={{ color: '#6B7280', fontWeight: 400 }}> — {src.ministry}</span>}
+                    {src.ministry && <span style={{ color: '#5C4A3A', fontWeight: 400 }}> — {src.ministry}</span>}
                   </span>
                   {src.url && (
                     <a href={src.url} target="_blank" rel="noopener noreferrer"
@@ -470,7 +470,7 @@ export function TrustBadge({
                   )}
                   {isActive && (src as any).snippet && (
                     <p style={{
-                      fontSize: 10, color: '#4B5563', margin: '5px 0 0',
+                      fontSize: 10, color: '#5C4A3A', margin: '5px 0 0',
                       padding: '5px 7px', borderRadius: 6,
                       background: '#FFF', border: '1px solid #FECACA',
                       lineHeight: 1.6, direction: 'rtl', textAlign: 'right',
@@ -560,9 +560,9 @@ export function ResponseActions({
       display: 'flex', alignItems: 'center', gap: 4,
       padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
       fontSize: 10.5, fontFamily: 'inherit', transition: 'all 0.15s',
-      border: `1px solid ${active ? (activeBorder || '#22c55e') : '#E5E7EB'}`,
+      border: `1px solid ${active ? (activeBorder || '#22c55e') : '#EAE4D9'}`,
       background: active ? (activeBg || '#F0FDF4') : '#fff',
-      color: active ? (activeColor || '#16a34a') : '#6B7280',
+      color: active ? (activeColor || '#16a34a') : '#5C4A3A',
     }}>{icon}{label}</button>
   )
 
@@ -595,7 +595,7 @@ export function ResponseActions({
         </svg>,
         isAr ? 'اسأل متابعة' : 'Follow-up',
       )}
-      <span style={{ color: '#E5E7EB', alignSelf: 'center' }}>|</span>
+      <span style={{ color: '#D5CEC4', alignSelf: 'center' }}>|</span>
       {btn(() => submitFeedback('up'),
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'up' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
@@ -616,109 +616,4 @@ export function ResponseActions({
 
 // ── Main AgentResponseRenderer ────────────────────────────────
 interface AgentResponseRendererProps {
-  content: string
-  isAr: boolean
-  streaming?: boolean
-  sources?: AgentSource[]
-  confidence?: ConfidenceLevel
-  onFollowUp?: (q: string) => void
-  question?: string   // user's original question — passed to feedback
-}
-
-export default function AgentResponseRenderer({
-  content, isAr, streaming, sources, confidence, onFollowUp, question,
-}: AgentResponseRendererProps) {
-  const displayContent = content.replace(/^\[.*?\]\n?/, '')
-  const sections = !streaming ? parseSections(displayContent) : []
-  const isStructured = sections.length > 0
-
-  const [activeCitation, setActiveCitation] = useState<number | null>(null)
-  const hasCitations = /\[\d{1,2}\]/.test(displayContent)
-
-  const handleCitation = (n: number) => {
-    setActiveCitation(prev => prev === n ? null : n)
-  }
-
-  const agentSources: AgentSource[] | undefined = sources?.map(s => ({
-    title: s.title,
-    type: 'internal' as const,
-    ministry: s.ministry,
-    score: s.score,
-  }))
-
-  return (
-    <div style={{ maxWidth: '86%', minWidth: 60 }}>
-      {isStructured ? (
-        <div>
-          {sections.map((sec, i) => {
-            if (sec.header === null) {
-              const hasContent = sec.lines.some(l => l.trim())
-              if (!hasContent) return null
-              return (
-                <div key={i} style={{ padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isAr ? 4 : 16, borderTopRightRadius: isAr ? 16 : 4, background: '#fff', border: '1px solid #F0EBE0', boxShadow: '0 1px 6px rgba(0,0,0,0.06)', fontSize: 13.5, lineHeight: 1.8, color: '#1A1208', marginBottom: 10 }}>
-                  <MarkdownFallbackRenderer lines={sec.lines} onCitation={handleCitation} activeCitation={activeCitation} />
-                </div>
-              )
-            }
-            const style = getSectionStyle(sec.header)
-            if (style) return (
-              <AgentSectionCard
-                key={i}
-                header={sec.header}
-                lines={sec.lines}
-                style={style}
-                onCitation={handleCitation}
-                activeCitation={activeCitation}
-              />
-            )
-            return (
-              <div key={i} style={{ padding: '12px 16px', borderRadius: 14, marginBottom: 10, background: '#fff', border: '1px solid #F0EBE0', fontSize: 13.5, color: '#1A1208', lineHeight: 1.8 }}>
-                <strong style={{ color: '#8B1A1A', display: 'block', marginBottom: 6 }}>{sec.header}</strong>
-                <MarkdownFallbackRenderer lines={sec.lines} onCitation={handleCitation} activeCitation={activeCitation} />
-              </div>
-            )
-          })}
-        </div>
-      ) : (
-        <div style={{ padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isAr ? 4 : 16, borderTopRightRadius: isAr ? 16 : 4, background: '#fff', border: '1px solid #F0EBE0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)', fontSize: 13.5, lineHeight: 1.8, color: '#1A1208' }}>
-          <MarkdownFallbackRenderer lines={displayContent.split('\n')} onCitation={handleCitation} activeCitation={activeCitation} />
-          {streaming && (
-            <span style={{ display: 'inline-block', width: 8, height: 15, background: '#8B1A1A', borderRadius: 2, animation: 'blink 0.9s step-end infinite', marginRight: 2 }} />
-          )}
-        </div>
-      )}
-
-      {streaming && isStructured && (
-        <span style={{ display: 'inline-block', width: 8, height: 15, background: '#8B1A1A', borderRadius: 2, animation: 'blink 0.9s step-end infinite', marginRight: 2 }} />
-      )}
-
-      {!streaming && content.length > 30 && (
-        <>
-          <ResponseActions content={displayContent} isAr={isAr} onFollowUp={onFollowUp} question={question} confidence={confidence} />
-          <TrustBadge
-            isAr={isAr}
-            sources={agentSources}
-            confidence={confidence}
-            activeCitation={activeCitation}
-            defaultExpanded={hasCitations && Boolean(agentSources?.length)}
-          />
-          {/* ── Legal disclaimer ──────────────────────── */}
-          <p style={{
-            margin: '10px 0 0', fontSize: 10.5, color: '#9ca3af', lineHeight: 1.5,
-            direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left',
-            borderTop: '1px solid #f3f4f6', paddingTop: 8,
-          }}>
-            <span style={{ display:'inline-flex', alignItems:'flex-start', gap:5 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ flexShrink:0, marginTop:1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
-              {isAr
-                ? 'المعلومات أعلاه للاستئناس فقط وليست استشارة قانونية ملزمة — يُنصح باستشارة محامٍ مختص قبل اتخاذ أي إجراء قانوني.'
-                : 'The above is for informational purposes only and does not constitute legal advice. Consult a qualified lawyer before taking legal action.'}
-            </span>
-          </p>
-        </>
-      )}
-
-      <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
-    </div>
-  )
-}
+ 
