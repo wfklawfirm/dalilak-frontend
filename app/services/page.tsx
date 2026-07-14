@@ -75,9 +75,10 @@ export default function ServicesPage() {
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
-        .cat-btn:hover  { border-color: #8B1A1A !important; background: #FEF2F2 !important; }
-        .proc-card:hover { border-color: #8B1A1A !important; box-shadow: 0 6px 24px rgba(139,26,26,0.13) !important; transform: translateY(-2px); }
         .proc-card { transition: all 0.15s ease; }
+        .proc-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 14px rgba(139,26,26,0.12) !important; transform: translateY(-1px); }
+        .cat-btn { transition: all 0.15s ease; }
+        .cat-btn:hover { border-color: #8B1A1A; color: #8B1A1A; background: #FEF7F7; }
         @keyframes srv-spin { to { transform: rotate(360deg) } }
         @media (max-width: 767px) {
           .cat-grid-mobile { grid-template-columns: repeat(3, 1fr) !important; }

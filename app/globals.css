@@ -90,51 +90,10 @@ textarea { font-family: inherit; }
   100% { background-position: 200% 0; }
 }
 
-/* ── Cursor ──────────────────────────────────────────── */
-.cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  background: var(--brand);
-  margin-right: 2px;
-  border-radius: 1px;
-  vertical-align: text-bottom;
-  animation: blink 1s step-end infinite;
-}
-
 /* ── Message entrance ────────────────────────────────── */
 .msg-in { animation: fadeUp 0.22s ease forwards; }
 
 /* ── Interactive button states ───────────────────────── */
-.card-btn {
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  text-align: center !important;
-  direction: rtl;
-}
-.card-btn,
-.card-btn span,
-.card-btn div {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-}
-.card-btn {
-  flex-direction: column !important;
-}
-.card-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.09) !important;
-  border-color: #D1D5DB !important;
-}
-.card-btn:active { transform: scale(0.97) !important; }
-
-.chip-btn {
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-.chip-btn:hover  { background: var(--surface) !important; border-color: #D1D5DB !important; }
-.chip-btn:active { transform: scale(0.97); }
-
 .mode-btn { transition: all 0.15s ease; }
 .mode-btn:hover:not(.active) {
   background: var(--surface-2) !important;
@@ -151,15 +110,6 @@ textarea { font-family: inherit; }
   color: var(--text-2) !important;
 }
 
-/* ── Input focus ring ────────────────────────────────── */
-.input-wrap {
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-.input-wrap.focused {
-  border-color: var(--brand) !important;
-  box-shadow: 0 0 0 3px var(--brand-ring) !important;
-}
-
 /* ── Tap highlight ───────────────────────────────────── */
 * { -webkit-tap-highlight-color: transparent; }
 
@@ -171,135 +121,27 @@ button:focus-visible {
 textarea:focus { outline: none; }
 
 /* ══════════════════════════════════════════════════════
-   RESPONSIVE LAYOUT
+   MOBILE-SPECIFIC — mode selector + bottom nav
    ══════════════════════════════════════════════════════ */
-
-/* Header contacts — hidden on mobile */
-.header-contacts { display: none !important; }
-.header-contacts[style*="justify-content"] { display: none !important; }
-
-/* Legacy topbar */
-.topbar-phone { display: none; }
-
-/* Welcome grid: 2 cols on mobile */
-.welcome-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  width: 100%;
-  max-width: 340px;
-  margin-bottom: 12px;
-}
-
-/* Quick questions */
-.quick-list {
-  width: 100%;
-  max-width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-/* Logo welcome size */
-.logo-welcome { width: 110px; height: 110px; }
-
-/* Welcome heading */
-.welcome-heading {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-}
-
-/* Welcome subtitle */
-.welcome-sub {
-  font-size: 14px;
-  max-width: 300px;
-  color: #6B7280;
-  line-height: 1.75;
-}
-
-/* Welcome stats */
-.welcome-stats {
-  font-size: 11.5px;
-  color: #B0B7C3;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  margin-top: 8px;
-}
-
-/* Header height */
-.header-inner { padding: 0 18px; }
-
-/* Top bar */
-.topbar-inner { padding: 0 14px; gap: 10px; }
-.topbar-link  { font-size: 9.5px; }
-
-/* ── Desktop (≥ 640px) ─────────────────────────────── */
-@media (min-width: 640px) {
-  .topbar-phone { display: flex; }
-  .header-contacts { display: flex !important; }
-  .header-contacts[style*="justify-content"] { display: flex !important; }
-
-  .topbar-inner { padding: 0 24px; gap: 18px; }
-  .topbar-link  { font-size: 10.5px; }
-
-  .welcome-grid {
-    grid-template-columns: repeat(4, 1fr);
-    max-width: 700px;
-    gap: 14px;
-    margin-bottom: 18px;
-  }
-
-  .quick-list { max-width: 620px; gap: 9px; }
-
-  .logo-welcome   { width: 130px; height: 130px; }
-  .welcome-heading { font-size: 30px; }
-  .welcome-sub    { font-size: 15.5px; max-width: 460px; }
-  .welcome-stats  { font-size: 12.5px; }
-
-  .header-inner { padding: 0 24px; }
-}
-
-/* ── Large desktop (≥ 1024px) ──────────────────────── */
-@media (min-width: 1024px) {
-  .welcome-grid { max-width: 820px; gap: 16px; }
-  .quick-list   { max-width: 720px; }
-  .logo-welcome    { width: 144px; height: 144px; }
-  .welcome-heading { font-size: 34px; }
-  .welcome-sub     { font-size: 16px; max-width: 500px; }
-}
-
-/* ══════════════════════════════════════════════════════
-   MOBILE-SPECIFIC — bottom nav + mode selector
-   ══════════════════════════════════════════════════════ */
-
-/* Bottom nav wrapper — hidden on desktop, shown on mobile */
-.bottom-nav-wrapper { display: none !important; }
 
 /* Mode selector — mobile shows single button, desktop shows pills */
 .mode-mobile  { display: flex; }
 .mode-desktop { display: none; }
 
+/* Bottom nav — hidden on desktop, shown on mobile */
+.bottom-nav-wrapper { display: none; }
+
 @media (max-width: 767px) {
   /* Show bottom nav */
-  .bottom-nav-wrapper { display: block !important; }
+  .bottom-nav-wrapper { display: block; }
 
   /* Add bottom padding to footer so input is never behind bottom nav */
   .bottom-nav-padding {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 8px)) !important;
   }
 
-  /* Welcome screen: account for bottom nav height */
-  .welcome-bottom-pad {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 8px)) !important;
-  }
-
   /* Services / procedures grid: 3 cols max on mobile */
   .cat-grid-mobile { grid-template-columns: repeat(3, 1fr) !important; }
-
-  /* Make procedure stat cards wrap on very small screens */
-  .proc-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
 @media (min-width: 640px) {
@@ -320,7 +162,6 @@ textarea:focus { outline: none; }
   input, textarea, select {
     font-size: 16px !important;
   }
-  /* Auth inputs override back to readable size after preventing zoom */
   .auth-input {
     font-size: 16px !important;
   }
@@ -366,38 +207,9 @@ textarea:focus { outline: none; }
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   MOBILE — sub-page scroll container
-   ══════════════════════════════════════════════════════ */
-
-/* Sub-pages need a scrollable root when body overflow is not hidden */
-.sub-page-root {
-  min-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-}
-
-/* ══════════════════════════════════════════════════════
-   MOBILE — Typography & Readability
-   ══════════════════════════════════════════════════════ */
-
+/* ── Minimum tap target ──────────────────────────────── */
 @media (max-width: 767px) {
-  /* Minimum tap target for interactive elements */
   button, a[role="button"] {
     min-height: 36px;
-  }
-
-  /* Improve card readability */
-  .mobile-card-text {
-    font-size: 13px !important;
-    line-height: 1.6 !important;
-  }
-
-  /* Better badge contrast */
-  .status-badge {
-    font-size: 11px !important;
-    padding: 3px 10px !important;
-    border-radius: 20px !important;
   }
 }

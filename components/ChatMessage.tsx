@@ -36,17 +36,28 @@ export default function ChatMessage({
       flexDirection: isUser ? 'row-reverse' : 'row',
     }}>
       {/* Avatar */}
-      <div style={{
-        flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 11, fontWeight: 700, color: '#fff',
-        background: isUser
-          ? 'linear-gradient(135deg, #C9982A 0%, #B8860B 100%)'
-          : 'linear-gradient(135deg, #8B1A1A 0%, #6B1313 100%)',
-        boxShadow: isUser ? '0 2px 6px rgba(201,152,42,0.3)' : '0 2px 6px rgba(139,26,26,0.3)',
-      }}>
-        {isUser ? (ar ? 'أنت' : 'You') : 'AI'}
-      </div>
+      {isUser ? (
+        <div style={{
+          flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 11, fontWeight: 700, color: '#fff',
+          background: 'linear-gradient(135deg, #C9982A 0%, #B8860B 100%)',
+          boxShadow: '0 2px 6px rgba(201,152,42,0.3)',
+        }}>
+          {ar ? 'أنت' : 'You'}
+        </div>
+      ) : (
+        <div style={{
+          flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
+          background: '#fff',
+          border: '1.5px solid rgba(139,26,26,0.18)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(139,26,26,0.15)',
+          overflow: 'hidden',
+        }}>
+          <img src="/logo.PNG" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+        </div>
+      )}
 
       {isUser ? (
         <div style={{ maxWidth: '86%', minWidth: 60 }}>
