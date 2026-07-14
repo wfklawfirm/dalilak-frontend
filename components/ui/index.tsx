@@ -71,7 +71,7 @@ interface SectionCardProps {
   border?: string
   collapsible?: boolean
   defaultOpen?: boolean
-  icon?: string
+  icon?: React.ReactNode
 }
 
 export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', collapsible = false, defaultOpen = true, icon }: SectionCardProps) {
@@ -95,7 +95,7 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
           {title}
         </h3>
         {collapsible && (
-          <span style={{ fontSize: 12, color: '#9CA3AF', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
+          <span style={{ display:'inline-flex', alignItems:'center', color: '#9CA3AF', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
         )}
       </div>
       {open && (
@@ -162,22 +162,23 @@ interface RiskBadgeProps {
 
 export function RiskBadge({ level, isAr = true }: RiskBadgeProps) {
   const map = {
-    low: { ar: 'خطر منخفض', en: 'Low Risk', color: '#16a34a', bg: '#F0FDF4', icon: '🟢' },
-    medium: { ar: 'خطر متوسط', en: 'Medium Risk', color: '#B8860B', bg: '#FFFBEB', icon: '🟡' },
-    high: { ar: 'خطر عالٍ', en: 'High Risk', color: '#ea580c', bg: '#FFF7ED', icon: '🟠' },
-    critical: { ar: 'خطر حرج', en: 'Critical Risk', color: '#DC2626', bg: '#FEF2F2', icon: '🔴' },
+    low:      { ar: 'خطر منخفض', en: 'Low Risk',      color: '#16a34a', bg: '#F0FDF4' },
+    medium:   { ar: 'خطر متوسط', en: 'Medium Risk',    color: '#B8860B', bg: '#FFFBEB' },
+    high:     { ar: 'خطر عالٍ',  en: 'High Risk',      color: '#ea580c', bg: '#FFF7ED' },
+    critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#DC2626', bg: '#FEF2F2' },
   }
   const info = map[level]
   return (
     <span style={{ fontSize: 10.5, fontWeight: 700, color: info.color, background: info.bg, borderRadius: 8, padding: '2px 9px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-      {info.icon} {isAr ? info.ar : info.en}
+      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill={info.color}/></svg>
+      {isAr ? info.ar : info.en}
     </span>
   )
 }
 
 // ── EmptyState ───────────────────────────────────────────────────────────────
 interface EmptyStateProps {
-  icon?: string
+  icon?: React.ReactNode
   titleAr: string
   titleEn?: string
   subtitleAr?: string
@@ -187,10 +188,12 @@ interface EmptyStateProps {
   actionLabel?: string
 }
 
-export function EmptyState({ icon = '📭', titleAr, titleEn, subtitleAr, subtitleEn, isAr, action, actionLabel }: EmptyStateProps) {
+const DefaultEmptyIcon = <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+
+export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitleAr, subtitleEn, isAr, action, actionLabel }: EmptyStateProps) {
   return (
     <div style={{ textAlign: 'center', padding: '48px 20px', fontFamily: "'Cairo','Inter',sans-serif" }}>
-      <div style={{ fontSize: 40, marginBottom: 10 }}>{icon}</div>
+      <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}>{icon}</div>
       <p style={{ fontSize: 14, fontWeight: 700, color: '#4A4035', margin: '0 0 6px' }}>
         {isAr ? titleAr : (titleEn || titleAr)}
       </p>

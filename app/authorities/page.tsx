@@ -78,7 +78,16 @@ export default function AuthoritiesPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
-      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; }`}</style>
+      <style>{`
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #EAE4D9; }
+        .auth-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 16px rgba(139,26,26,0.1) !important; transform: translateY(-1px); }
+        .auth-card { transition: all 0.15s ease; }
+        @media (max-width: 639px) {
+          .auth-card-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
 
       <PageHeader
         icon=""
@@ -148,11 +157,11 @@ export default function AuthoritiesPage() {
 
         {/* Authority cards grid */}
         {!loading && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 12 }}>
+          <div className="auth-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
             {filtered.map(auth => {
               const typeInfo = TYPE_COLORS[auth.type] || TYPE_COLORS.other
               return (
-                <div key={auth.slug} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 16, padding: '16px', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                <div key={auth.slug} className="auth-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 18, padding: '18px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                   {/* Header */}
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 12 }}>
                     <div style={{ width: 44, height: 44, borderRadius: 12, background: typeInfo.bg, border: `1px solid ${typeInfo.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: typeInfo.color, flexShrink: 0 }}>
@@ -195,7 +204,7 @@ export default function AuthoritiesPage() {
                   {/* Website */}
                   {auth.website && (
                     <a href={auth.website} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600 }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {isAr ? 'الموقع الرسمي ↗' : 'Official Website ↗'}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {isAr ? 'الموقع الرسمي' : 'Official Website'}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight:2 }}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     </a>
                   )}
                 </div>

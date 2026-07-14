@@ -162,9 +162,9 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
                 width: 30, height: 30, borderRadius: '50%',
                 background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'rgba(255,255,255,0.8)', fontSize: 16, fontWeight: 700, flexShrink: 0,
+                color: 'rgba(255,255,255,0.8)', flexShrink: 0,
               }}
-            >×</button>
+            ><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
 
           {/* Divider */}

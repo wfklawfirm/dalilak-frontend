@@ -85,7 +85,7 @@ function CollapsibleSection({
             color: badgeColor ?? '#6B7280',
           }}>{count}</span>
         )}
-        <span style={{ color: '#9CA3AF', fontSize: 14, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▾</span>
+        <span style={{ color: '#9CA3AF', display: 'inline-flex', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
       </button>
       {open && <div style={sectionBody}>{children}</div>}
     </div>
@@ -202,7 +202,11 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
                 fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
               }}
             >
-              {isAr ? 'ابدأ ←' : '→ Start'}
+              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+                {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
+                {isAr ? 'ابدأ' : 'Start'}
+                {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
+              </span>
             </button>
           )}
         </div>
@@ -318,8 +322,8 @@ export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr
               <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111827' }}>{r.title}</span>
             </div>
             <p style={{ fontSize: 11, color: '#374151', margin: '0 0 7px', lineHeight: 1.55 }}>{r.explanation}</p>
-            <div style={{ fontSize: 11, color: fg, fontWeight: 600 }}>
-              {isAr ? '→ ' : '→ '}{r.recommendedAction}
+            <div style={{ fontSize: 11, color: fg, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={fg} strokeWidth="2.5" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>{r.recommendedAction}
             </div>
           </div>
         )
@@ -389,7 +393,11 @@ export function RecommendedDraftsPanel({ drafts, isAr, onGenerate }: {
               cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0, whiteSpace: 'nowrap',
             }}
           >
-            {isAr ? 'أنشئ ←' : '→ Create'}
+            <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+              {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
+              {isAr ? 'أنشئ' : 'Create'}
+              {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
+            </span>
           </button>
         </div>
       ))}
@@ -443,8 +451,9 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
                     {sourceTypeLabel(e.sourceType, isAr)}
                   </span>
                   {e.verified && (
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#16A34A', background: '#DCFCE7', borderRadius: 10, padding: '2px 7px' }}>
-                      ✓ {isAr ? 'موثّق' : 'Verified'}
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#16A34A', background: '#DCFCE7', borderRadius: 10, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      {isAr ? 'موثّق' : 'Verified'}
                     </span>
                   )}
                 </div>
@@ -540,9 +549,12 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
               fontSize: 11.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
-            {showSecondary
-              ? (isAr ? '▲ إخفاء الإجراءات الإضافية' : '▲ Hide more actions')
-              : (isAr ? `▼ المزيد (${secondary.length})` : `▼ More (${secondary.length})`)}
+            <span style={{display:'inline-flex',alignItems:'center',gap:4}}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{transition:'transform 0.2s',transform:showSecondary?'rotate(180deg)':'none'}}><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
+              {showSecondary
+                ? (isAr ? 'إخفاء الإجراءات الإضافية' : 'Hide more actions')
+                : (isAr ? `المزيد (${secondary.length})` : `More (${secondary.length})`)}
+            </span>
           </button>
           {showSecondary && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
@@ -722,267 +734,4 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
             background: 'linear-gradient(135deg,#8B1A1A,#6b2737)',
             border: 'none', color: '#fff', fontSize: 14, fontWeight: 800,
             cursor: 'pointer', fontFamily: 'inherit',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-          }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
-          {isAr ? 'أنشئ المسودة الآن' : 'Generate Draft Now'}
-        </button>
-
-        <button
-          onClick={onClose}
-          style={{
-            width: '100%', padding: '10px', borderRadius: 10,
-            border: 'none', background: 'none', color: '#9CA3AF',
-            fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', marginTop: 8,
-          }}
-        >
-          {isAr ? 'إلغاء' : 'Cancel'}
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ── Main View ──────────────────────────────────────────────────────────────────
-
-export default function UniversalDocumentAnalysisView({
-  analysis,
-  isAr,
-  onSendMessage,
-  onStartFlow,
-  onUploadFile,
-}: {
-  analysis: UniversalDocumentAnalysis
-  isAr: boolean
-  onSendMessage: (msg: string) => void
-  onStartFlow?: (slug: string) => void
-  onUploadFile?: () => void
-}) {
-  const [activeDraft, setActiveDraft] = useState<RecommendedDraft | null>(null)
-  const meta = getDocCategoryMeta(analysis.documentType.category)
-  const overallRisk = summarizeRiskLevel(analysis.risks)
-  const [riskBg, riskFg] = riskColors(overallRisk)
-
-  const handleAction = (action: NextAction) => {
-    if (action.actionType === 'upload_missing_document') {
-      onUploadFile?.()
-    } else if (action.actionType === 'start_guided_flow') {
-      onStartFlow?.('')
-    } else if (action.actionType === 'generate_checklist') {
-      const prompt = isAr
-        ? `أعطني قائمة مراجعة شاملة للمعاملة المرتبطة بالمستند: ${analysis.fileName ?? 'المستند المرفوع'}`
-        : `Generate a comprehensive checklist for the transaction related to: ${analysis.fileName ?? 'uploaded document'}`
-      onSendMessage(prompt)
-    } else if (action.actionType === 'generate_draft') {
-      const first = analysis.recommendedDrafts[0]
-      if (first) setActiveDraft(first)
-    } else if (action.actionType === 'ask_followup') {
-      const prompt = isAr
-        ? `لديّ سؤال إضافي عن المستند: `
-        : 'I have a follow-up question about the document: '
-      onSendMessage(prompt)
-    }
-  }
-
-  const handleHumanReview = () => {
-    const prompt = isAr
-      ? `أريد طلب مراجعة بشرية من مختص قانوني لملف المستند: ${analysis.fileName ?? ''} (${isAr ? meta.titleAr : meta.titleEn})`
-      : `I want to request a human legal review for document: ${analysis.fileName ?? ''} (${meta.titleEn})`
-    onSendMessage(prompt)
-  }
-
-  return (
-    <div style={{
-      fontFamily: "'Cairo','Inter',sans-serif",
-      direction: isAr ? 'rtl' : 'ltr',
-      maxWidth: 680, width: '100%',
-    }}>
-      <style>{`
-        .di-section-btn:hover { background: #FAFAF9 !important; }
-      `}</style>
-
-      {/* ── Header card ── */}
-      <div style={{
-        ...card,
-        padding: '16px',
-        background: 'linear-gradient(135deg, #FAFAF8, #FFFFFF)',
-        borderColor: `${meta.color}30`,
-      }}>
-        {/* File name */}
-        {analysis.fileName && (
-          <div style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            {analysis.fileName}
-          </div>
-        )}
-        {/* Document type badge */}
-        <DocumentTypeBadge
-          category={analysis.documentType.category}
-          subtype={analysis.documentType.subtype}
-          confidence={analysis.documentType.confidence}
-          isAr={isAr}
-        />
-
-        {/* Quick stats row */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-          {analysis.extractedFacts.length > 0 && (
-            <span style={{ fontSize: 10.5, color: '#374151', background: '#F3F4F6', borderRadius: 20, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-              {analysis.extractedFacts.length} {isAr ? 'بيانات' : 'facts'}
-            </span>
-          )}
-          {analysis.relatedProcedures.length > 0 && (
-            <span style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-              {analysis.relatedProcedures.length} {isAr ? 'معاملة' : 'procedures'}
-            </span>
-          )}
-          {analysis.risks.length > 0 && (
-            <span style={{ fontSize: 10.5, fontWeight: 600, color: riskFg, background: riskBg, borderRadius: 20, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              {isAr ? 'خطر ' : 'Risk: '}{isAr
-                ? overallRisk === 'critical' ? 'حرج' : overallRisk === 'high' ? 'عالٍ' : overallRisk === 'medium' ? 'متوسط' : 'منخفض'
-                : overallRisk}
-            </span>
-          )}
-          {analysis.recommendedDrafts.length > 0 && (
-            <span style={{ fontSize: 10.5, color: '#7C3AED', background: '#F5F3FF', borderRadius: 20, padding: '3px 10px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-              {analysis.recommendedDrafts.length} {isAr ? 'نماذج' : 'drafts'}
-            </span>
-          )}
-        </div>
-
-        {/* Language / country chips */}
-        <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-          {analysis.detectedLanguage && analysis.detectedLanguage !== 'unknown' && (
-            <span style={{ fontSize: 9.5, color: '#6B7280', background: '#F3F4F6', borderRadius: 10, padding: '2px 8px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
-              {analysis.detectedLanguage.toUpperCase()}
-            </span>
-          )}
-          {analysis.detectedCountry && analysis.detectedCountry !== 'unknown' && (
-            <span style={{ fontSize: 9.5, color: '#6B7280', background: '#F3F4F6', borderRadius: 10, padding: '2px 8px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
-              {analysis.detectedCountry === 'lebanon' ? 'لبنان' : analysis.detectedCountry === 'syria' ? 'سوريا' : 'لبنان/سوريا'}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* ── Section 1: Extracted Facts ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>}
-        title={isAr ? 'البيانات المستخرجة' : 'Extracted Facts'}
-        count={analysis.extractedFacts.length}
-        badgeColor="#8B1A1A"
-        defaultOpen={true}
-      >
-        <ExtractedFactsTable facts={analysis.extractedFacts} isAr={isAr} />
-      </CollapsibleSection>
-
-      {/* ── Section 2: Related Procedures ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>}
-        title={isAr ? 'المعاملات المرتبطة' : 'Related Procedures'}
-        count={analysis.relatedProcedures.length}
-        badgeColor="#8B1A1A"
-        defaultOpen={analysis.relatedProcedures.length > 0}
-      >
-        <RelatedProceduresPanel
-          procedures={analysis.relatedProcedures}
-          isAr={isAr}
-          onStartFlow={onStartFlow}
-        />
-      </CollapsibleSection>
-
-      {/* ── Section 3: Missing Requirements ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v6m0 4h.01"/></svg>}
-        title={isAr ? 'النواقص' : 'Missing Requirements'}
-        count={analysis.missingInformation.length + analysis.missingDocuments.length}
-        badgeColor="#DC2626"
-        defaultOpen={analysis.missingInformation.length > 0 || analysis.missingDocuments.length > 0}
-      >
-        <MissingRequirementsPanel
-          fields={analysis.missingInformation}
-          documents={analysis.missingDocuments}
-          isAr={isAr}
-        />
-      </CollapsibleSection>
-
-      {/* ── Section 4: Risks ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>}
-        title={isAr ? 'المخاطر والتنبيهات' : 'Risks & Warnings'}
-        count={analysis.risks.length}
-        badgeColor={riskFg}
-        defaultOpen={analysis.risks.some(r => r.level === 'high' || r.level === 'critical')}
-      >
-        <DocumentRiskPanel risks={analysis.risks} isAr={isAr} />
-      </CollapsibleSection>
-
-      {/* ── Section 5: Recommended Drafts ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>}
-        title={isAr ? 'النماذج والمسودات المقترحة' : 'Recommended Drafts'}
-        count={analysis.recommendedDrafts.length}
-        badgeColor="#7C3AED"
-        defaultOpen={analysis.recommendedDrafts.length > 0}
-      >
-        <RecommendedDraftsPanel
-          drafts={analysis.recommendedDrafts}
-          isAr={isAr}
-          onGenerate={setActiveDraft}
-        />
-      </CollapsibleSection>
-
-      {/* ── Section 6: Next Actions ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>}
-        title={isAr ? 'الخطوة التالية' : 'Next Steps'}
-        defaultOpen={true}
-      >
-        <DocumentNextActions
-          actions={analysis.nextActions}
-          isAr={isAr}
-          onAction={handleAction}
-          onRequestHumanReview={handleHumanReview}
-        />
-      </CollapsibleSection>
-
-      {/* ── Section 7: Evidence & Trust ── */}
-      <CollapsibleSection
-        icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>}
-        title={isAr ? 'المصادر والثقة' : 'Sources & Confidence'}
-        defaultOpen={false}
-      >
-        <EvidencePanel
-          evidence={analysis.evidence}
-          confidence={analysis.confidence}
-          isAr={isAr}
-        />
-      </CollapsibleSection>
-
-      {/* ── Disclaimer ── */}
-      <div style={{ padding: '10px 14px', background: '#F9FAFB', borderRadius: 12, border: '1px solid #E5E7EB', marginTop: 4 }}>
-        <p style={{ fontSize: 10.5, color: '#9CA3AF', margin: 0, lineHeight: 1.6, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-          {analysis.disclaimer}
-        </p>
-      </div>
-
-      {/* Draft Modal */}
-      {activeDraft && (
-        <GenerateDraftModal
-          draft={activeDraft}
-          extractedFacts={analysis.extractedFacts}
-          isAr={isAr}
-          onClose={() => setActiveDraft(null)}
-          onSend={onSendMessage}
-        />
-      )}
-    </div>
-  )
-}
+            disp

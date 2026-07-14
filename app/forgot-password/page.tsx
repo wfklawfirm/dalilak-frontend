@@ -24,84 +24,160 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center mb-8">
-          <img src="/logo.PNG" alt="دليلك AI" width={130} height={130} className="mb-2" style={{objectFit:'contain', mixBlendMode:'multiply'}} />
-          <h1 className="text-2xl font-bold text-[#6b2737]">دليلك AI</h1>
-        </div>
+    <div style={{
+      minHeight: '100dvh',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      background: 'linear-gradient(160deg, #6b2737 0%, #8B1A1A 40%, #f7f0eb 100%)',
+      padding: '20px 16px',
+      fontFamily: "'Cairo','Inter',sans-serif",
+    }}>
+      <style>{`
+        * { box-sizing: border-box; }
+        .auth-input {
+          width: 100%; padding: 12px 16px;
+          border: 1.5px solid #EAE4D9; border-radius: 14px;
+          font-size: 15px; outline: none;
+          font-family: inherit; background: #FAFAF8;
+          transition: border-color 0.18s, box-shadow 0.18s;
+          color: #1A1208;
+        }
+        .auth-input:focus {
+          border-color: #8B1A1A;
+          box-shadow: 0 0 0 3px rgba(139,26,26,0.10);
+          background: #fff;
+        }
+        .auth-btn {
+          width: 100%; padding: 14px;
+          background: linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%);
+          color: #fff; border: none; border-radius: 14px;
+          font-size: 15px; font-weight: 700; cursor: pointer;
+          font-family: inherit;
+          box-shadow: 0 4px 16px rgba(139,26,26,0.35);
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.4); }
+        .auth-btn:active:not(:disabled) { transform: scale(0.98); }
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      `}</style>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          {sent ? (
-            <div className="text-center">
-              <div className="mb-4 flex justify-center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
-              <h2 className="text-xl font-bold text-gray-800 mb-3">تم إرسال الطلب</h2>
-              <p className="text-gray-600 text-sm mb-6">
-                إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.
-              </p>
-              <p className="text-xs text-gray-400 mb-6">
-                يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.
-              </p>
-              <Link
-                href="/login"
-                className="block w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold text-center hover:bg-[#5a2030] transition-colors"
-              >
+      {/* Logo + Brand */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: 20,
+          background: 'rgba(255,255,255,0.15)',
+          border: '2px solid rgba(255,255,255,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 12px', backdropFilter: 'blur(8px)',
+        }}>
+          <img src="/logo.PNG" alt="دليلك"
+            style={{ width: 50, height: 50, objectFit: 'contain', mixBlendMode: 'multiply' }} />
+        </div>
+        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>
+          دليلك
+        </h1>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
+          دليل المواطن اللبناني الذكي
+        </p>
+      </div>
+
+      {/* Card */}
+      <div style={{
+        width: '100%', maxWidth: 380,
+        background: '#fff', borderRadius: 24,
+        padding: '28px 24px',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+      }}>
+        {sent ? (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 10px' }}>تم إرسال الطلب</h2>
+            <p style={{ fontSize: 13, color: '#5C4A3A', lineHeight: 1.6, margin: '0 0 8px' }}>
+              إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.
+            </p>
+            <p style={{ fontSize: 11.5, color: '#9C8E80', margin: '0 0 20px' }}>
+              يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.
+            </p>
+            <Link
+              href="/login"
+              style={{
+                display: 'block', padding: '13px',
+                background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+                color: '#fff', borderRadius: 14, fontWeight: 700,
+                fontSize: 14, textDecoration: 'none', textAlign: 'center',
+                boxShadow: '0 4px 16px rgba(139,26,26,0.35)',
+              }}
+            >
+              العودة لتسجيل الدخول
+            </Link>
+          </div>
+        ) : (
+          <>
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 6px', textAlign: 'center' }}>
+              استعادة كلمة المرور
+            </h2>
+            <p style={{ fontSize: 12.5, color: '#9C8E80', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
+              أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة
+            </p>
+
+            {error && (
+              <div style={{
+                marginBottom: 14, padding: '10px 14px',
+                background: '#FEF2F2', border: '1.5px solid #FECACA',
+                borderRadius: 12, color: '#991B1B', fontSize: 13, textAlign: 'center',
+              }}>
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+                  البريد الإلكتروني <span style={{ color: '#8B1A1A' }}>*</span>
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="auth-input"
+                  placeholder="you@example.com"
+                  required
+                  dir="ltr"
+                  autoFocus
+                  style={{ textAlign: 'left' }}
+                />
+              </div>
+              <button type="submit" disabled={loading} className="auth-btn">
+                {loading ? 'جاري الإرسال...' : 'إرسال رمز الاستعادة'}
+              </button>
+            </form>
+
+            <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
+              <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
                 العودة لتسجيل الدخول
               </Link>
             </div>
-          ) : (
-            <>
-              <h2 className="text-xl font-bold text-gray-800 mb-2 text-center">استعادة كلمة المرور</h2>
-              <p className="text-sm text-gray-500 text-center mb-6">
-                أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة
-              </p>
+          </>
+        )}
 
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm text-center">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30 focus:border-[#6b2737]"
-                    placeholder="you@example.com"
-                    required
-                    dir="ltr"
-                    autoFocus
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] transition-colors disabled:opacity-60"
-                >
-                  {loading ? 'جاري الإرسال...' : 'إرسال رمز الاستعادة'}
-                </button>
-              </form>
-
-              <div className="mt-6 text-center text-sm text-gray-500">
-                <Link href="/login" className="text-[#6b2737] hover:underline">
-                  العودة لتسجيل الدخول
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Reset with code */}
-        <div className="mt-4 text-center text-sm text-gray-500">
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: '#9C8E80' }}>
           لديك رمز الاستعادة بالفعل؟{' '}
-          <Link href="/reset-password" className="text-[#6b2737] font-semibold hover:underline">
+          <Link href="/reset-password" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
             أدخله هنا
           </Link>
         </div>
       </div>
+
+      <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
+        <span style={{ display:'inline-flex', alignItems:'center', gap:4, justifyContent:'center' }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
+          خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
+        </span>
+      </p>
     </div>
   )
 }

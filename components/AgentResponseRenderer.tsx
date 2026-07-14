@@ -16,53 +16,66 @@ import { authHeaders } from '@/lib/auth'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
+// ── Section icons ─────────────────────────────────────────────
+const SvgSummary  = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/></svg>
+const SvgDocs     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+const SvgSteps    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+const SvgBuilding = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+const SvgForm     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+const SvgFee      = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+const SvgClock    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>
+const SvgArrow    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+const SvgWarn     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+const SvgScales   = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+const SvgLink     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+
 // ── Section style map ─────────────────────────────────────────
-const SECTION_MAP: Record<string, { bg: string; border: string; icon: string; labelColor: string }> = {
-  'الخلاصة':              { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'الملخص':               { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'معلومات عامة':         { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'نظرة عامة':            { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'summary':              { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'overview':             { bg: '#FDF8F0', border: '#EAE4D9', icon: '💡', labelColor: '#7C5C1C' },
-  'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'الوثائق':              { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'المتطلبات':            { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'الشروط':               { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'required documents':   { bg: '#F0FDF4', border: '#BBF7D0', icon: '📋', labelColor: '#15803D' },
-  'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
-  'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
-  'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
-  'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: '📝', labelColor: '#C2410C' },
-  'الجهة المختصة':        { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
-  'الجهة':                { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
-  'الجهات':               { bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
-  'responsible authority':{ bg: '#F5F3FF', border: '#DDD6FE', icon: '🏛️', labelColor: '#6D28D9' },
-  'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
-  'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
-  'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: '📄', labelColor: '#854D0E' },
-  'الرسوم':               { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
-  'التكاليف':             { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
-  'الأتعاب':              { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
-  'fees':                 { bg: '#FAF5FF', border: '#E9D5FF', icon: '💰', labelColor: '#7E22CE' },
-  'المدة':                { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
-  'مدة الإجراء':          { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
-  'المهل':                { bg: '#F0FDF4', border: '#86EFAC', icon: '⏱️', labelColor: '#166534' },
-  'الخطوة التالية':       { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
-  'التوصية':              { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
-  'next step':            { bg: '#ECFDF5', border: '#6EE7B7', icon: '👉', labelColor: '#065F46' },
-  'تنبيه مهم':            { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'تنبيه':                { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'ملاحظة مهمة':          { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: '⚠️', labelColor: '#C2410C' },
-  'الأساس القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
-  'النص القانوني':        { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
-  'المرجع القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
-  'legal basis':          { bg: '#F5F3FF', border: '#DDD6FE', icon: '⚖️', labelColor: '#6D28D9' },
-  'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
-  'المصادر':              { bg: '#F9FAFB', border: '#E5E7EB', icon: '🔗', labelColor: '#374151' },
+const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode; labelColor: string }> = {
+  'الخلاصة':              { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'الملخص':               { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'معلومات عامة':         { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'نظرة عامة':            { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'summary':              { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'overview':             { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'الوثائق':              { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'المتطلبات':            { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'الشروط':               { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'required documents':   { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
+  'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
+  'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
+  'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
+  'الجهة المختصة':        { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
+  'الجهة':                { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
+  'الجهات':               { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
+  'responsible authority':{ bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
+  'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
+  'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
+  'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
+  'الرسوم':               { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
+  'التكاليف':             { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
+  'الأتعاب':              { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
+  'fees':                 { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
+  'المدة':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
+  'مدة الإجراء':          { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
+  'المهل':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
+  'الخطوة التالية':       { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
+  'التوصية':              { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
+  'next step':            { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
+  'تنبيه مهم':            { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'تنبيه':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'ملاحظة مهمة':          { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'الأساس القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
+  'النص القانوني':        { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
+  'المرجع القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
+  'legal basis':          { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
+  'المصدر':               { bg: '#F9FAFB', border: '#E5E7EB', icon: SvgLink,     labelColor: '#374151' },
+  'المصادر':              { bg: '#F9FAFB', border: '#E5E7EB', icon: SvgLink,     labelColor: '#374151' },
 }
 
 function getSectionStyle(header: string) {
@@ -253,7 +266,7 @@ export function MarkdownFallbackRenderer({
       while (i < lines.length && /^[-*•] /.test(lines[i])) {
         const content = lines[i].replace(/^[-*•] /, '')
         items.push(<li key={i} style={{ marginBottom: '0.28rem', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
-          <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 2, fontWeight: 700 }}>•</span>
+          <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A"/></svg></span>
           <span>{inlineFormat(content, i, onCitation, activeCitation)}</span>
         </li>)
         i++
@@ -299,7 +312,7 @@ export function AgentSectionCard({
   return (
     <div style={{ background: style.bg, border: `1.5px solid ${style.border}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10, paddingBottom: 8, borderBottom: `1px solid ${style.border}` }}>
-        <span style={{ fontSize: 16 }}>{style.icon}</span>
+        <span style={{ display: 'flex', alignItems: 'center' }}>{style.icon}</span>
         <span style={{ fontSize: 12.5, fontWeight: 800, color: style.labelColor }}>{header}</span>
       </div>
       <div style={{ fontSize: 13, lineHeight: 1.8, color: '#1A1208' }}>
@@ -377,8 +390,8 @@ export function TrustBadge({
         <div style={{ flex: 1, fontSize: 10, color: '#9C8E80', lineHeight: 1.5 }}>
           {!hasSources
             ? (isAr
-                ? '⚠️ لم يتم ربط هذه الإجابة بمصدر موثّق. تحقق قبل التصرف.'
-                : '⚠️ This answer could not be linked to a verified source. Please verify before acting.')
+                ? 'لم يتم ربط هذه الإجابة بمصدر موثّق. تحقق قبل التصرف.'
+                : 'This answer could not be linked to a verified source. Please verify before acting.')
             : (isAr
                 ? `${sources!.length} مصادر · ${confidence ? `ثقة: ${confLabel[confidence]}` : ''} · تأكد من الجهة الرسمية`
                 : `${sources!.length} sources · ${confidence ? `Confidence: ${confLabel[confidence]}` : ''} · Verify with authority`)}
@@ -587,14 +600,14 @@ export function ResponseActions({
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'up' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
         </svg>,
-        isAr ? (feedback === 'up' ? '✓ مفيد' : 'مفيد') : (feedback === 'up' ? '✓ Helpful' : 'Helpful'),
+        isAr ? 'مفيد' : 'Helpful',
         feedback === 'up', '#16a34a', '#F0FDF4', '#22c55e',
       )}
       {btn(() => submitFeedback('down'),
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'down' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/>
         </svg>,
-        isAr ? (feedback === 'down' ? '✓ غير مفيد' : 'غير مفيد') : (feedback === 'down' ? '✓ Not helpful' : 'Not helpful'),
+        isAr ? 'غير مفيد' : 'Not helpful',
         feedback === 'down', '#dc2626', '#FEF2F2', '#ef4444',
       )}
     </div>
@@ -695,9 +708,12 @@ export default function AgentResponseRenderer({
             direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left',
             borderTop: '1px solid #f3f4f6', paddingTop: 8,
           }}>
-            {isAr
-              ? '⚖️ المعلومات أعلاه للاستئناس فقط وليست استشارة قانونية ملزمة — يُنصح باستشارة محامٍ مختص قبل اتخاذ أي إجراء قانوني.'
-              : '⚖️ The above is for informational purposes only and does not constitute legal advice. Consult a qualified lawyer before taking legal action.'}
+            <span style={{ display:'inline-flex', alignItems:'flex-start', gap:5 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ flexShrink:0, marginTop:1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
+              {isAr
+                ? 'المعلومات أعلاه للاستئناس فقط وليست استشارة قانونية ملزمة — يُنصح باستشارة محامٍ مختص قبل اتخاذ أي إجراء قانوني.'
+                : 'The above is for informational purposes only and does not constitute legal advice. Consult a qualified lawyer before taking legal action.'}
+            </span>
           </p>
         </>
       )}

@@ -509,7 +509,7 @@ export default function Home() {
       if (res.status === 402) {
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
-          content: '**انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك AI، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
+          content: '**انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
           streaming: false,
         }))
         setLoading(false)
@@ -1135,9 +1135,9 @@ export default function Home() {
                 </span>
                 <button
                   onClick={() => { setActiveDocumentName(null) }}
-                  style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 13, padding: 2 }}
+                  style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
                   title={isAr ? 'مسح' : 'Clear'}
-                >✕</button>
+                ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
 
@@ -1173,10 +1173,9 @@ export default function Home() {
                 <button onClick={() => setAttachedFile(null)} style={{
                   width: 24, height: 24, borderRadius: '50%',
                   backgroundColor: 'rgba(139,26,26,0.1)', border: 'none',
-                  cursor: 'pointer', fontSize: 15, color: 'var(--red)',
+                  cursor: 'pointer', color: 'var(--red)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  fontWeight: 700,
-                }}>×</button>
+                }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
 

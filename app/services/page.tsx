@@ -79,6 +79,9 @@ export default function ServicesPage() {
         .proc-card:hover { border-color: #8B1A1A !important; box-shadow: 0 6px 24px rgba(139,26,26,0.13) !important; transform: translateY(-2px); }
         .proc-card { transition: all 0.15s ease; }
         @keyframes srv-spin { to { transform: rotate(360deg) } }
+        @media (max-width: 767px) {
+          .cat-grid-mobile { grid-template-columns: repeat(3, 1fr) !important; }
+        }
       `}</style>
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
@@ -141,8 +144,8 @@ export default function ServicesPage() {
           {search && (
             <button
               onClick={() => setSearch('')}
-              style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: 10, color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >✕</button>
+              style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            ><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           )}
         </div>
       </div>
@@ -190,7 +193,7 @@ export default function ServicesPage() {
                   style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 700, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 20, padding: '2px 10px', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
                 >
                   {CATEGORIES.find(c => c.id === selectedCategory)?.[lang === 'ar' ? 'label_ar' : 'label_en']}
-                  <span style={{ fontSize: 9 }}>✕</span>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
               </>
             )}
@@ -241,7 +244,7 @@ export default function ServicesPage() {
                   </span>
                   {proc.status === 'verified' && (
                     <span style={{ fontSize: 10, color: '#16A34A', display: 'flex', alignItems: 'center', gap: 3, fontWeight: 600 }}>
-                      <span style={{ width: 14, height: 14, borderRadius: '50%', background: '#DCFCE7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 8 }}>✓</span>
+                      <span style={{ width: 14, height: 14, borderRadius: '50%', background: '#DCFCE7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                       {lang === 'ar' ? 'محقق' : 'Verified'}
                     </span>
                   )}
@@ -255,7 +258,11 @@ export default function ServicesPage() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid #F0EBE0' }}>
                   <span style={{ fontSize: 10.5, color: '#9C8E80' }}>{proc.authority}</span>
                   <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 700 }}>
-                    {lang === 'ar' ? 'التفاصيل ←' : 'Details →'}
+                    <span style={{ display:'inline-flex', alignItems:'center', gap:3 }}>
+                      {lang !== 'ar' && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
+                      {lang === 'ar' ? 'التفاصيل' : 'Details'}
+                      {lang === 'ar' && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
+                    </span>
                   </span>
                 </div>
               </Link>

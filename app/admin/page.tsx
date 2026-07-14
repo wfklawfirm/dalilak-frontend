@@ -1,12 +1,12 @@
 'use client'
-import { useState, useEffect, FormEvent } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   isAdmin, getUser, clearToken,
   adminListUsers, adminCreateUser, adminUpdateUser, adminDeactivateUser,
   adminGetStats, adminGetResets,
-  adminGetContentGaps, adminUpdateContentGap, adminGetContentGapStats,
+  adminGetContentGaps, adminUpdateContentGap,
 } from '@/lib/auth'
 
 interface UserRow {
@@ -32,18 +32,26 @@ interface ContentGapEntry {
   priority: string; admin_notes?: string; username?: string; created_at?: string
 }
 
+const PLAN_STYLE: Record<string, React.CSSProperties> = {
+  paid:      { background: '#F0FDF4', color: '#16A34A' },
+  trial:     { background: 'rgba(107,39,55,0.1)', color: '#6b2737' },
+  admin:     { background: 'rgba(107,39,55,0.15)', color: '#4a1020' },
+  suspended: { background: '#FEF2F2', color: '#8B1A1A' },
+  expired:   { background: '#F3F4F6', color: '#6B7280' },
+}
+
 const PLAN_LABELS: Record<string, string> = {
   paid: 'مدفوع', trial: 'تجريبي', admin: 'مشرف', suspended: 'موقوف', expired: 'منتهي'
 }
-const PLAN_COLORS: Record<string, string> = {
-  paid: 'bg-green-100 text-green-800',
-  trial: 'bg-purple-100 text-purple-800',
-  admin: 'bg-purple-100 text-purple-800',
-  suspended: 'bg-red-100 text-red-800',
-  expired: 'bg-gray-100 text-gray-600',
-}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
+
+const INP: React.CSSProperties = {
+  width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10,
+  fontSize: 13, fontFamily: "'Cairo','Inter',sans-serif", background: '#FAFAF8',
+  color: '#1A1208', outline: 'none',
+}
+const LBL: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }
 
 export default function AdminPage() {
   const router = useRouter()
@@ -58,23 +66,18 @@ export default function AdminPage() {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
 
-  // Content Gaps
   const [contentGaps, setContentGaps] = useState<ContentGapEntry[]>([])
   const [gapStats, setGapStats] = useState<{total:number;open:number;in_review:number;high_priority:number}|null>(null)
   const [gapFilter, setGapFilter] = useState<string>('open')
 
-  // Create user form
   const [newUser, setNewUser] = useState({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
-
-  // Edit user modal
   const [editUser, setEditUser] = useState<UserRow | null>(null)
   const [editPlan, setEditPlan] = useState('')
   const [editPaidUntil, setEditPaidUntil] = useState('')
 
   useEffect(() => {
     if (!isAdmin()) { router.push('/login'); return }
-    loadStats()
-    loadUsers()
+    loadStats(); loadUsers()
   }, [])
 
   async function loadStats() {
@@ -86,25 +89,23 @@ export default function AdminPage() {
   }
 
   async function loadResets() {
-    try { setResets((await adminGetResets()).reset_codes) } catch (e: any) { flash(e.message || 'خطأ في تحميل الرموز', true) }
+    try { setResets((await adminGetResets()).reset_codes) } catch (e: any) { flash(e.message || 'خطأ', true) }
   }
 
   async function loadFeedback() {
     try {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/feedback?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
-      const data = await res.json()
-      setFeedback(data.feedback || [])
-    } catch (e: any) { flash(e.message || 'خطأ في تحميل التقييمات', true) }
+      setFeedback((await res.json()).feedback || [])
+    } catch (e: any) { flash(e.message, true) }
   }
 
   async function loadEscalations() {
     try {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/escalations?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
-      const data = await res.json()
-      setEscalations(data.escalations || [])
-    } catch (e: any) { flash(e.message || 'خطأ في تحميل طلبات التصعيد', true) }
+      setEscalations((await res.json()).escalations || [])
+    } catch (e: any) { flash(e.message, true) }
   }
 
   async function loadContentGaps(status?: string) {
@@ -113,16 +114,15 @@ export default function AdminPage() {
       const data = await adminGetContentGaps(status ?? gapFilter)
       setContentGaps(data.gaps || [])
       setGapStats(data.stats || null)
-    } catch (e: any) { flash(e.message || 'خطأ في تحميل ثغرات المحتوى', true) }
+    } catch (e: any) { flash(e.message, true) }
     finally { setLoading(false) }
   }
 
   async function handleGapUpdate(gapId: string, status: string, notes?: string) {
     try {
       await adminUpdateContentGap(gapId, status, notes)
-      flash(`تم تحديث الثغرة`)
-      loadContentGaps(gapFilter)
-    } catch (e: any) { flash(e.message || 'خطأ في تحديث الثغرة', true) }
+      flash('تم التحديث'); loadContentGaps(gapFilter)
+    } catch (e: any) { flash(e.message, true) }
   }
 
   function fmtTs(ts?: number) {
@@ -142,39 +142,33 @@ export default function AdminPage() {
   }
 
   async function handleCreate(e: FormEvent) {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault(); setLoading(true)
     try {
       await adminCreateUser(newUser)
       flash('تم إنشاء المستخدم بنجاح')
       setNewUser({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
       loadUsers(); loadStats()
-    } catch (err: any) {
-      flash(err.message, true)
-    } finally { setLoading(false) }
+    } catch (err: any) { flash(err.message, true) }
+    finally { setLoading(false) }
   }
 
   async function handleUpdate() {
-    if (!editUser) return
-    setLoading(true)
+    if (!editUser) return; setLoading(true)
     try {
       const payload: any = { plan: editPlan }
       if (editPaidUntil) payload.paid_until = editPaidUntil
       await adminUpdateUser(editUser.username, payload)
-      flash('تم التحديث بنجاح')
-      setEditUser(null)
+      flash('تم التحديث بنجاح'); setEditUser(null)
       loadUsers(); loadStats()
-    } catch (err: any) {
-      flash(err.message, true)
-    } finally { setLoading(false) }
+    } catch (err: any) { flash(err.message, true) }
+    finally { setLoading(false) }
   }
 
   async function handleDeactivate(username: string) {
     if (!confirm(`تعطيل حساب ${username}؟`)) return
     try {
       await adminDeactivateUser(username)
-      flash('تم تعطيل الحساب')
-      loadUsers(); loadStats()
+      flash('تم تعطيل الحساب'); loadUsers(); loadStats()
     } catch (err: any) { flash(err.message, true) }
   }
 
@@ -188,49 +182,66 @@ export default function AdminPage() {
   }
 
   const me = getUser()
+  const TABS: { id: Tab; label: string }[] = [
+    { id: 'stats',       label: 'الإحصائيات' },
+    { id: 'users',       label: 'المستخدمون' },
+    { id: 'create',      label: '+ جديد' },
+    { id: 'resets',      label: 'الاستعادة' },
+    { id: 'feedback',    label: 'التقييمات' },
+    { id: 'escalations', label: 'التصعيد' },
+    { id: 'gaps',        label: 'الثغرات' },
+  ]
+
+  const SECTION: React.CSSProperties = {
+    background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)', padding: 20,
+  }
 
   return (
-    <div className="min-h-screen bg-white" dir="rtl">
+    <div dir="rtl" style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
+      <style>{`
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
+        .adm-tr:hover { background: #FAFAF8 !important; }
+        .adm-btn:hover { opacity: 0.82; }
+        .adm-gap-row:hover { background: rgba(250,248,245,0.8) !important; }
+      `}</style>
+
       {/* Header */}
-      <header className="bg-[#6b2737] text-white px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
-          <div>
-            <h1 className="font-bold text-lg">لوحة التحكم — دليلك AI</h1>
-            <p className="text-xs text-white/70">مرحباً، {me?.full_name || me?.username}</p>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+            </div>
+            <div>
+              <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#fff' }}>لوحة التحكم — دليلك</h1>
+              <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>مرحباً، {me?.full_name || me?.username}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-3">
-          <button onClick={refreshAll} disabled={loading}
-            className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50">
-            {loading ? '...' : <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</span>}
-          </button>
-          <button onClick={() => router.push('/')} className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
-            التطبيق
-          </button>
-          <button onClick={() => { clearToken(); router.push('/login') }}
-            className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
-            خروج
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              {loading ? '...' : 'تحديث'}
+            </button>
+            <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+              التطبيق
+            </button>
+            <button onClick={() => { clearToken(); router.push('/login') }} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+              خروج
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Flash messages */}
-      {msg && <div className="mx-6 mt-4 p-3 bg-green-100 border border-green-300 rounded-xl text-green-800 text-sm text-center">{msg}</div>}
-      {error && <div className="mx-6 mt-4 p-3 bg-red-100 border border-red-300 rounded-xl text-red-800 text-sm text-center">{error}</div>}
+      {/* Flash */}
+      {msg   && <div style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 12, color: '#15803D', fontSize: 13, textAlign: 'center' }}>{msg}</div>}
+      {error && <div style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.25)', borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center' }}>{error}</div>}
 
       {/* Tabs */}
-      <div className="px-6 pt-6">
-        <div className="flex gap-2 flex-wrap">
-          {([
-            { id: 'stats',       label: 'الإحصائيات' },
-            { id: 'users',       label: 'المستخدمون' },
-            { id: 'create',      label: '+ مستخدم جديد' },
-            { id: 'resets',      label: 'رموز الاستعادة' },
-            { id: 'feedback',    label: 'التقييمات' },
-            { id: 'escalations', label: 'طلبات التصعيد' },
-            { id: 'gaps',        label: 'ثغرات المحتوى' },
-          ] as { id: Tab; label: string }[]).map(t => (
+      <div style={{ padding: '16px 24px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {TABS.map(t => (
             <button key={t.id}
               onClick={() => {
                 setTab(t.id)
@@ -239,45 +250,53 @@ export default function AdminPage() {
                 if (t.id === 'escalations') loadEscalations()
                 if (t.id === 'gaps') loadContentGaps('open')
               }}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                tab === t.id ? 'bg-[#6b2737] text-white shadow' : 'bg-white text-gray-600 hover:bg-gray-50'
-              }`}>
+              style={{
+                padding: '7px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', border: 'none', transition: 'all 0.15s',
+                background: tab === t.id ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
+                color: tab === t.id ? '#fff' : '#4B5563',
+                boxShadow: tab === t.id ? '0 2px 8px rgba(139,26,26,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
+                border: tab === t.id ? 'none' : '1px solid #EAE4D9',
+              } as React.CSSProperties}>
               {t.label}
             </button>
           ))}
-          <Link
-            href="/admin/content"
-            className="px-4 py-2 rounded-xl text-sm font-medium transition-colors bg-white text-gray-600 hover:bg-gray-50 border border-dashed border-gray-300"
-          >
-            <span style={{display:'inline-flex',alignItems:'center',gap:5}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>إدارة المحتوى</span>
+          <Link href="/admin/content" style={{
+            padding: '7px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600,
+            background: '#fff', color: '#6b2737', border: '1.5px dashed rgba(107,39,55,0.3)',
+            textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 5,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            إدارة المحتوى
           </Link>
         </div>
       </div>
 
-      <div className="px-6 py-6 space-y-6">
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 24px 60px' }}>
 
         {/* ── STATS ── */}
         {tab === 'stats' && stats && (
           <div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px,1fr))', gap: 12 }}>
               {[
-                { label: 'إجمالي المستخدمين', value: stats.total, color: 'bg-white', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
-                { label: 'مشتركون مدفوعون', value: stats.paid, color: 'bg-green-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
-                { label: 'تجريبي نشط', value: stats.trial_active, color: 'bg-purple-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333EA" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
-                { label: 'تجريبي منتهي', value: stats.trial_expired, color: 'bg-orange-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
-                { label: 'معطّلون', value: stats.suspended, color: 'bg-red-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
-                { label: 'معدل التحويل', value: stats.conversion_rate, color: 'bg-purple-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333EA" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> },
+                { label: 'إجمالي المستخدمين', value: stats.total,           bg: '#fff',                 ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
+                { label: 'مدفوعون',            value: stats.paid,            bg: '#F0FDF4',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
+                { label: 'تجريبي نشط',         value: stats.trial_active,    bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
+                { label: 'تجريبي منتهي',       value: stats.trial_expired,   bg: '#FFF7ED',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+                { label: 'معطّلون',            value: stats.suspended,       bg: '#FEF2F2',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
+                { label: 'معدل التحويل',       value: stats.conversion_rate, bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> },
               ].map(s => (
-                <div key={s.label} className={`${s.color} rounded-2xl p-5 shadow-sm border border-gray-100`}>
-                  <div className="mb-2" style={{display:'flex'}}>{s.icon}</div>
-                  <div className="text-3xl font-bold text-gray-800">{s.value}</div>
-                  <div className="text-sm text-gray-500 mt-1">{s.label}</div>
+                <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: '16px 18px', border: '1.5px solid #EAE4D9', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+                  <div style={{ marginBottom: 8, display: 'flex' }}>{s.ic}</div>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: '#1A1208' }}>{s.value}</div>
+                  <div style={{ fontSize: 12, color: '#9C8E80', marginTop: 3 }}>{s.label}</div>
                 </div>
               ))}
             </div>
             <button onClick={() => { loadStats(); loadUsers() }}
-              className="mt-4 text-sm text-[#6b2737] hover:underline" style={{display:'inline-flex',alignItems:'center',gap:4}}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
+              style={{ marginTop: 14, fontSize: 12, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
             </button>
           </div>
         )}
@@ -285,52 +304,53 @@ export default function AdminPage() {
         {/* ── USERS ── */}
         {tab === 'users' && (
           <div>
-            <div className="mb-4">
+            <div style={{ marginBottom: 14 }}>
               <input
-                type="text"
-                value={search}
+                type="text" value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="ابحث باسم المستخدم أو البريد..."
-                className="w-full max-w-sm px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30"
+                style={{ ...INP, maxWidth: 340 }}
               />
             </div>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      {['المستخدم', 'البريد', 'الخطة', 'الأيام المتبقية', 'آخر دخول', 'الإجراءات'].map(h => (
-                        <th key={h} className="px-4 py-3 text-right text-gray-600 font-medium">{h}</th>
+            <div style={{ ...SECTION, padding: 0, overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: '#FAFAF8', borderBottom: '1px solid #EAE4D9' }}>
+                      {['المستخدم', 'البريد', 'الخطة', 'الأيام', 'آخر دخول', 'إجراءات'].map(h => (
+                        <th key={h} style={{ padding: '10px 14px', textAlign: 'right', color: '#9C8E80', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {filtered.map(u => (
-                      <tr key={u.username} className={`hover:bg-gray-50 ${!u.active ? 'opacity-50' : ''}`}>
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-gray-800">{u.username}</div>
-                          <div className="text-xs text-gray-400">{u.full_name}</div>
+                  <tbody>
+                    {filtered.map((u, i) => (
+                      <tr key={u.username} className="adm-tr" style={{ borderBottom: i < filtered.length - 1 ? '1px solid #F3F4F6' : 'none', opacity: u.active ? 1 : 0.5, background: '#fff' }}>
+                        <td style={{ padding: '10px 14px' }}>
+                          <div style={{ fontWeight: 700, color: '#1A1208', fontSize: 13 }}>{u.username}</div>
+                          <div style={{ fontSize: 11, color: '#9C8E80' }}>{u.full_name}</div>
                         </td>
-                        <td className="px-4 py-3 text-gray-600 text-xs">{u.email}</td>
-                        <td className="px-4 py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${PLAN_COLORS[u.status] || PLAN_COLORS[u.plan] || 'bg-gray-100'}`}>
+                        <td style={{ padding: '10px 14px', color: '#6B7280', fontSize: 11 }}>{u.email}</td>
+                        <td style={{ padding: '10px 14px' }}>
+                          <span style={{ fontSize: 11, padding: '2px 9px', borderRadius: 99, fontWeight: 700, ...(PLAN_STYLE[u.status] || PLAN_STYLE[u.plan] || { background: '#F3F4F6', color: '#6B7280' }) }}>
                             {PLAN_LABELS[u.status] || PLAN_LABELS[u.plan] || u.plan}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-600">
+                        <td style={{ padding: '10px 14px', color: '#6B7280', fontSize: 13 }}>
                           {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? `${u.days_left} يوم` : '—'}
                         </td>
-                        <td className="px-4 py-3 text-gray-500 text-xs">{fmtDate(u.last_login)}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
+                        <td style={{ padding: '10px 14px', color: '#9C8E80', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
+                        <td style={{ padding: '10px 14px' }}>
+                          <div style={{ display: 'flex', gap: 6 }}>
                             <button
                               onClick={() => { setEditUser(u); setEditPlan(u.plan); setEditPaidUntil(u.paid_until || '') }}
-                              className="text-xs bg-[#6b2737]/10 text-[#6b2737] px-2 py-1 rounded-lg hover:bg-[#6b2737]/20">
+                              className="adm-btn"
+                              style={{ fontSize: 11, background: 'rgba(107,39,55,0.08)', color: '#6b2737', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
                               تعديل
                             </button>
                             {u.active && (
                               <button onClick={() => handleDeactivate(u.username)}
-                                className="text-xs bg-red-50 text-red-600 px-2 py-1 rounded-lg hover:bg-red-100">
+                                className="adm-btn"
+                                style={{ fontSize: 11, background: '#FEF2F2', color: '#8B1A1A', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
                                 تعطيل
                               </button>
                             )}
@@ -341,7 +361,7 @@ export default function AdminPage() {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div className="text-center py-12 text-gray-400">لا يوجد مستخدمون</div>
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>لا يوجد مستخدمون</div>
                 )}
               </div>
             </div>
@@ -350,24 +370,24 @@ export default function AdminPage() {
 
         {/* ── CREATE USER ── */}
         {tab === 'create' && (
-          <div className="max-w-md">
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="font-bold text-gray-800 mb-5">إنشاء مستخدم جديد</h3>
-              <form onSubmit={handleCreate} className="space-y-4">
+          <div style={{ maxWidth: 440 }}>
+            <div style={SECTION}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 18px' }}>إنشاء مستخدم جديد</h3>
+              <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
-                  { k: 'full_name', label: 'الاسم الكامل', type: 'text', placeholder: 'أحمد علي' },
-                  { k: 'username', label: 'اسم المستخدم', type: 'text', placeholder: 'username', dir: 'ltr' },
-                  { k: 'email', label: 'البريد الإلكتروني', type: 'email', placeholder: 'you@example.com', dir: 'ltr' },
-                  { k: 'phone', label: 'الهاتف', type: 'tel', placeholder: '+961 xx xxx xxx', dir: 'ltr' },
-                  { k: 'password', label: 'كلمة المرور', type: 'password', placeholder: '6 أحرف على الأقل' },
+                  { k: 'full_name', label: 'الاسم الكامل',      type: 'text',     placeholder: 'أحمد علي' },
+                  { k: 'username',  label: 'اسم المستخدم',      type: 'text',     placeholder: 'username',          dir: 'ltr' },
+                  { k: 'email',     label: 'البريد الإلكتروني', type: 'email',    placeholder: 'you@example.com',   dir: 'ltr' },
+                  { k: 'phone',     label: 'الهاتف',             type: 'tel',      placeholder: '+961 xx xxx xxx',  dir: 'ltr' },
+                  { k: 'password',  label: 'كلمة المرور',        type: 'password', placeholder: '6 أحرف على الأقل' },
                 ].map(f => (
                   <div key={f.k}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
+                    <label style={LBL}>{f.label}</label>
                     <input
                       type={f.type}
                       value={(newUser as any)[f.k]}
                       onChange={e => setNewUser(u => ({ ...u, [f.k]: e.target.value }))}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30"
+                      style={INP}
                       placeholder={f.placeholder}
                       dir={f.dir || 'rtl'}
                       required={f.k !== 'phone' && f.k !== 'full_name'}
@@ -375,20 +395,15 @@ export default function AdminPage() {
                   </div>
                 ))}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">الخطة</label>
-                  <select
-                    value={newUser.plan}
-                    onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30"
-                  >
+                  <label style={LBL}>الخطة</label>
+                  <select value={newUser.plan} onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))} style={INP}>
                     <option value="trial">تجريبي (3 أيام)</option>
                     <option value="paid">مدفوع</option>
                     <option value="admin">مشرف</option>
                   </select>
                 </div>
-                <button type="submit" disabled={loading}
-                  className="w-full py-3 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] disabled:opacity-60">
-                  {loading ? 'جاري الإنشاء...' : 'إنشاء المستخدم'}
+                <button type="submit" disabled={loading} style={{ padding: '11px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}>
+                  {loading ? 'جارٍ الإنشاء...' : 'إنشاء المستخدم'}
                 </button>
               </form>
             </div>
@@ -397,32 +412,28 @@ export default function AdminPage() {
 
         {/* ── RESET CODES ── */}
         {tab === 'resets' && (
-          <div className="max-w-lg">
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-gray-800">رموز استعادة كلمة المرور</h3>
-                <button onClick={loadResets} className="text-sm text-[#6b2737] hover:underline" style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</button>
+          <div style={{ maxWidth: 520 }}>
+            <div style={SECTION}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>رموز استعادة كلمة المرور</h3>
+                <button onClick={loadResets} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
+                </button>
               </div>
-              <p className="text-xs text-gray-500 mb-4">
-                عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.
-              </p>
+              <p style={{ fontSize: 12, color: '#9C8E80', marginBottom: 14 }}>عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.</p>
               {resets.length === 0 ? (
-                <div className="text-center py-8 text-gray-400">لا توجد طلبات استعادة نشطة</div>
+                <div style={{ textAlign: 'center', padding: '28px 0', color: '#9C8E80', fontSize: 13 }}>لا توجد طلبات نشطة</div>
               ) : (
-                <div className="space-y-3">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {resets.map((r, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14 }}>
                       <div>
-                        <div className="font-medium text-gray-800">{r.username}</div>
-                        <div className="text-xs text-gray-500">ينتهي: {new Date(r.expires_at).toLocaleTimeString('ar-LB')}</div>
+                        <div style={{ fontWeight: 700, color: '#1A1208', fontSize: 14 }}>{r.username}</div>
+                        <div style={{ fontSize: 11, color: '#9C8E80' }}>ينتهي: {new Date(r.expires_at).toLocaleTimeString('ar-LB')}</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold tracking-widest text-[#6b2737]">{r.token}</div>
-                        <button
-                          onClick={() => navigator.clipboard.writeText(r.token)}
-                          className="text-xs text-gray-500 hover:text-[#6b2737] mt-1">
-                          نسخ
-                        </button>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: 4, color: '#6b2737' }}>{r.token}</div>
+                        <button onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#9C8E80', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>نسخ</button>
                       </div>
                     </div>
                   ))}
@@ -434,29 +445,32 @@ export default function AdminPage() {
 
         {/* ── FEEDBACK ── */}
         {tab === 'feedback' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-gray-800" style={{display:'flex',alignItems:'center',gap:6}}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>تقييمات المستخدمين ({feedback.length})</h2>
-              <button onClick={loadFeedback} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
+          <div style={SECTION}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                تقييمات المستخدمين ({feedback.length})
+              </h2>
+              <button onClick={loadFeedback} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
             </div>
             {feedback.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">لا توجد تقييمات بعد</p>
+              <p style={{ fontSize: 13, color: '#9C8E80', textAlign: 'center', padding: '28px 0' }}>لا توجد تقييمات بعد</p>
             ) : (
-              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 520, overflowY: 'auto' }}>
                 {feedback.map((f, i) => (
-                  <div key={i} className="border border-gray-100 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span style={{display:'inline-flex'}}>
+                  <div key={i} style={{ border: '1px solid #EAE4D9', borderRadius: 14, padding: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ display: 'inline-flex' }}>
                         {f.rating === 'up'
                           ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path strokeLinecap="round" strokeLinejoin="round" d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
                           : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
                         }
                       </span>
-                      <span className="text-xs text-gray-500">{f.username} · {fmtTs(f.timestamp)}</span>
-                      {f.confidence && <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{f.confidence}</span>}
+                      <span style={{ fontSize: 11, color: '#9C8E80' }}>{f.username} · {fmtTs(f.timestamp)}</span>
+                      {f.confidence && <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '1px 8px', borderRadius: 99 }}>{f.confidence}</span>}
                     </div>
-                    <p className="text-sm text-gray-700 font-medium mb-1 line-clamp-2" style={{display:'flex',alignItems:'flex-start',gap:5}}><span style={{display:'inline-flex',flexShrink:0,marginTop:2}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 8v1m0 3v4"/></svg></span>{f.question}</p>
-                    <p className="text-xs text-gray-500 line-clamp-3">{f.answer}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 4px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{f.question}</p>
+                    <p style={{ fontSize: 12, color: '#6B7280', margin: 0, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const }}>{f.answer}</p>
                   </div>
                 ))}
               </div>
@@ -466,26 +480,29 @@ export default function AdminPage() {
 
         {/* ── ESCALATIONS ── */}
         {tab === 'escalations' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-gray-800" style={{display:'flex',alignItems:'center',gap:6}}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>طلبات التصعيد ({escalations.length})</h2>
-              <button onClick={loadEscalations} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
+          <div style={SECTION}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
+                طلبات التصعيد ({escalations.length})
+              </h2>
+              <button onClick={loadEscalations} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
             </div>
             {escalations.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">لا توجد طلبات بعد</p>
+              <p style={{ fontSize: 13, color: '#9C8E80', textAlign: 'center', padding: '28px 0' }}>لا توجد طلبات بعد</p>
             ) : (
-              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 520, overflowY: 'auto' }}>
                 {escalations.map((e, i) => (
-                  <div key={i} className="border border-gray-100 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-bold text-[#6b2737]">{e.request_type?.replace('_', ' ')}</span>
-                      <span className="text-xs text-gray-500">{fmtTs(e.timestamp)}</span>
+                  <div key={i} style={{ border: '1px solid #EAE4D9', borderRadius: 14, padding: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: '#6b2737' }}>{e.request_type?.replace('_', ' ')}</span>
+                      <span style={{ fontSize: 11, color: '#9C8E80' }}>{fmtTs(e.timestamp)}</span>
                     </div>
-                    <p className="text-sm text-gray-700 mb-1 line-clamp-2">{e.question}</p>
-                    <div className="flex gap-3 mt-1">
-                      {e.user_email && <span className="text-xs text-[#8B1A1A]" style={{display:'inline-flex',alignItems:'center',gap:3}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
-                      {e.user_phone && <span className="text-xs text-green-600" style={{display:'inline-flex',alignItems:'center',gap:3}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
-                      <span className="text-xs text-gray-500">@{e.username}</span>
+                    <p style={{ fontSize: 13, color: '#374151', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{e.question}</p>
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                      {e.user_email && <span style={{ fontSize: 11, color: '#8B1A1A', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
+                      {e.user_phone && <span style={{ fontSize: 11, color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
+                      <span style={{ fontSize: 11, color: '#9C8E80' }}>@{e.username}</span>
                     </div>
                   </div>
                 ))}
@@ -496,137 +513,131 @@ export default function AdminPage() {
 
         {/* ── CONTENT GAPS ── */}
         {tab === 'gaps' && (
-          <div className="space-y-4">
-            {/* Stats cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {/* Stats */}
             {gapStats && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px,1fr))', gap: 10 }}>
                 {[
-                  { label: 'الإجمالي',      val: gapStats.total,        bg: 'bg-white' },
-                  { label: 'مفتوحة',        val: gapStats.open,         bg: 'bg-red-50' },
-                  { label: 'قيد المراجعة', val: gapStats.in_review,    bg: 'bg-yellow-50' },
-                  { label: 'أولوية عالية', val: gapStats.high_priority, bg: 'bg-orange-50' },
+                  { label: 'الإجمالي',      val: gapStats.total,        bg: '#fff' },
+                  { label: 'مفتوحة',        val: gapStats.open,         bg: '#FEF2F2' },
+                  { label: 'قيد المراجعة', val: gapStats.in_review,    bg: '#FFFBEB' },
+                  { label: 'أولوية عالية', val: gapStats.high_priority, bg: '#FFF7ED' },
                 ].map(s => (
-                  <div key={s.label} className={`${s.bg} rounded-2xl p-4 border border-gray-100 shadow-sm`}>
-                    <div className="text-2xl font-bold text-gray-800">{s.val}</div>
-                    <div className="text-xs text-gray-500 mt-1">{s.label}</div>
+                  <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: '14px 16px', border: '1.5px solid #EAE4D9', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                    <div style={{ fontSize: 26, fontWeight: 900, color: '#1A1208' }}>{s.val}</div>
+                    <div style={{ fontSize: 11, color: '#9C8E80', marginTop: 3 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Filter bar */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               {[
-                { k: 'open',      label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#DC2626',marginLeft:4}}/>مفتوح</> },
-                { k: 'in_review', label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#CA8A04',marginLeft:4}}/>قيد المراجعة</> },
-                { k: 'resolved',  label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#16A34A',marginLeft:4}}/>محلول</> },
-                { k: 'ignored',   label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#9CA3AF',marginLeft:4}}/>متجاهَل</> },
+                { k: 'open',      dot: '#DC2626', label: 'مفتوح' },
+                { k: 'in_review', dot: '#CA8A04', label: 'قيد المراجعة' },
+                { k: 'resolved',  dot: '#16A34A', label: 'محلول' },
+                { k: 'ignored',   dot: '#9CA3AF', label: 'متجاهَل' },
               ].map(f => (
                 <button key={f.k}
                   onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    gapFilter === f.k
-                      ? 'bg-[#6b2737] text-white'
-                      : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-                  }`}>
+                  style={{
+                    padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                    fontFamily: 'inherit', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 5,
+                    background: gapFilter === f.k ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
+                    color: gapFilter === f.k ? '#fff' : '#6B7280',
+                    boxShadow: gapFilter === f.k ? '0 2px 8px rgba(139,26,26,0.2)' : '0 1px 2px rgba(0,0,0,0.05)',
+                    outline: gapFilter === f.k ? 'none' : '1px solid #EAE4D9',
+                  } as React.CSSProperties}>
+                  <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: gapFilter === f.k ? 'rgba(255,255,255,0.6)' : f.dot }} />
                   {f.label}
                 </button>
               ))}
               <button onClick={() => loadContentGaps(gapFilter)}
-                className="text-xs text-[#6b2737] hover:underline mr-auto">
-                {loading ? '...' : <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</span>}
+                style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit', marginRight: 'auto' }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                {loading ? '...' : 'تحديث'}
               </button>
             </div>
 
             {/* Gaps list */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div style={{ ...SECTION, padding: 0, overflow: 'hidden' }}>
               {loading && contentGaps.length === 0 ? (
-                <div className="text-center py-12 text-gray-400 text-sm">جاري التحميل...</div>
+                <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>جارٍ التحميل...</div>
               ) : contentGaps.length === 0 ? (
-                <div className="text-center py-12 text-gray-400 text-sm">لا توجد ثغرات بهذا الفلتر</div>
+                <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>لا توجد ثغرات بهذا الفلتر</div>
               ) : (
-                <div className="divide-y divide-gray-50">
-                  {contentGaps.map(gap => {
-                    const priorityColor =
-                      gap.priority === 'critical' ? 'bg-red-100 text-red-800' :
-                      gap.priority === 'high'     ? 'bg-red-50 text-red-700' :
-                      gap.priority === 'medium'   ? 'bg-yellow-50 text-yellow-700' :
-                                                    'bg-gray-50 text-gray-600'
+                <div>
+                  {contentGaps.map((gap, gi) => {
+                    const prStyle: React.CSSProperties =
+                      gap.priority === 'critical' ? { background: '#FEF2F2', color: '#991B1B' } :
+                      gap.priority === 'high'     ? { background: '#FEF2F2', color: '#B91C1C' } :
+                      gap.priority === 'medium'   ? { background: '#FFFBEB', color: '#B8860B' } :
+                                                    { background: '#F3F4F6', color: '#6B7280' }
                     const gapTypeLabel: Record<string, string> = {
-                      low_confidence:      'ثقة منخفضة',
-                      user_reported_error: 'خطأ مُبلَّغ',
-                      missing_procedure:   'إجراء مفقود',
-                      missing_form:        'نموذج مفقود',
-                      missing_fee:         'رسوم مفقودة',
-                      unclear_authority:   'جهة غير واضحة',
+                      low_confidence: 'ثقة منخفضة', user_reported_error: 'خطأ مُبلَّغ',
+                      missing_procedure: 'إجراء مفقود', missing_form: 'نموذج مفقود',
+                      missing_fee: 'رسوم مفقودة', unclear_authority: 'جهة غير واضحة',
                     }
                     return (
-                      <div key={gap.id} className="p-4 hover:bg-gray-50/60 transition-colors">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-800 line-clamp-2">{gap.user_question}</p>
-                            <div className="flex flex-wrap gap-1.5 mt-2">
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${priorityColor}`}>
-                                {gap.priority}
+                      <div key={gap.id} className="adm-gap-row" style={{ padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 12, borderBottom: gi < contentGaps.length - 1 ? '1px solid #F3F4F6' : 'none', background: '#fff' }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{gap.user_question}</p>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 6 }}>
+                            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, ...prStyle }}>{gap.priority}</span>
+                            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#FEF2F2', color: '#8B1A1A' }}>{gapTypeLabel[gap.gap_type] || gap.gap_type}</span>
+                            {gap.detected_country && (
+                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F3F4F6', color: '#6B7280', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                                {gap.detected_country}
                               </span>
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#8B1A1A]">
-                                {gapTypeLabel[gap.gap_type] || gap.gap_type}
+                            )}
+                            {gap.detected_procedure && (
+                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: 'rgba(107,39,55,0.08)', color: '#6b2737', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                {gap.detected_procedure}
                               </span>
-                              {gap.detected_country && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600" style={{display:'inline-flex',alignItems:'center',gap:3}}>
-                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>{gap.detected_country}
-                                </span>
-                              )}
-                              {gap.detected_procedure && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700" style={{display:'inline-flex',alignItems:'center',gap:3}}>
-                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>{gap.detected_procedure}
-                                </span>
-                              )}
-                              {gap.confidence_score != null && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
-                                  ثقة {(gap.confidence_score * 100).toFixed(0)}%
-                                </span>
-                              )}
-                            </div>
-                            {gap.admin_notes && (
-                              <p className="text-xs text-gray-500 mt-1.5 italic" style={{display:'flex',alignItems:'flex-start',gap:4}}><span style={{display:'inline-flex',flexShrink:0,marginTop:1}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></span>{gap.admin_notes}</p>
                             )}
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <span className="text-xs text-gray-400">{gap.username ? `@${gap.username}` : 'نظام'}</span>
-                              {gap.created_at && (
-                                <span className="text-xs text-gray-400">
-                                  · {new Date(gap.created_at).toLocaleDateString('ar-LB')}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          {/* Action buttons */}
-                          <div className="flex flex-col gap-1.5 shrink-0">
-                            {(gap.status === 'open') && (
-                              <button onClick={() => handleGapUpdate(gap.id, 'in_review')}
-                                className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded-lg hover:bg-yellow-100 whitespace-nowrap">
-                                مراجعة
-                              </button>
-                            )}
-                            {(gap.status === 'open' || gap.status === 'in_review') && (
-                              <>
-                                <button onClick={() => handleGapUpdate(gap.id, 'resolved')}
-                                  className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded-lg hover:bg-green-100 whitespace-nowrap">
-                                  حُلّ ✓
-                                </button>
-                                <button onClick={() => handleGapUpdate(gap.id, 'ignored')}
-                                  className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg hover:bg-gray-200 whitespace-nowrap">
-                                  تجاهل
-                                </button>
-                              </>
-                            )}
-                            {(gap.status === 'resolved' || gap.status === 'ignored') && (
-                              <button onClick={() => handleGapUpdate(gap.id, 'open')}
-                                className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg hover:bg-gray-200 whitespace-nowrap">
-                                إعادة فتح
-                              </button>
+                            {gap.confidence_score != null && (
+                              <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#F3F4F6', color: '#9C8E80' }}>ثقة {(gap.confidence_score * 100).toFixed(0)}%</span>
                             )}
                           </div>
+                          {gap.admin_notes && (
+                            <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 4px', fontStyle: 'italic', display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                              <span style={{ display: 'inline-flex', flexShrink: 0, marginTop: 1 }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></span>
+                              {gap.admin_notes}
+                            </p>
+                          )}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#9C8E80' }}>
+                            {gap.username && <span>@{gap.username}</span>}
+                            {gap.created_at && <span>· {new Date(gap.created_at).toLocaleDateString('ar-LB')}</span>}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, flexShrink: 0 }}>
+                          {gap.status === 'open' && (
+                            <button onClick={() => handleGapUpdate(gap.id, 'in_review')} className="adm-btn"
+                              style={{ fontSize: 11, background: '#FFFBEB', color: '#B8860B', padding: '4px 10px', borderRadius: 8, border: '1px solid #FDE68A', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                              مراجعة
+                            </button>
+                          )}
+                          {(gap.status === 'open' || gap.status === 'in_review') && (
+                            <>
+                              <button onClick={() => handleGapUpdate(gap.id, 'resolved')} className="adm-btn"
+                                style={{ fontSize: 11, background: '#F0FDF4', color: '#16A34A', padding: '4px 10px', borderRadius: 8, border: '1px solid #BBF7D0', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                حُلّ <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                              </button>
+                              <button onClick={() => handleGapUpdate(gap.id, 'ignored')} className="adm-btn"
+                                style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '4px 10px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                                تجاهل
+                              </button>
+                            </>
+                          )}
+                          {(gap.status === 'resolved' || gap.status === 'ignored') && (
+                            <button onClick={() => handleGapUpdate(gap.id, 'open')} className="adm-btn"
+                              style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '4px 10px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                              إعادة فتح
+                            </button>
+                          )}
                         </div>
                       </div>
                     )
@@ -635,9 +646,9 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div className="bg-[#FEF2F2] border border-[rgba(139,26,26,0.15)] rounded-2xl p-4 text-sm text-[#8B1A1A]" style={{display:'flex',alignItems:'flex-start',gap:8}}>
-              <span style={{display:'inline-flex',flexShrink:0,marginTop:2}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></span>
-              <span>الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ <span style={{display:'inline-flex',verticalAlign:'middle'}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></span>. لإضافة بيانات رسمية: حدّث <code className="bg-[#EAE4D9] px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.</span>
+            <div style={{ background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '14px 16px', fontSize: 13, color: '#8B1A1A', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+              <span style={{ display: 'inline-flex', flexShrink: 0, marginTop: 2 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></span>
+              <span>الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم سلبي. لإضافة بيانات رسمية: حدّث <code style={{ background: '#EAE4D9', padding: '1px 5px', borderRadius: 4, fontSize: 12 }}>procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.</span>
             </div>
           </div>
         )}
@@ -645,14 +656,18 @@ export default function AdminPage() {
 
       {/* ── EDIT MODAL ── */}
       {editUser && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-gray-800 mb-4">تعديل: {editUser.username}</h3>
-            <div className="space-y-4">
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }} dir="rtl">
+          <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 20px 60px rgba(0,0,0,0.2)', width: '100%', maxWidth: 380 }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>تعديل: {editUser.username}</h3>
+              <button onClick={() => setEditUser(null)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">الخطة</label>
-                <select value={editPlan} onChange={e => setEditPlan(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30">
+                <label style={LBL}>الخطة</label>
+                <select value={editPlan} onChange={e => setEditPlan(e.target.value)} style={INP}>
                   <option value="trial">تجريبي</option>
                   <option value="paid">مدفوع</option>
                   <option value="admin">مشرف</option>
@@ -661,19 +676,17 @@ export default function AdminPage() {
               </div>
               {editPlan === 'paid' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">مدفوع حتى تاريخ</label>
-                  <input type="date" value={editPaidUntil} onChange={e => setEditPaidUntil(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6b2737]/30"
-                    dir="ltr" />
+                  <label style={LBL}>مدفوع حتى تاريخ</label>
+                  <input type="date" value={editPaidUntil} onChange={e => setEditPaidUntil(e.target.value)} style={INP} dir="ltr" />
                 </div>
               )}
-              <div className="flex gap-3 mt-2">
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
                 <button onClick={handleUpdate} disabled={loading}
-                  className="flex-1 py-2.5 bg-[#6b2737] text-white rounded-xl font-semibold hover:bg-[#5a2030] disabled:opacity-60">
-                  {loading ? 'جاري الحفظ...' : 'حفظ'}
+                  style={{ flex: 1, padding: '10px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}>
+                  {loading ? 'جارٍ الحفظ...' : 'حفظ'}
                 </button>
                 <button onClick={() => setEditUser(null)}
-                  className="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200">
+                  style={{ flex: 1, padding: '10px 0', background: '#F3F4F6', color: '#4B5563', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                   إلغاء
                 </button>
               </div>

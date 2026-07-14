@@ -209,7 +209,7 @@ export default function RegisterPage() {
       </div>
 
       <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
-        ⚖️ خدمة دليلك AI — معلومات إرشادية لا تُغني عن المختص القانوني
+        <span style={{ display:'inline-flex', alignItems:'center', gap:4, justifyContent:'center' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني</span>
       </p>
     </div>
   )

@@ -216,7 +216,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 </p>
               )}
             </div>
-            <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: '#6B7280', fontWeight: 700 }}>×</button>
+            <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
         </div>
 
@@ -278,7 +278,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                     background: 'none', cursor: 'pointer', fontFamily: 'inherit',
                     fontSize: 12, color: '#9C8E80',
                   }}>
-                    {isAr ? 'تخطي هذا السؤال →' : 'Skip this question →'}
+                    <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+                      {isAr ? 'تخطي هذا السؤال' : 'Skip this question'}
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? "M15 19l-7-7 7-7" : "M9 18l6-6-6-6"}/></svg>
+                    </span>
                   </button>
                 )}
               </div>

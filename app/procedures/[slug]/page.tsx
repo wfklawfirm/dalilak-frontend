@@ -70,9 +70,9 @@ export default function ProcedurePage() {
   /* ── Error ───────────────────────────────────────────────────────────── */
   if (error || !procedure) return (
     <div style={{ minHeight:'100vh', background:'#FAFAF8', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Cairo','Inter',sans-serif", gap:12 }} dir="rtl">
-      <div style={{ fontSize:52 }}>😕</div>
+      <div style={{ display:'flex', justifyContent:'center', marginBottom:8 }}><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M8 15s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
       <p style={{ color:'#6B7280', fontSize:14, margin:0 }}>{error || 'الإجراء غير موجود'}</p>
-      <Link href="/services" style={{ color:'#8B1A1A', textDecoration:'none', fontWeight:700, fontSize:13 }}>← العودة للخدمات</Link>
+      <Link href="/services" style={{ color:'#8B1A1A', textDecoration:'none', fontWeight:700, fontSize:13, display:'inline-flex', alignItems:'center', gap:4 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>العودة للخدمات</Link>
     </div>
   )
 
@@ -106,7 +106,7 @@ export default function ProcedurePage() {
           </div>
           {procedure.status === 'verified' && (
             <span style={{ fontSize:10, background:'rgba(34,197,94,0.2)', color:'#86EFAC', borderRadius:20, padding:'3px 10px', fontWeight:700, flexShrink:0 }}>
-              ✓ محقق
+              <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>محقق</span>
             </span>
           )}
         </div>
@@ -170,7 +170,7 @@ export default function ProcedurePage() {
           {/* CTA button */}
           {started ? (
             <div style={{ width:'100%', background:'linear-gradient(135deg,#15803D,#16A34A)', color:'#fff', padding:'16px', borderRadius:14, textAlign:'center', fontWeight:800, fontSize:16, boxShadow:'0 4px 16px rgba(22,163,74,0.3)' }}>
-              ✓ تم إنشاء الملف — جارٍ التحويل...
+              <span style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>تم إنشاء الملف — جارٍ التحويل...</span>
             </div>
           ) : (
             <button
@@ -188,7 +188,12 @@ export default function ProcedurePage() {
                 opacity: starting ? 0.8 : 1,
               }}
             >
-              {starting ? '⏳ جارٍ الإنشاء...' : '📁 ابدأ متابعة هذه المعاملة'}
+              <span style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
+                {starting
+                  ? <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>جارٍ الإنشاء...</>
+                  : <><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>ابدأ متابعة هذه المعاملة</>
+                }
+              </span>
             </button>
           )}
         </div>
@@ -197,7 +202,7 @@ export default function ProcedurePage() {
         {procedure.documents && procedure.documents.length > 0 && (
           <div style={{ background:'#fff', borderRadius:20, padding:'20px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize:15, fontWeight:800, color:'#1A1208', margin:'0 0 14px', display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ width:32, height:32, borderRadius:9, background:'#FEF2F2', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>📋</span>
+              <span style={{ width:32, height:32, borderRadius:9, background:'#FEF2F2', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'#8B1A1A' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></span>
               المستندات المطلوبة
             </h2>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -207,8 +212,11 @@ export default function ProcedurePage() {
                   background: doc.required ? '#FAFAF8' : '#F9FAFB',
                   border: doc.required ? '1.5px solid #EAE4D9' : '1px solid #F0F0F0',
                 }}>
-                  <span style={{ fontSize:13, color: doc.required ? '#8B1A1A' : '#9C8E80', flexShrink:0 }}>
-                    {doc.required ? '●' : '○'}
+                  <span style={{ flexShrink:0, display:'inline-flex', alignItems:'center' }}>
+                    {doc.required
+                      ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
+                      : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>
+                    }
                   </span>
                   <span style={{ flex:1, fontSize:13, color:'#1A1208', fontWeight: doc.required ? 600 : 400 }}>{doc.name_ar}</span>
                   {!doc.required && (
@@ -217,7 +225,16 @@ export default function ProcedurePage() {
                 </div>
               ))}
             </div>
-            <p style={{ fontSize:10.5, color:'#9C8E80', margin:'10px 0 0' }}>● إلزامي &nbsp;○ اختياري</p>
+            <p style={{ fontSize:10.5, color:'#9C8E80', margin:'10px 0 0', display:'flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+              <span style={{ display:'inline-flex', alignItems:'center', gap:3 }}>
+                <svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
+                إلزامي
+              </span>
+              <span style={{ display:'inline-flex', alignItems:'center', gap:3 }}>
+                <svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>
+                اختياري
+              </span>
+            </p>
           </div>
         )}
 
@@ -225,7 +242,7 @@ export default function ProcedurePage() {
         {procedure.steps && procedure.steps.length > 0 && (
           <div style={{ background:'#fff', borderRadius:20, padding:'20px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize:15, fontWeight:800, color:'#1A1208', margin:'0 0 16px', display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ width:32, height:32, borderRadius:9, background:'#FEF2F2', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>🗺️</span>
+              <span style={{ width:32, height:32, borderRadius:9, background:'#FEF2F2', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'#8B1A1A' }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></span>
               الخطوات
             </h2>
             <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
@@ -260,21 +277,25 @@ export default function ProcedurePage() {
         {/* ── Source meta ──────────────────────────────────────────────── */}
         <div style={{ background:'#FAFAF8', borderRadius:14, padding:'14px 16px', border:'1.5px solid #EAE4D9', marginBottom:16 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:12 }}>
-            <span style={{ fontSize:11, color:'#6B7280' }}>
-              🏛️ الجهة:{' '}
+            <span style={{ fontSize:11, color:'#6B7280', display:'inline-flex', alignItems:'center', gap:3 }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              الجهة:{' '}
               {procedure.authority_url ? (
-                <a href={procedure.authority_url} target="_blank" rel="noreferrer" style={{ color:'#8B1A1A', fontWeight:600, textDecoration:'none' }}>{procedure.authority} ↗</a>
+                <a href={procedure.authority_url} target="_blank" rel="noreferrer" style={{ color:'#8B1A1A', fontWeight:600, textDecoration:'none', display:'inline-flex', alignItems:'center', gap:3 }}>{procedure.authority}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>
               ) : procedure.authority}
             </span>
-            <span style={{ fontSize:11, color:'#6B7280' }}>
-              🔒 مستوى المصدر: {tierLabel[procedure.source_tier] || 'غير محدد'}
+            <span style={{ fontSize:11, color:'#6B7280', display:'inline-flex', alignItems:'center', gap:3 }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              مستوى المصدر: {tierLabel[procedure.source_tier] || 'غير محدد'}
             </span>
-            <span style={{ fontSize:11, color:'#6B7280' }}>
-              📅 آخر تحقق: {procedure.last_verified}
+            <span style={{ fontSize:11, color:'#6B7280', display:'inline-flex', alignItems:'center', gap:3 }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              آخر تحقق: {procedure.last_verified}
             </span>
             {procedure.review_expiry && (
-              <span style={{ fontSize:11, color: new Date(procedure.review_expiry) < new Date() ? '#DC2626' : '#9C8E80' }}>
-                ⚠️ مراجعة قبل: {procedure.review_expiry}
+              <span style={{ fontSize:11, color: new Date(procedure.review_expiry) < new Date() ? '#DC2626' : '#9C8E80', display:'inline-flex', alignItems:'center', gap:3 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                مراجعة قبل: {procedure.review_expiry}
               </span>
             )}
           </div>
@@ -292,7 +313,8 @@ export default function ProcedurePage() {
               boxShadow:'0 3px 12px rgba(139,26,26,0.25)',
             }}
           >
-            <span>🤖</span> اسأل المساعد عن هذه المعاملة
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+            اسأل المساعد عن هذه المعاملة
           </Link>
         </div>
 

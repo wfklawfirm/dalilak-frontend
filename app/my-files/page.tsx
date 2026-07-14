@@ -115,6 +115,9 @@ export default function MyFilesPage() {
         .proc-btn:hover { border-color: #8B1A1A !important; }
         .step-btn:hover { background: #FEF9F9 !important; }
         @keyframes mf-spin { to { transform: rotate(360deg) } }
+        @media (max-width: 767px) {
+          .mf-main-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
@@ -167,7 +170,7 @@ export default function MyFilesPage() {
         ) : procs.length === 0 ? (
           /* ── Empty state ─────────────────────────────────────────────── */
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <div style={{ fontSize: 60, marginBottom: 16 }}>📂</div>
+            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>لا توجد معاملات بعد</h2>
             <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 24px' }}>ابحث عن معاملتك وابدأ متابعتها</p>
             <Link
@@ -185,7 +188,7 @@ export default function MyFilesPage() {
 
         ) : (
           /* ── Main grid ───────────────────────────────────────────────── */
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr)', gap: 16 }}>
+          <div className="mf-main-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,2fr)', gap: 16 }}>
 
             {/* List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -223,7 +226,7 @@ export default function MyFilesPage() {
                       <span style={{ fontSize: 10.5, color: '#9C8E80' }}>{proc.completion_pct}% مكتمل</span>
                       {proc.next_step && proc.next_step !== 'مكتمل' && (
                         <span style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>
-                          ▸ {proc.next_step}
+                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:2}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {proc.next_step}
                         </span>
                       )}
                     </div>
@@ -240,7 +243,7 @@ export default function MyFilesPage() {
                   padding: '60px 20px', textAlign: 'center', color: '#9C8E80',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320,
                 }}>
-                  <div style={{ fontSize: 40, marginBottom: 12, opacity: 0.5 }}>👆</div>
+                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
                   <p style={{ fontSize: 13, margin: 0 }}>اختر معاملة من القائمة لعرض تفاصيلها</p>
                 </div>
               ) : (
@@ -264,9 +267,10 @@ export default function MyFilesPage() {
                       </div>
                       <button
                         onClick={() => deleteProc(selected.id)}
-                        style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0 }}
+                        style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
                       >
-                        🗑️ حذف
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        حذف
                       </button>
                     </div>
 
@@ -283,12 +287,13 @@ export default function MyFilesPage() {
                       </div>
                       {selected.next_step && selected.next_step !== 'مكتمل' && (
                         <p style={{ fontSize: 12.5, color: '#8B1A1A', margin: '8px 0 0', fontWeight: 600 }}>
-                          ▸ الخطوة التالية: <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:3}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> الخطوة التالية: <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
                         </p>
                       )}
                       {selected.completion_pct === 100 && (
-                        <p style={{ fontSize: 12.5, color: '#16A34A', margin: '8px 0 0', fontWeight: 700 }}>
-                          ✓ تمت المعاملة بنجاح!
+                        <p style={{ fontSize: 12.5, color: '#16A34A', margin: '8px 0 0', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                          تمت المعاملة بنجاح!
                         </p>
                       )}
                     </div>
@@ -297,7 +302,7 @@ export default function MyFilesPage() {
                   {/* Checklist + docs */}
                   <div style={{ padding: '18px 22px' }}>
                     <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span>📋</span> قائمة الخطوات
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> قائمة الخطوات
                       {saving && <span style={{ fontSize: 11, color: '#9C8E80', fontWeight: 400 }}>جارٍ الحفظ...</span>}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -322,7 +327,7 @@ export default function MyFilesPage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 10, fontWeight: 800, marginTop: 2, flexShrink: 0,
                           }}>
-                            {step.done ? '✓' : step.step}
+                            {step.done ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> : step.step}
                           </span>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{
@@ -334,8 +339,9 @@ export default function MyFilesPage() {
                             </p>
                             <p style={{ fontSize: 11.5, color: '#6B7280', margin: 0, lineHeight: 1.5 }}>{step.desc_ar}</p>
                             {step.done && step.done_at && (
-                              <p style={{ fontSize: 10.5, color: '#16A34A', margin: '3px 0 0' }}>
-                                ✓ {new Date(step.done_at).toLocaleDateString('ar-LB')}
+                              <p style={{ fontSize: 10.5, color: '#16A34A', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                {new Date(step.done_at).toLocaleDateString('ar-LB')}
                               </p>
                             )}
                           </div>
@@ -359,7 +365,14 @@ export default function MyFilesPage() {
                                 background: doc.uploaded ? '#F0FDF4' : '#FAFAF8',
                               }}
                             >
-                              <span style={{ fontSize: 16 }}>{doc.uploaded ? '✅' : (doc.required ? '📋' : '📝')}</span>
+                              <span style={{ display: 'flex', alignItems: 'center' }}>
+                                {doc.uploaded
+                                  ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                  : doc.required
+                                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                }
+                              </span>
                               <span style={{ flex: 1, fontSize: 12.5, color: doc.uploaded ? '#15803D' : '#374151' }}>{doc.name_ar}</span>
                               {!doc.required && <span style={{ fontSize: 10, color: '#9C8E80', background: '#F0EBE0', borderRadius: 20, padding: '1px 7px' }}>اختياري</span>}
                             </div>
@@ -371,7 +384,7 @@ export default function MyFilesPage() {
                     {/* Notes */}
                     <div style={{ marginTop: 22 }}>
                       <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span>📝</span> ملاحظات
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg> ملاحظات
                       </h3>
                       <textarea
                         style={{

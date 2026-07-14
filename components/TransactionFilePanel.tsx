@@ -21,13 +21,13 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
   archived:     'محفوظة',
 }
 
-const STATUS_COLOR: Record<TransactionStatus, string> = {
-  draft:        'bg-gray-100 text-gray-600 border-gray-200',
-  in_progress:  'bg-[#FEF2F2] text-[#8B1A1A] border-[rgba(139,26,26,0.2)]',
-  ready:        'bg-green-100 text-green-700 border-green-200',
-  needs_review: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-  completed:    'bg-[#6b2737]/10 text-[#6b2737] border-[#6b2737]/20',
-  archived:     'bg-gray-100 text-gray-500 border-gray-200',
+const STATUS_STYLE: Record<TransactionStatus, React.CSSProperties> = {
+  draft:        { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
+  in_progress:  { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
+  ready:        { background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' },
+  needs_review: { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
+  completed:    { background: 'rgba(107,39,55,0.08)', color: '#6b2737', border: '1px solid rgba(107,39,55,0.2)' },
+  archived:     { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
 }
 
 const RISK_LABEL: Record<RiskLevel, string> = {
@@ -38,12 +38,12 @@ const RISK_LABEL: Record<RiskLevel, string> = {
   unknown: 'غير محدد',
 }
 
-const RISK_DOT: Record<RiskLevel, string> = {
-  low:     'bg-green-500',
-  medium:  'bg-yellow-500',
-  high:    'bg-orange-500',
-  critical:'bg-red-600',
-  unknown: 'bg-gray-400',
+const RISK_DOT_COLOR: Record<RiskLevel, string> = {
+  low:     '#16a34a',
+  medium:  '#B8860B',
+  high:    '#ea580c',
+  critical:'#8B1A1A',
+  unknown: '#9CA3AF',
 }
 
 function formatDate(iso?: string) {
@@ -57,6 +57,8 @@ function formatDate(iso?: string) {
   }
 }
 
+import React from 'react'
+
 export default function TransactionFilePanel({ transaction: tx, onClose, compact = false }: Props) {
   const status = tx.status as TransactionStatus
   const riskLevel = (tx.risk_level || 'unknown') as RiskLevel
@@ -65,66 +67,83 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
   const missingCount = tx.missing_documents?.length ?? 0
   const sourcesCount = tx.sources?.length ?? 0
   const stepsCount = tx.steps?.length ?? 0
+  const progressPct = requiredCount > 0 ? Math.min(100, Math.round((uploadedCount / requiredCount) * 100)) : 0
 
   return (
-    <div dir="rtl" className="bg-white rounded-2xl shadow-lg overflow-hidden max-h-[90vh] flex flex-col">
+    <div dir="rtl" style={{
+      background: '#fff', borderRadius: 20, boxShadow: '0 8px 40px rgba(0,0,0,0.14)',
+      overflow: 'hidden', maxHeight: '90vh', display: 'flex', flexDirection: 'column',
+      fontFamily: "'Cairo','Inter',sans-serif",
+    }}>
       {/* Header */}
-      <div className="bg-[#6b2737] text-white px-5 py-4 flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-xs px-2 py-0.5 rounded-full border font-medium bg-white/20 border-white/30 text-white`}
-            >
+      <div style={{
+        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
+        color: '#fff', padding: '16px 20px',
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12,
+      }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <span style={{
+              fontSize: 11, padding: '2px 10px', borderRadius: 99, fontWeight: 700,
+              background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.28)', color: '#fff',
+            }}>
               {STATUS_LABEL[status] || status}
             </span>
             {tx.procedure_slug && (
-              <span className="text-xs text-white/60">{tx.procedure_slug}</span>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{tx.procedure_slug}</span>
             )}
           </div>
-          <h2 className="font-bold text-lg leading-tight truncate">{tx.title}</h2>
+          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tx.title}</h2>
         </div>
         {onClose && (
           <button
             onClick={onClose}
-            className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors text-white"
             aria-label="إغلاق"
+            style={{
+              flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+            }}
           >
-            ✕
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         )}
       </div>
 
       {/* Scrollable body */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-5">
+      <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 18 }}>
 
         {/* Summary */}
         {tx.summary && (
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-xs font-semibold text-gray-500 mb-1">الملخص</p>
-            <p className="text-sm text-gray-800 leading-relaxed">{tx.summary}</p>
+          <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 4px' }}>الملخص</p>
+            <p style={{ fontSize: 13, color: '#1A1208', lineHeight: 1.6, margin: 0 }}>{tx.summary}</p>
           </div>
         )}
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
           <StatCard label="الخطوات" value={stepsCount} />
           <StatCard label="الوثائق المطلوبة" value={requiredCount} />
-          <StatCard label="الوثائق المرفوعة" value={uploadedCount} color="text-green-600" />
-          <StatCard label="الناقص" value={missingCount} color={missingCount > 0 ? 'text-red-600' : 'text-gray-700'} />
+          <StatCard label="الوثائق المرفوعة" value={uploadedCount} valueColor="#16A34A" />
+          <StatCard label="الناقص" value={missingCount} valueColor={missingCount > 0 ? '#8B1A1A' : '#1A1208'} />
         </div>
 
         {/* Progress bar */}
         {requiredCount > 0 && (
           <div>
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#9C8E80', marginBottom: 5 }}>
               <span>تقدم المستندات</span>
-              <span>{Math.round((uploadedCount / requiredCount) * 100)}%</span>
+              <span style={{ fontWeight: 700, color: progressPct === 100 ? '#16A34A' : '#8B1A1A' }}>{progressPct}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-              <div
-                className="h-2 rounded-full bg-[#6b2737] transition-all duration-500"
-                style={{ width: `${Math.min(100, Math.round((uploadedCount / requiredCount) * 100))}%` }}
-              />
+            <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 6, overflow: 'hidden' }}>
+              <div style={{
+                width: `${progressPct}%`, height: 6, borderRadius: 99,
+                background: progressPct === 100
+                  ? 'linear-gradient(90deg, #16a34a, #22C55E)'
+                  : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+                transition: 'width 0.5s ease',
+              }} />
             </div>
           </div>
         )}
@@ -132,7 +151,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Risk score */}
         {tx.risk_level && tx.risk_level !== 'unknown' ? (
           <div>
-            <p className="text-xs font-semibold text-gray-500 mb-2">تقييم المخاطر</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>تقييم المخاطر</p>
             <RiskScoreCard
               risk={{
                 level: riskLevel,
@@ -144,10 +163,10 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
             />
           </div>
         ) : (
-          <div className="flex items-center gap-2 py-2">
-            <span className={`w-2.5 h-2.5 rounded-full ${RISK_DOT[riskLevel]}`} />
-            <p className="text-sm text-gray-600">
-              مستوى المخاطرة: <span className="font-medium">{RISK_LABEL[riskLevel]}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}>
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: RISK_DOT_COLOR[riskLevel], flexShrink: 0 }} />
+            <p style={{ fontSize: 13, color: '#6B7280', margin: 0 }}>
+              مستوى المخاطرة: <span style={{ fontWeight: 700, color: '#1A1208' }}>{RISK_LABEL[riskLevel]}</span>
             </p>
           </div>
         )}
@@ -155,7 +174,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Missing documents */}
         {missingCount > 0 && !compact && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 mb-2">الوثائق الناقصة</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>الوثائق الناقصة</p>
             <MissingDocumentsChecklist
               missingDocs={tx.missing_documents}
               requiredDocs={tx.required_documents}
@@ -167,23 +186,28 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Steps preview */}
         {tx.steps && tx.steps.length > 0 && !compact && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 mb-2">الخطوات</p>
-            <ol className="space-y-2">
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>الخطوات</p>
+            <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
               {tx.steps.slice(0, 4).map((s, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#6b2737]/10 text-[#6b2737] text-xs font-bold flex items-center justify-center mt-0.5">
+                <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <span style={{
+                    flexShrink: 0, width: 24, height: 24, borderRadius: '50%',
+                    background: 'rgba(107,39,55,0.08)', color: '#6b2737',
+                    fontSize: 11, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
+                  }}>
                     {(s.order ?? i) + 1}
                   </span>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{s.title}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 2px' }}>{s.title}</p>
                     {s.authority && (
-                      <p className="text-xs text-gray-500">{s.authority}</p>
+                      <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{s.authority}</p>
                     )}
                   </div>
                 </li>
               ))}
               {tx.steps.length > 4 && (
-                <li className="text-xs text-gray-400 pr-9">... و{tx.steps.length - 4} خطوات أخرى</li>
+                <li style={{ fontSize: 11, color: '#9C8E80', paddingRight: 34 }}>... و{tx.steps.length - 4} خطوات أخرى</li>
               )}
             </ol>
           </div>
@@ -192,15 +216,15 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Sources */}
         {sourcesCount > 0 && !compact && (
           <div>
-            <p className="text-xs font-semibold text-gray-500 mb-1">
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 6px' }}>
               المصادر ({sourcesCount})
             </p>
-            <div className="space-y-1">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {tx.sources.slice(0, 3).map((s, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs text-gray-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] flex-shrink-0" />
-                  <span className="truncate">{s.title}</span>
-                  {s.ministry && <span className="text-gray-400">— {s.ministry}</span>}
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#6B7280' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#B8860B', flexShrink: 0 }} />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</span>
+                  {s.ministry && <span style={{ color: '#9C8E80', flexShrink: 0 }}>— {s.ministry}</span>}
                 </div>
               ))}
             </div>
@@ -209,14 +233,14 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
 
         {/* Notes */}
         {tx.notes && !compact && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3">
-            <p className="text-xs font-semibold text-yellow-700 mb-1">ملاحظات</p>
-            <p className="text-xs text-yellow-800 leading-relaxed">{tx.notes}</p>
+          <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12, padding: '10px 14px' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#B8860B', margin: '0 0 4px' }}>ملاحظات</p>
+            <p style={{ fontSize: 12, color: '#92400E', lineHeight: 1.6, margin: 0 }}>{tx.notes}</p>
           </div>
         )}
 
         {/* Dates */}
-        <div className="flex gap-4 text-xs text-gray-400 pt-1">
+        <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#9C8E80', paddingTop: 4 }}>
           {tx.created_at && <span>أُنشئ: {formatDate(tx.created_at)}</span>}
           {tx.updated_at && <span>آخر تحديث: {formatDate(tx.updated_at)}</span>}
         </div>
@@ -225,11 +249,14 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
   )
 }
 
-function StatCard({ label, value, color = 'text-gray-800' }: { label: string; value: number; color?: string }) {
+function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; valueColor?: string }) {
   return (
-    <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-100">
-      <p className={`text-xl font-bold ${color}`}>{value}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+    <div style={{
+      background: '#FAFAF8', borderRadius: 12, padding: '10px 14px',
+      textAlign: 'center', border: '1px solid #EAE4D9',
+    }}>
+      <p style={{ fontSize: 22, fontWeight: 800, color: valueColor, margin: '0 0 2px' }}>{value}</p>
+      <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{label}</p>
     </div>
   )
 }

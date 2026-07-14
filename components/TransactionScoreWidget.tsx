@@ -138,7 +138,11 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
             cursor: 'pointer',
           }}
         >
-          {isAr ? 'الخطوة التالية ←' : 'Next Step →'}
+          <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+            {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
+            {isAr ? 'الخطوة التالية' : 'Next Step'}
+            {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
+          </span>
         </button>
       )}
     </div>

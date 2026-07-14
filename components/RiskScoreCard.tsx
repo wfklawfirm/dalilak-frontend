@@ -14,80 +14,110 @@ interface RiskProps {
   lang?: 'ar' | 'en'
 }
 
-const LEVEL_CONFIG: Record<string, { label: string; bg: string; text: string; border: string; barColor: string }> = {
-  low:      { label: 'منخفض',    bg: 'bg-green-50',  text: 'text-green-800',  border: 'border-green-200', barColor: 'bg-green-500' },
-  medium:   { label: 'متوسط',    bg: 'bg-yellow-50', text: 'text-yellow-800', border: 'border-yellow-200', barColor: 'bg-yellow-500' },
-  high:     { label: 'عالٍ',     bg: 'bg-orange-50', text: 'text-orange-800', border: 'border-orange-200', barColor: 'bg-orange-500' },
-  critical: { label: 'حرج',      bg: 'bg-red-50',    text: 'text-red-800',    border: 'border-red-200',    barColor: 'bg-red-500' },
-  unknown:  { label: 'غير محدد', bg: 'bg-gray-50',   text: 'text-gray-700',   border: 'border-gray-200',   barColor: 'bg-gray-400' },
+const LEVEL_CONFIG: Record<string, {
+  label: string
+  bg: string
+  text: string
+  border: string
+  barColor: string
+  iconBg: string
+}> = {
+  low:      { label: 'منخفض',    bg: '#F0FDF4', text: '#15803D', border: '#BBF7D0', barColor: '#16a34a', iconBg: '#16a34a' },
+  medium:   { label: 'متوسط',    bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
+  high:     { label: 'عالٍ',     bg: '#FFF7ED', text: '#ea580c', border: '#FED7AA', barColor: '#ea580c', iconBg: '#ea580c' },
+  critical: { label: 'حرج',      bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
+  unknown:  { label: 'غير محدد', bg: '#F9FAFB', text: '#6B7280', border: '#E5E7EB', barColor: '#9CA3AF', iconBg: '#9CA3AF' },
 }
 
-const ACTION_CONFIG: Record<string, { label: string; btnClass: string }> = {
-  continue:       { label: 'استمر في المعاملة',    btnClass: 'bg-green-600 hover:bg-green-700 text-white' },
-  verify:         { label: 'تحقق من المعلومات',    btnClass: 'bg-yellow-500 hover:bg-yellow-600 text-white' },
-  lawyer_review:  { label: 'راجع محامياً',          btnClass: 'bg-orange-600 hover:bg-orange-700 text-white' },
-  admin_review:   { label: 'راجع المشرف',           btnClass: 'bg-[#8B1A1A] hover:bg-[#6E1515] text-white' },
-  human_support:  { label: 'اطلب دعم بشري',        btnClass: 'bg-red-600 hover:bg-red-700 text-white' },
+const ACTION_COLORS: Record<string, string> = {
+  continue:      '#16a34a',
+  verify:        '#B8860B',
+  lawyer_review: '#ea580c',
+  admin_review:  '#8B1A1A',
+  human_support: '#8B1A1A',
+}
+const ACTION_LABELS: Record<string, string> = {
+  continue:      'استمر في المعاملة',
+  verify:        'تحقق من المعلومات',
+  lawyer_review: 'راجع محامياً',
+  admin_review:  'راجع المشرف',
+  human_support: 'اطلب دعم بشري',
 }
 
 export default function RiskScoreCard({ risk, onRequestReview, compact = false }: RiskProps) {
   const level = risk.level || 'unknown'
   const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG.unknown
   const action = risk.recommendedAction as string | undefined
-  const actionCfg = action ? ACTION_CONFIG[action] : null
   const score = risk.score ?? null
   const reasons = risk.reasons || []
 
-  const icon = level === 'low' ? '✓' : level === 'medium' ? '!' : level === 'critical' ? '✕' : '?'
+  const icon = level === 'low'
+    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+    : level === 'medium'
+    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01"/></svg>
+    : level === 'critical'
+    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
 
   return (
     <div
       dir="rtl"
-      className={`rounded-xl border ${cfg.border} ${cfg.bg} ${compact ? 'p-3' : 'p-4'} space-y-3`}
+      style={{
+        borderRadius: 16,
+        border: `1.5px solid ${cfg.border}`,
+        background: cfg.bg,
+        padding: compact ? 12 : 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        fontFamily: "'Cairo','Inter',sans-serif",
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span
-            className={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-sm
-              ${level === 'low' ? 'bg-green-600 text-white'
-                : level === 'medium' ? 'bg-yellow-500 text-white'
-                : level === 'critical' ? 'bg-red-600 text-white'
-                : 'bg-orange-600 text-white'}`}
-          >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 30, height: 30, borderRadius: '50%',
+            background: cfg.iconBg, flexShrink: 0,
+          }}>
             {icon}
           </span>
           <div>
-            <p className="text-xs text-gray-500 leading-none">مستوى المخاطرة</p>
-            <p className={`font-bold text-base ${cfg.text}`}>{cfg.label}</p>
+            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1 }}>مستوى المخاطرة</p>
+            <p style={{ fontSize: 15, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{cfg.label}</p>
           </div>
         </div>
         {score !== null && (
-          <div className="text-left">
-            <p className="text-xs text-gray-400">النقاط</p>
-            <p className={`font-bold text-lg ${cfg.text}`}>{score}</p>
+          <div style={{ textAlign: 'left' }}>
+            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>النقاط</p>
+            <p style={{ fontSize: 18, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{score}</p>
           </div>
         )}
       </div>
 
       {/* Score bar */}
       {score !== null && !compact && (
-        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div
-            className={`h-2 rounded-full transition-all duration-500 ${cfg.barColor}`}
-            style={{ width: `${Math.min(100, score)}%` }}
-          />
+        <div style={{ width: '100%', background: '#E5E7EB', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            width: `${Math.min(100, score)}%`,
+            background: cfg.barColor,
+            borderRadius: 4,
+            transition: 'width 0.5s ease',
+          }} />
         </div>
       )}
 
       {/* Reasons */}
       {reasons.length > 0 && !compact && (
-        <div className="flex flex-wrap gap-1.5">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {reasons.map((r, i) => (
-            <span
-              key={i}
-              className={`text-xs px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.text} bg-white/60`}
-            >
+            <span key={i} style={{
+              fontSize: 10.5, padding: '2px 9px', borderRadius: 20,
+              border: `1px solid ${cfg.border}`, color: cfg.text,
+              background: 'rgba(255,255,255,0.7)',
+            }}>
               {r}
             </span>
           ))}
@@ -95,17 +125,27 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
       )}
 
       {/* Action button */}
-      {actionCfg && (
+      {action && ACTION_LABELS[action] && (
         <button
           onClick={onRequestReview}
-          className={`w-full py-2 px-4 rounded-lg text-sm font-semibold transition-colors ${actionCfg.btnClass}`}
+          style={{
+            width: '100%', padding: '10px 16px', borderRadius: 12,
+            border: 'none', cursor: 'pointer',
+            background: `linear-gradient(135deg, ${ACTION_COLORS[action] || '#8B1A1A'} 0%, ${action === 'admin_review' || action === 'human_support' ? '#6b2737' : ACTION_COLORS[action]} 100%)`,
+            color: '#fff', fontSize: 13, fontWeight: 700,
+            fontFamily: 'inherit',
+            boxShadow: `0 3px 10px ${ACTION_COLORS[action] || '#8B1A1A'}40`,
+            transition: 'transform 0.15s, box-shadow 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
         >
-          {actionCfg.label}
+          {ACTION_LABELS[action]}
         </button>
       )}
 
       {/* Disclaimer */}
-      <p className="text-xs text-gray-400 text-center leading-relaxed">
+      <p style={{ fontSize: 10.5, color: '#9CA3AF', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
         تقييم أولي — لا يُعدّ استشارة قانونية
       </p>
     </div>

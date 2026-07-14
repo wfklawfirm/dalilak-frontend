@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import type { FormItem } from '@/lib/types'
@@ -28,7 +29,11 @@ export default function FormDetailClient({ form }: Props) {
   const category  = isAr ? form.category_ar  : form.category_en
   const dir       = isAr ? 'rtl' : 'ltr'
 
-  const fileIcon = form.fileType === 'pdf' ? '📄' : form.fileType === 'word' ? '📝' : '🔗'
+  const fileIcon: React.ReactNode = form.fileType === 'pdf'
+    ? <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    : form.fileType === 'word'
+    ? <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+    : <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
 
   const relatedProcedures = (form.relatedProcedures ?? [])
     .map(slug => getProcedureBySlug(slug))
@@ -47,32 +52,44 @@ export default function FormDetailClient({ form }: Props) {
   }
 
   return (
-    <div dir={dir} style={{ minHeight: '100vh', background: '#FAF8F5', fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif' }}>
+    <div dir={dir} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: isAr ? "'Cairo',sans-serif" : "'Inter',sans-serif" }}>
 
       {/* ── Header ── */}
-      <div style={{ background: BRAND, color: '#fff', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button
-          onClick={() => router.back()}
-          style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 13 }}>
-          {isAr ? '← رجوع' : '← Back'}
-        </button>
-        <div style={{ flex: 1 }}>
-          <p style={{ margin: 0, fontSize: 11, opacity: 0.7 }}>{category}</p>
-          <h1 style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>{title}</h1>
+      <header style={{
+        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
+        padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50,
+      }}>
+        <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            onClick={() => router.back()}
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginBottom: 1 }}>{category}</div>
+              <h1 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</h1>
+            </div>
+          </div>
+          {form.type === 'official' && (
+            <span style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 99, padding: '3px 10px', fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              {isAr ? 'رسمي' : 'Official'}
+            </span>
+          )}
         </div>
-        {form.type === 'official' && (
-          <span style={{ background: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
-            {isAr ? '✓ رسمي' : '✓ Official'}
-          </span>
-        )}
-      </div>
+      </header>
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         {/* ── Form card ── */}
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-            <span style={{ fontSize: 40 }}>{fileIcon}</span>
+            <span style={{ display: 'flex', flexShrink: 0 }}>{fileIcon}</span>
             <div style={{ flex: 1 }}>
               <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#1a1a1a' }}>{title}</h2>
               <p style={{ margin: '0 0 2px', fontSize: 13, color: '#555' }}>{authority}</p>
@@ -107,15 +124,17 @@ export default function FormDetailClient({ form }: Props) {
             <button
               onClick={handleAskAI}
               style={{ background: '#fff', color: BRAND, border: `1.5px solid ${BRAND}`, borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              🤖 {isAr ? 'اسأل الذكاء الاصطناعي' : 'Ask AI'}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+              {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
           </div>
         </div>
 
         {/* ── How to use ── */}
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>
-            📋 {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
+          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
           </h3>
           <ol style={{ margin: 0, paddingInlineStart: 20, color: '#444', fontSize: 14, lineHeight: 1.8 }}>
             <li>{isAr ? 'افتح النموذج أو نزّله بالضغط على الزر أعلاه.' : 'Open or download the form using the button above.'}</li>
@@ -128,8 +147,9 @@ export default function FormDetailClient({ form }: Props) {
         {/* ── Related procedures ── */}
         {relatedProcedures.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>
-              🔗 {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
+            <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {relatedProcedures.map(p => p && (
@@ -137,7 +157,7 @@ export default function FormDetailClient({ form }: Props) {
                   key={p.slug}
                   onClick={() => router.push(`/procedures/${p.slug}`)}
                   style={{ background: '#FAF8F5', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 22 }}>{p.icon}</span>
+                  <span style={{ display: 'flex', flexShrink: 0 }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                   <div>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>{isAr ? p.title_ar : p.title_en}</p>
                     <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{isAr ? p.category_ar : p.category_en}</p>
@@ -150,8 +170,9 @@ export default function FormDetailClient({ form }: Props) {
 
         {/* ── Disclaimer ── */}
         <div style={{ background: '#FFF9E6', border: '1px solid #F0E0A0', borderRadius: 14, padding: '12px 16px' }}>
-          <p style={{ margin: 0, fontSize: 12, color: '#7A6020', lineHeight: 1.7 }}>
-            ⚠️ {isAr
+          <p style={{ margin: 0, fontSize: 12, color: '#7A6020', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A6020" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            {isAr
               ? 'هذه المعلومات للإرشاد فقط. تأكد دائماً من النموذج الحالي من الجهة الرسمية المختصة قبل الاستخدام.'
               : 'This information is for guidance only. Always confirm the current form with the competent official authority before use.'}
           </p>

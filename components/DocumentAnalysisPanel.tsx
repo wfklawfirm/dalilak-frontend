@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { DocumentAnalysis, ContractRiskReview, ActionType } from '@/lib/types'
 import RiskScoreCard from './RiskScoreCard'
 import MissingDocumentsChecklist from './MissingDocumentsChecklist'
@@ -13,53 +14,53 @@ interface Props {
 }
 
 const DOC_TYPE_AR: Record<string, string> = {
-  lease_contract:  'عقد إيجار',
-  sale_contract:   'عقد بيع',
+  lease_contract:    'عقد إيجار',
+  sale_contract:     'عقد بيع',
   power_of_attorney: 'وكالة قانونية',
-  civil_record:    'سجل مدني',
+  civil_record:      'سجل مدني',
   property_document: 'وثيقة عقارية',
-  company_document: 'وثيقة شركة',
+  company_document:  'وثيقة شركة',
   identity_document: 'وثيقة هوية',
-  invoice:         'فاتورة',
-  certificate:     'شهادة',
-  correspondence:  'مراسلة رسمية',
-  unknown:         'وثيقة',
+  invoice:           'فاتورة',
+  certificate:       'شهادة',
+  correspondence:    'مراسلة رسمية',
+  unknown:           'وثيقة',
 }
 
-const CONF_COLOR: Record<string, string> = {
-  high:    'text-green-700 bg-green-50 border-green-200',
-  medium:  'text-yellow-700 bg-yellow-50 border-yellow-200',
-  low:     'text-orange-700 bg-orange-50 border-orange-200',
-  unknown: 'text-gray-600 bg-gray-50 border-gray-200',
+const CONF_STYLE: Record<string, React.CSSProperties> = {
+  high:    { color: '#16a34a', background: '#F0FDF4', border: '1px solid #BBF7D0' },
+  medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
+  low:     { color: '#ea580c', background: '#FFF7ED', border: '1px solid #FED7AA' },
+  unknown: { color: '#6B7280', background: '#F3F4F6', border: '1px solid #E5E7EB' },
 }
 
 const CONF_AR: Record<string, string> = {
   high: 'عالية', medium: 'متوسطة', low: 'منخفضة', unknown: 'غير محدد',
 }
 
-const WARN_STYLE: Record<string, string> = {
-  critical: 'bg-red-50 border-red-200 text-red-800',
-  warning:  'bg-orange-50 border-orange-200 text-orange-800',
-  info:     'bg-[#FEF2F2] border-[rgba(139,26,26,0.2)] text-[#8B1A1A]',
+const WARN_CSS: Record<string, React.CSSProperties> = {
+  critical: { background: '#FEF2F2', border: '1px solid rgba(239,68,68,0.3)', color: '#991B1B' },
+  warning:  { background: '#FFF7ED', border: '1px solid rgba(234,88,12,0.3)', color: '#9A3412' },
+  info:     { background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', color: '#8B1A1A' },
 }
 
-const RISK_CLAUSE_COLOR: Record<string, string> = {
-  critical: 'text-red-700 bg-red-50',
-  high:     'text-orange-700 bg-orange-50',
-  medium:   'text-yellow-700 bg-yellow-50',
-  low:      'text-gray-600 bg-gray-50',
+const RISK_CLAUSE_STYLE: Record<string, React.CSSProperties> = {
+  critical: { color: '#991B1B', background: '#FEF2F2' },
+  high:     { color: '#9A3412', background: '#FFF7ED' },
+  medium:   { color: '#B8860B', background: '#FFFBEB' },
+  low:      { color: '#6B7280', background: '#F3F4F6' },
 }
 
 const RISK_AR: Record<string, string> = {
   critical: 'حرج', high: 'عالٍ', medium: 'متوسط', low: 'منخفض',
 }
 
-const STRENGTH_COLOR: Record<string, string> = {
-  strong:     'text-green-700',
-  acceptable: 'text-[#8B1A1A]',
-  weak:       'text-yellow-700',
-  missing:    'text-red-700',
-  unclear:    'text-gray-500',
+const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
+  strong:     { color: '#16a34a' },
+  acceptable: { color: '#8B1A1A' },
+  weak:       { color: '#B8860B' },
+  missing:    { color: '#991B1B' },
+  unclear:    { color: '#6B7280' },
 }
 
 const STRENGTH_AR: Record<string, string> = {
@@ -79,53 +80,54 @@ function actionLabel(type: ActionType): string {
   return MAP[type] || type
 }
 
+const ROW_S: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8 }
+const LABEL_S: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: '#9C8E80', marginBottom: 6 }
+
 export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName, onRequestReview }: Props) {
   const confLevel = analysis.confidence?.level || 'unknown'
 
   return (
-    <div dir="rtl" className="space-y-5">
+    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: "'Cairo','Inter',sans-serif" }}>
+
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
         <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-bold text-[#6b2737]">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#6b2737' }}>
               {DOC_TYPE_AR[analysis.document_type] || analysis.document_type}
             </span>
             {analysis.detected_country && analysis.detected_country !== 'unknown' && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_country === 'lebanon' ? 'لبنان' : analysis.detected_country}
               </span>
             )}
             {analysis.detected_language && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              <span style={{ fontSize: 11, background: '#F3F4F6', color: '#6B7280', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_language === 'ar' ? 'عربي' : analysis.detected_language === 'en' ? 'إنجليزي' : analysis.detected_language}
               </span>
             )}
           </div>
-          {fileName && <p className="text-xs text-gray-400 mt-1">{fileName}</p>}
+          {fileName && <p style={{ fontSize: 11, color: '#9CA3AF', margin: '3px 0 0' }}>{fileName}</p>}
         </div>
-        <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${CONF_COLOR[confLevel]}`}>
+        <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, fontWeight: 600, whiteSpace: 'nowrap', ...CONF_STYLE[confLevel] }}>
           دقة {CONF_AR[confLevel]}
         </span>
       </div>
 
       {/* Summary */}
       {analysis.summary && (
-        <div className="bg-gray-50 rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-500 mb-1">الملخص</p>
-          <p className="text-sm text-gray-800 leading-relaxed">{analysis.summary}</p>
+        <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
+          <p style={LABEL_S}>الملخص</p>
+          <p style={{ fontSize: 13, color: '#1A1208', lineHeight: 1.7, margin: 0 }}>{analysis.summary}</p>
         </div>
       )}
 
       {/* Warnings */}
       {analysis.warnings?.length > 0 && (
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {analysis.warnings.map((w, i) => (
-            <div
-              key={i}
-              className={`rounded-xl border px-4 py-3 text-sm ${WARN_STYLE[w.level] || WARN_STYLE.info}`}
-            >
-              <span className="font-medium ml-1">
+            <div key={i} style={{ borderRadius: 12, padding: '10px 14px', fontSize: 13, ...(WARN_CSS[w.level] || WARN_CSS.info) }}>
+              <span style={{ fontWeight: 700, marginLeft: 4 }}>
                 {w.level === 'critical' ? 'تحذير حرج:' : w.level === 'warning' ? 'تنبيه:' : 'معلومة:'}
               </span>
               {w.message}
@@ -137,14 +139,18 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Extracted fields */}
       {analysis.extracted_fields?.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 mb-2">البيانات المستخرجة</p>
-          <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 overflow-hidden">
+          <p style={LABEL_S}>البيانات المستخرجة</p>
+          <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
             {analysis.extracted_fields.map((f, i) => (
-              <div key={i} className="flex items-center gap-3 px-4 py-2.5">
-                <span className="text-xs text-gray-500 w-32 flex-shrink-0">{f.label}</span>
-                <span className="text-sm text-gray-900 flex-1">{f.value}</span>
-                <span className={`text-xs ${f.confidence === 'high' ? 'text-green-600' : f.confidence === 'medium' ? 'text-yellow-600' : 'text-gray-400'}`}>
-                  {f.confidence === 'high' ? '●' : f.confidence === 'medium' ? '◑' : '○'}
+              <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < analysis.extracted_fields.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
+                <span style={{ fontSize: 11, color: '#9C8E80', width: 110, flexShrink: 0 }}>{f.label}</span>
+                <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{f.value}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  {f.confidence === 'high'
+                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#16A34A"/></svg>
+                    : f.confidence === 'medium'
+                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
+                    : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9CA3AF" strokeWidth="1.5"/></svg>}
                 </span>
               </div>
             ))}
@@ -155,12 +161,12 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Parties */}
       {analysis.parties && analysis.parties.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 mb-2">الأطراف</p>
-          <div className="flex flex-wrap gap-2">
+          <p style={LABEL_S}>الأطراف</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {analysis.parties.map((p, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-lg px-3 py-1.5">
-                <p className="text-xs text-gray-500">{p.role}</p>
-                <p className="text-sm font-medium text-gray-900">{p.name || '—'}</p>
+              <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 10, padding: '6px 12px' }}>
+                <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{p.role}</p>
+                <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: 0 }}>{p.name || '—'}</p>
               </div>
             ))}
           </div>
@@ -170,38 +176,40 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Key facts */}
       {analysis.key_facts && analysis.key_facts.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 mb-2">الحقائق الأساسية</p>
-          <ul className="space-y-1">
+          <p style={LABEL_S}>الحقائق الأساسية</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             {analysis.key_facts.map((fact, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#B8860B] flex-shrink-0 mt-1.5" />
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#374151' }}>
+                <svg width="5" height="5" viewBox="0 0 10 10" style={{ flexShrink: 0, marginTop: 5 }}><circle cx="5" cy="5" r="3.5" fill="#B8860B"/></svg>
                 {fact}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
       {/* Missing documents */}
       {analysis.missing_documents?.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 mb-2">الوثائق الناقصة</p>
-          <MissingDocumentsChecklist
-            missingDocs={analysis.missing_documents}
-          />
+          <p style={LABEL_S}>الوثائق الناقصة</p>
+          <MissingDocumentsChecklist missingDocs={analysis.missing_documents} />
         </div>
       )}
 
       {/* Suggested actions */}
       {analysis.suggested_next_actions?.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 mb-2">الإجراءات المقترحة</p>
-          <div className="flex flex-wrap gap-2">
+          <p style={LABEL_S}>الإجراءات المقترحة</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {analysis.suggested_next_actions.map((a, i) => (
               <button
                 key={i}
                 onClick={a.action_type === 'request_human_review' ? onRequestReview : undefined}
-                className="text-sm bg-[#6b2737]/10 text-[#6b2737] hover:bg-[#6b2737]/20 border border-[#6b2737]/20 px-3 py-1.5 rounded-lg transition-colors"
+                style={{
+                  fontSize: 13, background: 'rgba(107,39,55,0.08)', color: '#6b2737',
+                  border: '1px solid rgba(107,39,55,0.2)', padding: '6px 12px', borderRadius: 10,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
               >
                 {a.label || actionLabel(a.action_type)}
               </button>
@@ -212,8 +220,8 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
 
       {/* ── Contract Review Section ── */}
       {reviewResult && (
-        <div className="border-t border-gray-200 pt-5 space-y-5">
-          <p className="text-sm font-bold text-[#6b2737]">مراجعة العقد</p>
+        <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#6b2737', margin: 0 }}>مراجعة العقد</p>
 
           {/* Risk score */}
           {reviewResult.risk_score && (
@@ -230,9 +238,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Extracted facts */}
           {reviewResult.extracted_facts && Object.values(reviewResult.extracted_facts).some(Boolean) && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">بيانات العقد</p>
-              <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 overflow-hidden">
-                {(Object.entries(reviewResult.extracted_facts) as [string, string | string[] | null | undefined][]).map(([k, v]) => {
+              <p style={LABEL_S}>بيانات العقد</p>
+              <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+                {(Object.entries(reviewResult.extracted_facts) as [string, string | string[] | null | undefined][]).map(([k, v], idx, arr) => {
                   if (!v) return null
                   const label: Record<string, string> = {
                     parties: 'الأطراف', subject: 'الموضوع', property: 'العقار',
@@ -241,9 +249,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                   }
                   const display = Array.isArray(v) ? v.join('، ') : String(v)
                   return (
-                    <div key={k} className="flex gap-3 px-4 py-2.5">
-                      <span className="text-xs text-gray-500 w-28 flex-shrink-0">{label[k] || k}</span>
-                      <span className="text-sm text-gray-900">{display}</span>
+                    <div key={k} style={{ display: 'flex', gap: 10, padding: '9px 14px', borderBottom: idx < arr.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
+                      <span style={{ fontSize: 11, color: '#9C8E80', width: 100, flexShrink: 0 }}>{label[k] || k}</span>
+                      <span style={{ fontSize: 13, color: '#1A1208' }}>{display}</span>
                     </div>
                   )
                 })}
@@ -253,9 +261,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
 
           {/* Party risk balance */}
           {reviewResult.party_risk_balance?.favors && (
-            <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-xs font-semibold text-gray-500 mb-1">توازن العقد</p>
-              <p className="text-sm text-gray-800">
+            <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
+              <p style={LABEL_S}>توازن العقد</p>
+              <p style={{ fontSize: 13, color: '#1A1208', margin: 0 }}>
                 {reviewResult.party_risk_balance.favors === 'balanced'
                   ? 'العقد متوازن بين الطرفين'
                   : reviewResult.party_risk_balance.favors === 'party_one'
@@ -265,7 +273,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                   : 'التوازن غير واضح'}
               </p>
               {reviewResult.party_risk_balance.notes && (
-                <p className="text-xs text-gray-500 mt-1">{reviewResult.party_risk_balance.notes}</p>
+                <p style={{ fontSize: 11, color: '#9C8E80', margin: '4px 0 0' }}>{reviewResult.party_risk_balance.notes}</p>
               )}
             </div>
           )}
@@ -273,16 +281,21 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Key clauses */}
           {reviewResult.key_clauses_found?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">البنود الأساسية</p>
-              <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 overflow-hidden">
+              <p style={LABEL_S}>البنود الأساسية</p>
+              <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
                 {reviewResult.key_clauses_found.slice(0, 10).map((c, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-2.5">
-                    <span className={`flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-xs
-                      ${c.found ? 'bg-green-500 text-white' : 'bg-red-100 text-red-600'}`}>
-                      {c.found ? '✓' : '✕'}
+                  <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < Math.min(reviewResult.key_clauses_found.length, 10) - 1 ? '1px solid #EAE4D9' : 'none' }}>
+                    <span style={{
+                      flexShrink: 0, width: 16, height: 16, borderRadius: '50%',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: c.found ? '#16a34a' : '#FEF2F2', color: c.found ? '#fff' : '#DC2626',
+                    }}>
+                      {c.found
+                        ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        : <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
                     </span>
-                    <span className="text-sm text-gray-900 flex-1">{c.clause}</span>
-                    <span className={`text-xs font-medium ${STRENGTH_COLOR[c.strength] || ''}`}>
+                    <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{c.clause}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, ...(STRENGTH_STYLE[c.strength] || {}) }}>
                       {STRENGTH_AR[c.strength] || c.strength}
                     </span>
                   </div>
@@ -294,27 +307,25 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Missing/weak clauses */}
           {reviewResult.missing_or_weak_clauses?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">
-                بنود ناقصة أو ضعيفة ({reviewResult.missing_or_weak_clauses.length})
-              </p>
-              <div className="space-y-3">
+              <p style={LABEL_S}>بنود ناقصة أو ضعيفة ({reviewResult.missing_or_weak_clauses.length})</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {reviewResult.missing_or_weak_clauses.map((c, i) => (
-                  <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-semibold text-sm text-gray-900">{c.clause}</p>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${RISK_CLAUSE_COLOR[c.risk_level] || ''}`}>
+                  <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                      <p style={{ fontWeight: 700, fontSize: 13, color: '#1A1208', margin: 0 }}>{c.clause}</p>
+                      <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, whiteSpace: 'nowrap', ...(RISK_CLAUSE_STYLE[c.risk_level] || {}) }}>
                         {RISK_AR[c.risk_level] || c.risk_level}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600">{c.why_it_matters}</p>
-                    <div className="bg-[#FEF2F2] rounded-lg p-2.5">
-                      <p className="text-xs font-semibold text-[#8B1A1A] mb-0.5">التوصية</p>
-                      <p className="text-xs text-[#6E1515]">{c.recommendation}</p>
+                    <p style={{ fontSize: 12, color: '#6B7280', margin: 0 }}>{c.why_it_matters}</p>
+                    <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '10px 12px' }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</p>
+                      <p style={{ fontSize: 11, color: '#6b2737', margin: 0 }}>{c.recommendation}</p>
                     </div>
                     {c.suggested_clause_draft && (
-                      <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
-                        <p className="text-xs font-semibold text-gray-500 mb-1">نص مقترح</p>
-                        <p className="text-xs text-gray-700 leading-relaxed">{c.suggested_clause_draft}</p>
+                      <div style={{ background: '#FAFAF8', borderRadius: 10, padding: '10px 12px', border: '1px solid #EAE4D9' }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 4px' }}>نص مقترح</p>
+                        <p style={{ fontSize: 11, color: '#374151', lineHeight: 1.7, margin: 0 }}>{c.suggested_clause_draft}</p>
                       </div>
                     )}
                   </div>
@@ -326,39 +337,48 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Practical recommendations */}
           {reviewResult.practical_recommendations?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">توصيات عملية</p>
-              <ol className="space-y-1.5">
+              <p style={LABEL_S}>توصيات عملية</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {reviewResult.practical_recommendations.map((r, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-gray-700">
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#6b2737]/10 text-[#6b2737] text-xs font-bold flex items-center justify-center mt-0.5">
+                  <div key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#374151' }}>
+                    <span style={{
+                      flexShrink: 0, width: 20, height: 20, borderRadius: '50%',
+                      background: 'rgba(107,39,55,0.08)', color: '#6b2737',
+                      fontSize: 11, fontWeight: 800,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
+                    }}>
                       {i + 1}
                     </span>
                     {r}
-                  </li>
+                  </div>
                 ))}
-              </ol>
+              </div>
             </div>
           )}
 
           {/* Questions for lawyer */}
           {reviewResult.questions_for_lawyer?.length > 0 && (
-            <div className="bg-[#B8860B]/5 border border-[#B8860B]/20 rounded-xl p-4">
-              <p className="text-xs font-semibold text-[#B8860B] mb-2">أسئلة لمحاميك</p>
-              <ul className="space-y-1.5">
+            <div style={{ background: 'rgba(184,134,11,0.05)', border: '1px solid rgba(184,134,11,0.2)', borderRadius: 14, padding: '14px 16px' }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#B8860B', margin: '0 0 8px' }}>أسئلة لمحاميك</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {reviewResult.questions_for_lawyer.map((q, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-gray-700">
-                    <span className="text-[#B8860B] flex-shrink-0">◆</span>
+                  <div key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: '#374151' }}>
+                    <span style={{ color: '#B8860B', flexShrink: 0, display: 'inline-flex', alignItems: 'center', marginTop: 2 }}>
+                      <svg width="6" height="6" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" fill="#B8860B" transform="rotate(45 5 5)"/></svg>
+                    </span>
                     {q}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
 
           {/* Disclaimer */}
-          <p className="text-xs text-gray-400 bg-gray-50 rounded-lg p-3 leading-relaxed">
-            {reviewResult.disclaimer}
-          </p>
+          {reviewResult.disclaimer && (
+            <p style={{ fontSize: 11, color: '#9C8E80', background: '#FAFAF8', borderRadius: 10, padding: '10px 12px', lineHeight: 1.6, margin: 0 }}>
+              {reviewResult.disclaimer}
+            </p>
+          )}
         </div>
       )}
     </div>

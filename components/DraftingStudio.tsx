@@ -14,8 +14,51 @@ interface Template {
   slug: string
   titleAr: string
   titleEn: string
-  icon: string
   descriptionAr: string
+}
+
+function TemplateIcon({ slug, size = 24 }: { slug: string; size?: number }) {
+  const s = { width: size, height: size } as const
+  if (slug === 'eviction-notice') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+    </svg>
+  )
+  if (slug === 'contract-extension') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+  )
+  if (slug === 'objection-letter') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+    </svg>
+  )
+  if (slug === 'power-of-attorney-draft') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+    </svg>
+  )
+  if (slug === 'handover-minutes') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+  )
+  if (slug === 'receipt-acknowledgment') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"/>
+    </svg>
+  )
+  if (slug === 'lawyer-referral') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+    </svg>
+  )
+  return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+    </svg>
+  )
 }
 
 interface FieldDef {
@@ -28,14 +71,14 @@ interface FieldDef {
 }
 
 const TEMPLATES: Template[] = [
-  { slug: 'eviction-notice', titleAr: 'إنذار إخلاء', titleEn: 'Eviction Notice', icon: '🏠', descriptionAr: 'إشعار رسمي للمستأجر بالإخلاء' },
-  { slug: 'contract-extension', titleAr: 'تمديد عقد', titleEn: 'Contract Extension', icon: '📋', descriptionAr: 'تمديد عقد إيجار أو خدمات' },
-  { slug: 'objection-letter', titleAr: 'رسالة اعتراض', titleEn: 'Objection Letter', icon: '✉️', descriptionAr: 'اعتراض رسمي على قرار أو إجراء' },
-  { slug: 'administrative-request', titleAr: 'طلب إداري', titleEn: 'Administrative Request', icon: '📝', descriptionAr: 'طلب رسمي لجهة حكومية' },
-  { slug: 'power-of-attorney-draft', titleAr: 'مسودة وكالة', titleEn: 'Power of Attorney Draft', icon: '⚖️', descriptionAr: 'وكالة قانونية بصلاحيات محددة' },
-  { slug: 'handover-minutes', titleAr: 'محضر تسليم', titleEn: 'Handover Minutes', icon: '🤝', descriptionAr: 'محضر تسليم واستلام رسمي' },
-  { slug: 'receipt-acknowledgment', titleAr: 'إيصال استلام', titleEn: 'Receipt Acknowledgment', icon: '🧾', descriptionAr: 'وثيقة إثبات استلام مستندات أو أموال' },
-  { slug: 'lawyer-referral', titleAr: 'طلب إحالة محامٍ', titleEn: 'Lawyer Referral', icon: '👨‍⚖️', descriptionAr: 'طلب تحويل قضية لمحامٍ مرخّص' },
+  { slug: 'eviction-notice', titleAr: 'إنذار إخلاء', titleEn: 'Eviction Notice', descriptionAr: 'إشعار رسمي للمستأجر بالإخلاء' },
+  { slug: 'contract-extension', titleAr: 'تمديد عقد', titleEn: 'Contract Extension', descriptionAr: 'تمديد عقد إيجار أو خدمات' },
+  { slug: 'objection-letter', titleAr: 'رسالة اعتراض', titleEn: 'Objection Letter', descriptionAr: 'اعتراض رسمي على قرار أو إجراء' },
+  { slug: 'administrative-request', titleAr: 'طلب إداري', titleEn: 'Administrative Request', descriptionAr: 'طلب رسمي لجهة حكومية' },
+  { slug: 'power-of-attorney-draft', titleAr: 'مسودة وكالة', titleEn: 'Power of Attorney Draft', descriptionAr: 'وكالة قانونية بصلاحيات محددة' },
+  { slug: 'handover-minutes', titleAr: 'محضر تسليم', titleEn: 'Handover Minutes', descriptionAr: 'محضر تسليم واستلام رسمي' },
+  { slug: 'receipt-acknowledgment', titleAr: 'إيصال استلام', titleEn: 'Receipt Acknowledgment', descriptionAr: 'وثيقة إثبات استلام مستندات أو أموال' },
+  { slug: 'lawyer-referral', titleAr: 'طلب إحالة محامٍ', titleEn: 'Lawyer Referral', descriptionAr: 'طلب تحويل قضية لمحامٍ مرخّص' },
 ]
 
 const FIELD_DEFS: Record<string, FieldDef[]> = {
@@ -130,15 +173,16 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px' }}>
-            ✏️ {isAr ? 'استوديو الصياغة' : 'Drafting Studio'}
+          <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            {isAr ? 'استوديو الصياغة' : 'Drafting Studio'}
           </h2>
           <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
             {isAr ? 'أنشئ مسودات قانونية أولية بالذكاء الاصطناعي' : 'Generate legal draft documents with AI'}
           </p>
         </div>
         {onClose && (
-          <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', fontSize: 14, color: '#6B7280' }}>✕</button>
+          <button onClick={onClose} style={{ background: '#F5F5F5', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#6B7280', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         )}
       </div>
 
@@ -160,7 +204,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               cursor: stage > s ? 'pointer' : 'default',
               transition: 'all 0.15s',
             }} onClick={() => { if (stage > s) setStage(s) }}>
-              {stage > s ? '✓' : s}. {isAr ? label : ['Select Template', 'Enter Data', 'Preview'][i]}
+              {stage > s ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> : s}. {isAr ? label : ['Select Template', 'Enter Data', 'Preview'][i]}
             </div>
           )
         })}
@@ -187,7 +231,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = '#8B1A1A'; (e.currentTarget as HTMLElement).style.background = '#FEF2F2' }}
               onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = '#EAE4D9'; (e.currentTarget as HTMLElement).style.background = '#fff' }}
               >
-                <div style={{ fontSize: 24, marginBottom: 6 }}>{tpl.icon}</div>
+                <div style={{ marginBottom: 6, display: 'flex' }}><TemplateIcon slug={tpl.slug} size={24} /></div>
                 <p style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
                 <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
               </button>
@@ -200,7 +244,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {stage === 2 && selectedTemplate && (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, padding: '10px 14px', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 12 }}>
-            <span style={{ fontSize: 22 }}>{selectedTemplate.icon}</span>
+            <TemplateIcon slug={selectedTemplate.slug} size={22} />
             <div>
               <p style={{ fontSize: 13, fontWeight: 800, color: '#8B1A1A', margin: 0 }}>{isAr ? selectedTemplate.titleAr : selectedTemplate.titleEn}</p>
               <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>{selectedTemplate.descriptionAr}</p>
@@ -237,10 +281,10 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
 
           <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
             <button onClick={() => setStage(1)} style={{ padding: '11px 20px', background: '#fff', color: '#6B7280', border: '1.5px solid #EAE4D9', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, cursor: 'pointer' }}>
-              {isAr ? '← رجوع' : '← Back'}
+              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>{isAr ? 'رجوع' : 'Back'}</span>
             </button>
             <button onClick={handleGeneratePreview} style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              {isAr ? 'معاينة المسودة ←' : 'Preview Draft →'}
+              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>{!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}{isAr ? 'معاينة المسودة' : 'Preview Draft'}{isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}</span>
             </button>
           </div>
         </div>
@@ -260,8 +304,9 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
 
           {/* Disclaimer */}
           <div style={{ background: '#FFFBEB', border: '1px solid #FEF08A', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
-            <p style={{ fontSize: 11, color: '#854D0E', margin: 0, lineHeight: 1.5 }}>
-              ⚠️ {isAr
+            <p style={{ fontSize: 11, color: '#854D0E', margin: 0, lineHeight: 1.5, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#854D0E" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              {isAr
                 ? 'هذه مسودة أولية للإرشاد فقط. يُنصح بمراجعة محامٍ مرخّص قبل استخدام أي وثيقة رسمية.'
                 : 'This is a preliminary draft for guidance only. Please consult a licensed lawyer before using any official document.'}
             </p>
@@ -269,10 +314,10 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
 
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => setStage(2)} style={{ padding: '11px 20px', background: '#fff', color: '#6B7280', border: '1.5px solid #EAE4D9', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, cursor: 'pointer' }}>
-              {isAr ? '← تعديل' : '← Edit'}
+              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>{isAr ? 'تعديل' : 'Edit'}</span>
             </button>
             <button onClick={handleSend} style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg, #8B1A1A, #6B1313)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 14, fontWeight: 800, cursor: 'pointer', boxShadow: '0 3px 12px rgba(139,26,26,0.3)' }}>
-              🤖 {isAr ? 'توليد المسودة بالذكاء الاصطناعي' : 'Generate Draft with AI'}
+              {isAr ? 'توليد المسودة' : 'Generate Draft'}
             </button>
           </div>
         </div>

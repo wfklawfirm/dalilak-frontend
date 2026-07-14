@@ -41,7 +41,7 @@ function ServiceModal({ service, onClose, onAsk }: {
               <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1A1208', lineHeight: 1.3 }}>{service.name_ar}</h2>
               <p style={{ margin: '4px 0 0', fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>{service.authority_ar}</p>
             </div>
-            <button onClick={onClose} style={{ background: '#F3F4F6', border: 'none', borderRadius: 10, width: 32, height: 32, cursor: 'pointer', fontSize: 18, color: '#6B7280', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+            <button onClick={onClose} style={{ background: '#F3F4F6', border: 'none', borderRadius: 10, width: 32, height: 32, cursor: 'pointer', color: '#6B7280', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
 
           {/* Quick stats */}
@@ -84,7 +84,7 @@ function ServiceModal({ service, onClose, onAsk }: {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                 {service.required_documents.map((doc, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 12px', background: '#FAFAFA', borderRadius: 10, border: '1px solid #F3F4F6' }}>
-                    <span style={{ color: '#8B1A1A', fontSize: 12, marginTop: 1 }}>◆</span>
+                    <span style={{ color: '#8B1A1A', marginTop: 2, flexShrink: 0 }}><svg width="6" height="6" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" fill="#8B1A1A" transform="rotate(45 5 5)"/></svg></span>
                     <span style={{ fontSize: 12, color: '#374151', lineHeight: 1.5 }}>{doc}</span>
                   </div>
                 ))}
@@ -311,7 +311,7 @@ export default function ProceduresPage() {
             placeholder={viewMode === 'all' ? 'ابحث في 201 خدمة...' : viewMode === 'enriched' ? 'ابحث في 60 إجراء مفصّل...' : 'ابحث في الإجراءات المُرشدة...'}
             dir="rtl"
             style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }} />
-          {search && <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', fontSize: 18, lineHeight: 1 }}>×</button>}
+          {search && <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Category filters (only in all mode) */}
@@ -450,7 +450,7 @@ export default function ProceduresPage() {
                         {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>رسوم</span>}
                       </div>
                     </div>
-                    <span style={{ color: '#9C8E80', fontSize: 16, transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>▾</span>
+                    <span style={{ color: '#9C8E80', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
                   </button>
                   {expandedProc === proc.code && (
                     <div style={{ padding: '0 16px 16px', borderTop: '1px solid #F3F4F6' }}>
@@ -459,7 +459,7 @@ export default function ProceduresPage() {
                           <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>الوثائق المطلوبة:</div>
                           {proc.requiredDocuments.map((d, i) => (
                             <div key={i} style={{ fontSize: 11.5, color: '#374151', padding: '4px 0', borderBottom: '1px solid #F9FAFB', display: 'flex', gap: 6 }}>
-                              <span style={{ color: '#8B1A1A', fontWeight: 700 }}>•</span><span>{d}</span>
+                              <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg></span><span>{d}</span>
                             </div>
                           ))}
                         </div>
@@ -574,7 +574,7 @@ export default function ProceduresPage() {
             padding: '10px 24px', borderRadius: 12, background: 'linear-gradient(135deg, #7a1a1a, #9B2335)',
             border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
           }}>
-            🤖 اسأل دليلك الذكي
+            <span style={{display:'inline-flex',alignItems:'center',gap:7}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>اسأل دليلك الذكي</span>
           </button>
         </div>
       </div>

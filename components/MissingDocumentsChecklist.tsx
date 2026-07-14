@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { MissingDocument } from '@/lib/types'
 
 interface RequiredDoc {
@@ -16,11 +17,11 @@ interface Props {
   lang?: 'ar' | 'en'
 }
 
-const PRIORITY_BADGE: Record<string, string> = {
-  critical: 'bg-red-100 text-red-700 border-red-200',
-  high:     'bg-orange-100 text-orange-700 border-orange-200',
-  medium:   'bg-yellow-100 text-yellow-700 border-yellow-200',
-  low:      'bg-gray-100 text-gray-600 border-gray-200',
+const PRIORITY_STYLE: Record<string, React.CSSProperties> = {
+  critical: { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.25)' },
+  high:     { background: '#FFF7ED', color: '#ea580c', border: '1px solid #FED7AA' },
+  medium:   { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
+  low:      { background: '#F3F4F6', color: '#6B7280', border: '1px solid #E5E7EB' },
 }
 
 const PRIORITY_AR: Record<string, string> = {
@@ -36,7 +37,6 @@ export default function MissingDocumentsChecklist({
   uploadedDocIds = [],
   onUpload,
 }: Props) {
-  // Merge: requiredDocs list + missing docs status
   const missingMap = new Map(missingDocs.map((d) => [d.title, d]))
 
   const allDocs: Array<{ title: string; required: boolean; notes?: string; missing?: MissingDocument }> =
@@ -49,81 +49,95 @@ export default function MissingDocumentsChecklist({
 
   if (total === 0) {
     return (
-      <div dir="rtl" className="text-center py-6 text-gray-400 text-sm">
+      <div dir="rtl" style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#9C8E80', fontFamily: "'Cairo','Inter',sans-serif" }}>
         لا توجد وثائق مطلوبة
       </div>
     )
   }
 
+  const pct = total > 0 ? Math.round((uploaded / total) * 100) : 0
+
   return (
-    <div dir="rtl" className="space-y-3">
-      {/* Summary */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-gray-700">
+    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif" }}>
+      {/* Summary row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', margin: 0 }}>
           {uploaded} من {total} وثائق مكتملة
         </p>
-        <div className="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div
-            className="h-2 rounded-full bg-[#6b2737] transition-all duration-500"
-            style={{ width: `${total > 0 ? Math.round((uploaded / total) * 100) : 0}%` }}
-          />
+        <div style={{ width: 120, background: '#EAE4D9', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
+          <div style={{
+            width: `${pct}%`, height: 5, borderRadius: 99,
+            background: pct === 100 ? '#16a34a' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+            transition: 'width 0.5s ease',
+          }} />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 overflow-hidden">
+      {/* Document list */}
+      <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
         {allDocs.map((doc, i) => {
           const isMissing = doc.missing && doc.missing.status !== 'uploaded'
           const isUploaded = !isMissing
+          const needsReview = doc.missing?.status === 'needs_review'
 
           return (
             <div
               key={i}
-              className={`flex items-center gap-3 px-4 py-3 ${isUploaded ? 'bg-green-50/40' : 'bg-white'}`}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 14px',
+                background: isUploaded ? 'rgba(240,253,244,0.5)' : '#fff',
+                borderBottom: i < allDocs.length - 1 ? '1px solid #EAE4D9' : 'none',
+              }}
             >
               {/* Status icon */}
-              <span
-                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
-                  ${isUploaded
-                    ? 'bg-green-500 text-white'
-                    : doc.missing?.status === 'needs_review'
-                    ? 'bg-yellow-400 text-white'
-                    : 'bg-red-500 text-white'
-                  }`}
-              >
-                {isUploaded ? '✓' : doc.missing?.status === 'needs_review' ? '!' : '✕'}
+              <span style={{
+                flexShrink: 0, width: 22, height: 22, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isUploaded ? '#16a34a' : needsReview ? '#B8860B' : '#8B1A1A',
+              }}>
+                {isUploaded
+                  ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : needsReview
+                  ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01"/></svg>
+                  : <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
               </span>
 
-              {/* Title + details */}
-              <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${isUploaded ? 'text-gray-700' : 'text-gray-900'}`}>
+              {/* Title + notes */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 12.5, fontWeight: 600, color: isUploaded ? '#6B7280' : '#1A1208', margin: '0 0 1px', display: 'flex', alignItems: 'center', gap: 4 }}>
                   {doc.title}
                   {doc.required && !isUploaded && (
-                    <span className="mr-1 text-red-500 text-xs">*</span>
+                    <span style={{ color: '#8B1A1A', fontSize: 11, fontWeight: 800 }}>*</span>
                   )}
                 </p>
                 {doc.missing?.reason && !isUploaded && (
-                  <p className="text-xs text-gray-500 mt-0.5 truncate">{doc.missing.reason}</p>
+                  <p style={{ fontSize: 11, color: '#9C8E80', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.missing.reason}</p>
                 )}
                 {doc.notes && (
-                  <p className="text-xs text-gray-400 mt-0.5">{doc.notes}</p>
+                  <p style={{ fontSize: 11, color: '#B0A090', margin: 0 }}>{doc.notes}</p>
                 )}
               </div>
 
               {/* Priority badge + upload button */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                 {isMissing && doc.missing?.priority && (
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full border font-medium
-                      ${PRIORITY_BADGE[doc.missing.priority] || PRIORITY_BADGE.low}`}
-                  >
+                  <span style={{
+                    fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700,
+                    ...(PRIORITY_STYLE[doc.missing.priority] || PRIORITY_STYLE.low),
+                  }}>
                     {PRIORITY_AR[doc.missing.priority] || doc.missing.priority}
                   </span>
                 )}
                 {isMissing && onUpload && (
                   <button
                     onClick={() => onUpload(doc.title)}
-                    className="text-xs bg-[#6b2737] text-white px-3 py-1 rounded-lg hover:bg-[#5a1f2e] transition-colors"
+                    style={{
+                      fontSize: 11, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                      color: '#fff', padding: '4px 12px', borderRadius: 8,
+                      border: 'none', cursor: 'pointer', fontWeight: 700,
+                      fontFamily: "'Cairo','Inter',sans-serif",
+                    }}
                   >
                     رفع
                   </button>
@@ -135,7 +149,7 @@ export default function MissingDocumentsChecklist({
       </div>
 
       {/* Disclaimer */}
-      <p className="text-xs text-gray-400 text-center leading-relaxed">
+      <p style={{ fontSize: 11, color: '#9C8E80', textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
         القائمة أولية — تأكد من المصادر الرسمية قبل تقديم الطلب
       </p>
     </div>

@@ -88,9 +88,9 @@ export default function FormsPage() {
         {/* View tabs */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#F3F4F6', borderRadius: 12, padding: 4 }}>
           {[
-            { tab: 'forms-tx' as ViewTab, labelAr: `نماذج PDF (${TX_WITH_FORMS.length})`, labelEn: `PDF Forms (${TX_WITH_FORMS.length})`, icon: '📄' },
-            { tab: 'all-tx' as ViewTab, labelAr: `معاملات (${TX_ALL.length})`, labelEn: `All (${TX_ALL.length})`, icon: '🗂️' },
-            { tab: 'curated' as ViewTab, labelAr: `منظّمة (${allForms.length})`, labelEn: `Curated (${allForms.length})`, icon: '✅' },
+            { tab: 'forms-tx' as ViewTab, labelAr: `نماذج PDF (${TX_WITH_FORMS.length})`, labelEn: `PDF Forms (${TX_WITH_FORMS.length})`, icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+            { tab: 'all-tx' as ViewTab, labelAr: `معاملات (${TX_ALL.length})`, labelEn: `All (${TX_ALL.length})`, icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg> },
+            { tab: 'curated' as ViewTab, labelAr: `منظّمة (${allForms.length})`, labelEn: `Curated (${allForms.length})`, icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
           ].map(({ tab, labelAr, labelEn, icon }) => (
             <button key={tab} onClick={() => setViewTab(tab)} style={{
               flex: 1, padding: '7px 6px', borderRadius: 9, fontSize: 11, fontWeight: 700,
@@ -99,6 +99,7 @@ export default function FormsPage() {
               color: viewTab === tab ? '#8B1A1A' : '#6B7280',
               boxShadow: viewTab === tab ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
             }}>
               {icon} {isAr ? labelAr : labelEn}
             </button>
@@ -115,7 +116,7 @@ export default function FormsPage() {
             value={search} onChange={e => setSearch(e.target.value)}
             style={{ width: '100%', padding: '11px 42px 11px 36px', border: '1.5px solid #EAE4D9', borderRadius: 14, fontSize: 13, background: '#fff', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
           />
-          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 10, color: '#6B7280' }}>✕</button>}
+          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#6B7280' }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Ministry filter — for transaction tabs */}
@@ -136,7 +137,7 @@ export default function FormsPage() {
                 background: ministryFilter === m.slug ? '#FEF2F2' : '#fff',
                 color: ministryFilter === m.slug ? '#8B1A1A' : '#6B7280',
               }}>
-                {m.icon} {m.ar.length > 20 ? m.ar.slice(0, 20) + '...' : m.ar}
+                {m.ar.length > 22 ? m.ar.slice(0, 22) + '...' : m.ar}
               </button>
             ))}
           </div>
@@ -161,8 +162,8 @@ export default function FormsPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {filteredAllTx.slice(0, 200).map((tx: TxItem) => (
                 <div key={tx.id} className="form-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '10px 14px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', transition: 'all 0.15s', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 9, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
-                    {tx.icon}
+                  <div style={{ width: 34, height: 34, borderRadius: 9, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{tx.title}</div>
@@ -202,8 +203,8 @@ export default function FormsPage() {
               {filteredTx.map((tx: TxItem) => (
                 <div key={tx.id} className="form-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '12px 14px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.15s' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-                      {tx.icon}
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', lineHeight: 1.4, marginBottom: 2 }}>{tx.title}</div>
@@ -248,20 +249,23 @@ export default function FormsPage() {
               {filteredCurated.map((form: FormItem) => (
                 <div key={form.slug} className="form-card" style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 16, padding: '14px 16px', boxShadow: '0 1px 6px rgba(0,0,0,0.04)', transition: 'all 0.15s' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 12, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
-                      {form.icon}
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 2 }}>
                         <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? form.title_ar : form.title_en}</span>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: typeColor(form.type), background: typeBg(form.type), borderRadius: 6, padding: '1px 6px' }}>
-                          {form.type === 'official' ? '✅ رسمي' : '📝 مسودة'}
+                        <span style={{ fontSize: 10, fontWeight: 700, color: typeColor(form.type), background: typeBg(form.type), borderRadius: 6, padding: '1px 6px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                          {form.type === 'official'
+                            ? <><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>رسمي</>
+                            : <><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>مسودة</>
+                          }
                         </span>
                       </div>
                       <p style={{ fontSize: 11, color: '#6B7280', margin: '0 0 6px' }}>{isAr ? form.authority_ar : form.authority_en} · {isAr ? form.ministry_ar : form.ministry_en}</p>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 9.5, color: '#6B7280', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px' }}>📁 {isAr ? form.category_ar : form.category_en}</span>
-                        {form.lastReviewed && <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px' }}>🗓️ {form.lastReviewed}</span>}
+                        <span style={{ fontSize: 9.5, color: '#6B7280', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>{isAr ? form.category_ar : form.category_en}</span>
+                        {form.lastReviewed && <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#F5F5F5', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>{form.lastReviewed}</span>}
                       </div>
                     </div>
                   </div>
@@ -271,7 +275,7 @@ export default function FormsPage() {
                     </button>
                     {form.url && (
                       <a href={form.url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '8px', background: '#fff', color: '#8B1A1A', border: '1.5px solid #8B1A1A', borderRadius: 10, fontFamily: 'inherit', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        فتح النموذج ↗
+                        <span style={{ display:'inline-flex', alignItems:'center', gap:3 }}>فتح النموذج<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></span>
                       </a>
                     )}
                   </div>
@@ -286,7 +290,8 @@ export default function FormsPage() {
           <p style={{ margin: '0 0 8px', fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>لم تجد النموذج المطلوب؟</p>
           <p style={{ margin: '0 0 10px', fontSize: 10.5, color: '#6B7280' }}>اسأل الذكاء الاصطناعي — يغطي 81,000+ مصدر</p>
           <button onClick={() => router.push('/')} style={{ padding: '9px 22px', borderRadius: 10, background: 'linear-gradient(135deg, #7a1a1a, #9B2335)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-            🤖 اسأل دليلك الذكي
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 6 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+            اسأل دليلك الذكي
           </button>
         </div>
       </div>
