@@ -545,4 +545,71 @@ export default function AdminPage() {
                     padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'inherit', border: 'none', display: 'inline-flex', alignItems: 'center', gap: 5,
                     background: gapFilter === f.k ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
- 
+                    color: gapFilter === f.k ? '#fff' : '#5C4A3A',
+                    boxShadow: gapFilter === f.k ? '0 2px 8px rgba(139,26,26,0.2)' : '0 1px 3px rgba(0,0,0,0.04)',
+                    outline: gapFilter === f.k ? 'none' : '1px solid #EAE4D9',
+                  }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: gapFilter === f.k ? '#fff' : f.dot, display: 'inline-block', flexShrink: 0 }} />
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Gap list */}
+            {loading ? (
+              <p style={{ textAlign: 'center', color: '#9C8E80', padding: '24px 0', fontSize: 13 }}>جارٍ التحميل...</p>
+            ) : contentGaps.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 20px', background: '#fff', borderRadius: 16, border: '1.5px solid #EAE4D9', color: '#9C8E80', fontSize: 13 }}>
+                لا توجد ثغرات في هذه الحالة
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {contentGaps.map(gap => (
+                  <div key={gap.id} className="adm-gap-row" style={{ background: '#fff', borderRadius: 14, border: '1.5px solid #EAE4D9', padding: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, gap: 10 }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 6px', lineHeight: 1.4 }}>{gap.user_question}</p>
+                        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', padding: '1px 7px', borderRadius: 8, fontWeight: 600 }}>{gap.gap_type}</span>
+                          {gap.priority === 'high' && (
+                            <span style={{ fontSize: 10, color: '#EA580C', background: '#FFF7ED', padding: '1px 7px', borderRadius: 8, fontWeight: 600 }}>أولوية عالية</span>
+                          )}
+                          {gap.detected_procedure && (
+                            <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', padding: '1px 7px', borderRadius: 8 }}>{gap.detected_procedure}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
+                        {(['in_review', 'resolved', 'ignored'] as const).map(s => (
+                          <button
+                            key={s}
+                            onClick={() => handleGapUpdate(gap.id, s)}
+                            style={{
+                              fontSize: 10, padding: '3px 8px', borderRadius: 7, border: 'none', cursor: 'pointer',
+                              fontFamily: 'inherit', fontWeight: 700,
+                              background: s === 'resolved' ? '#F0FDF4' : s === 'ignored' ? '#EAE4D9' : '#FFFBEB',
+                              color: s === 'resolved' ? '#16A34A' : s === 'ignored' ? '#5C4A3A' : '#CA8A04',
+                            }}
+                          >
+                            {s === 'in_review' ? 'مراجعة' : s === 'resolved' ? 'محلول' : 'تجاهل'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    {gap.admin_notes && (
+                      <p style={{ fontSize: 11, color: '#9C8E80', margin: 0, fontStyle: 'italic' }}>{gap.admin_notes}</p>
+                    )}
+                    {gap.username && (
+                      <p style={{ fontSize: 10.5, color: '#9C8E80', margin: '4px 0 0' }}>@{gap.username}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}

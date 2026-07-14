@@ -55,4 +55,19 @@ export default function DraftingStudioPage() {
 
         {/* Disclaimer banner */}
         <div style={{ background: '#FFFBEB', border: '1px solid #FEF08A', borderRadius: 12, padding: '10px 14px', marginBottom: 20, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-          <span style={{ display: 'flex', flexShrink: 0 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#854D0E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><
+          <span style={{ display: 'flex', flexShrink: 0 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#854D0E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
+          <p style={{ fontSize: 11.5, color: '#854D0E', margin: 0, lineHeight: 1.6 }}>
+            هذه المسودات للأغراض التوجيهية فقط وليست وثائق قانونية معتمدة. يُنصح بمراجعة محامٍ قبل استخدامها رسمياً.
+          </p>
+        </div>
+
+        <DraftingStudio isAr={isAr} onSend={handleSend} />
+
+      </div>
+
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={isAr} activeTab="drafting" />
+      </div>
+    </div>
+  )
+}

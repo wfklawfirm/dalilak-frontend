@@ -301,4 +301,115 @@ export default function ContentGovernancePage() {
                         outlineOffset: 1,
                         ...(s === selected.status ? STATUS_CONFIG[s].style : { background: '#EAE4D9', color: '#9C8E80' }),
                       }}>
-              
+                        {STATUS_CONFIG[s]?.label || s}
+                      </span>
+                      {i < 4 && (
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#C4B5A5" strokeWidth="2" style={{ flexShrink: 0 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Audit log */}
+        {showAudit && (
+          <div style={{ marginTop: 20, background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', overflow: 'hidden' }}>
+            <div style={{ padding: '14px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#1A1208' }}>سجل التغييرات</h3>
+              <button onClick={() => setShowAudit(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+              {auditLog.length === 0 ? (
+                <p style={{ padding: '24px', textAlign: 'center', color: '#9C8E80', fontSize: 13 }}>لا توجد سجلات بعد</p>
+              ) : (
+                <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {auditLog.map((entry, i) => (
+                    <div key={i} style={{ fontSize: 12, padding: '10px 14px', borderRadius: 12, border: '1px solid #EAE4D9', background: '#FAFAF8' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ fontWeight: 700, color: '#6b2737' }}>{entry.action}</span>
+                        <span style={{ color: '#9C8E80', fontSize: 11 }}>{new Date(entry.ts).toLocaleString('ar-LB')}</span>
+                      </div>
+                      <div style={{ color: '#5C4A3A', fontSize: 11 }}>
+                        بواسطة: {entry.actor}
+                        {entry.note && <span> · {entry.note}</span>}
+                      </div>
+                      {(entry.before || entry.after) && (
+                        <div style={{ marginTop: 4, color: '#9C8E80', fontSize: 11 }}>
+                          {entry.before && <span>من: {entry.before} </span>}
+                          {entry.after && <span>→ {entry.after}</span>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Create modal */}
+        {showCreate && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: 0 }}>إنشاء محتوى جديد</h2>
+                <button onClick={() => setShowCreate(false)} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>العنوان</label>
+                  <input
+                    value={newItem.title_ar}
+                    onChange={e => setNewItem(p => ({ ...p, title_ar: e.target.value }))}
+                    placeholder="عنوان المحتوى..."
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#1A1208', background: '#FAFAF8', boxSizing: 'border-box' as const }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>النوع</label>
+                  <select
+                    value={newItem.content_type}
+                    onChange={e => setNewItem(p => ({ ...p, content_type: e.target.value }))}
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#1A1208', background: '#FAFAF8' }}
+                  >
+                    <option value="procedure_update">تحديث إجراء</option>
+                    <option value="faq_answer">إجابة شائعة</option>
+                    <option value="authority_info">معلومات جهة</option>
+                    <option value="form_guide">دليل نموذج</option>
+                    <option value="announcement">إعلان</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>المحتوى</label>
+                  <textarea
+                    value={newItem.body_ar}
+                    onChange={e => setNewItem(p => ({ ...p, body_ar: e.target.value }))}
+                    rows={5}
+                    placeholder="اكتب المحتوى هنا..."
+                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', color: '#1A1208', background: '#FAFAF8', boxSizing: 'border-box' as const }}
+                  />
+                </div>
+                <button
+                  onClick={createItem}
+                  disabled={creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()}
+                  style={{ padding: '11px', borderRadius: 12, background: 'linear-gradient(135deg, #6b2737, #8B1A1A)', border: 'none', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: creating ? 0.7 : 1 }}
+                >
+                  {creating ? 'جارٍ الإنشاء...' : 'إنشاء'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

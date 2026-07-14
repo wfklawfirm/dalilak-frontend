@@ -353,6 +353,67 @@ export default function MyFilesPage() {
                     {selected.documents && selected.documents.length > 0 && (
                       <div style={{ marginTop: 22 }}>
                         <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                           المستندات المطلوبة
                         </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          {selected.documents.map((doc, i) => (
+                            <div key={i} style={{
+                              display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',
+                              borderRadius: 10, border: '1.5px solid',
+                              borderColor: doc.uploaded ? '#BBF7D0' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
+                              background: doc.uploaded ? '#F0FDF4' : doc.required ? '#FFFBF9' : '#FAFAF8',
+                            }}>
+                              <div style={{
+                                width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+                                background: doc.uploaded ? '#16A34A' : doc.required ? '#FEF2F2' : '#F4F0EB',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: doc.uploaded ? '#fff' : doc.required ? '#8B1A1A' : '#9C8E80',
+                              }}>
+                                {doc.uploaded
+                                  ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                  : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                }
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <p style={{ fontSize: 12.5, fontWeight: 700, color: doc.uploaded ? '#15803D' : '#1A1208', margin: 0, textDecoration: doc.uploaded ? 'line-through' : 'none' }}>
+                                  {doc.name_ar}
+                                </p>
+                                {doc.required && !doc.uploaded && (
+                                  <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '2px 0 0', fontWeight: 600 }}>مطلوب</p>
+                                )}
+                              </div>
+                              {doc.uploaded && (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Notes */}
+                    {selected.notes && (
+                      <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
+                        <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                          ملاحظات
+                        </h4>
+                        <p style={{ fontSize: 12, color: '#854D0E', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={true} activeTab="my-files" />
+      </div>
+    </div>
+  )
+}
                
