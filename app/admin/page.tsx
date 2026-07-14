@@ -120,7 +120,7 @@ export default function AdminPage() {
   async function handleGapUpdate(gapId: string, status: string, notes?: string) {
     try {
       await adminUpdateContentGap(gapId, status, notes)
-      flash(`✅ تم تحديث الثغرة`)
+      flash(`تم تحديث الثغرة`)
       loadContentGaps(gapFilter)
     } catch (e: any) { flash(e.message || 'خطأ في تحديث الثغرة', true) }
   }
@@ -146,7 +146,7 @@ export default function AdminPage() {
     setLoading(true)
     try {
       await adminCreateUser(newUser)
-      flash('✅ تم إنشاء المستخدم بنجاح')
+      flash('تم إنشاء المستخدم بنجاح')
       setNewUser({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
       loadUsers(); loadStats()
     } catch (err: any) {
@@ -161,7 +161,7 @@ export default function AdminPage() {
       const payload: any = { plan: editPlan }
       if (editPaidUntil) payload.paid_until = editPaidUntil
       await adminUpdateUser(editUser.username, payload)
-      flash('✅ تم التحديث بنجاح')
+      flash('تم التحديث بنجاح')
       setEditUser(null)
       loadUsers(); loadStats()
     } catch (err: any) {
@@ -173,7 +173,7 @@ export default function AdminPage() {
     if (!confirm(`تعطيل حساب ${username}؟`)) return
     try {
       await adminDeactivateUser(username)
-      flash('✅ تم تعطيل الحساب')
+      flash('تم تعطيل الحساب')
       loadUsers(); loadStats()
     } catch (err: any) { flash(err.message, true) }
   }
@@ -194,7 +194,7 @@ export default function AdminPage() {
       {/* Header */}
       <header className="bg-[#6b2737] text-white px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🛡️</span>
+          <span className="inline-flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
           <div>
             <h1 className="font-bold text-lg">لوحة التحكم — دليلك AI</h1>
             <p className="text-xs text-white/70">مرحباً، {me?.full_name || me?.username}</p>
@@ -203,7 +203,7 @@ export default function AdminPage() {
         <div className="flex gap-3">
           <button onClick={refreshAll} disabled={loading}
             className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50">
-            {loading ? '...' : '🔄 تحديث'}
+            {loading ? '...' : <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</span>}
           </button>
           <button onClick={() => router.push('/')} className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
             التطبيق
@@ -223,13 +223,13 @@ export default function AdminPage() {
       <div className="px-6 pt-6">
         <div className="flex gap-2 flex-wrap">
           {([
-            { id: 'stats',       label: '📊 الإحصائيات' },
-            { id: 'users',       label: '👥 المستخدمون' },
-            { id: 'create',      label: '➕ مستخدم جديد' },
-            { id: 'resets',      label: '🔑 رموز الاستعادة' },
-            { id: 'feedback',    label: '💬 التقييمات' },
-            { id: 'escalations', label: '🤝 طلبات التصعيد' },
-            { id: 'gaps',        label: '🔍 ثغرات المحتوى' },
+            { id: 'stats',       label: 'الإحصائيات' },
+            { id: 'users',       label: 'المستخدمون' },
+            { id: 'create',      label: '+ مستخدم جديد' },
+            { id: 'resets',      label: 'رموز الاستعادة' },
+            { id: 'feedback',    label: 'التقييمات' },
+            { id: 'escalations', label: 'طلبات التصعيد' },
+            { id: 'gaps',        label: 'ثغرات المحتوى' },
           ] as { id: Tab; label: string }[]).map(t => (
             <button key={t.id}
               onClick={() => {
@@ -249,7 +249,7 @@ export default function AdminPage() {
             href="/admin/content"
             className="px-4 py-2 rounded-xl text-sm font-medium transition-colors bg-white text-gray-600 hover:bg-gray-50 border border-dashed border-gray-300"
           >
-            📝 إدارة المحتوى
+            <span style={{display:'inline-flex',alignItems:'center',gap:5}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>إدارة المحتوى</span>
           </Link>
         </div>
       </div>
@@ -261,23 +261,23 @@ export default function AdminPage() {
           <div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
-                { label: 'إجمالي المستخدمين', value: stats.total, color: 'bg-white', icon: '👥' },
-                { label: 'مشتركون مدفوعون', value: stats.paid, color: 'bg-green-50', icon: '💳' },
-                { label: 'تجريبي نشط', value: stats.trial_active, color: 'bg-purple-50', icon: '⏱️' },
-                { label: 'تجريبي منتهي', value: stats.trial_expired, color: 'bg-orange-50', icon: '⚠️' },
-                { label: 'معطّلون', value: stats.suspended, color: 'bg-red-50', icon: '🚫' },
-                { label: 'معدل التحويل', value: stats.conversion_rate, color: 'bg-purple-50', icon: '📈' },
+                { label: 'إجمالي المستخدمين', value: stats.total, color: 'bg-white', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
+                { label: 'مشتركون مدفوعون', value: stats.paid, color: 'bg-green-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
+                { label: 'تجريبي نشط', value: stats.trial_active, color: 'bg-purple-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333EA" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
+                { label: 'تجريبي منتهي', value: stats.trial_expired, color: 'bg-orange-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+                { label: 'معطّلون', value: stats.suspended, color: 'bg-red-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
+                { label: 'معدل التحويل', value: stats.conversion_rate, color: 'bg-purple-50', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333EA" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> },
               ].map(s => (
                 <div key={s.label} className={`${s.color} rounded-2xl p-5 shadow-sm border border-gray-100`}>
-                  <div className="text-2xl mb-2">{s.icon}</div>
+                  <div className="mb-2" style={{display:'flex'}}>{s.icon}</div>
                   <div className="text-3xl font-bold text-gray-800">{s.value}</div>
                   <div className="text-sm text-gray-500 mt-1">{s.label}</div>
                 </div>
               ))}
             </div>
             <button onClick={() => { loadStats(); loadUsers() }}
-              className="mt-4 text-sm text-[#6b2737] hover:underline">
-              🔄 تحديث
+              className="mt-4 text-sm text-[#6b2737] hover:underline" style={{display:'inline-flex',alignItems:'center',gap:4}}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
             </button>
           </div>
         )}
@@ -318,7 +318,7 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-gray-600">
-                          {u.plan === 'paid' ? '♾️' : u.days_left !== undefined ? `${u.days_left} يوم` : '—'}
+                          {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? `${u.days_left} يوم` : '—'}
                         </td>
                         <td className="px-4 py-3 text-gray-500 text-xs">{fmtDate(u.last_login)}</td>
                         <td className="px-4 py-3">
@@ -401,7 +401,7 @@ export default function AdminPage() {
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-gray-800">رموز استعادة كلمة المرور</h3>
-                <button onClick={loadResets} className="text-sm text-[#6b2737] hover:underline">🔄 تحديث</button>
+                <button onClick={loadResets} className="text-sm text-[#6b2737] hover:underline" style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</button>
               </div>
               <p className="text-xs text-gray-500 mb-4">
                 عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.
@@ -436,7 +436,7 @@ export default function AdminPage() {
         {tab === 'feedback' && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-gray-800">💬 تقييمات المستخدمين ({feedback.length})</h2>
+              <h2 className="font-bold text-gray-800" style={{display:'flex',alignItems:'center',gap:6}}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>تقييمات المستخدمين ({feedback.length})</h2>
               <button onClick={loadFeedback} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
             </div>
             {feedback.length === 0 ? (
@@ -446,11 +446,16 @@ export default function AdminPage() {
                 {feedback.map((f, i) => (
                   <div key={i} className="border border-gray-100 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`text-lg ${f.rating === 'up' ? '👍' : '👎'}`}>{f.rating === 'up' ? '👍' : '👎'}</span>
+                      <span style={{display:'inline-flex'}}>
+                        {f.rating === 'up'
+                          ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path strokeLinecap="round" strokeLinejoin="round" d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+                          : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
+                        }
+                      </span>
                       <span className="text-xs text-gray-500">{f.username} · {fmtTs(f.timestamp)}</span>
                       {f.confidence && <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{f.confidence}</span>}
                     </div>
-                    <p className="text-sm text-gray-700 font-medium mb-1 line-clamp-2">❓ {f.question}</p>
+                    <p className="text-sm text-gray-700 font-medium mb-1 line-clamp-2" style={{display:'flex',alignItems:'flex-start',gap:5}}><span style={{display:'inline-flex',flexShrink:0,marginTop:2}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 8v1m0 3v4"/></svg></span>{f.question}</p>
                     <p className="text-xs text-gray-500 line-clamp-3">{f.answer}</p>
                   </div>
                 ))}
@@ -463,7 +468,7 @@ export default function AdminPage() {
         {tab === 'escalations' && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-gray-800">🤝 طلبات التصعيد ({escalations.length})</h2>
+              <h2 className="font-bold text-gray-800" style={{display:'flex',alignItems:'center',gap:6}}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>طلبات التصعيد ({escalations.length})</h2>
               <button onClick={loadEscalations} className="text-xs text-[#6b2737] hover:underline">تحديث</button>
             </div>
             {escalations.length === 0 ? (
@@ -478,8 +483,8 @@ export default function AdminPage() {
                     </div>
                     <p className="text-sm text-gray-700 mb-1 line-clamp-2">{e.question}</p>
                     <div className="flex gap-3 mt-1">
-                      {e.user_email && <span className="text-xs text-[#8B1A1A]">✉️ {e.user_email}</span>}
-                      {e.user_phone && <span className="text-xs text-green-600">📱 {e.user_phone}</span>}
+                      {e.user_email && <span className="text-xs text-[#8B1A1A]" style={{display:'inline-flex',alignItems:'center',gap:3}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
+                      {e.user_phone && <span className="text-xs text-green-600" style={{display:'inline-flex',alignItems:'center',gap:3}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
                       <span className="text-xs text-gray-500">@{e.username}</span>
                     </div>
                   </div>
@@ -512,10 +517,10 @@ export default function AdminPage() {
             {/* Filter bar */}
             <div className="flex items-center gap-2 flex-wrap">
               {[
-                { k: 'open',      label: '🔴 مفتوح' },
-                { k: 'in_review', label: '🟡 قيد المراجعة' },
-                { k: 'resolved',  label: '✅ محلول' },
-                { k: 'ignored',   label: '⏭️ متجاهَل' },
+                { k: 'open',      label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#DC2626',marginLeft:4}}/>مفتوح</> },
+                { k: 'in_review', label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#CA8A04',marginLeft:4}}/>قيد المراجعة</> },
+                { k: 'resolved',  label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#16A34A',marginLeft:4}}/>محلول</> },
+                { k: 'ignored',   label: <><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#9CA3AF',marginLeft:4}}/>متجاهَل</> },
               ].map(f => (
                 <button key={f.k}
                   onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
@@ -529,7 +534,7 @@ export default function AdminPage() {
               ))}
               <button onClick={() => loadContentGaps(gapFilter)}
                 className="text-xs text-[#6b2737] hover:underline mr-auto">
-                {loading ? '...' : '🔄 تحديث'}
+                {loading ? '...' : <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث</span>}
               </button>
             </div>
 
@@ -568,13 +573,13 @@ export default function AdminPage() {
                                 {gapTypeLabel[gap.gap_type] || gap.gap_type}
                               </span>
                               {gap.detected_country && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                                  🌍 {gap.detected_country}
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600" style={{display:'inline-flex',alignItems:'center',gap:3}}>
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>{gap.detected_country}
                                 </span>
                               )}
                               {gap.detected_procedure && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700">
-                                  📋 {gap.detected_procedure}
+                                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700" style={{display:'inline-flex',alignItems:'center',gap:3}}>
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>{gap.detected_procedure}
                                 </span>
                               )}
                               {gap.confidence_score != null && (
@@ -584,7 +589,7 @@ export default function AdminPage() {
                               )}
                             </div>
                             {gap.admin_notes && (
-                              <p className="text-xs text-gray-500 mt-1.5 italic">📝 {gap.admin_notes}</p>
+                              <p className="text-xs text-gray-500 mt-1.5 italic" style={{display:'flex',alignItems:'flex-start',gap:4}}><span style={{display:'inline-flex',flexShrink:0,marginTop:1}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></span>{gap.admin_notes}</p>
                             )}
                             <div className="flex items-center gap-2 mt-1.5">
                               <span className="text-xs text-gray-400">{gap.username ? `@${gap.username}` : 'نظام'}</span>
@@ -630,8 +635,9 @@ export default function AdminPage() {
               )}
             </div>
 
-            <div className="bg-[#FEF2F2] border border-[rgba(139,26,26,0.15)] rounded-2xl p-4 text-sm text-[#8B1A1A]">
-              💡 الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ 👎. لإضافة بيانات رسمية: حدّث <code className="bg-[#EAE4D9] px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.
+            <div className="bg-[#FEF2F2] border border-[rgba(139,26,26,0.15)] rounded-2xl p-4 text-sm text-[#8B1A1A]" style={{display:'flex',alignItems:'flex-start',gap:8}}>
+              <span style={{display:'inline-flex',flexShrink:0,marginTop:2}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></span>
+              <span>الثغرات تُسجَّل تلقائياً عند انخفاض ثقة الاسترجاع أو تقييم المستخدم بـ <span style={{display:'inline-flex',verticalAlign:'middle'}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg></span>. لإضافة بيانات رسمية: حدّث <code className="bg-[#EAE4D9] px-1 rounded">procedures.ts</code> أو أضف chunks جديدة إلى Qdrant.</span>
             </div>
           </div>
         )}

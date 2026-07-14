@@ -30,21 +30,21 @@ type Lang = 'ar' | 'en'
 const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: string; hint_ar: string; hint_en: string; prefix: string }[] = [
   {
     id: 'quick',
-    icon: '⚡',
+    icon: '',
     label_ar: 'سريع', label_en: 'Quick',
     hint_ar: 'إجابة مختصرة في ثوانٍ', hint_en: 'Short answer in seconds',
     prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ',
   },
   {
     id: 'detailed',
-    icon: '📋',
+    icon: '',
     label_ar: 'مفصّل', label_en: 'Detailed',
     hint_ar: 'خطوات وتفاصيل كاملة', hint_en: 'Full steps and details',
     prefix: '[أجب بتنسيق منظّم مع عناوين ## واضحة: ## الخلاصة | ## المستندات المطلوبة | ## الخطوات | ## الجهة المختصة | ## الرسوم | ## تنبيه مهم] ',
   },
   {
     id: 'research',
-    icon: '🔍',
+    icon: '',
     label_ar: 'بحث وافٍ', label_en: 'Research',
     hint_ar: 'تقرير شامل مع أدلة ونماذج', hint_en: 'Full report with evidence',
     prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد، وتنبيهات العطل الرسمية] ',
@@ -52,19 +52,53 @@ const MODES: { id: ResponseMode; icon: string; label_ar: string; label_en: strin
 ]
 
 const SUGGESTION_POOL = [
-  { icon: '📋', title_ar: 'المعاملات الرسمية', desc_ar: 'جوازات، هويات، وثائق رسمية', title_en: 'Official Transactions', desc_en: 'Passports, IDs, official documents' },
-  { icon: '🏛️', title_ar: 'الإجراءات الحكومية', desc_ar: 'تسجيل شركات، عقارات، سيارات', title_en: 'Gov. Procedures', desc_en: 'Companies, real estate, vehicles' },
-  { icon: '👶', title_ar: 'الأحوال الشخصية', desc_ar: 'ولادة، زواج، وفاة، طلاق', title_en: 'Civil Status', desc_en: 'Birth, marriage, death, divorce' },
-  { icon: '🎓', title_ar: 'التعليم والعمل', desc_ar: 'شهادات، تصاريح، حقوق العمال', title_en: 'Education & Work', desc_en: 'Degrees, permits, labor rights' },
-  { icon: '🏠', title_ar: 'العقارات والبناء', desc_ar: 'تصاريح، ملكية، رخص بناء', title_en: 'Real Estate', desc_en: 'Permits, ownership, construction' },
-  { icon: '🚗', title_ar: 'المركبات والسير', desc_ar: 'تسجيل، رخص قيادة، مخالفات', title_en: 'Vehicles & Traffic', desc_en: 'Registration, licenses, fines' },
-  { icon: '⚖️', title_ar: 'الحقوق القانونية', desc_ar: 'دعاوى، طعون، استئنافات', title_en: 'Legal Rights', desc_en: 'Lawsuits, appeals, disputes' },
-  { icon: '💼', title_ar: 'الأعمال والتجارة', desc_ar: 'تراخيص، ضرائب، شركات', title_en: 'Business & Trade', desc_en: 'Licenses, taxes, companies' },
-  { icon: '🏥', title_ar: 'الصحة والضمان', desc_ar: 'ضمان اجتماعي، تأمين، صحة', title_en: 'Health & Insurance', desc_en: 'Social security, coverage' },
-  { icon: '✈️', title_ar: 'السفر والإقامة', desc_ar: 'تأشيرات، إقامة، جوازات', title_en: 'Travel & Residency', desc_en: 'Visas, residency, passports' },
-  { icon: '🌍', title_ar: 'الأجانب في لبنان', desc_ar: 'إقامة، عمل، تجنيس', title_en: 'Foreigners in Lebanon', desc_en: 'Residency, work permits' },
-  { icon: '👴', title_ar: 'الضمان والتقاعد', desc_ar: 'معاشات، تقاعد، مستحقات', title_en: 'Pension & Retirement', desc_en: 'Pensions, benefits, rights' },
+  { icon: '', title_ar: 'المعاملات الرسمية', desc_ar: 'جوازات، هويات، وثائق رسمية', title_en: 'Official Transactions', desc_en: 'Passports, IDs, official documents' },
+  { icon: '', title_ar: 'الإجراءات الحكومية', desc_ar: 'تسجيل شركات، عقارات، سيارات', title_en: 'Gov. Procedures', desc_en: 'Companies, real estate, vehicles' },
+  { icon: '', title_ar: 'الأحوال الشخصية', desc_ar: 'ولادة، زواج، وفاة، طلاق', title_en: 'Civil Status', desc_en: 'Birth, marriage, death, divorce' },
+  { icon: '', title_ar: 'التعليم والعمل', desc_ar: 'شهادات، تصاريح، حقوق العمال', title_en: 'Education & Work', desc_en: 'Degrees, permits, labor rights' },
+  { icon: '', title_ar: 'العقارات والبناء', desc_ar: 'تصاريح، ملكية، رخص بناء', title_en: 'Real Estate', desc_en: 'Permits, ownership, construction' },
+  { icon: '', title_ar: 'المركبات والسير', desc_ar: 'تسجيل، رخص قيادة، مخالفات', title_en: 'Vehicles & Traffic', desc_en: 'Registration, licenses, fines' },
+  { icon: '', title_ar: 'الحقوق القانونية', desc_ar: 'دعاوى، طعون، استئنافات', title_en: 'Legal Rights', desc_en: 'Lawsuits, appeals, disputes' },
+  { icon: '', title_ar: 'الأعمال والتجارة', desc_ar: 'تراخيص، ضرائب، شركات', title_en: 'Business & Trade', desc_en: 'Licenses, taxes, companies' },
+  { icon: '', title_ar: 'الصحة والضمان', desc_ar: 'ضمان اجتماعي، تأمين، صحة', title_en: 'Health & Insurance', desc_en: 'Social security, coverage' },
+  { icon: '', title_ar: 'السفر والإقامة', desc_ar: 'تأشيرات، إقامة، جوازات', title_en: 'Travel & Residency', desc_en: 'Visas, residency, passports' },
+  { icon: '', title_ar: 'الأجانب في لبنان', desc_ar: 'إقامة، عمل، تجنيس', title_en: 'Foreigners in Lebanon', desc_en: 'Residency, work permits' },
+  { icon: '', title_ar: 'الضمان والتقاعد', desc_ar: 'معاشات، تقاعد، مستحقات', title_en: 'Pension & Retirement', desc_en: 'Pensions, benefits, rights' },
 ]
+
+function ServiceGroupIcon({ slug }: { slug: string }) {
+  if (slug === 'expat') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+  )
+  if (slug === 'property') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+    </svg>
+  )
+  if (slug === 'contracts') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+    </svg>
+  )
+  if (slug === 'civil-records') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+    </svg>
+  )
+  if (slug === 'business') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+    </svg>
+  )
+  // forms-docs
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+  )
+}
 
 const QUESTION_POOL_AR = [
   'كيف أستخرج جواز سفر لبناني؟',
@@ -341,7 +375,7 @@ export default function Home() {
   }, [])
 
   const formatSize = (b: number) => b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
-  const getFileIcon = (t: string) => t.startsWith('image/') ? '🖼️' : t === 'application/pdf' ? '📄' : t.includes('word') ? '📝' : '📎'
+  const getFileIcon = (t: string) => t.startsWith('image/') ? 'IMG' : t === 'application/pdf' ? 'PDF' : t.includes('word') ? 'DOC' : 'FILE'
 
   // ── Send ──────────────────────────────────────────────────
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
@@ -355,7 +389,7 @@ export default function Home() {
     if (flagged) {
       setMessages(prev => [...prev,
         { role: 'user', content: cleanText },
-        { role: 'assistant', content: '⚠️ تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.', streaming: false },
+        { role: 'assistant', content: 'تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.', streaming: false },
       ])
       return
     }
@@ -407,7 +441,7 @@ export default function Home() {
         if (last?.role === 'assistant' && last.streaming && !last.content) {
           u[u.length - 1] = {
             ...last,
-            content: '⏳ **النظام في وضع السكون، جاري التنشيط...**\n\nقد يستغرق الرد 30-60 ثانية في أول طلب. يُرجى الانتظار.',
+            content: '**النظام في وضع السكون، جاري التنشيط...**\n\nقد يستغرق الرد 30-60 ثانية في أول طلب. يُرجى الانتظار.',
           }
         }
         return u
@@ -475,7 +509,7 @@ export default function Home() {
       if (res.status === 402) {
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
-          content: '⏰ **انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك AI، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
+          content: '**انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك AI، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
           streaming: false,
         }))
         setLoading(false)
@@ -486,7 +520,7 @@ export default function Home() {
         const detail: string = data?.detail || 'استنفذت حصتك اليومية'
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
-          content: `⏰ **${detail}**\n\nللحصول على المزيد من الأسئلة، يمكنك الترقية إلى الاشتراك المدفوع (200 سؤال/يوم). تواصل معنا عبر البريد أو واتساب.`,
+          content: `**${detail}**\n\nللحصول على المزيد من الأسئلة، يمكنك الترقية إلى الاشتراك المدفوع (200 سؤال/يوم). تواصل معنا عبر البريد أو واتساب.`,
           streaming: false,
         }))
         setLoading(false)
@@ -849,9 +883,9 @@ export default function Home() {
                             <div style={{
                               width: 30, height: 30, borderRadius: 8, flexShrink: 0,
                               background: `${group.color}13`, border: `1px solid ${group.color}22`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', color: group.color,
                             }}>
-                              {group.icon}
+                              <ServiceGroupIcon slug={group.slug} />
                             </div>
                             <div style={{ minWidth: 0 }}>
                               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -996,7 +1030,7 @@ export default function Home() {
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5' }}
               >
-                <span style={{ opacity: 0.6, fontSize: 11 }}>💬</span> {q}
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.6, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> {q}
               </button>
             ))}
           </div>
@@ -1011,11 +1045,12 @@ export default function Home() {
                 background: '#fff5f5', border: '1px solid rgba(139,26,26,0.25)',
                 borderRadius: 20, padding: '6px 16px', fontSize: 12.5,
                 color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
+                display: 'flex', alignItems: 'center', gap: 4,
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5' }}
             >
-              🔄 إعادة المحاولة
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> إعادة المحاولة
             </button>
           </div>
         )}
@@ -1032,7 +1067,10 @@ export default function Home() {
               border: `1px solid ${quotaRemaining <= 3 ? '#fecaca' : '#fde68a'}`,
               borderRadius: 20, padding: '2px 10px', fontFamily: 'inherit',
             }}>
-              {quotaRemaining <= 3 ? '⚠️' : 'ℹ️'} {quotaRemaining === 0 ? 'استنفذت حصتك اليومية' : `${quotaRemaining} سؤال متبقٍ اليوم`}
+              {quotaRemaining <= 3
+                ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              } {quotaRemaining === 0 ? 'استنفذت حصتك اليومية' : `${quotaRemaining} سؤال متبقٍ اليوم`}
             </span>
           </div>
         )}

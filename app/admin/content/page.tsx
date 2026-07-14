@@ -160,7 +160,7 @@ export default function ContentGovernancePage() {
               onClick={() => { setShowAudit(!showAudit); if (!showAudit) loadAudit() }}
               className="text-sm text-gray-600 border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50"
             >
-              📋 سجل التغييرات
+              <span className="inline-flex items-center gap-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>سجل التغييرات</span>
             </button>
             <button
               onClick={() => setShowCreate(true)}
@@ -201,7 +201,7 @@ export default function ContentGovernancePage() {
               <div className="text-center py-12 text-gray-400">جارٍ التحميل...</div>
             ) : filteredItems.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                <div className="text-4xl mb-3">📝</div>
+                <div className="mb-3 flex justify-center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></div>
                 <p className="text-gray-500">لا يوجد محتوى {filterStatus !== 'all' ? `في حالة "${STATUS_CONFIG[filterStatus]?.label}"` : 'بعد'}</p>
               </div>
             ) : (
@@ -227,7 +227,7 @@ export default function ContentGovernancePage() {
                     <h3 className="font-bold text-gray-900 text-sm mb-1">{item.title_ar}</h3>
                     <p className="text-xs text-gray-500 line-clamp-2">{item.body_ar}</p>
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">
-                      <span>👤 {item.created_by}</span>
+                      <span className="inline-flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>{item.created_by}</span>
                       <span>•</span>
                       <span>{item.content_type}</span>
                     </div>
@@ -250,10 +250,10 @@ export default function ContentGovernancePage() {
                 <h2 className="text-lg font-bold text-gray-900 mb-3">{selected.title_ar}</h2>
                 <p className="text-gray-700 text-sm leading-relaxed">{selected.body_ar}</p>
                 <div className="mt-3 text-xs text-gray-400 space-y-1">
-                  <div>📅 أُنشئ: {new Date(selected.created_at).toLocaleString('ar-LB')}</div>
-                  <div>✏️ آخر تعديل: {new Date(selected.updated_at).toLocaleString('ar-LB')}</div>
+                  <div className="inline-flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>أُنشئ: {new Date(selected.created_at).toLocaleString('ar-LB')}</div>
+                  <div className="inline-flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>آخر تعديل: {new Date(selected.updated_at).toLocaleString('ar-LB')}</div>
                   {selected.published_at && (
-                    <div>🌐 نُشر: {new Date(selected.published_at).toLocaleString('ar-LB')}</div>
+                    <div className="inline-flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>نُشر: {new Date(selected.published_at).toLocaleString('ar-LB')}</div>
                   )}
                 </div>
               </div>

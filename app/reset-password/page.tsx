@@ -33,7 +33,7 @@ function ResetForm() {
   if (done) {
     return (
       <div className="text-center">
-        <div className="text-5xl mb-4">✅</div>
+        <div className="mb-4 flex justify-center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
         <h2 className="text-xl font-bold text-gray-800 mb-3">تم تغيير كلمة المرور</h2>
         <p className="text-gray-500 text-sm mb-6">يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.</p>
         <button

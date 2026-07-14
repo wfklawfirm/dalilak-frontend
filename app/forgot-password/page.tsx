@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           {sent ? (
             <div className="text-center">
-              <div className="text-5xl mb-4">📬</div>
+              <div className="mb-4 flex justify-center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
               <h2 className="text-xl font-bold text-gray-800 mb-3">تم إرسال الطلب</h2>
               <p className="text-gray-600 text-sm mb-6">
                 إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.

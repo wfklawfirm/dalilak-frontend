@@ -27,11 +27,11 @@ export default function ServiceGroupSheet({
     ? { close: 'إغلاق', action_start: 'ابدأ', action_upload: 'ارفع مستنداً', action_ask: 'اسأل AI', action_checklist: 'Checklist' }
     : { close: 'Close', action_start: 'Start', action_upload: 'Upload Doc', action_ask: 'Ask AI', action_checklist: 'Checklist' }
 
-  const actionLabel = (item: ServiceItem): string => {
-    if (item.defaultAction === 'upload_document') return isAr ? '📎 ارفع مستنداً' : '📎 Upload Document'
-    if (item.defaultAction === 'generate_checklist') return isAr ? '✅ Checklist' : '✅ Checklist'
-    if (item.defaultAction === 'ask_ai') return isAr ? '💬 اسأل AI' : '💬 Ask AI'
-    return isAr ? '▶ ابدأ' : '▶ Start'
+  const actionLabel = (item: ServiceItem): React.ReactNode => {
+    if (item.defaultAction === 'upload_document') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>{isAr ? 'ارفع مستنداً' : 'Upload Document'}</>
+    if (item.defaultAction === 'generate_checklist') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Checklist</>
+    if (item.defaultAction === 'ask_ai') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{isAr ? 'اسأل AI' : 'Ask AI'}</>
+    return <><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><polygon points="6,3 20,12 6,21"/></svg>{isAr ? 'ابدأ' : 'Start'}</>
   }
 
   const verBadge = (status: ServiceItem['verificationStatus']) => {
@@ -90,9 +90,8 @@ export default function ServiceGroupSheet({
               background: `${group.color}14`,
               border: `1.5px solid ${group.color}30`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 22,
             }}>
-              {group.icon}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={group.color} strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>
@@ -141,9 +140,9 @@ export default function ServiceGroupSheet({
                 width: 38, height: 38, borderRadius: 10,
                 background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 18, flexShrink: 0,
+                flexShrink: 0,
               }}>
-                {item.icon ?? group.icon}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               </div>
 
               {/* Text */}
@@ -167,6 +166,7 @@ export default function ServiceGroupSheet({
                 background: '#8B1A1A', color: '#fff',
                 fontSize: 10.5, fontWeight: 700,
                 whiteSpace: 'nowrap', flexShrink: 0,
+                display: 'flex', alignItems: 'center', gap: 4,
               }}>
                 {actionLabel(item)}
               </div>

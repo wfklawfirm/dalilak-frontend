@@ -108,7 +108,7 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
           </p>
           {score.blockingIssues.slice(0, 3).map((issue, i) => (
             <p key={i} style={{ fontSize: 11, color: '#B91C1C', margin: '0 0 2px', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
-              <span>⛔</span> {issue}
+              <span style={{ display: 'flex', flexShrink: 0 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg></span> {issue}
             </p>
           ))}
         </div>
@@ -117,7 +117,7 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
       {/* Recommended action */}
       {score.recommendedNextAction && (
         <div style={{ fontSize: 11.5, color: '#6B7280', background: '#F9FAFB', borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
-          💡 {score.recommendedNextAction}
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>{score.recommendedNextAction}</span>
         </div>
       )}
 

@@ -202,7 +202,7 @@ export default function TopNav({
                 background: 'rgba(255,255,255,0.07)',
                 border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.3)' : 'rgba(253,230,138,0.3)'}`,
               }}>
-                ⏱ {currentUser.days_left}{isAr ? ' يوم' : 'd'}
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg>{currentUser.days_left}{isAr ? ' يوم' : 'd'}</span>
               </div>
             )}
 

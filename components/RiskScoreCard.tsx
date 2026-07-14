@@ -38,7 +38,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
   const score = risk.score ?? null
   const reasons = risk.reasons || []
 
-  const icon = level === 'low' ? '✓' : level === 'medium' ? '!' : level === 'critical' ? '✕' : '⚠'
+  const icon = level === 'low' ? '✓' : level === 'medium' ? '!' : level === 'critical' ? '✕' : '?'
 
   return (
     <div

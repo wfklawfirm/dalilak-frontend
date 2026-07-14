@@ -29,7 +29,7 @@ export default function DraftingStudioPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </button>
             <div>
-              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0 }}>✏️ استوديو الصياغة</h1>
+              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>استوديو الصياغة</h1>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10.5, margin: 0 }}>أنشئ مسودات قانونية أولية</p>
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function DraftingStudioPage() {
 
         {/* Disclaimer banner */}
         <div style={{ background: '#FFFBEB', border: '1px solid #FEF08A', borderRadius: 12, padding: '10px 14px', marginBottom: 20, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-          <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
+          <span style={{ display: 'flex', flexShrink: 0 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#854D0E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
           <p style={{ fontSize: 11.5, color: '#854D0E', margin: 0, lineHeight: 1.5 }}>
             <strong>تنبيه:</strong> جميع المسودات الصادرة للإرشاد فقط وليست وثائق رسمية. يُنصح بمراجعة محامٍ مرخّص قبل استخدام أي وثيقة قانونية.
           </p>
