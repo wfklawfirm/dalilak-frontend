@@ -13,6 +13,7 @@ import { sanitizeInput } from '@/lib/sanitize'
 import TransactionStarter, { type StarterResult } from '@/components/TransactionStarter'
 import ServiceGroupSheet from '@/components/ServiceGroupSheet'
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
+import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -821,9 +822,9 @@ export default function Home() {
                 {/* ── Stats trust strip — premium grid ── */}
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:0, marginBottom:22, borderBottom:'1px solid #EAE4D9' }}>
                   {[
-                    { num:'2,484', lAr:'إجراء حكومي', lEn:'Procedures' },
-                    { num:'794',   lAr:'نموذج رسمي',  lEn:'Official forms' },
-                    { num:'52',    lAr:'وزارة وجهة',   lEn:'Ministries' },
+                    { num: TX_ALL.length.toLocaleString('en-US'), lAr:'إجراء حكومي', lEn:'Procedures' },
+                    { num: TX_WITH_FORMS.length.toLocaleString('en-US'), lAr:'نموذج رسمي', lEn:'Official forms' },
+                    { num: String(TX_MINISTRIES.length), lAr:'وزارة وجهة', lEn:'Ministries' },
                   ].map((s,i) => (
                     <div key={i} style={{
                       display:'flex', flexDirection:'column', alignItems:'center',

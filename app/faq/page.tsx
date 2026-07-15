@@ -63,7 +63,7 @@ export default function FAQPage() {
             </div>
             <div>
               <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>{isAr ? 'الأسئلة الشائعة' : 'FAQ & Guide'}</h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>{isAr ? '48 سؤال · أرقام طوارئ · قانون العمل' : '48 questions · emergency numbers · labor law'}</p>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>{isAr ? `${SERVICE_FAQ.length} سؤال · أرقام طوارئ · قانون العمل` : `${SERVICE_FAQ.length} questions · emergency numbers · labor law`}</p>
             </div>
           </div>
           <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
@@ -77,8 +77,8 @@ export default function FAQPage() {
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
           {[
-            { labelAr: 'سؤال عملي', labelEn: 'Questions', value: '48', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
-            { labelAr: 'فئة خدمية', labelEn: 'Categories', value: '10', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg> },
+            { labelAr: 'سؤال عملي', labelEn: 'Questions', value: String(SERVICE_FAQ.length), icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+            { labelAr: 'فئة خدمية', labelEn: 'Categories', value: String(FAQ_CATEGORIES.length), icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg> },
             { labelAr: 'رقم طوارئ', labelEn: 'Emergency', value: '10+', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg> },
           ].map(({ labelAr, labelEn, value, icon }) => (
             <div key={labelAr} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '14px 10px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
@@ -189,7 +189,7 @@ export default function FAQPage() {
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8B1A1A' : '#1A1208', lineHeight: 1.5 }}>
-                        {isAr ? item.question_ar : item.question_en}
+                        {item.title}
                       </div>
                       <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 2 }}>{item.category}</div>
                     </div>
@@ -207,11 +207,62 @@ export default function FAQPage() {
                   {/* Answer */}
                   {isOpen && (
                     <div style={{ padding: '0 14px 14px', borderTop: '1px solid #EAE4D9' }}>
-                      <p style={{ margin: '12px 0 14px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.8 }}>
-                        {isAr ? item.answer_ar : item.answer_en}
-                      </p>
+                      {/* Summary */}
+                      {item.summary && (
+                        <p style={{ margin: '12px 0 10px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.8 }}>
+                          {item.summary}
+                        </p>
+                      )}
+                      {/* Steps */}
+                      {item.steps && item.steps.length > 0 && (
+                        <div style={{ marginBottom: 12 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
+                            {isAr ? 'الخطوات:' : 'Steps:'}
+                          </div>
+                          {item.steps.map((step, si) => (
+                            <div key={si} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', paddingBottom: 6 }}>
+                              <span style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(139,26,26,0.1)', color: '#8B1A1A', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{si + 1}</span>
+                              <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.55 }}>{step}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Required docs */}
+                      {item.requiredDocuments && item.requiredDocuments.length > 0 && (
+                        <div style={{ marginBottom: 10, background: '#FAFAF8', borderRadius: 9, padding: '8px 10px', border: '1px solid #EAE4D9' }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 5 }}>
+                            {isAr ? 'الوثائق المطلوبة:' : 'Required documents:'}
+                          </div>
+                          {item.requiredDocuments.map((doc, di) => (
+                            <div key={di} style={{ fontSize: 11, color: '#5C4A3A', display: 'flex', gap: 5, paddingBottom: 3 }}>
+                              <span style={{ color: '#8B1A1A', flexShrink: 0 }}>·</span>
+                              <span>{doc}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Fees + authority inline strip */}
+                      {(item.fees || item.duration || item.authority) && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                          {item.fees && item.fees.trim() && !item.fees.startsWith('{') && (
+                            <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 9px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                              {item.fees.length > 40 ? item.fees.slice(0, 40) + '…' : item.fees}
+                            </span>
+                          )}
+                          {item.duration && (
+                            <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 9px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                              {item.duration}
+                            </span>
+                          )}
+                          {item.authority && (
+                            <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 9px', border: '1px solid rgba(139,26,26,0.15)', fontWeight: 600 }}>
+                              {item.authority.length > 40 ? item.authority.slice(0, 40) + '…' : item.authority}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <button
-                        onClick={() => askAI(isAr ? item.question_ar : item.question_en)}
+                        onClick={() => askAI(item.chatPrompt || item.title)}
                         onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                         style={{

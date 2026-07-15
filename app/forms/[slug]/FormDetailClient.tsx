@@ -170,9 +170,9 @@ export default function FormDetailClient({ form }: Props) {
           </div>
         )}
 
-        <div style={{ background: '#FFF9E6', border: '1px solid #F0E0A0', borderRadius: 14, padding: '12px 16px' }}>
-          <p style={{ margin: 0, fontSize: 12, color: '#7A6020', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A6020" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14, padding: '12px 16px' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#78350F', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             {isAr
               ? 'هذه المعلومات للإرشاد فقط. تأكد دائماً من النموذج الحالي من الجهة الرسمية المختصة قبل الاستخدام.'
               : 'This information is for guidance only. Always confirm the current form with the competent official authority before use.'}

@@ -158,8 +158,8 @@ export default function AuthoritiesPage() {
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 2px; }
-        .auth-card { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
-        .auth-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 20px rgba(139,26,26,0.12) !important; transform: translateY(-1px); }
+        .auth-card { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; cursor: pointer; }
+        .auth-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 20px rgba(139,26,26,0.12) !important; transform: translateY(-2px); }
         .type-chip:hover { opacity: 0.85; }
         .type-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .type-chip-row::-webkit-scrollbar { display: none; }
@@ -174,11 +174,14 @@ export default function AuthoritiesPage() {
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
       }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')} style={{
-            background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
-            display: 'flex', flexShrink: 0,
-          }}>
+          <button onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+            style={{
+              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
+              display: 'flex', flexShrink: 0,
+            }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -320,8 +323,8 @@ export default function AuthoritiesPage() {
             const typeLabel = TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || 'أخرى'
             return (
               <div key={auth.name_ar} className="auth-card"
-                onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.10)' }}
-                onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)' }}
+                onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.10)'; e.currentTarget.style.transform = 'scale(0.985)' }}
+                onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{
                 background: '#fff', border: '1.5px solid #EAE4D9',
                 borderRadius: 18, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',

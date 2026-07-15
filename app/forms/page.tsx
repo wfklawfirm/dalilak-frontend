@@ -78,7 +78,7 @@ export default function FormsPage() {
                 {isAr ? 'النماذج والمعاملات' : 'Forms & Procedures'}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>
-                {isAr ? '2,484 معاملة · 794 نموذج PDF · 52 جهة' : '2,484 transactions · 794 PDF forms'}
+                {isAr ? `${TX_ALL.length.toLocaleString('en-US')} معاملة · ${TX_WITH_FORMS.length} نموذج PDF · ${TX_MINISTRIES.length}+ جهة` : `${TX_ALL.length.toLocaleString('en-US')} transactions · ${TX_WITH_FORMS.length} PDF forms`}
               </p>
             </div>
           </div>
@@ -124,7 +124,7 @@ export default function FormsPage() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
           </span>
           <input type="text"
-            placeholder={viewTab === 'all-tx' ? 'ابحث في 2,484 معاملة...' : viewTab === 'forms-tx' ? 'ابحث في 794 نموذج PDF...' : 'ابحث في النماذج المنظّمة...'}
+            placeholder={viewTab === 'all-tx' ? `ابحث في ${TX_ALL.length.toLocaleString('en-US')} معاملة...` : viewTab === 'forms-tx' ? `ابحث في ${TX_WITH_FORMS.length} نموذج PDF...` : 'ابحث في النماذج المنظّمة...'}
             value={search} onChange={e => setSearch(e.target.value)}
             style={{ width: '100%', padding: '11px 42px 11px 36px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
           />

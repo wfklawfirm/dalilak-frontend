@@ -3,22 +3,74 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
-import { ALL_SERVICES } from '@/lib/allServices'
+import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
 import BottomNav from '@/components/BottomNav'
+import { TX_MINISTRIES } from '@/lib/allTransactions'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
+
+// Ministry filter data
+const MINISTRY_CHIPS = [
+  { slug: 'all',              ar: 'الكل',              en: 'All' },
+  { slug: 'interior',         ar: 'الداخلية',          en: 'Interior' },
+  { slug: 'general-security', ar: 'الأمن العام',       en: 'Gen. Security' },
+  { slug: 'economy',          ar: 'الاقتصاد',          en: 'Economy' },
+  { slug: 'labor',            ar: 'العمل',             en: 'Labor' },
+  { slug: 'customs',          ar: 'الجمارك',           en: 'Customs' },
+  { slug: 'health',           ar: 'الصحة',             en: 'Health' },
+  { slug: 'agriculture',      ar: 'الزراعة',           en: 'Agriculture' },
+  { slug: 'social',           ar: 'الشؤون الاجتماعية', en: 'Social Affairs' },
+  { slug: 'tourism',          ar: 'السياحة',           en: 'Tourism' },
+]
+
+// Map guided procedure categorySlug → ministry filter slug
+const CAT_TO_MINISTRY: Record<string, string> = {
+  'travel': 'general-security',
+  'civil-status': 'interior',
+  'business': 'economy',
+  'real-estate': 'interior',
+  'vehicles': 'interior',
+  'work-social': 'labor',
+  'attestation': 'interior',
+  'official-docs': 'interior',
+  'legal-docs': 'interior',
+  'construction': 'interior',
+  'expat': 'general-security',
+  'transport': 'interior',
+  'associations': 'interior',
+  'industry': 'economy',
+}
+
+// Ministry icon SVGs (inline, brand-color strokes)
+function MinistryIcon({ slug, size = 18 }: { slug: string; size?: number }) {
+  const s = { width: size, height: size }
+  if (slug === 'interior') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+  if (slug === 'general-security') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  if (slug === 'economy') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+  if (slug === 'labor') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+  if (slug === 'customs') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+  if (slug === 'health') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+  if (slug === 'agriculture') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  if (slug === 'social') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+  if (slug === 'tourism') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+}
 
 export default function ProceduresPage() {
   const router = useRouter()
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
   const [search, setSearch] = useState('')
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
+  const [ministryFilter, setMinistryFilter] = useState('all')
   const isAr = lang === 'ar'
 
   const filteredGuided = useMemo(() => {
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
+    if (ministryFilter !== 'all') {
+      list = list.filter(p => (CAT_TO_MINISTRY[p.categorySlug] || 'interior') === ministryFilter)
+    }
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(p =>
@@ -27,9 +79,15 @@ export default function ProceduresPage() {
       )
     }
     return list
-  }, [search])
+  }, [search, ministryFilter])
 
-  const filteredEnriched = useMemo(() => searchEnrichedProcedures(search), [search])
+  const filteredEnriched = useMemo(() => {
+    let list = searchEnrichedProcedures(search)
+    if (ministryFilter !== 'all') {
+      list = list.filter(p => p.ministrySlug === ministryFilter)
+    }
+    return list
+  }, [search, ministryFilter])
 
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
@@ -44,6 +102,10 @@ export default function ProceduresPage() {
         ::-webkit-scrollbar { width: 3px; height: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 2px; }
         .proc-card:hover { border-color: rgba(139,26,26,0.4) !important; box-shadow: 0 2px 12px rgba(139,26,26,0.08) !important; }
+        .proc-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
+        .proc-chip-row::-webkit-scrollbar { display: none; }
+        .proc-chip { transition: all 0.14s; }
+        .proc-chip:hover { border-color: #8B1A1A !important; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
@@ -86,7 +148,7 @@ export default function ProceduresPage() {
           {[
             { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
             { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services' },
-            { value: '52+', label: isAr ? 'جهة مختصة' : 'Authorities' },
+            { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
           ].map((stat, idx) => (
             <div key={stat.value} style={{
               flex: 1, padding: '12px 8px', textAlign: 'center',
@@ -98,8 +160,43 @@ export default function ProceduresPage() {
           ))}
         </div>
 
+        {/* Ministry filter chips */}
+        <div style={{ marginBottom: 12, marginRight: -14, marginLeft: -14 }}>
+          <div className="proc-chip-row" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: 6, paddingRight: 14, paddingLeft: 14, paddingBottom: 2 }}>
+            {MINISTRY_CHIPS.map(chip => {
+              const active = ministryFilter === chip.slug
+              return (
+                <button
+                  key={chip.slug}
+                  className="proc-chip"
+                  onClick={() => { setMinistryFilter(chip.slug); setExpandedProc(null) }}
+                  onTouchStart={e => { e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'; e.currentTarget.style.borderColor = '#8B1A1A' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = active ? '#FEF2F2' : '#fff'; e.currentTarget.style.borderColor = active ? '#8B1A1A' : '#EAE4D9' }}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    padding: '5px 12px', borderRadius: 20, cursor: 'pointer',
+                    fontFamily: 'inherit', fontSize: 11.5, fontWeight: active ? 700 : 600,
+                    border: active ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
+                    background: active ? '#FEF2F2' : '#fff',
+                    color: active ? '#8B1A1A' : '#5C4A3A',
+                    boxShadow: active ? '0 2px 8px rgba(139,26,26,0.12)' : 'none',
+                    whiteSpace: 'nowrap', flexShrink: 0,
+                  }}
+                >
+                  {chip.slug !== 'all' && (
+                    <span style={{ color: active ? '#8B1A1A' : '#9C8E80', display: 'flex' }}>
+                      <MinistryIcon slug={chip.slug} size={13} />
+                    </span>
+                  )}
+                  {isAr ? chip.ar : chip.en}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Search */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
           <input
             value={search}
@@ -115,10 +212,31 @@ export default function ProceduresPage() {
           )}
         </div>
 
-        {/* Count */}
-        <p style={{ fontSize: 11, color: '#9C8E80', marginBottom: 12 }}>
-          {totalResults} {isAr ? `إجراء${search ? ` لـ "${search}"` : ''}` : `procedures${search ? ` for "${search}"` : ''}`}
-        </p>
+        {/* Count + active filter badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, color: '#9C8E80' }}>
+            {totalResults} {isAr ? `إجراء${search ? ` لـ "${search}"` : ''}` : `procedures${search ? ` for "${search}"` : ''}`}
+          </span>
+          {ministryFilter !== 'all' && (
+            <>
+              <span style={{ color: '#D4C5B0', fontSize: 11 }}>·</span>
+              <button
+                onClick={() => setMinistryFilter('all')}
+                style={{
+                  fontSize: 10.5, color: '#8B1A1A', fontWeight: 700,
+                  background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)',
+                  borderRadius: 20, padding: '2px 10px', cursor: 'pointer',
+                  fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
+                }}
+              >
+                {isAr
+                  ? (MINISTRY_CHIPS.find(c => c.slug === ministryFilter)?.ar || ministryFilter)
+                  : (MINISTRY_CHIPS.find(c => c.slug === ministryFilter)?.en || ministryFilter)}
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </>
+          )}
+        </div>
 
         {/* Results */}
         {totalResults === 0 ? (
@@ -273,12 +391,16 @@ export default function ProceduresPage() {
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
                   onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                 >
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: '#EAE4D9', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0 }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: expandedProc === proc.code ? 'rgba(139,26,26,0.1)' : '#FEF2F2', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                    <MinistryIcon slug={proc.ministrySlug} size={18} />
                   </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 9.5, fontWeight: 700, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '1px 7px' }}>موثّقة</span>
+                      <span style={{ fontSize: 9.5, fontWeight: 700, color: '#8B1A1A', background: 'rgba(139,26,26,0.07)', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.12)' }}>
+                        {isAr
+                          ? (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.ar || proc.ministry)
+                          : (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.en || proc.ministry)}
+                      </span>
                       {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.requiredDocuments.length} وثيقة</span>}
                       {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.steps.length} خطوة</span>}
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>نموذج</span>}
@@ -321,6 +443,25 @@ export default function ProceduresPage() {
                         <span style={{ fontSize: 11, color: '#5C4A3A' }}>{proc.fees.length > 180 ? proc.fees.slice(0, 180) + '…' : proc.fees}</span>
                       </div>
                     )}
+                    {/* PDF download links */}
+                    {proc.pdfUrls && proc.pdfUrls.length > 0 && (
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+                        {proc.pdfUrls.map((url, pi) => (
+                          <a key={pi} href={url} target="_blank" rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: 5,
+                              padding: '6px 14px', borderRadius: 9,
+                              background: '#FFFBEB', border: '1px solid #FEF3C7',
+                              color: '#854D0E', fontSize: 11, fontWeight: 700,
+                              textDecoration: 'none',
+                            }}
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            {isAr ? `نموذج PDF ${proc.pdfUrls.length > 1 ? pi + 1 : ''}` : `PDF Form ${proc.pdfUrls.length > 1 ? pi + 1 : ''}`}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                     <button onClick={() => handleAsk(proc.title)}
                       onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
                       onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -331,7 +472,7 @@ export default function ProceduresPage() {
                       cursor: 'pointer', fontFamily: 'inherit',
                       transition: 'opacity 0.12s, transform 0.12s',
                     }}>
-                      اسأل دليلك عن هذا الإجراء
+                      {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask about this procedure'}
                     </button>
                   </div>
                 )}
@@ -348,7 +489,7 @@ export default function ProceduresPage() {
                 {isAr ? 'دليل الخدمات الحكومية' : 'Government Services Directory'}
               </div>
               <div style={{ fontSize: 11, color: '#9C8E80' }}>
-                {isAr ? `${ALL_SERVICES.length} خدمة · 44 فئة` : `${ALL_SERVICES.length} services · 44 categories`}
+                {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
               </div>
             </div>
             <button
