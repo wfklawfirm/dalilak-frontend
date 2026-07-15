@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 
 interface BottomNavProps {
   isAr: boolean
-  activeTab?: 'home' | 'services' | 'chat' | 'procedures' | 'account'
+  activeTab?: string
   onHomeClick?: () => void
   onChatClick?: () => void
 }

@@ -12,8 +12,8 @@ interface Props {
 
 const NODE_COLORS: Record<NodeType, string> = {
   start: '#22c55e',
-  question: '#5C4A7A',
-  document: '#1A5276',
+  question: '#6b2737',
+  document: '#2D1B0E',
   action: '#8B1A1A',
   authority: '#B8860B',
   risk: '#c2592e',
@@ -181,4 +181,34 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                       {node.requiredDocuments.map((doc, di) => (
                         <span key={di} style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                          {doc}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Connector */}
+              {!isLast && (
+                <div style={{ display: 'flex', paddingRight: compact ? 18 : 22, margin: compact ? '3px 0' : '5px 0' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingRight: compact ? 0 : 0 }}>
+                    {outgoingEdges.length > 0 && outgoingEdges[0].label && (
+                      <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#F4F0EB', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
+                        {outgoingEdges[0].label}
+                      </span>
+                    )}
+                    <svg width="12" height="18" viewBox="0 0 12 18" fill="none">
+                      <path d="M6 0v12M3 10l3 6 3-6" stroke="#B8860B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

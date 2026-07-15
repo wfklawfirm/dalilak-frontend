@@ -35,6 +35,7 @@ export default function MyFilesPage() {
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<MyProc | null>(null)
   const [saving, setSaving] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   useEffect(() => {
     const token = getToken()
@@ -79,7 +80,6 @@ export default function MyFilesPage() {
   }
 
   const deleteProc = async (procId: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) return
     const token = getToken()
     if (!token) return
     await fetch(`${API_URL}/my-procedures/${procId}`, {
@@ -88,6 +88,7 @@ export default function MyFilesPage() {
     })
     setProcs(ps => ps.filter(p => p.id !== procId))
     if (selected?.id === procId) setSelected(null)
+    setConfirmDelete(null)
   }
 
   const statusStyle = (s: string): React.CSSProperties => {
@@ -150,10 +151,13 @@ export default function MyFilesPage() {
               background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)',
               borderRadius: 9, padding: '7px 16px', color: '#fff', fontSize: 12,
               fontWeight: 700, textDecoration: 'none', fontFamily: "'Cairo','Inter',sans-serif",
-              display: 'flex', alignItems: 'center', gap: 5,
+              display: 'flex', alignItems: 'center', gap: 6,
             }}
           >
-            <span>+</span> معاملة جديدة
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/>
+            </svg>
+            معاملة جديدة
           </Link>
         </div>
       </header>
@@ -265,13 +269,31 @@ export default function MyFilesPage() {
                           </span>
                         </div>
                       </div>
-                      <button
-                        onClick={() => deleteProc(selected.id)}
-                        style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
-                      >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        حذف
-                      </button>
+                      {confirmDelete === selected.id ? (
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <span style={{ fontSize: 11, color: '#9C8E80' }}>تأكيد الحذف؟</span>
+                          <button
+                            onClick={() => deleteProc(selected.id)}
+                            style={{ background: '#FEF2F2', border: '1px solid #FECACA', cursor: 'pointer', color: '#B91C1C', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700 }}
+                          >
+                            نعم
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete(null)}
+                            style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#5C4A3A', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit' }}
+                          >
+                            لا
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDelete(selected.id)}
+                          style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                          حذف
+                        </button>
+                      )}
                     </div>
 
                     {/* Big progress */}
@@ -411,7 +433,7 @@ export default function MyFilesPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={true} activeTab="my-files" />
+        <BottomNav isAr={true} activeTab="account" />
       </div>
     </div>
   )

@@ -117,4 +117,30 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
       {/* Recommended action */}
       {score.recommendedNextAction && (
         <div style={{ fontSize: 11.5, color: '#5C4A3A', background: '#FAFAF8', borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895.356-1.754.988-2.386l.548-.547z"/></svg>
+            {score.recommendedNextAction}
+          </span>
+        </div>
+      )}
+
+      {/* Action button */}
+      {onAction && (
+        <button
+          onClick={onAction}
+          style={{
+            width: '100%', padding: '10px 16px', borderRadius: 12,
+            background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+            border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+            cursor: 'pointer', fontFamily: 'inherit',
+            boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
+            transition: 'transform 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
+        >
+          {isAr ? 'اتخاذ إجراء' : 'Take Action'}
+        </button>
+      )}
+    </div>
+  )
+}

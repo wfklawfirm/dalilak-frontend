@@ -202,4 +202,56 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
           {isAr ? subtitleAr : (subtitleEn || subtitleAr)}
         </p>
       )}
-      {
+      {action && actionLabel && (
+        <button
+          onClick={action}
+          style={{
+            padding: '9px 20px', borderRadius: 12,
+            background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+            border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+            cursor: 'pointer', fontFamily: 'inherit',
+            boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+          }}
+        >
+          {actionLabel}
+        </button>
+      )}
+    </div>
+  )
+}
+
+// ── LoadingSkeleton ──────────────────────────────────────────────────────────
+interface LoadingSkeletonProps {
+  lines?: number
+  height?: number
+  gap?: number
+}
+
+export function LoadingSkeleton({ lines = 3, height = 60, gap = 10 }: LoadingSkeletonProps) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap }}>
+      <style>{`
+        @keyframes shimmer {
+          0%   { background-position: -400px 0; }
+          100% { background-position: 400px 0; }
+        }
+        .skeleton-line {
+          border-radius: 10px;
+          background: linear-gradient(90deg, #EAE4D9 25%, #F4F0EB 50%, #EAE4D9 75%);
+          background-size: 800px 100%;
+          animation: shimmer 1.4s infinite linear;
+        }
+      `}</style>
+      {Array.from({ length: lines }).map((_, i) => (
+        <div
+          key={i}
+          className="skeleton-line"
+          style={{
+            height,
+            opacity: 1 - i * 0.12,
+          }}
+        />
+      ))}
+    </div>
+  )
+}

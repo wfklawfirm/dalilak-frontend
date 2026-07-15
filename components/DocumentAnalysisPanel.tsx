@@ -319,4 +319,46 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                     </div>
                     <p style={{ fontSize: 12, color: '#5C4A3A', margin: 0 }}>{c.why_it_matters}</p>
                     <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '10px 12px' }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</p>
+                      <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{c.recommendation}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Overall recommendation */}
+          {reviewResult.overall_recommendation && (
+            <div style={{ background: 'rgba(107,39,55,0.06)', border: '1.5px solid rgba(107,39,55,0.2)', borderRadius: 14, padding: '14px 16px' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6b2737', margin: '0 0 6px' }}>
+                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن للتوقيع' : reviewResult.overall_verdict === 'risky' ? 'العقد يحتاج مراجعة' : 'التوصية الشاملة'}
+              </p>
+              <p style={{ fontSize: 12.5, color: '#3D2A1E', margin: 0, lineHeight: 1.6 }}>
+                {reviewResult.overall_recommendation}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Request review button */}
+      {onRequestReview && (
+        <button
+          onClick={onRequestReview}
+          style={{
+            width: '100%', padding: '11px 16px', borderRadius: 12,
+            background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
+            border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+            cursor: 'pointer', fontFamily: 'inherit',
+            boxShadow: '0 4px 14px rgba(107,39,55,0.3)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
+        >
+          اطلب مراجعة قانونية
+        </button>
+      )}
+    </div>
+  )
+}

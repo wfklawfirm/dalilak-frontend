@@ -230,4 +230,80 @@ export default function ProcedurePage() {
                 <svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
                 إلزامي
               </span>
-              <span style={{ display:'inline-flex', alignItems:'center', 
+              <span style={{ display:'inline-flex', alignItems:'center', gap:3 }}>
+                <svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>
+                اختياري
+              </span>
+            </p>
+          </div>
+        )}
+
+        {/* ── Steps ────────────────────────────────────────────────────────── */}
+        {procedure.steps && procedure.steps.length > 0 && (
+          <div style={{ background:'#fff', borderRadius:20, padding:'20px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
+            <h2 style={{ fontSize:15, fontWeight:800, color:'#1A1208', margin:'0 0 14px', display:'flex', alignItems:'center', gap:8 }}>
+              <span style={{ width:32, height:32, borderRadius:9, background:'#FEF2F2', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'#8B1A1A' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </span>
+              خطوات الإجراء
+            </h2>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+              {procedure.steps.map((step, i) => (
+                <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
+                  <div style={{
+                    width:28, height:28, borderRadius:'50%', flexShrink:0,
+                    background:'linear-gradient(135deg, #8B1A1A, #6b2737)', color:'#fff',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    fontSize:11, fontWeight:800,
+                  }}>{step.order}</div>
+                  <div style={{ flex:1, paddingTop:4 }}>
+                    <p style={{ fontSize:13, fontWeight:700, color:'#1A1208', margin:'0 0 2px' }}>{step.title_ar}</p>
+                    {step.desc_ar && <p style={{ fontSize:12, color:'#5C4A3A', margin:0, lineHeight:1.55 }}>{step.desc_ar}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Source + Playbook ─────────────────────────────────────────────── */}
+        <div style={{ background:'#fff', borderRadius:20, padding:'16px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
+            <div>
+              <p style={{ fontSize:11, color:'#9C8E80', margin:'0 0 3px' }}>
+                {tierLabel[procedure.source_tier] || 'مصدر موثّق'} · آخر تحقق: {procedure.last_verified ? new Date(procedure.last_verified).toLocaleDateString('ar-LB') : '—'}
+              </p>
+              {procedure.authority_url && (
+                <a href={procedure.authority_url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize:11, color:'#8B1A1A', fontWeight:700, textDecoration:'none', display:'inline-flex', alignItems:'center', gap:4 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  الموقع الرسمي
+                </a>
+              )}
+            </div>
+            <button
+              onClick={() => router.push(`/procedures/${procedure.slug}/playbook`)}
+              style={{
+                padding:'9px 18px', borderRadius:12,
+                background:'linear-gradient(135deg, #8B1A1A, #6b2737)', color:'#fff',
+                border:'none', cursor:'pointer', fontFamily:"'Cairo','Inter',sans-serif",
+                fontSize:12, fontWeight:700, display:'flex', alignItems:'center', gap:6,
+                boxShadow:'0 3px 10px rgba(139,26,26,0.25)',
+              }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+              دليل التنفيذ التفصيلي
+            </button>
+          </div>
+        </div>
+
+        <p style={{ fontSize:11, color:'#9C8E80', textAlign:'center', margin:'0 0 20px', lineHeight:1.55 }}>
+          المعلومات إرشادية ولا تُغني عن مراجعة الجهة المختصة أو استشارة متخصص قانوني.
+        </p>
+
+      </div>
+
+      <BottomNav isAr={true} activeTab="procedures" />
+    </div>
+  )
+}

@@ -91,9 +91,9 @@ export default function FormDetailClient({ form }: Props) {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
             <span style={{ display: 'flex', flexShrink: 0 }}>{fileIcon}</span>
             <div style={{ flex: 1 }}>
-              <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#1a1a1a' }}>{title}</h2>
-              <p style={{ margin: '0 0 2px', fontSize: 13, color: '#555' }}>{authority}</p>
-              <p style={{ margin: 0, fontSize: 12, color: '#888' }}>{ministry}</p>
+              <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#1A1208' }}>{title}</h2>
+              <p style={{ margin: '0 0 2px', fontSize: 13, color: '#5C4A3A' }}>{authority}</p>
+              <p style={{ margin: 0, fontSize: 12, color: '#9C8E80' }}>{ministry}</p>
             </div>
           </div>
 
@@ -132,11 +132,11 @@ export default function FormDetailClient({ form }: Props) {
 
         {/* ── How to use ── */}
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
           </h3>
-          <ol style={{ margin: 0, paddingInlineStart: 20, color: '#444', fontSize: 14, lineHeight: 1.8 }}>
+          <ol style={{ margin: 0, paddingInlineStart: 20, color: '#5C4A3A', fontSize: 14, lineHeight: 1.8 }}>
             <li>{isAr ? 'افتح النموذج أو نزّله بالضغط على الزر أعلاه.' : 'Open or download the form using the button above.'}</li>
             <li>{isAr ? 'اقرأ التعليمات بعناية قبل التعبئة.' : 'Read instructions carefully before filling.'}</li>
             <li>{isAr ? 'تأكد من صحة جميع المعلومات المُدخلة.' : 'Verify all entered information is correct.'}</li>
@@ -147,7 +147,7 @@ export default function FormDetailClient({ form }: Props) {
         {/* ── Related procedures ── */}
         {relatedProcedures.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
               {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
             </h3>
@@ -159,8 +159,8 @@ export default function FormDetailClient({ form }: Props) {
                   style={{ background: '#FAF8F5', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ display: 'flex', flexShrink: 0 }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                   <div>
-                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1a1a1a' }}>{isAr ? p.title_ar : p.title_en}</p>
-                    <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{isAr ? p.category_ar : p.category_en}</p>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1A1208' }}>{isAr ? p.title_ar : p.title_en}</p>
+                    <p style={{ margin: 0, fontSize: 12, color: '#9C8E80' }}>{isAr ? p.category_ar : p.category_en}</p>
                   </div>
                 </button>
               ))}

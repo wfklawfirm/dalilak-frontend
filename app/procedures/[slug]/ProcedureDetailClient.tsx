@@ -106,7 +106,7 @@ export default function ProcedureDetailClient() {
 
         {/* Playbook link */}
         <div style={{ marginBottom: 16 }}>
-          <button onClick={() => router.push(`/procedures/${slug}/playbook`)} style={{ width: '100%', padding: '11px 16px', background: '#F5F3FF', color: '#6D28D9', border: '1.5px solid #DDD6FE', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <button onClick={() => router.push(`/procedures/${slug}/playbook`)} style={{ width: '100%', padding: '11px 16px', background: '#FAF8F5', color: '#2D1B0E', border: '1.5px solid #D5CEC4', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             {isAr ? 'دليل التنفيذ — خارطة الإجراء' : 'Playbook — Procedure Map'}
           </button>
@@ -146,7 +146,7 @@ export default function ProcedureDetailClient() {
                       <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{isAr ? step.description_ar : step.description_en}</p>
                     )}
                     <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
-                      {step.authority && <span style={{ fontSize: 10, color: '#6D28D9', background: '#F5F3FF', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
+                      {step.authority && <span style={{ fontSize: 10, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
                       {step.duration && <span style={{ fontSize: 10, color: '#B45309', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{step.duration}</span>}
                     </div>
                   </div>
@@ -158,6 +158,69 @@ export default function ProcedureDetailClient() {
 
         {/* Authority */}
         {proc.authority && (
-          <Section title={isAr ? 'الجهة المختصة' : 'Responsible Authority'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>} bg="#F5F3FF" border="#DDD6FE">
+          <Section title={isAr ? 'الجهة المختصة' : 'Responsible Authority'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>} bg="#FEF9F5" border="#EAE4D9">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#1A12
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#1A1208', margin: '0 0 2px' }}>
+                {isAr ? proc.authority.name_ar : proc.authority.name_en}
+              </p>
+              {proc.authority.website && (
+                <a href={proc.authority.website} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: 12, color: '#8B1A1A', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  {isAr ? 'الموقع الرسمي' : 'Official Website'}
+                </a>
+              )}
+            </div>
+          </Section>
+        )}
+
+        {/* Fees */}
+        {proc.fees && proc.fees.length > 0 && (
+          <Section title={isAr ? 'الرسوم' : 'Fees'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} bg="#FFFBEB" border="#FDE68A">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {proc.fees.map((fee, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 12.5, color: '#1A1208', fontWeight: 500 }}>{isAr ? fee.label_ar : fee.label_en}</span>
+                  <span style={{ fontSize: 13, color: '#B45309', fontWeight: 700 }}>{fee.amount}</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        {/* Ask AI CTA */}
+        <div style={{ marginTop: 4, padding: '16px', background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, textAlign: 'center' }}>
+          <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: '0 0 12px', lineHeight: 1.5 }}>
+            {isAr ? 'لديك سؤال محدد حول هذه المعاملة؟' : 'Have a specific question about this procedure?'}
+          </p>
+          <button onClick={askAI} style={{ padding: '11px 24px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, boxShadow: '0 3px 12px rgba(139,26,26,0.3)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+// ── Section helper ─────────────────────────────────────────────────────────────
+function Section({
+  title, icon, bg, border, children,
+}: {
+  title: string
+  icon: React.ReactNode
+  bg: string
+  border: string
+  children: React.ReactNode
+}) {
+  return (
+    <div style={{ marginBottom: 16, background: bg, border: `1.5px solid ${border}`, borderRadius: 16, padding: '14px 16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+        <span style={{ color: '#8B1A1A', display: 'inline-flex' }}>{icon}</span>
+        <h3 style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', margin: 0, textTransform: 'uppercase', letterSpacing: '0.4px' }}>{title}</h3>
+      </div>
+      {children}
+    </div>
+  )
+}

@@ -305,7 +305,7 @@ export default function FormsPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={lang === 'ar'} activeTab="forms" />
+        <BottomNav isAr={lang === 'ar'} activeTab="procedures" />
       </div>
     </div>
   )

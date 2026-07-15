@@ -116,4 +116,38 @@ export default function MissingDocumentsChecklist({
                 )}
                 {doc.notes && (
                   <p style={{ fontSize: 11, color: '#B0A090', margin: 0 }}>{doc.notes}</p>
-         
+                )}
+              </div>
+
+              {/* Priority badge */}
+              {doc.missing?.priority && !isUploaded && (
+                <span style={{
+                  flexShrink: 0, fontSize: 9.5, fontWeight: 700,
+                  padding: '2px 7px', borderRadius: 99,
+                  ...(PRIORITY_STYLE[doc.missing.priority] || {}),
+                }}>
+                  {PRIORITY_AR[doc.missing.priority] || doc.missing.priority}
+                </span>
+              )}
+
+              {/* Upload button */}
+              {!isUploaded && onUpload && (
+                <button
+                  onClick={() => onUpload(doc.title)}
+                  style={{
+                    flexShrink: 0, fontSize: 10.5, padding: '4px 10px',
+                    background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                    color: '#fff', border: 'none', borderRadius: 8,
+                    cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
+                  }}
+                >
+                  رفع
+                </button>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

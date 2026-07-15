@@ -145,7 +145,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
       )}
 
       {/* Disclaimer */}
-      <p style={{ fontSize: 10.5, color: '#9CA3AF', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
+      <p style={{ fontSize: 10.5, color: '#9C8E80', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
         تقييم أولي — لا يُعدّ استشارة قانونية
       </p>
     </div>

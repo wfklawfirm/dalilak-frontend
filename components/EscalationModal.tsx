@@ -156,4 +156,53 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             {/* Contact preference */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
               {CONTACT_PREFS.map(p => (
-                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPr
+                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#8B1A1A' : '#EAE4D9', background: contactPref === p.id ? '#FEF2F2' : '#fff', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: contactPref === p.id ? '#8B1A1A' : '#5C4A3A', textAlign: 'center' }}>
+                  {isAr ? p.ar : p.en}
+                </button>
+              ))}
+            </div>
+
+            {/* Contact info */}
+            <input
+              type={contactPref === 'email' ? 'email' : 'tel'}
+              placeholder={
+                contactPref === 'email'
+                  ? (isAr ? 'بريدك الإلكتروني' : 'Your email')
+                  : (isAr ? 'رقم هاتفك / واتساب' : 'Your phone / WhatsApp')
+              }
+              value={contact}
+              onChange={e => { setContact(e.target.value); setError('') }}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                padding: '10px 12px', border: `1.5px solid ${error ? '#DC2626' : '#EAE4D9'}`,
+                borderRadius: 12, fontSize: 13, fontFamily: 'inherit',
+                color: '#1A1208', outline: 'none', marginBottom: 6,
+                background: '#FAFAF8', direction: 'ltr',
+              }}
+            />
+            {error && (
+              <p style={{ fontSize: 11.5, color: '#DC2626', margin: '0 0 8px' }}>{error}</p>
+            )}
+
+            {/* Submit */}
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !contact.trim()}
+              style={{
+                width: '100%', padding: '12px',
+                background: loading || !contact.trim()
+                  ? '#D4C5B0'
+                  : 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+                color: '#fff', border: 'none', borderRadius: 14,
+                fontSize: 14, fontWeight: 700, cursor: !contact.trim() ? 'not-allowed' : 'pointer',
+                fontFamily: 'inherit', boxShadow: !contact.trim() ? 'none' : '0 4px 14px rgba(139,26,26,0.3)',
+              }}
+            >
+              {loading ? (isAr ? 'جارٍ الإرسال...' : 'Sending...') : (isAr ? 'إرسال الطلب' : 'Send Request')}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}

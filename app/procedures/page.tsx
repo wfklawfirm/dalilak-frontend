@@ -9,7 +9,7 @@ import BottomNav from '@/components/BottomNav'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-type ViewMode = 'all' | 'enriched' | 'detailed'
+type ViewMode = 'procedures' | 'directory'
 
 // ── Service Detail Modal ───────────────────────────────────────────────────────
 
@@ -36,12 +36,16 @@ function ServiceModal({ service, onClose, onAsk }: {
         {/* Header */}
         <div style={{ padding: '0 20px 14px', borderBottom: '1px solid #EAE4D9' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FDE8E8)', border: '1px solid rgba(139,26,26,0.1)', color: '#8B1A1A', flexShrink: 0 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></span>
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FDE8E8)', border: '1px solid rgba(139,26,26,0.1)', color: '#8B1A1A', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </span>
             <div style={{ flex: 1 }}>
               <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1A1208', lineHeight: 1.3 }}>{service.name_ar}</h2>
               <p style={{ margin: '4px 0 0', fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>{service.authority_ar}</p>
             </div>
-            <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: 10, width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+            <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: 10, width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
           </div>
 
           {/* Quick stats */}
@@ -84,7 +88,9 @@ function ServiceModal({ service, onClose, onAsk }: {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                 {service.required_documents.map((doc, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 12px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #EAE4D9' }}>
-                    <span style={{ color: '#8B1A1A', marginTop: 2, flexShrink: 0 }}><svg width="6" height="6" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" fill="#8B1A1A" transform="rotate(45 5 5)"/></svg></span>
+                    <span style={{ color: '#8B1A1A', marginTop: 2, flexShrink: 0 }}>
+                      <svg width="6" height="6" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" fill="#8B1A1A" transform="rotate(45 5 5)"/></svg>
+                    </span>
                     <span style={{ fontSize: 12, color: '#2D1B0E', lineHeight: 1.5 }}>{doc}</span>
                   </div>
                 ))}
@@ -135,7 +141,10 @@ function ServiceModal({ service, onClose, onAsk }: {
 
           {service.related_services.length > 0 && (
             <div>
-              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 5 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path strokeLinecap="round" strokeLinejoin="round" d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>خدمات ذات صلة</h3>
+              <h3 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path strokeLinecap="round" strokeLinejoin="round" d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                خدمات ذات صلة
+              </h3>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                 {service.related_services.map((rel, i) => (
                   <span key={i} style={{ fontSize: 11, color: '#5C4A3A', background: '#FAFAF8', borderRadius: 20, padding: '4px 10px', border: '1px solid #EAE4D9' }}>{rel}</span>
@@ -145,7 +154,12 @@ function ServiceModal({ service, onClose, onAsk }: {
           )}
 
           <p style={{ fontSize: 10, color: '#9C8E80', marginTop: 20, lineHeight: 1.5, padding: '10px 14px', background: '#FAFAF8', borderRadius: 8 }}>
-            <span style={{display:'inline-flex',alignItems:'flex-start',gap:6}}><span style={{display:'inline-flex',flexShrink:0,marginTop:1}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>المعلومات المعروضة مستخرجة من مصادر رسمية وهي للإرشاد العام. تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.</span>
+            <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 6 }}>
+              <span style={{ display: 'inline-flex', flexShrink: 0, marginTop: 1 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+              المعلومات المعروضة مستخرجة من مصادر رسمية وهي للإرشاد العام. تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.
+            </span>
           </p>
         </div>
 
@@ -156,7 +170,8 @@ function ServiceModal({ service, onClose, onAsk }: {
             border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>اسألني عن هذه الخدمة
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            اسألني عن هذه الخدمة
           </button>
           <button onClick={onClose} style={{
             padding: '12px 16px', borderRadius: 14, background: '#FAFAF8', border: '1.5px solid #EAE4D9',
@@ -172,34 +187,35 @@ function ServiceModal({ service, onClose, onAsk }: {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
+const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
+const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
+
 export default function ProceduresPage() {
   const router = useRouter()
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
-  const [viewMode, setViewMode] = useState<ViewMode>('all')
+  const [viewMode, setViewMode] = useState<ViewMode>('procedures')
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
   const isAr = lang === 'ar'
 
-  // All services filtered
+  // ── Directory tab data ─────────────────────────────────────────────────────
   const filteredAll = useMemo(() => {
     let list = ALL_SERVICES
     if (activeCategory !== 'all') list = list.filter(s => s.categorySlug === activeCategory)
     if (search.trim()) {
       const q = search.trim()
       list = list.filter(s =>
-        s.name_ar.includes(q) ||
-        s.category.includes(q) ||
-        s.authority_ar.includes(q) ||
-        s.description.includes(q)
+        s.name_ar.includes(q) || s.category.includes(q) ||
+        s.authority_ar.includes(q) || s.description.includes(q)
       )
     }
     return list
   }, [search, activeCategory])
 
-  // Detailed procedures filtered
-  const filteredDetailed = useMemo(() => {
+  // ── Procedures tab data ────────────────────────────────────────────────────
+  const filteredGuided = useMemo(() => {
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
     if (search.trim()) {
       const q = search.toLowerCase()
@@ -211,17 +227,23 @@ export default function ProceduresPage() {
     return list
   }, [search])
 
+  const filteredEnriched = useMemo(() => searchEnrichedProcedures(search), [search])
+
   const handleAsk = useCallback((prompt: string) => {
     setSelectedService(null)
     router.push(`/?q=${encodeURIComponent(prompt)}`)
   }, [router])
 
-  // ── Categories for filter ──────────────────────────────────────────────────
-
   const visibleCategories = useMemo(() => {
-    const topCats = SERVICE_CATEGORIES.slice(0, 20)
-    return topCats
+    const seen = new Set<string>()
+    return SERVICE_CATEGORIES.filter(c => {
+      if (seen.has(c.slug)) return false
+      seen.add(c.slug)
+      return true
+    }).slice(0, 20)
   }, [])
+
+  const totalProcedureResults = filteredGuided.length + filteredEnriched.length
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -233,10 +255,16 @@ export default function ProceduresPage() {
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 2px; }
         .svc-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 16px rgba(139,26,26,0.12) !important; }
         .cat-chip:hover { background: #FEF2F2 !important; border-color: #8B1A1A !important; color: #8B1A1A !important; }
+        .proc-card:hover { border-color: rgba(139,26,26,0.4) !important; box-shadow: 0 2px 12px rgba(139,26,26,0.08) !important; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
-      {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
+      {/* ── Header ────────────────────────────────────────────────────────── */}
+      <header style={{
+        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
+        boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
+      }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -247,10 +275,10 @@ export default function ProceduresPage() {
             </div>
             <div>
               <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
-                {isAr ? 'الخدمات والمعاملات' : 'Services & Procedures'}
+                {isAr ? 'المعاملات الحكومية' : 'Government Procedures'}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>
-                {isAr ? '201 خدمة · 45 فئة حكومية' : '201 services · 45 categories'}
+                {isAr ? `${PROCEDURES_TOTAL} إجراء موثّق · ${ALL_SERVICES.length} خدمة` : `${PROCEDURES_TOTAL} documented · ${ALL_SERVICES.length} services`}
               </p>
             </div>
           </div>
@@ -262,12 +290,12 @@ export default function ProceduresPage() {
 
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
-        {/* Stats banner */}
+        {/* ── Stats banner ──────────────────────────────────────────────── */}
         <div style={{ background: 'linear-gradient(135deg, #FEF2F2, #FFF7F7)', border: '1px solid rgba(139,26,26,0.1)', borderRadius: 16, padding: '12px 16px', marginBottom: 16 }}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             {[
-              { value: '201', label: isAr ? 'خدمة موثّقة' : 'Services' },
-              { value: '45',  label: isAr ? 'فئة حكومية' : 'Categories' },
+              { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
+              { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services' },
               { value: '52+', label: isAr ? 'جهة مختصة' : 'Authorities' },
             ].map((stat, idx) => (
               <React.Fragment key={stat.value}>
@@ -278,53 +306,90 @@ export default function ProceduresPage() {
                 </div>
               </React.Fragment>
             ))}
-            <div style={{ fontSize: 11, color: '#9C8E80', lineHeight: 1.5, flex: '1 1 120px', marginTop: 0 }}>
-              {isAr ? 'بيانات رسمية محدّثة — وثائق، رسوم، إجراءات' : 'Official data — docs, fees, procedures'}
+            <div style={{ fontSize: 11, color: '#9C8E80', lineHeight: 1.5, flex: '1 1 120px' }}>
+              {isAr ? 'بيانات رسمية — وثائق، رسوم، خطوات الإجراء' : 'Official data — docs, fees, steps'}
             </div>
           </div>
         </div>
 
-        {/* View mode tabs */}
+        {/* ── 2-Tab Selector ────────────────────────────────────────────── */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#EAE4D9', borderRadius: 12, padding: 4 }}>
-          {[
-            { mode: 'all' as ViewMode, labelAr: `خدمات (${ALL_SERVICES.length})`, labelEn: `Services (${ALL_SERVICES.length})`, icon: <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> },
-            { mode: 'enriched' as ViewMode, labelAr: `مفصّلة (${ENRICHED_PROCEDURES.length})`, labelEn: `Detailed (${ENRICHED_PROCEDURES.length})`, icon: <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg> },
-            { mode: 'detailed' as ViewMode, labelAr: `مُرشدة (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, labelEn: `Guided (${PROCEDURES_DATA.filter(p => p.status === 'active').length})`, icon: <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> },
-          ].map(({ mode, labelAr, labelEn, icon }) => (
-            <button key={mode} onClick={() => setViewMode(mode)} style={{
-              flex: 1, padding: '7px 6px', borderRadius: 9, fontSize: 11, fontWeight: 700, cursor: 'pointer',
+          {([
+            {
+              mode: 'procedures' as ViewMode,
+              labelAr: `الإجراءات (${PROCEDURES_TOTAL})`,
+              labelEn: `Procedures (${PROCEDURES_TOTAL})`,
+              icon: (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+              ),
+            },
+            {
+              mode: 'directory' as ViewMode,
+              labelAr: `دليل الخدمات (${ALL_SERVICES.length})`,
+              labelEn: `Services Directory (${ALL_SERVICES.length})`,
+              icon: (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                </svg>
+              ),
+            },
+          ] as const).map(({ mode, labelAr, labelEn, icon }) => (
+            <button key={mode} onClick={() => { setViewMode(mode); setSearch(''); setExpandedProc(null) }} style={{
+              flex: 1, padding: '9px 8px', borderRadius: 9, fontSize: 11.5, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'inherit', border: 'none', transition: 'all 0.15s', textAlign: 'center',
               background: viewMode === mode ? '#fff' : 'transparent',
               color: viewMode === mode ? '#8B1A1A' : '#5C4A3A',
               boxShadow: viewMode === mode ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             }}>
-              <span style={{display:'inline-flex',alignItems:'center',gap:4}}>{icon}{isAr ? labelAr : labelEn}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                {icon}
+                {isAr ? labelAr : labelEn}
+              </span>
             </button>
           ))}
         </div>
 
-        {/* Search */}
-        <div className="search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 12, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
+        {/* ── Search ────────────────────────────────────────────────────── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 12, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder={viewMode === 'all' ? 'ابحث في 201 خدمة...' : viewMode === 'enriched' ? 'ابحث في 60 إجراء مفصّل...' : 'ابحث في الإجراءات المُرشدة...'}
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={
+              viewMode === 'procedures'
+                ? `ابحث في ${PROCEDURES_TOTAL} إجراء...`
+                : `ابحث في ${ALL_SERVICES.length} خدمة حكومية...`
+            }
             dir="rtl"
-            style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }} />
-          {search && <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+            style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          )}
         </div>
 
-        {/* Category filters (only in all mode) */}
-        {viewMode === 'all' && (
+        {/* ── Category chips (directory only) ───────────────────────────── */}
+        {viewMode === 'directory' && (
           <div style={{ display: 'flex', gap: 6, overflowX: 'auto', marginBottom: 12, paddingBottom: 4 }}>
-            <button className="cat-chip" onClick={() => setActiveCategory('all')} style={{
-              whiteSpace: 'nowrap', padding: '5px 13px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-              cursor: 'pointer', fontFamily: 'inherit', border: '1.5px solid', transition: 'all 0.15s',
-              borderColor: activeCategory === 'all' ? '#8B1A1A' : '#EAE4D9',
-              background: activeCategory === 'all' ? '#FEF2F2' : '#fff',
-              color: activeCategory === 'all' ? '#8B1A1A' : '#5C4A3A',
-            }}>
-              <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>الكل ({ALL_SERVICES.length})</span>
+            <button
+              className="cat-chip"
+              onClick={() => setActiveCategory('all')}
+              style={{
+                whiteSpace: 'nowrap', padding: '5px 13px', borderRadius: 20, fontSize: 11, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit', border: '1.5px solid', transition: 'all 0.15s',
+                borderColor: activeCategory === 'all' ? '#8B1A1A' : '#EAE4D9',
+                background: activeCategory === 'all' ? '#FEF2F2' : '#fff',
+                color: activeCategory === 'all' ? '#8B1A1A' : '#5C4A3A',
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                الكل ({ALL_SERVICES.length})
+              </span>
             </button>
             {visibleCategories.map(cat => (
               <button key={cat.slug} className="cat-chip" onClick={() => setActiveCategory(cat.slug)} style={{
@@ -340,18 +405,267 @@ export default function ProceduresPage() {
           </div>
         )}
 
-        {/* Results count */}
+        {/* ── Results count ─────────────────────────────────────────────── */}
         <p style={{ fontSize: 11, color: '#9C8E80', marginBottom: 12 }}>
-          {viewMode === 'all'
-            ? `${filteredAll.length} خدمة${activeCategory !== 'all' ? ' في هذه الفئة' : ''}`
-            : viewMode === 'enriched'
-            ? `${searchEnrichedProcedures(search).length} إجراء مفصّل بخطوات ووثائق`
-            : `${filteredDetailed.length} إجراء مُرشد`
+          {viewMode === 'procedures'
+            ? `${totalProcedureResults} إجراء${search ? ` لـ "${search}"` : ''}`
+            : `${filteredAll.length} خدمة${activeCategory !== 'all' ? ' في هذه الفئة' : ''}`
           }
         </p>
 
-        {/* ── ALL SERVICES VIEW ─────────────────────────────────────────────── */}
-        {viewMode === 'all' && (
+        {/* ══════════════════════════════════════════════════════════════════
+            PROCEDURES VIEW — Guided + Enriched in one unified list
+        ═══════════════════════════════════════════════════════════════════ */}
+        {viewMode === 'procedures' && (
+          totalProcedureResults === 0 ? (
+            <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
+              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
+              </div>
+              <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد إجراءات مطابقة</p>
+              <p style={{ fontSize: 12, marginTop: 4 }}>جرّب كلمة بحث مختلفة أو اسأل الذكاء الاصطناعي</p>
+              <button onClick={() => handleAsk(search)} style={{
+                marginTop: 16, padding: '10px 20px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+              }}>
+                اسأل دليلك عن: {search}
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+              {/* ── Guided (Interactive) Procedures ─────────────────────── */}
+              {filteredGuided.map(proc => {
+                const isExpanded = expandedProc === proc.slug
+                return (
+                  <div key={proc.slug} className="proc-card" style={{
+                    background: '#fff',
+                    border: `1.5px solid ${isExpanded ? '#8B1A1A' : '#EAE4D9'}`,
+                    borderRadius: 14, overflow: 'hidden',
+                    boxShadow: isExpanded ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
+                    transition: 'all 0.18s',
+                  }}>
+                    <button
+                      onClick={() => setExpandedProc(isExpanded ? null : proc.slug)}
+                      style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
+                    >
+                      <div style={{ width: 40, height: 40, borderRadius: 10, background: isExpanded ? 'rgba(139,26,26,0.1)' : '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0, transition: 'background 0.15s' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                      </div>
+                      <div style={{ flex: 1, textAlign: 'right' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 9.5, fontWeight: 700, color: '#8B1A1A', background: 'rgba(139,26,26,0.08)', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.15)' }}>
+                            مُرشدة
+                          </span>
+                          <span style={{
+                            fontSize: 9.5, borderRadius: 6, padding: '1px 7px', fontWeight: 600,
+                            background: getComplexityBg(proc.complexity),
+                            color: getComplexityColor(proc.complexity),
+                          }}>
+                            {getComplexityLabel(proc.complexity, isAr)}
+                          </span>
+                          {proc.estimatedDuration_ar && (
+                            <span style={{ fontSize: 9.5, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 6, padding: '1px 7px' }}>
+                              {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: isExpanded ? '#8B1A1A' : '#1A1208', lineHeight: 1.4 }}>
+                          {isAr ? proc.title_ar : proc.title_en}
+                        </div>
+                        {proc.steps.length > 0 && (
+                          <div style={{ fontSize: 10, color: '#9C8E80', marginTop: 4 }}>
+                            {proc.steps.length} {isAr ? 'خطوة تفاعلية' : 'guided steps'}
+                          </div>
+                        )}
+                      </div>
+                      <span style={{ color: isExpanded ? '#8B1A1A' : '#9C8E80', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
+                      </span>
+                    </button>
+
+                    {isExpanded && (
+                      <div style={{ padding: '0 14px 16px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s ease' }}>
+                        <p style={{ margin: '12px 0 14px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.75 }}>
+                          {isAr ? proc.description_ar : proc.description_en}
+                        </p>
+
+                        {proc.requiredDocuments.length > 0 && (
+                          <div style={{ marginBottom: 12 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
+                              {isAr ? 'الوثائق المطلوبة:' : 'Required Documents:'}
+                            </div>
+                            {proc.requiredDocuments.map((doc, i) => (
+                              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '5px 0', borderBottom: '1px solid #F4F0EB' }}>
+                                <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}>
+                                  <svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg>
+                                </span>
+                                <span style={{ fontSize: 12, color: '#2D1B0E', lineHeight: 1.5 }}>
+                                  {isAr ? doc.name_ar : doc.name_en}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {proc.steps.length > 0 && (
+                          <div style={{ marginBottom: 14 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
+                              {isAr ? 'خطوات الإجراء:' : 'Steps:'}
+                            </div>
+                            {proc.steps.map((s, i) => (
+                              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
+                                <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                                  {i + 1}
+                                </span>
+                                <div>
+                                  <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208' }}>
+                                    {isAr ? s.title_ar : s.title_en}
+                                  </div>
+                                  {s.description_ar && (
+                                    <div style={{ fontSize: 11.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.5 }}>
+                                      {isAr ? s.description_ar : ((s as unknown as { description_en?: string }).description_en || s.description_ar)}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <button onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)} style={{
+                          padding: '8px 18px', borderRadius: 10,
+                          background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                          border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
+                          cursor: 'pointer', fontFamily: 'inherit',
+                          display: 'inline-flex', alignItems: 'center', gap: 6,
+                          boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                        }}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                          {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask Dalilak'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+
+              {/* ── Enriched (Documented) Procedures ────────────────────── */}
+              {filteredEnriched.map((proc: EnrichedProcedure) => (
+                <div key={proc.code} className="proc-card" style={{
+                  background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, overflow: 'hidden',
+                  boxShadow: expandedProc === proc.code ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
+                  transition: 'all 0.18s',
+                  borderColor: expandedProc === proc.code ? '#8B1A1A' : '#EAE4D9',
+                }}>
+                  <button
+                    onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
+                    style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: expandedProc === proc.code ? 'rgba(139,26,26,0.1)' : '#F4F0EB', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.15s' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 9.5, fontWeight: 700, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 6, padding: '1px 7px', border: '1px solid #EAE4D9' }}>
+                          موثّقة
+                        </span>
+                        {proc.requiredDocuments.length > 0 && (
+                          <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>
+                            {proc.requiredDocuments.length} وثيقة
+                          </span>
+                        )}
+                        {proc.steps.length > 0 && (
+                          <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>
+                            {proc.steps.length} خطوة
+                          </span>
+                        )}
+                        {proc.hasForm && (
+                          <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>
+                            نموذج
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8B1A1A' : '#1A1208', lineHeight: 1.4 }}>
+                        {proc.title}
+                      </div>
+                      <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, marginTop: 3 }}>
+                        {proc.ministry}
+                      </div>
+                    </div>
+                    <span style={{ color: expandedProc === proc.code ? '#8B1A1A' : '#9C8E80', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                  </button>
+
+                  {expandedProc === proc.code && (
+                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s ease' }}>
+                      {proc.requiredDocuments.length > 0 && (
+                        <div style={{ marginTop: 12, marginBottom: 10 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>الوثائق المطلوبة:</div>
+                          {proc.requiredDocuments.map((d, i) => (
+                            <div key={i} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '4px 0', borderBottom: '1px solid #EAE4D9', display: 'flex', gap: 6 }}>
+                              <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}>
+                                <svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg>
+                              </span>
+                              <span>{d}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {proc.steps.length > 0 && (
+                        <div style={{ marginBottom: 10 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>خطوات الإجراء:</div>
+                          {proc.steps.map((s, i) => (
+                            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'flex-start' }}>
+                              <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                                {i + 1}
+                              </span>
+                              <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.5 }}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {proc.fees && (
+                        <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 12px', marginBottom: 10 }}>
+                          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#854D0E' }}>الرسوم: </span>
+                          <span style={{ fontSize: 11, color: '#5C4A3A' }}>{proc.fees.slice(0, 200)}</span>
+                        </div>
+                      )}
+                      {proc.pdfUrls.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+                          {proc.pdfUrls.map((url, i) => (
+                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
+                              تحميل ({i + 1})
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                      <button onClick={() => handleAsk(proc.title)} style={{
+                        marginTop: 4, padding: '8px 18px', borderRadius: 10,
+                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                        border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                        boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                      }}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        اسأل دليلك عن هذا الإجراء
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        )}
+
+        {/* ══════════════════════════════════════════════════════════════════
+            DIRECTORY VIEW — All 201 Services
+        ═══════════════════════════════════════════════════════════════════ */}
+        {viewMode === 'directory' && (
           filteredAll.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
@@ -369,7 +683,7 @@ export default function ProceduresPage() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {filteredAll.map((svc) => (
+              {filteredAll.map(svc => (
                 <button key={svc.id} className="svc-card" onClick={() => setSelectedService(svc)} style={{
                   display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 14px', borderRadius: 14,
                   background: '#fff', border: '1.5px solid #EAE4D9', cursor: 'pointer', fontFamily: 'inherit',
@@ -416,212 +730,6 @@ export default function ProceduresPage() {
                   </svg>
                 </button>
               ))}
-            </div>
-          )
-        )}
-
-        {/* ── ENRICHED PROCEDURES VIEW (60 with steps + docs) ─────────────── */}
-        {viewMode === 'enriched' && (() => {
-          const procs = searchEnrichedProcedures(search)
-          return procs.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
-              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
-              </div>
-              <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {procs.map((proc: EnrichedProcedure) => (
-                <div key={proc.code} style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 16, overflow: 'hidden' }}>
-                  <button
-                    onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
-                    style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 12 }}
-                  >
-                    <div style={{ width: 42, height: 42, borderRadius: 12, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
-                      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                    </div>
-                    <div style={{ flex: 1, textAlign: 'right' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{proc.title}</div>
-                      <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginTop: 2 }}>{proc.ministry}</div>
-                      <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
-                        {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.requiredDocuments.length} وثيقة</span>}
-                        {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#F0FDF4', color: '#065F46', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>{proc.steps.length} خطوة</span>}
-                        {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>نموذج</span>}
-                        {proc.fees && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid #FECACA' }}>رسوم</span>}
-                      </div>
-                    </div>
-                    <span style={{ color: '#9C8E80', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
-                  </button>
-                  {expandedProc === proc.code && (
-                    <div style={{ padding: '0 16px 16px', borderTop: '1px solid #EAE4D9' }}>
-                      {proc.requiredDocuments.length > 0 && (
-                        <div style={{ marginTop: 12, marginBottom: 10 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>الوثائق المطلوبة:</div>
-                          {proc.requiredDocuments.map((d, i) => (
-                            <div key={i} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '4px 0', borderBottom: '1px solid #EAE4D9', display: 'flex', gap: 6 }}>
-                              <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg></span><span>{d}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {proc.steps.length > 0 && (
-                        <div style={{ marginBottom: 10 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>خطوات الإجراء:</div>
-                          {proc.steps.map((s, i) => (
-                            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'flex-start' }}>
-                              <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
-                              <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.5 }}>{s}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {proc.fees && (
-                        <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 8, padding: '8px 12px', marginBottom: 10 }}>
-                          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#854D0E' }}>الرسوم:</span>
-                          <span style={{ fontSize: 11, color: '#5C4A3A', whiteSpace: 'pre-line' }}>{proc.fees.slice(0, 200)}</span>
-                        </div>
-                      )}
-                      {proc.pdfUrls.length > 0 && (
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
-                          {proc.pdfUrls.map((url, i) => (
-                            <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ padding: '6px 12px', background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 8, fontSize: 11, fontWeight: 700, textDecoration: 'none' }}>
-                              تحميل ({i + 1})
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                      {/* Ask AI */}
-                      <button onClick={() => handleAsk(isAr ? proc.title : proc.title)} style={{
-                        marginTop: 4, padding: '8px 18px', borderRadius: 10,
-                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                        border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: 'inherit',
-                        display: 'inline-flex', alignItems: 'center', gap: 6,
-                        boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
-                      }}>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                        </svg>
-                        اسأل دليلك عن هذا الإجراء
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )
-        })()}
-
-        {/* ── DETAILED PROCEDURES VIEW ──────────────────────────────────────── */}
-        {viewMode === 'detailed' && (
-          filteredDetailed.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
-              <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
-                </svg>
-              </div>
-              <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد نتائج</p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {filteredDetailed.map(proc => {
-                const isExpanded = expandedProc === proc.slug
-                return (
-                  <div key={proc.slug} style={{ background: '#fff', border: `1.5px solid ${isExpanded ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, overflow: 'hidden', boxShadow: isExpanded ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.18s' }}>
-                    <button
-                      onClick={() => setExpandedProc(isExpanded ? null : proc.slug)}
-                      style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
-                    >
-                      <div style={{ width: 40, height: 40, borderRadius: 10, background: isExpanded ? 'rgba(139,26,26,0.1)' : '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0, transition: 'background 0.15s' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                      </div>
-                      <div style={{ flex: 1, textAlign: 'right' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: isExpanded ? '#8B1A1A' : '#1A1208', lineHeight: 1.4 }}>
-                          {isAr ? proc.title_ar : proc.title_en}
-                        </div>
-                        <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
-                          <span style={{
-                            fontSize: 9.5, borderRadius: 6, padding: '1px 7px', fontWeight: 600,
-                            background: getComplexityBg(proc.complexity),
-                            color: getComplexityColor(proc.complexity),
-                            border: '1px solid transparent',
-                          }}>
-                            {getComplexityLabel(proc.complexity, isAr)}
-                          </span>
-                          {proc.estimatedDuration_ar && (
-                            <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>
-                              {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
-                            </span>
-                          )}
-                          {proc.steps.length > 0 && (
-                            <span style={{ fontSize: 9.5, color: '#065F46', background: '#ECFDF5', borderRadius: 6, padding: '1px 7px', border: '1px solid #A7F3D0' }}>
-                              {proc.steps.length} {isAr ? 'خطوات' : 'steps'}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <span style={{ color: isExpanded ? '#8B1A1A' : '#9C8E80', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
-                      </span>
-                    </button>
-
-                    {isExpanded && (
-                      <div style={{ padding: '0 14px 16px', borderTop: '1px solid #EAE4D9' }}>
-                        <p style={{ margin: '12px 0 14px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.75 }}>
-                          {isAr ? proc.description_ar : proc.description_en}
-                        </p>
-
-                        {proc.requiredDocuments.length > 0 && (
-                          <div style={{ marginBottom: 12 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
-                              {isAr ? 'الوثائق المطلوبة:' : 'Required Documents:'}
-                            </div>
-                            {proc.requiredDocuments.map((doc, i) => (
-                              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '5px 0', borderBottom: '1px solid #F4F0EB' }}>
-                                <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg></span>
-                                <span style={{ fontSize: 12, color: '#2D1B0E', lineHeight: 1.5 }}>{isAr ? doc.name_ar : doc.name_en}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {proc.steps.length > 0 && (
-                          <div style={{ marginBottom: 14 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
-                              {isAr ? 'خطوات الإجراء:' : 'Steps:'}
-                            </div>
-                            {proc.steps.map((s, i) => (
-                              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
-                                <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
-                                <div>
-                                  <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208' }}>{isAr ? s.title_ar : s.title_en}</div>
-                                  {s.description_ar && <div style={{ fontSize: 11.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.5 }}>{isAr ? s.description_ar : (s as any).description_en || s.description_ar}</div>}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        <button onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)} style={{
-                          padding: '8px 18px', borderRadius: 10,
-                          background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                          border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
-                          cursor: 'pointer', fontFamily: 'inherit',
-                          display: 'inline-flex', alignItems: 'center', gap: 6,
-                          boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
-                        }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                          </svg>
-                          {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask Dalilak'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
             </div>
           )
         )}

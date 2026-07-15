@@ -94,7 +94,7 @@ export default function ServiceGroupSheet({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={group.color} strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#1A1208' }}>
                 {isAr ? group.titleAr : group.titleEn}
               </div>
               <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 1 }}>
@@ -148,13 +148,13 @@ export default function ServiceGroupSheet({
               {/* Text */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
                     {isAr ? item.titleAr : item.titleEn}
                   </span>
                   {verBadge(item.verificationStatus)}
                 </div>
                 {(isAr ? item.descriptionAr : item.descriptionEn) && (
-                  <div style={{ fontSize: 10.5, color: '#6B7280', marginTop: 2, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.4 }}>
                     {isAr ? item.descriptionAr : item.descriptionEn}
                   </div>
                 )}

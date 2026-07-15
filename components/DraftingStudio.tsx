@@ -272,4 +272,96 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                     value={fieldValues[field.key] || ''}
                     onChange={e => setFieldValues(v => ({ ...v, [field.key]: e.target.value }))}
                     placeholder={field.placeholder || ''}
-                    style={{ width: '100%', p
+                    style={{
+                      width: '100%', padding: '10px 12px',
+                      border: '1.5px solid #EAE4D9', borderRadius: 10,
+                      fontSize: 13, fontFamily: 'inherit', outline: 'none',
+                      color: '#1A1208', background: '#fff',
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Stage 2 actions */}
+          <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+            <button
+              onClick={() => setStage(1)}
+              style={{
+                flex: 1, padding: '11px', borderRadius: 12,
+                border: '1.5px solid #EAE4D9', background: '#fff',
+                color: '#5C4A3A', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {isAr ? 'رجوع' : 'Back'}
+            </button>
+            <button
+              onClick={handleGeneratePreview}
+              disabled={fields.filter(f => f.required).some(f => !fieldValues[f.key]?.trim())}
+              style={{
+                flex: 2, padding: '11px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+                boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
+                opacity: fields.filter(f => f.required).some(f => !fieldValues[f.key]?.trim()) ? 0.5 : 1,
+              }}
+            >
+              {isAr ? 'معاينة وإرسال' : 'Preview & Send'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* STAGE 3: Preview */}
+      {stage === 3 && (
+        <div>
+          <div style={{
+            background: '#FAFAF8', border: '1.5px solid #EAE4D9',
+            borderRadius: 14, padding: '16px', marginBottom: 16,
+            maxHeight: 280, overflowY: 'auto',
+          }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {isAr ? 'الطلب المُرسَل للذكاء الاصطناعي' : 'Prompt sent to AI'}
+            </p>
+            <pre style={{ fontSize: 12, color: '#3D2A1E', margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.7, fontFamily: 'inherit' }}>
+              {previewPrompt}
+            </pre>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              onClick={() => setStage(2)}
+              style={{
+                flex: 1, padding: '11px', borderRadius: 12,
+                border: '1.5px solid #EAE4D9', background: '#fff',
+                color: '#5C4A3A', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {isAr ? 'تعديل' : 'Edit'}
+            </button>
+            <button
+              onClick={handleSend}
+              style={{
+                flex: 2, padding: '11px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+                boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              {isAr ? 'أرسل للمساعد' : 'Send to Assistant'}
+            </button>
+          </div>
+        </div>
+      )}
+
+    </div>
+  )
+}

@@ -225,7 +225,7 @@ export default function FAQPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={lang === 'ar'} activeTab="faq" />
+        <BottomNav isAr={lang === 'ar'} activeTab="services" />
       </div>
     </div>
   )

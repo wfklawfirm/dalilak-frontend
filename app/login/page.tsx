@@ -153,7 +153,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div style={{ textAlign: 'left' }}>
+          <div style={{ textAlign: 'right' }}>
             <Link href="/forgot-password" style={{ fontSize: 12.5, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600 }}>
               نسيت كلمة المرور؟
             </Link>

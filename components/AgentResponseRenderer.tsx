@@ -47,17 +47,17 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
-  'الجهة المختصة':        { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
-  'الجهة':                { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
-  'الجهات':               { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
-  'responsible authority':{ bg: '#F5F3FF', border: '#DDD6FE', icon: SvgBuilding, labelColor: '#6D28D9' },
+  'الجهة المختصة':        { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'الجهة':                { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'الجهات':               { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'responsible authority':{ bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
   'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
   'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
   'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
-  'الرسوم':               { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
-  'التكاليف':             { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
-  'الأتعاب':              { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
-  'fees':                 { bg: '#FAF5FF', border: '#E9D5FF', icon: SvgFee,      labelColor: '#7E22CE' },
+  'الرسوم':               { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
+  'التكاليف':             { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
+  'الأتعاب':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
+  'fees':                 { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
   'المدة':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
   'مدة الإجراء':          { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
   'المهل':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
@@ -70,10 +70,10 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
   'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
   'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'الأساس القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
-  'النص القانوني':        { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
-  'المرجع القانوني':      { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
-  'legal basis':          { bg: '#F5F3FF', border: '#DDD6FE', icon: SvgScales,   labelColor: '#6D28D9' },
+  'الأساس القانوني':      { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
+  'النص القانوني':        { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
+  'المرجع القانوني':      { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
+  'legal basis':          { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
   'المصدر':               { bg: '#FAFAF8', border: '#EAE4D9', icon: SvgLink,     labelColor: '#2D1B0E' },
   'المصادر':              { bg: '#FAFAF8', border: '#EAE4D9', icon: SvgLink,     labelColor: '#2D1B0E' },
 }
@@ -616,4 +616,104 @@ export function ResponseActions({
 
 // ── Main AgentResponseRenderer ────────────────────────────────
 interface AgentResponseRendererProps {
- 
+  content: string
+  isAr: boolean
+  sources?: AgentSource[]
+  confidence?: ConfidenceLevel
+  lastReviewed?: string
+  onFollowUp?: (q: string) => void
+  question?: string
+  defaultExpandSources?: boolean
+}
+
+export default function AgentResponseRenderer({
+  content,
+  isAr,
+  sources,
+  confidence,
+  lastReviewed,
+  onFollowUp,
+  question,
+  defaultExpandSources,
+}: AgentResponseRendererProps) {
+  const [activeCitation, setActiveCitation] = useState<number | null>(null)
+
+  const handleCitation = (n: number) => {
+    setActiveCitation(prev => prev === n ? null : n)
+  }
+
+  const sections = parseSections(content)
+  const isStructured = sections.length > 1
+
+  return (
+    <div style={{
+      fontFamily: "'Cairo','Inter',sans-serif",
+      fontSize: 13, color: '#1A1208', lineHeight: 1.8,
+      direction: isAr ? 'rtl' : 'ltr',
+    }}>
+      {isStructured ? (
+        <div>
+          {sections.map((sec, i) => {
+            if (sec.header === null) {
+              const nonEmpty = sec.lines.filter(l => l.trim())
+              if (!nonEmpty.length) return null
+              return (
+                <div key={i} style={{ marginBottom: 10 }}>
+                  <MarkdownFallbackRenderer
+                    lines={sec.lines}
+                    onCitation={handleCitation}
+                    activeCitation={activeCitation}
+                  />
+                </div>
+              )
+            }
+            const style = getSectionStyle(sec.header)
+            return (
+              <AgentSectionCard
+                key={i}
+                header={sec.header}
+                lines={sec.lines}
+                style={style}
+                onCitation={handleCitation}
+                activeCitation={activeCitation}
+              />
+            )
+          })}
+        </div>
+      ) : (
+        <MarkdownFallbackRenderer
+          lines={content.split('\n')}
+          onCitation={handleCitation}
+          activeCitation={activeCitation}
+        />
+      )}
+
+      <TrustBadge
+        isAr={isAr}
+        sources={sources}
+        confidence={confidence}
+        lastReviewed={lastReviewed}
+        activeCitation={activeCitation}
+        defaultExpanded={defaultExpandSources}
+      />
+
+      <ResponseActions
+        content={content}
+        isAr={isAr}
+        onFollowUp={onFollowUp}
+        question={question}
+        confidence={confidence}
+      />
+
+      <p style={{
+        fontSize: 10, color: '#C4B5A5', marginTop: 10,
+        paddingTop: 8, borderTop: '1px solid #F0EBE0',
+        textAlign: isAr ? 'right' : 'left',
+      }}>
+        {isAr
+          ? 'دليلك: معلومات إرشادية لا تُغني عن المختص القانوني.'
+          : 'Dalilak: Informational only — does not replace legal counsel.'}
+      </p>
+    </div>
+  )
+}

@@ -6,6 +6,7 @@ import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import { FLOWCHARTS } from '@/lib/flowchartData'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PageHeader, SectionCard, EmptyState } from '@/components/ui'
+import BottomNav from '@/components/BottomNav'
 
 export default function PlaybookPage() {
   const params = useParams()
@@ -200,3 +201,84 @@ export default function PlaybookPage() {
         })()}
 
         {/* Authority */}
+        {(proc?.authority || activeFlowchart?.authorityAr) && (
+          <SectionCard
+            title={isAr ? 'الجهة المختصة' : 'Competent Authority'}
+            icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>}
+            bg="#FEF9EC"
+            border="#FDE68A"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"/></svg>
+              </div>
+              <div>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: '#1A1208', margin: 0 }}>
+                  {isAr ? (proc?.authority || activeFlowchart.authorityAr || '') : (proc?.authority || activeFlowchart.authorityEn || activeFlowchart.authorityAr || '')}
+                </p>
+                <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>
+                  {isAr ? 'الجهة المخوّلة بإتمام هذه المعاملة' : 'Authority responsible for this procedure'}
+                </p>
+              </div>
+            </div>
+          </SectionCard>
+        )}
+
+        {/* Ask AI CTA */}
+        <div style={{
+          background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+          borderRadius: 18, padding: '20px 20px',
+          display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center', textAlign: 'center',
+          boxShadow: '0 4px 24px rgba(80,10,10,0.2)',
+        }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+          <div>
+            <p style={{ color: '#fff', fontWeight: 800, fontSize: 15, margin: '0 0 4px' }}>
+              {isAr ? 'لديك سؤال عن هذا المسار؟' : 'Questions about this playbook?'}
+            </p>
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, margin: 0 }}>
+              {isAr ? 'اسأل دليلك وسيجيبك فوراً' : 'Ask Dalilak for an instant answer'}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              const q = isAr
+                ? `اشرح لي إجراء: ${proc?.title ?? slug}`
+                : `Explain this procedure: ${proc?.title ?? slug}`
+              router.push(`/?q=${encodeURIComponent(q)}`)
+            }}
+            style={{
+              background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)',
+              borderRadius: 12, padding: '10px 24px', color: '#fff',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+          </button>
+        </div>
+
+        {/* Back to procedure */}
+        <div style={{ textAlign: 'center', marginTop: 6 }}>
+          <button
+            onClick={() => router.push(`/procedures/${slug}`)}
+            style={{ background: 'none', border: 'none', color: '#9C8E80', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5 }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
+            </svg>
+            {isAr ? 'العودة إلى صفحة الإجراء' : 'Back to Procedure'}
+          </button>
+        </div>
+
+      </div>{/* end content */}
+
+      <BottomNav isAr={isAr} activeTab="procedures" />
+    </div>
+  )
+}

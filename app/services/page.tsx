@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import BottomNav from '@/components/BottomNav'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -63,6 +62,80 @@ interface Procedure {
   last_verified: string
 }
 
+function ProcedureSheet({ proc, lang, onClose, onAsk }: {
+  proc: Procedure
+  lang: 'ar' | 'en'
+  onClose: () => void
+  onAsk: (q: string) => void
+}) {
+  const isAr = lang === 'ar'
+  const catLabel = CATEGORIES.find(c => c.id === proc.category)?.[isAr ? 'label_ar' : 'label_en'] || proc.category
+  return (
+    <div
+      style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(3px)' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div style={{ background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 720, margin: '0 auto', maxHeight: '75vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 -8px 40px rgba(0,0,0,0.2)' }}>
+        {/* Handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 16px 6px' }}>
+          <div style={{ width: 40, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
+        </div>
+        {/* Header */}
+        <div style={{ padding: '0 20px 14px', borderBottom: '1px solid #EAE4D9' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <div style={{ width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FDE8E8)', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1A1208', lineHeight: 1.3 }}>
+                {isAr ? proc.title_ar : (proc.title_en || proc.title_ar)}
+              </h2>
+              {proc.authority && <p style={{ margin: '4px 0 0', fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>{proc.authority}</p>}
+            </div>
+            <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: 10, width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 11, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 8, padding: '3px 9px', border: '1px solid rgba(139,26,26,0.15)', fontWeight: 600 }}>
+              {catLabel}
+            </span>
+            {proc.status === 'active' && (
+              <span style={{ fontSize: 11, color: '#065F46', background: '#ECFDF5', borderRadius: 8, padding: '3px 9px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
+                {isAr ? 'متاح' : 'Active'}
+              </span>
+            )}
+          </div>
+        </div>
+        {/* Body */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+          {proc.summary_ar ? (
+            <p style={{ margin: 0, fontSize: 13, color: '#2D1B0E', lineHeight: 1.7 }}>{proc.summary_ar}</p>
+          ) : (
+            <p style={{ margin: 0, fontSize: 13, color: '#9C8E80', lineHeight: 1.7 }}>اسأل دليلك للحصول على تفاصيل كاملة وخطوات هذه الخدمة.</p>
+          )}
+          <p style={{ fontSize: 10, color: '#9C8E80', marginTop: 16, lineHeight: 1.5, padding: '10px 14px', background: '#FAFAF8', borderRadius: 8 }}>
+            المعلومات للإرشاد العام — تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.
+          </p>
+        </div>
+        {/* Footer */}
+        <div style={{ padding: '12px 20px 28px', borderTop: '1px solid #EAE4D9', display: 'flex', gap: 10 }}>
+          <button
+            onClick={() => onAsk(isAr ? proc.title_ar : (proc.title_en || proc.title_ar))}
+            style={{ flex: 1, padding: '12px 16px', borderRadius: 14, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            اسأل دليلك عن هذه الخدمة
+          </button>
+          <button onClick={onClose} style={{ padding: '12px 16px', borderRadius: 14, background: '#FAFAF8', border: '1.5px solid #EAE4D9', color: '#5C4A3A', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            إغلاق
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ServicesPage() {
   const router = useRouter()
   const [procedures, setProcedures] = useState<Procedure[]>([])
@@ -70,6 +143,12 @@ export default function ServicesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const [selectedProc, setSelectedProc] = useState<Procedure | null>(null)
+
+  const handleAsk = (title: string) => {
+    setSelectedProc(null)
+    router.push(`/?q=${encodeURIComponent(title)}`)
+  }
 
   const fetchProcedures = async (cat?: string, q?: string) => {
     setLoading(true)
@@ -333,15 +412,16 @@ export default function ServicesPage() {
             gap: 14,
           }}>
             {procedures.map(proc => (
-              <Link
+              <button
                 key={proc.id}
-                href={`/procedures/${proc.slug || proc.id}`}
+                onClick={() => setSelectedProc(proc)}
                 className="proc-card"
                 style={{
                   display: 'block', background: '#fff', borderRadius: 16,
                   padding: '18px', border: '1.5px solid #EAE4D9',
-                  textDecoration: 'none',
+                  textDecoration: 'none', textAlign: 'right',
                   boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                  fontFamily: 'inherit', cursor: 'pointer', width: '100%',
                 }}
               >
                 {/* Card top: category badge + status dot */}
@@ -386,7 +466,7 @@ export default function ServicesPage() {
                 )}
 
                 {/* Authority + arrow */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   {proc.authority ? (
                     <span style={{
                       fontSize: 10, color: '#9C8E80', fontWeight: 500,
@@ -403,11 +483,21 @@ export default function ServicesPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
                   </svg>
                 </div>
-              </Link>
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      {/* ── Procedure Sheet ──────────────────────────────────────────────────── */}
+      {selectedProc && (
+        <ProcedureSheet
+          proc={selectedProc}
+          lang={lang}
+          onClose={() => setSelectedProc(null)}
+          onAsk={handleAsk}
+        />
+      )}
 
       {/* ── Bottom Nav ───────────────────────────────────────────────────────── */}
       <div className="bottom-nav-wrapper">

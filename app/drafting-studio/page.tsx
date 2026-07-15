@@ -66,7 +66,7 @@ export default function DraftingStudioPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={isAr} activeTab="drafting" />
+        <BottomNav isAr={isAr} activeTab="services" />
       </div>
     </div>
   )

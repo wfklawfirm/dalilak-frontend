@@ -206,4 +206,59 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
                   </div>
                 </li>
               ))}
-          
+            </ol>
+            {tx.steps.length > 4 && (
+              <p style={{ fontSize: 11, color: '#9C8E80', marginTop: 6, textAlign: 'center' }}>
+                +{tx.steps.length - 4} خطوات أخرى
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Sources */}
+        {sourcesCount > 0 && !compact && (
+          <div>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 6px' }}>
+              المستندات المرجعية ({sourcesCount})
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {tx.sources?.slice(0, 5).map((src, i) => (
+                <span key={i} style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '3px 10px', borderRadius: 99 }}>
+                  {typeof src === 'string' ? src : JSON.stringify(src)}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Dates */}
+        {(tx.created_at || tx.updated_at) && (
+          <div style={{ display: 'flex', gap: 16, paddingTop: 8, borderTop: '1px solid #EAE4D9' }}>
+            {tx.created_at && (
+              <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>
+                الإنشاء: <span style={{ color: '#5C4A3A' }}>{formatDate(tx.created_at)}</span>
+              </p>
+            )}
+            {tx.updated_at && (
+              <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>
+                آخر تحديث: <span style={{ color: '#5C4A3A' }}>{formatDate(tx.updated_at)}</span>
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; valueColor?: string }) {
+  return (
+    <div style={{
+      background: '#FAFAF8', border: '1px solid #EAE4D9',
+      borderRadius: 12, padding: '10px 12px', textAlign: 'center',
+    }}>
+      <p style={{ fontSize: 20, fontWeight: 800, color: valueColor, margin: '0 0 2px', fontFamily: "'Cairo','Inter',sans-serif" }}>{value}</p>
+      <p style={{ fontSize: 10, color: '#9C8E80', margin: 0 }}>{label}</p>
+    </div>
+  )
+}

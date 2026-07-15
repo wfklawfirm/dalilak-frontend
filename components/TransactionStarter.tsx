@@ -148,7 +148,7 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   onMouseLeave={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
                 >
                   <span style={{ display: 'flex' }}>{ut.icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{isAr ? ut.ar : ut.en}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? ut.ar : ut.en}</span>
                 </button>
               ))}
             </div>
@@ -173,7 +173,7 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   onMouseLeave={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
                 >
                   <span style={{ display: 'flex' }}>{tt.icon}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, color: '#111827', textAlign: 'center' }}>{isAr ? tt.ar : tt.en}</span>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', textAlign: 'center' }}>{isAr ? tt.ar : tt.en}</span>
                 </button>
               ))}
             </div>
@@ -200,8 +200,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                 >
                   <span style={{ flexShrink: 0, display: 'flex' }}>{g.icon}</span>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{isAr ? g.ar : g.en}</div>
-                    <div style={{ fontSize: 10.5, color: '#6B7280' }}>{isAr ? g.desc_ar : g.desc_en}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? g.ar : g.en}</div>
+                    <div style={{ fontSize: 10.5, color: '#5C4A3A' }}>{isAr ? g.desc_ar : g.desc_en}</div>
                   </div>
                 </button>
               ))}

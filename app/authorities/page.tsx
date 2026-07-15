@@ -54,6 +54,7 @@ export default function AuthoritiesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [typeFilter, setTypeFilter] = useState('all')
+  const [search, setSearch] = useState('')
   const isAr = lang === 'ar'
 
   useEffect(() => {
@@ -74,7 +75,17 @@ export default function AuthoritiesPage() {
     load()
   }, [])
 
-  const filtered = typeFilter === 'all' ? authorities : authorities.filter(a => a.type === typeFilter)
+  const filtered = authorities
+    .filter(a => typeFilter === 'all' || a.type === typeFilter)
+    .filter(a => {
+      if (!search.trim()) return true
+      const q = search.trim().toLowerCase()
+      return (
+        a.nameAr.includes(search) ||
+        a.nameEn.toLowerCase().includes(q) ||
+        a.type.includes(q)
+      )
+    })
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -105,6 +116,23 @@ export default function AuthoritiesPage() {
       />
 
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
+
+        {/* Search */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 12, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={isAr ? 'ابحث عن جهة رسمية...' : 'Search authorities...'}
+            dir={isAr ? 'rtl' : 'ltr'}
+            style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          )}
+        </div>
 
         {/* Type filters */}
         <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16 }}>
@@ -142,8 +170,8 @@ export default function AuthoritiesPage() {
         {!loading && !error && filtered.length === 0 && (
           <EmptyState
             icon={<TypeIcon type="ministry" size={40} />}
-            titleAr="لا توجد جهات في هذه الفئة"
-            titleEn="No authorities in this category"
+            titleAr={search ? `لا توجد جهات مطابقة لـ "${search}"` : 'لا توجد جهات في هذه الفئة'}
+            titleEn={search ? `No results for "${search}"` : 'No authorities in this category'}
             isAr={isAr}
           />
         )}
@@ -152,6 +180,7 @@ export default function AuthoritiesPage() {
         {!loading && filtered.length > 0 && (
           <p style={{ fontSize: 11.5, color: '#9C8E80', margin: '0 0 12px' }}>
             {filtered.length} {isAr ? 'جهة رسمية' : 'official authorities'}
+            {search && <span style={{ color: '#8B1A1A', fontWeight: 600 }}> — &quot;{search}&quot;</span>}
           </p>
         )}
 
@@ -221,7 +250,7 @@ export default function AuthoritiesPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={lang === 'ar'} activeTab="authorities" />
+        <BottomNav isAr={lang === 'ar'} activeTab="services" />
       </div>
     </div>
   )
