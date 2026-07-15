@@ -27,3 +27,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# stray temp files (0-byte grep artifacts)
+\#*
+216
+brand
+warm
+warmGrey
+titleAr

@@ -384,11 +384,11 @@ export default function MyFilesPage() {
                               display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',
                               borderRadius: 10, border: '1.5px solid',
                               borderColor: doc.uploaded ? '#BBF7D0' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
-                              background: doc.uploaded ? '#F0FDF4' : doc.required ? '#FFFBF9' : '#FAFAF8',
+                              background: doc.uploaded ? '#F0FDF4' : doc.required ? '#FEF7F7' : '#FAFAF8',
                             }}>
                               <div style={{
                                 width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                                background: doc.uploaded ? '#16A34A' : doc.required ? '#FEF2F2' : '#F4F0EB',
+                                background: doc.uploaded ? '#16A34A' : doc.required ? '#FEF2F2' : '#EAE4D9',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 color: doc.uploaded ? '#fff' : doc.required ? '#8B1A1A' : '#9C8E80',
                               }}>

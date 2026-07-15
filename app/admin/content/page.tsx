@@ -123,7 +123,7 @@ export default function ContentGovernancePage() {
 
   return (
     <div dir="rtl" style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
-      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; }`}</style>
+      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } }`}</style>
 
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)' }}>
@@ -156,7 +156,7 @@ export default function ContentGovernancePage() {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px 20px 60px' }}>
 
         {/* Pipeline overview */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 20 }}>
+        <div className="pipeline-grid" style={{ marginBottom: 20 }}>
           {Object.entries(STATUS_CONFIG).map(([status, cfg]) => (
             <button
               key={status}
@@ -177,7 +177,7 @@ export default function ContentGovernancePage() {
         </div>
 
         {/* Main layout */}
-        <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 1fr' : '1fr', gap: 16 }}>
+        <div className="content-main" style={{ gridTemplateColumns: selected ? '1fr 1fr' : '1fr' }}>
 
           {/* List */}
           <div>

@@ -204,7 +204,7 @@ export default function AdminPage() {
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
         .adm-tr:hover { background: #FAFAF8 !important; }
         .adm-btn:hover { opacity: 0.82; }
-        .adm-gap-row:hover { background: rgba(250,248,245,0.8) !important; }
+        .adm-gap-row:hover { background: #FAFAF8 !important; }
       `}</style>
 
       {/* Header */}

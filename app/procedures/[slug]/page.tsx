@@ -231,7 +231,7 @@ export default function ProcedurePage() {
                   </span>
                   <span style={{ flex:1, fontSize:13, color:'#1A1208', fontWeight: doc.required ? 600 : 400 }}>{doc.name_ar}</span>
                   {!doc.required && (
-                    <span style={{ fontSize:10, color:'#9C8E80', background:'#F0EBE0', borderRadius:20, padding:'1px 8px' }}>اختياري</span>
+                    <span style={{ fontSize:10, color:'#9C8E80', background:'#EAE4D9', borderRadius:20, padding:'1px 8px' }}>اختياري</span>
                   )}
                 </div>
               ))}

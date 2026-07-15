@@ -951,7 +951,7 @@ export default function Home() {
         {followupQuestions.length > 0 && !loading && (
           <div style={{
             maxWidth: 720, margin: '0 auto', padding: '4px 12px 2px',
-            display: 'flex', flexWrap: 'wrap', gap: 8, direction: 'rtl',
+            display: 'flex', flexWrap: 'wrap', gap: 8, direction: isAr ? 'rtl' : 'ltr',
           }}>
             {followupQuestions.map((q, i) => (
               <button

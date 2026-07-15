@@ -896,7 +896,7 @@ export default function DocumentIntelligenceView({
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.relatedProcedures.map((p, i) => (
-              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #F0EBE0', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>{isAr ? p.titleAr : p.titleEn}</div>
                   <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? p.ministry : p.ministry}</div>

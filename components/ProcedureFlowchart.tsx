@@ -195,7 +195,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                 <div style={{ display: 'flex', paddingRight: compact ? 18 : 22, margin: compact ? '3px 0' : '5px 0' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingRight: compact ? 0 : 0 }}>
                     {outgoingEdges.length > 0 && outgoingEdges[0].label && (
-                      <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#F4F0EB', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#EAE4D9', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
                         {outgoingEdges[0].label}
                       </span>
                     )}
