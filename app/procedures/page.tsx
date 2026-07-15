@@ -217,7 +217,7 @@ export default function ProceduresPage() {
       if (seen.has(c.slug)) return false
       seen.add(c.slug)
       return true
-    }).slice(0, 20)
+    })
   }, [])
 
   const totalProcedureResults = filteredGuided.length + filteredEnriched.length
