@@ -14,6 +14,7 @@ import TransactionStarter, { type StarterResult } from '@/components/Transaction
 import ServiceGroupSheet from '@/components/ServiceGroupSheet'
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
+import { ALL_SERVICES } from '@/lib/allServices'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -819,9 +820,10 @@ export default function Home() {
               {/* ── Content Area ── */}
               <div style={{ maxWidth: 720, margin: '0 auto', padding: '18px 14px 100px' }}>
 
-                {/* ── Stats trust strip — premium grid ── */}
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:0, marginBottom:22, borderBottom:'1px solid #EAE4D9' }}>
+                {/* ── Stats trust strip — 2×2 premium grid ── */}
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:0, marginBottom:22, border:'1px solid #EAE4D9', borderRadius:14, overflow:'hidden' }}>
                   {[
+                    { num: String(ALL_SERVICES.length), lAr:'خدمة موثّقة', lEn:'Documented services' },
                     { num: TX_ALL.length.toLocaleString('en-US'), lAr:'إجراء حكومي', lEn:'Procedures' },
                     { num: TX_WITH_FORMS.length.toLocaleString('en-US'), lAr:'نموذج رسمي', lEn:'Official forms' },
                     { num: String(TX_MINISTRIES.length), lAr:'وزارة وجهة', lEn:'Ministries' },
@@ -829,9 +831,11 @@ export default function Home() {
                     <div key={i} style={{
                       display:'flex', flexDirection:'column', alignItems:'center',
                       padding:'14px 8px 16px',
-                      borderRight: i < 2 ? '1px solid #EAE4D9' : 'none',
+                      background: i === 0 ? 'linear-gradient(135deg, #FEF2F2, #FDE8E8)' : '#fff',
+                      borderRight: i % 2 === 0 ? '1px solid #EAE4D9' : 'none',
+                      borderBottom: i < 2 ? '1px solid #EAE4D9' : 'none',
                     }}>
-                      <span style={{ fontSize:'clamp(17px,5vw,20px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.6px', lineHeight:1 }}>{s.num}</span>
+                      <span style={{ fontSize:'clamp(18px,5.5vw,22px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.8px', lineHeight:1 }}>{s.num}</span>
                       <span style={{ fontSize:10, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center' }}>{isAr ? s.lAr : s.lEn}</span>
                     </div>
                   ))}

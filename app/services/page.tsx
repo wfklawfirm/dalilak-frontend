@@ -242,6 +242,20 @@ export default function ServicesPage() {
     router.push(`/?q=${encodeURIComponent(q)}`)
   }, [router])
 
+  // Dynamic category counts
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    ALL_SERVICES.forEach(s => {
+      if (s.categorySlug) counts[s.categorySlug] = (counts[s.categorySlug] || 0) + 1
+    })
+    return counts
+  }, [])
+
+  // Sort categories by count descending
+  const sortedCategories = useMemo(() =>
+    [...SERVICE_CATEGORIES].sort((a, b) => (categoryCounts[b.slug] || 0) - (categoryCounts[a.slug] || 0)),
+  [categoryCounts])
+
   // Filter services locally — instant, no API call
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -409,8 +423,9 @@ export default function ServicesPage() {
               الكل ({ALL_SERVICES.length})
             </button>
 
-            {SERVICE_CATEGORIES.map(cat => {
+            {sortedCategories.map(cat => {
               const active = selectedCat === cat.slug
+              const cnt = categoryCounts[cat.slug] || 0
               return (
                 <button
                   key={cat.slug}
@@ -432,9 +447,12 @@ export default function ServicesPage() {
                     color: active ? '#8B1A1A' : '#5C4A3A',
                     boxShadow: active ? '0 2px 8px rgba(139,26,26,0.15)' : 'none',
                     whiteSpace: 'nowrap', flexShrink: 0,
+                    display: 'flex', alignItems: 'center', gap: 5,
                   }}
                 >
-                  {cat.label_ar} <span style={{ opacity: 0.6, fontSize: 10 }}>({cat.count})</span>
+                  <span style={{ fontSize: 14, lineHeight: 1 }}>{cat.icon}</span>
+                  {cat.label_ar}
+                  {cnt > 0 && <span style={{ opacity: 0.55, fontSize: 10, fontWeight: 600 }}>{cnt}</span>}
                 </button>
               )
             })}
@@ -509,44 +527,53 @@ export default function ServicesPage() {
                 onClick={() => setSelectedService(service)}
                 className="svc-card"
                 style={{
-                  display: 'block', background: '#fff', borderRadius: 16,
-                  padding: '16px', border: '1.5px solid #EAE4D9',
+                  display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,
+                  padding: '14px', border: '1.5px solid #EAE4D9',
                   textAlign: 'right', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                   fontFamily: 'inherit', cursor: 'pointer', width: '100%',
-                  transition: 'all 0.14s',
+                  transition: 'all 0.14s', position: 'relative', overflow: 'hidden',
                 }}
                 onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)'; e.currentTarget.style.transform = 'scale(0.98)' }}
                 onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
               >
-                {/* Top row: icon + category */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <span className="svc-cat" style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 9px', border: '1px solid rgba(139,26,26,0.12)', fontWeight: 600 }}>
-                    {service.category}
-                  </span>
-                  <span className="svc-icon" style={{ fontSize: 20 }}>{service.icon}</span>
+                {/* Top row: icon badge + chevron */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: 11,
+                    background: 'linear-gradient(135deg, #FEF2F2, #FCE8E8)',
+                    border: '1px solid rgba(139,26,26,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    <span className="svc-icon" style={{ fontSize: 20, lineHeight: 1 }}>{service.icon}</span>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="2" style={{ flexShrink: 0, marginTop: 3 }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                  </svg>
                 </div>
 
                 {/* Name */}
                 <h3 style={{
-                  fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 5px', lineHeight: 1.4,
+                  fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', lineHeight: 1.4,
                   display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                  flex: 1,
                 }}>
                   {service.name_ar}
                 </h3>
 
                 {/* Authority */}
                 <p style={{
-                  fontSize: 11, color: '#8B1A1A', margin: '0 0 10px', fontWeight: 600,
+                  fontSize: 10.5, color: '#8B1A1A', margin: '0 0 10px', fontWeight: 700,
                   display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                 }}>
                   {service.authority_ar}
                 </p>
 
                 {/* Meta row */}
-                <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                   {service.fees && (
                     <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                      {service.fees.length > 20 ? service.fees.slice(0, 20) + '…' : service.fees}
+                      {service.fees.length > 18 ? service.fees.slice(0, 18) + '…' : service.fees}
                     </span>
                   )}
                   {service.processing_time && (
@@ -557,6 +584,11 @@ export default function ServicesPage() {
                   {service.online_available && (
                     <span style={{ fontSize: 10, color: '#065F46', background: '#ECFDF5', borderRadius: 20, padding: '2px 8px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
                       أونلاين
+                    </span>
+                  )}
+                  {service.required_documents && service.required_documents.length > 0 && (
+                    <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
+                      {service.required_documents.length} وثيقة
                     </span>
                   )}
                 </div>
