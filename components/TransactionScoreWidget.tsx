@@ -74,9 +74,14 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
         <div style={{
           height: '100%',
           width: `${score.score}%`,
-          background: scoreColor,
+          background: score.score >= 80
+            ? 'linear-gradient(90deg, #78350F, #B45309)'
+            : score.score >= 50
+            ? 'linear-gradient(90deg, #B8860B, #CA8A04)'
+            : 'linear-gradient(90deg, #B91C1C, #DC2626)',
           borderRadius: 3,
           transition: 'width 0.6s ease',
+          boxShadow: `0 0 6px ${score.score >= 80 ? 'rgba(180,83,9,0.35)' : score.score >= 50 ? 'rgba(184,134,11,0.3)' : 'rgba(220,38,38,0.3)'}`,
         }} />
       </div>
 
@@ -92,7 +97,11 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
               <div style={{
                 height: '100%',
                 width: `${item.value}%`,
-                background: item.value >= 70 ? '#B45309' : item.value >= 40 ? '#B8860B' : '#DC2626',
+                background: item.value >= 70
+                  ? 'linear-gradient(90deg, #78350F, #B45309)'
+                  : item.value >= 40
+                  ? 'linear-gradient(90deg, #B8860B, #CA8A04)'
+                  : 'linear-gradient(90deg, #B91C1C, #DC2626)',
                 borderRadius: 2,
               }} />
             </div>

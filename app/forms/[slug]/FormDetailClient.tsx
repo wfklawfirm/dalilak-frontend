@@ -114,9 +114,11 @@ export default function FormDetailClient({ form }: Props) {
             {form.url && (
               <button
                 onClick={handleDownload}
-                onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
-                onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
-                style={{ background: BRAND, color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.1s' }}>
+                onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(139,26,26,0.2)' }}
+                onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.35)' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(139,26,26,0.4)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.35)' }}
+                style={{ background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.15s', boxShadow: '0 4px 14px rgba(139,26,26,0.35)' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 {isAr ? 'فتح النموذج' : 'Open Form'}
               </button>
@@ -133,16 +135,37 @@ export default function FormDetailClient({ form }: Props) {
         </div>
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
           </h3>
-          <ol style={{ margin: 0, paddingInlineStart: 20, color: '#5C4A3A', fontSize: 14, lineHeight: 1.8 }}>
-            <li>{isAr ? 'افتح النموذج أو نزّله بالضغط على الزر أعلاه.' : 'Open or download the form using the button above.'}</li>
-            <li>{isAr ? 'اقرأ التعليمات بعناية قبل التعبئة.' : 'Read instructions carefully before filling.'}</li>
-            <li>{isAr ? 'تأكد من صحة جميع المعلومات المُدخلة.' : 'Verify all entered information is correct.'}</li>
-            <li>{isAr ? 'قدّم النموذج للجهة المعنية مع الوثائق المطلوبة.' : 'Submit the form to the relevant authority with required documents.'}</li>
-          </ol>
+          {(() => {
+            const steps = isAr
+              ? ['افتح النموذج أو نزّله بالضغط على الزر أعلاه.', 'اقرأ التعليمات بعناية قبل التعبئة.', 'تأكد من صحة جميع المعلومات المُدخلة.', 'قدّم النموذج للجهة المعنية مع الوثائق المطلوبة.']
+              : ['Open or download the form using the button above.', 'Read instructions carefully before filling.', 'Verify all entered information is correct.', 'Submit the form to the relevant authority with required documents.']
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {steps.map((step, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                        color: '#fff', fontSize: 12, fontWeight: 800,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 1px 4px rgba(139,26,26,0.25)',
+                        flexShrink: 0,
+                      }}>{i + 1}</div>
+                      {i < steps.length - 1 && (
+                        <div style={{ width: 2, flex: 1, minHeight: 16, background: 'linear-gradient(to bottom, rgba(139,26,26,0.4), rgba(139,26,26,0.05))', marginTop: 3 }} />
+                      )}
+                    </div>
+                    <p style={{ fontSize: 13.5, color: '#1A1208', margin: '4px 0', paddingBottom: i < steps.length - 1 ? 14 : 0, lineHeight: 1.6, flex: 1 }}>{step}</p>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
         </div>
 
         {relatedProcedures.length > 0 && (

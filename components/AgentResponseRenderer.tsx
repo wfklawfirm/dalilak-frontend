@@ -279,9 +279,9 @@ export function MarkdownFallbackRenderer({
       let num = 1
       while (i < lines.length && /^\d+\. /.test(lines[i])) {
         const content = lines[i].replace(/^\d+\. /, '')
-        items.push(<li key={i} style={{ marginBottom: '0.32rem', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-          <span style={{ minWidth: 22, height: 22, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{num++}</span>
-          <span style={{ paddingTop: 2 }}>{inlineFormat(content, i, onCitation, activeCitation)}</span>
+        items.push(<li key={i} style={{ marginBottom: '0.38rem', display: 'flex', gap: 9, alignItems: 'flex-start' }}>
+          <span style={{ minWidth: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(139,26,26,0.2)', marginTop: 1 }}>{num++}</span>
+          <span style={{ paddingTop: 2, lineHeight: 1.7 }}>{inlineFormat(content, i, onCitation, activeCitation)}</span>
         </li>)
         i++
       }

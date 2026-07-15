@@ -73,7 +73,7 @@ const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }>
   ministry:     { color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' },
   council:      { color: '#8B1A1A', bg: '#FEF2F2', border: '#FECACA' },
   municipality: { color: '#5C4A3A', bg: '#F5F0EB', border: '#D5CEC4' },
-  court:        { color: '#6B21A8', bg: '#F5F3FF', border: '#DDD6FE' },
+  court:        { color: '#713F12', bg: '#FEF9EE', border: '#FDE68A' },
   union:        { color: '#92400E', bg: '#FFF7ED', border: '#FED7AA' },
   bank:         { color: '#B45309', bg: '#FEF3C7', border: '#FCD34D' },
   security:     { color: '#44403C', bg: '#F5F5F4', border: '#D4D0CA' },

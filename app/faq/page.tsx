@@ -209,76 +209,91 @@ export default function FAQPage() {
                     <div style={{ padding: '0 14px 14px', borderTop: '1px solid #EAE4D9' }}>
                       {/* Summary */}
                       {item.summary && (
-                        <p style={{ margin: '12px 0 10px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.8 }}>
+                        <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.8, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #EAE4D9' }}>
                           {item.summary}
                         </p>
                       )}
                       {/* Steps */}
                       {item.steps && item.steps.length > 0 && (
                         <div style={{ marginBottom: 12 }}>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
                             {isAr ? 'الخطوات:' : 'Steps:'}
                           </div>
-                          {item.steps.map((step, si) => (
-                            <div key={si} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', paddingBottom: 6 }}>
-                              <span style={{ width: 18, height: 18, borderRadius: '50%', background: 'rgba(139,26,26,0.1)', color: '#8B1A1A', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>{si + 1}</span>
-                              <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.55 }}>{step}</span>
-                            </div>
-                          ))}
+                          {item.steps.map((step, si) => {
+                            const isLast = si === (item.steps?.length ?? 0) - 1
+                            return (
+                              <div key={si} style={{ display: 'flex', gap: 9, paddingBottom: isLast ? 0 : 8, alignItems: 'stretch' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                                  <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(139,26,26,0.2)' }}>{si + 1}</span>
+                                  {!isLast && <div style={{ width: 1.5, flex: 1, background: 'rgba(139,26,26,0.15)', marginTop: 3, borderRadius: 1 }} />}
+                                </div>
+                                <div style={{ paddingTop: 2 }}>
+                                  <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.6 }}>{step}</span>
+                                </div>
+                              </div>
+                            )
+                          })}
                         </div>
                       )}
                       {/* Required docs */}
                       {item.requiredDocuments && item.requiredDocuments.length > 0 && (
-                        <div style={{ marginBottom: 10, background: '#FAFAF8', borderRadius: 9, padding: '8px 10px', border: '1px solid #EAE4D9' }}>
-                          <div style={{ fontSize: 11, fontWeight: 700, color: '#1A1208', marginBottom: 5 }}>
+                        <div style={{ marginBottom: 12 }}>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             {isAr ? 'الوثائق المطلوبة:' : 'Required documents:'}
                           </div>
-                          {item.requiredDocuments.map((doc, di) => (
-                            <div key={di} style={{ fontSize: 11, color: '#5C4A3A', display: 'flex', gap: 5, paddingBottom: 3 }}>
-                              <span style={{ color: '#8B1A1A', flexShrink: 0 }}>·</span>
-                              <span>{doc}</span>
-                            </div>
-                          ))}
+                          <div style={{ borderRadius: 9, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+                            {item.requiredDocuments.map((doc, di) => (
+                              <div key={di} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '6px 12px', background: di % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: di < (item.requiredDocuments?.length ?? 0) - 1 ? '1px solid #EAE4D9' : 'none', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
+                                <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 5 }}><svg width="4" height="4" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg></span>
+                                <span style={{ lineHeight: 1.5 }}>{doc}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
-                      {/* Fees + authority inline strip */}
+                      {/* Fees + authority + duration meta strip */}
                       {(item.fees || item.duration || item.authority) && (
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                           {item.fees && item.fees.trim() && !item.fees.startsWith('{') && (
-                            <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 9px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                              {item.fees.length > 40 ? item.fees.slice(0, 40) + '…' : item.fees}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '5px 10px' }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3"/></svg>
+                              <span style={{ fontSize: 10.5, color: '#78350F', fontWeight: 600 }}>{item.fees.length > 50 ? item.fees.slice(0, 50) + '…' : item.fees}</span>
+                            </div>
                           )}
                           {item.duration && (
-                            <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 9px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                              {item.duration}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '5px 10px' }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                              <span style={{ fontSize: 10.5, color: '#78350F', fontWeight: 600 }}>{item.duration}</span>
+                            </div>
                           )}
                           {item.authority && (
-                            <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 9px', border: '1px solid rgba(139,26,26,0.15)', fontWeight: 600 }}>
-                              {item.authority.length > 40 ? item.authority.slice(0, 40) + '…' : item.authority}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 9, padding: '5px 10px' }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                              <span style={{ fontSize: 10.5, color: '#5C1A1A', fontWeight: 600 }}>{item.authority.length > 50 ? item.authority.slice(0, 50) + '…' : item.authority}</span>
+                            </div>
                           )}
                         </div>
                       )}
                       <button
                         onClick={() => askAI(item.chatPrompt || item.title)}
-                        onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                        onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.98)' }}
                         onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                         style={{
-                          padding: '7px 18px', borderRadius: 10,
+                          width: '100%', padding: '10px 18px', borderRadius: 11,
                           background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                          border: 'none', color: '#fff', fontSize: 11.5, fontWeight: 700,
+                          border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
                           cursor: 'pointer', fontFamily: 'inherit',
-                          display: 'inline-flex', alignItems: 'center', gap: 6,
-                          boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                          boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
                           transition: 'opacity 0.12s, transform 0.12s',
                         }}
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
                         </svg>
-                        {isAr ? 'اسأل دليلك تفصيلاً' : 'Ask Dalilak'}
+                        {isAr ? 'اسأل دليلك تفصيلاً' : 'Ask Dalilak for details'}
                       </button>
                     </div>
                   )}

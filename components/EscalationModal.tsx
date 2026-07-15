@@ -99,12 +99,20 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)' }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', padding: '20px 18px 32px', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', fontFamily: "'Cairo','Inter',sans-serif", boxShadow: '0 -8px 40px rgba(0,0,0,0.18)' }} dir={isAr ? 'rtl' : 'ltr'}>
+        {/* Drag handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
+        </div>
+        <div style={{ padding: '8px 18px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}
           </h2>
-          <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+          <button onClick={onClose}
+            onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
+            style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         {submitted ? (
@@ -202,6 +210,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             </button>
           </>
         )}
+        </div>
       </div>
     </div>
   )

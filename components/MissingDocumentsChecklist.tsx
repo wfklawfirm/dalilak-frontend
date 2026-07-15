@@ -67,7 +67,7 @@ export default function MissingDocumentsChecklist({
         <div style={{ width: 120, background: '#EAE4D9', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
           <div style={{
             width: `${pct}%`, height: 5, borderRadius: 99,
-            background: pct === 100 ? '#B45309' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+            background: pct === 100 ? 'linear-gradient(90deg, #78350F, #B45309)' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
             transition: 'width 0.5s ease',
           }} />
         </div>

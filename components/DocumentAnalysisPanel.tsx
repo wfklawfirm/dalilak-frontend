@@ -205,10 +205,14 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
               <button
                 key={i}
                 onClick={a.action_type === 'request_human_review' ? onRequestReview : undefined}
+                onTouchStart={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.16)'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.08)'; e.currentTarget.style.transform = 'scale(1)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.14)'; e.currentTarget.style.borderColor = 'rgba(107,39,55,0.35)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(107,39,55,0.2)' }}
                 style={{
                   fontSize: 13, background: 'rgba(107,39,55,0.08)', color: '#6b2737',
                   border: '1px solid rgba(107,39,55,0.2)', padding: '6px 12px', borderRadius: 10,
-                  cursor: 'pointer', fontFamily: 'inherit',
+                  cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.14s',
                 }}
               >
                 {a.label || actionLabel(a.action_type)}

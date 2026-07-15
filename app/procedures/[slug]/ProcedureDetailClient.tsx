@@ -109,16 +109,25 @@ export default function ProcedureDetailClient() {
         </div>
 
         {proc.requiredDocuments.length > 0 && (
-          <Section title={isAr ? 'المستندات المطلوبة' : 'Required Documents'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>} bg="#FEF2F2" border="rgba(139,26,26,0.15)">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Section title={isAr ? `المستندات المطلوبة (${proc.requiredDocuments.length})` : `Required Documents (${proc.requiredDocuments.length})`} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>} bg="#FEF2F2" border="rgba(139,26,26,0.15)">
+            <div style={{ borderRadius: 9, border: '1px solid rgba(139,26,26,0.12)', overflow: 'hidden' }}>
               {proc.requiredDocuments.map((doc, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                  <span style={{ color: '#8B1A1A', marginTop: 3, flexShrink: 0, display: 'inline-flex' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                  <div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#1A1208' }}>{isAr ? doc.name_ar : doc.name_en}</span>
-                    {doc.original_required && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 6, padding: '0 5px', marginRight: 5 }}>{isAr ? 'أصل' : 'original'}</span>}
-                    {doc.copies_required && <span style={{ fontSize: 9.5, color: '#5C4A3A' }}> x{doc.copies_required}</span>}
-                    {(isAr ? doc.notes_ar : doc.notes_en) && <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>{isAr ? doc.notes_ar : doc.notes_en}</p>}
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                  padding: '8px 12px',
+                  background: i % 2 === 0 ? '#fff' : '#FEF7F7',
+                  borderBottom: i < proc.requiredDocuments.length - 1 ? '1px solid rgba(139,26,26,0.08)' : 'none',
+                }}>
+                  <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 5 }}>
+                    <svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg>
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', lineHeight: 1.5 }}>{isAr ? doc.name_ar : doc.name_en}</span>
+                    <span style={{ display: 'inline-flex', gap: 4, marginRight: 6, verticalAlign: 'middle' }}>
+                      {doc.original_required && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: 'rgba(139,26,26,0.08)', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 6, padding: '0 5px' }}>{isAr ? 'أصل' : 'orig'}</span>}
+                      {doc.copies_required && <span style={{ fontSize: 9.5, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '0 5px' }}>×{doc.copies_required}</span>}
+                    </span>
+                    {(isAr ? doc.notes_ar : doc.notes_en) && <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0', lineHeight: 1.4 }}>{isAr ? doc.notes_ar : doc.notes_en}</p>}
                   </div>
                 </div>
               ))}
@@ -127,25 +136,33 @@ export default function ProcedureDetailClient() {
         )}
 
         {proc.steps.length > 0 && (
-          <Section title={isAr ? 'الخطوات' : 'Steps'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>} bg="#FFF7ED" border="#FED7AA">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {proc.steps.map((step) => (
-                <div key={step.step} style={{ display: 'flex', gap: 12 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {step.step}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', margin: '0 0 2px' }}>{isAr ? step.title_ar : step.title_en}</p>
-                    {(isAr ? step.description_ar : step.description_en) && (
-                      <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{isAr ? step.description_ar : step.description_en}</p>
-                    )}
-                    <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
-                      {step.authority && <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
-                      {step.duration && <span style={{ fontSize: 10, color: '#B45309', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{step.duration}</span>}
+          <Section title={isAr ? `خطوات الإجراء (${proc.steps.length})` : `Steps (${proc.steps.length})`} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>} bg="#fff" border="#EAE4D9">
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {proc.steps.map((step, idx) => {
+                const isLastStep = idx === proc.steps.length - 1
+                return (
+                  <div key={step.step} style={{ display: 'flex', gap: 12, paddingBottom: isLastStep ? 0 : 14, alignItems: 'stretch' }}>
+                    {/* Number + connector */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                      <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 11, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 4px rgba(139,26,26,0.25)' }}>
+                        {step.step}
+                      </div>
+                      {!isLastStep && <div style={{ width: 1.5, flex: 1, background: 'rgba(139,26,26,0.15)', marginTop: 4, borderRadius: 1 }} />}
+                    </div>
+                    {/* Content */}
+                    <div style={{ flex: 1, paddingTop: 3, paddingBottom: isLastStep ? 0 : 4 }}>
+                      <p style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', margin: '0 0 3px', lineHeight: 1.4 }}>{isAr ? step.title_ar : step.title_en}</p>
+                      {(isAr ? step.description_ar : step.description_en) && (
+                        <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: '0 0 5px', lineHeight: 1.55 }}>{isAr ? step.description_ar : step.description_en}</p>
+                      )}
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                        {step.authority && <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
+                        {step.duration && <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{step.duration}</span>}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </Section>
         )}

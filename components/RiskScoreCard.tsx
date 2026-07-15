@@ -102,7 +102,18 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
           <div style={{
             height: '100%',
             width: `${Math.min(100, score)}%`,
-            background: cfg.barColor,
+            background: level === 'critical'
+              ? 'linear-gradient(90deg, #B91C1C, #DC2626)'
+              : level === 'high'
+              ? 'linear-gradient(90deg, #C2410C, #EA580C)'
+              : level === 'medium'
+              ? 'linear-gradient(90deg, #B8860B, #CA8A04)'
+              : 'linear-gradient(90deg, #78350F, #B45309)',
+            boxShadow: level === 'critical'
+              ? '0 0 6px rgba(220,38,38,0.35)'
+              : level === 'high'
+              ? '0 0 6px rgba(234,88,12,0.35)'
+              : '0 0 6px rgba(184,134,11,0.3)',
             borderRadius: 4,
             transition: 'width 0.5s ease',
           }} />
