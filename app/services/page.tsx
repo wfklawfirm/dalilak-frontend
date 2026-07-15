@@ -524,7 +524,7 @@ export default function ServicesPage() {
                     </span>
                   )}
                   {service.online_available && (
-                    <span style={{ fontSize: 10, color: '#1D4ED8', background: '#EFF6FF', borderRadius: 20, padding: '2px 8px', border: '1px solid #BFDBFE', fontWeight: 600 }}>
+                    <span style={{ fontSize: 10, color: '#065F46', background: '#ECFDF5', borderRadius: 20, padding: '2px 8px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
                       أونلاين
                     </span>
                   )}

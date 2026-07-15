@@ -74,9 +74,9 @@ const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }>
   council:      { color: '#8B1A1A', bg: '#FEF2F2', border: '#FECACA' },
   municipality: { color: '#065F46', bg: '#ECFDF5', border: '#A7F3D0' },
   court:        { color: '#6B21A8', bg: '#F5F3FF', border: '#DDD6FE' },
-  union:        { color: '#0C4A6E', bg: '#F0F9FF', border: '#BAE6FD' },
+  union:        { color: '#78350F', bg: '#FFF7ED', border: '#FED7AA' },
   bank:         { color: '#0F766E', bg: '#F0FDFA', border: '#99F6E4' },
-  security:     { color: '#1E3A5F', bg: '#EFF6FF', border: '#BFDBFE' },
+  security:     { color: '#44403C', bg: '#F5F5F4', border: '#D4D0CA' },
   other:        { color: '#5C4A3A', bg: '#FAFAF8', border: '#EAE4D9' },
 }
 
