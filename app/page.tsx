@@ -639,7 +639,7 @@ export default function Home() {
           --border: #EAE4D9;
           --border-strong: #D5CEC4;
           --text: #1A1208;
-          --text-2: #5C5044;
+          --text-2: #5C4A3A;
           --text-3: #9C8E80;
         }
         @keyframes fadeUp {
@@ -846,7 +846,7 @@ export default function Home() {
                         }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 4px 14px rgba(139,26,26,0.09)' }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)' }}
-                        onTouchStart={e => { e.currentTarget.style.background='#F5F1EC'; e.currentTarget.style.transform='scale(0.97)' }}
+                        onTouchStart={e => { e.currentTarget.style.background='#EAE4D9'; e.currentTarget.style.transform='scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='scale(1)' }}
                       >
                         <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:`${group.color}14`, border:`1px solid ${group.color}28`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>

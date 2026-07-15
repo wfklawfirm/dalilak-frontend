@@ -65,7 +65,7 @@ export default function HumanReviewCTA({
 
   return (
     <div dir="rtl" style={{
-      background: isCritical ? '#FEF2F2' : '#FFFBF9',
+      background: isCritical ? '#FEF2F2' : '#FAFAF8',
       border: `1.5px solid ${isCritical ? 'rgba(139,26,26,0.3)' : 'rgba(139,26,26,0.15)'}`,
       borderRadius: 14, padding: '14px 16px',
       fontFamily: "'Cairo','Inter',sans-serif",

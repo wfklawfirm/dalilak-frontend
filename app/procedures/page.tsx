@@ -423,7 +423,7 @@ export default function ProceduresPage() {
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
               </div>
               <p style={{ fontSize: 14, fontWeight: 600 }}>لم نجد إجراءات مطابقة</p>
-              <p style={{ fontSize: 12, marginTop: 4 }}>جرّب كلمة بحث مختلفة أو اسأل الذكاء الاصطناعي</p>
+              <p style={{ fontSize: 12, marginTop: 4 }}>جرّب كلمة بحث مختلفة أو اسأل دليلك</p>
               <button onClick={() => handleAsk(search)} style={{
                 marginTop: 16, padding: '10px 20px', borderRadius: 12,
                 background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -467,7 +467,7 @@ export default function ProceduresPage() {
                             {getComplexityLabel(proc.complexity, isAr)}
                           </span>
                           {proc.estimatedDuration_ar && (
-                            <span style={{ fontSize: 9.5, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 6, padding: '1px 7px' }}>
+                            <span style={{ fontSize: 9.5, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '1px 7px' }}>
                               {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
                             </span>
                           )}
@@ -498,7 +498,7 @@ export default function ProceduresPage() {
                               {isAr ? 'الوثائق المطلوبة:' : 'Required Documents:'}
                             </div>
                             {proc.requiredDocuments.map((doc, i) => (
-                              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '5px 0', borderBottom: '1px solid #F4F0EB' }}>
+                              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, padding: '5px 0', borderBottom: '1px solid #EAE4D9' }}>
                                 <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}>
                                   <svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg>
                                 </span>
@@ -515,23 +515,31 @@ export default function ProceduresPage() {
                             <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 7 }}>
                               {isAr ? 'خطوات الإجراء:' : 'Steps:'}
                             </div>
-                            {proc.steps.map((s, i) => (
-                              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 7, alignItems: 'flex-start' }}>
-                                <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                                  {i + 1}
-                                </span>
-                                <div>
-                                  <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208' }}>
-                                    {isAr ? s.title_ar : s.title_en}
+                            {proc.steps.map((s, i) => {
+                              const isLastStep = i === proc.steps.length - 1
+                              return (
+                                <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'stretch', paddingBottom: isLastStep ? 0 : 8 }}>
+                                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                                    <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                      {i + 1}
+                                    </span>
+                                    {!isLastStep && (
+                                      <div style={{ width: 1.5, flex: 1, background: 'linear-gradient(to bottom, rgba(139,26,26,0.22), rgba(139,26,26,0.05))', marginTop: 4, borderRadius: 1 }} />
+                                    )}
                                   </div>
-                                  {s.description_ar && (
-                                    <div style={{ fontSize: 11.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.5 }}>
-                                      {isAr ? s.description_ar : ((s as unknown as { description_en?: string }).description_en || s.description_ar)}
+                                  <div style={{ paddingTop: 2 }}>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208' }}>
+                                      {isAr ? s.title_ar : s.title_en}
                                     </div>
-                                  )}
+                                    {s.description_ar && (
+                                      <div style={{ fontSize: 11.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.5 }}>
+                                        {isAr ? s.description_ar : ((s as unknown as { description_en?: string }).description_en || s.description_ar)}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              )
+                            })}
                           </div>
                         )}
 
@@ -564,12 +572,12 @@ export default function ProceduresPage() {
                     onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
                     style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: expandedProc === proc.code ? 'rgba(139,26,26,0.1)' : '#F4F0EB', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.15s' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: expandedProc === proc.code ? 'rgba(139,26,26,0.1)' : '#EAE4D9', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.15s' }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 9.5, fontWeight: 700, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 6, padding: '1px 7px', border: '1px solid #EAE4D9' }}>
+                        <span style={{ fontSize: 9.5, fontWeight: 700, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 6, padding: '1px 7px', border: '1px solid #EAE4D9' }}>
                           موثّقة
                         </span>
                         {proc.requiredDocuments.length > 0 && (
@@ -618,14 +626,22 @@ export default function ProceduresPage() {
                       {proc.steps.length > 0 && (
                         <div style={{ marginBottom: 10 }}>
                           <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', marginBottom: 6 }}>خطوات الإجراء:</div>
-                          {proc.steps.map((s, i) => (
-                            <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 5, alignItems: 'flex-start' }}>
-                              <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#8B1A1A', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                                {i + 1}
-                              </span>
-                              <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.5 }}>{s}</span>
-                            </div>
-                          ))}
+                          {proc.steps.map((s, i) => {
+                            const isLastStep = i === proc.steps.length - 1
+                            return (
+                              <div key={i} style={{ display: 'flex', gap: 9, alignItems: 'stretch', paddingBottom: isLastStep ? 0 : 7 }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                                  <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    {i + 1}
+                                  </span>
+                                  {!isLastStep && (
+                                    <div style={{ width: 1.5, flex: 1, background: 'linear-gradient(to bottom, rgba(139,26,26,0.18), rgba(139,26,26,0.04))', marginTop: 3, borderRadius: 1 }} />
+                                  )}
+                                </div>
+                                <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.5, paddingTop: 2 }}>{s}</span>
+                              </div>
+                            )
+                          })}
                         </div>
                       )}
                       {proc.fees && (

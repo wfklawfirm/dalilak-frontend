@@ -91,7 +91,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         </div>
 
         {/* Title */}
-        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #F0EBE0' }}>
+        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #EAE4D9' }}>
           <h3 style={{ fontSize: 14, fontWeight: 800, color: '#1A1208', margin: 0 }}>
             {isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'}
           </h3>

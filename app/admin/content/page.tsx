@@ -163,7 +163,7 @@ export default function ContentGovernancePage() {
               onClick={() => setFilterStatus(filterStatus === status ? 'all' : status)}
               style={{
                 padding: '14px 10px', borderRadius: 14, border: filterStatus === status ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
-                background: filterStatus === status ? '#FFFBF9' : '#fff',
+                background: filterStatus === status ? '#FEF7F7' : '#fff',
                 boxShadow: filterStatus === status ? '0 2px 12px rgba(139,26,26,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
                 textAlign: 'center', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
               }}
@@ -200,7 +200,7 @@ export default function ContentGovernancePage() {
                     style={{
                       width: '100%', textAlign: 'right', padding: '14px 16px', borderRadius: 16,
                       border: selected?.id === item.id ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
-                      background: selected?.id === item.id ? '#FFFBF9' : '#fff',
+                      background: selected?.id === item.id ? '#FEF7F7' : '#fff',
                       boxShadow: selected?.id === item.id ? '0 2px 10px rgba(139,26,26,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
                       cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
                     }}

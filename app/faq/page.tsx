@@ -136,7 +136,7 @@ export default function FAQPage() {
               </svg>
             </div>
             <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>لم يُعثر على نتائج</p>
-            <p style={{ fontSize: 12, margin: '0 0 14px' }}>جرّب كلمة مختلفة أو اسأل الذكاء الاصطناعي مباشرة</p>
+            <p style={{ fontSize: 12, margin: '0 0 14px' }}>جرّب كلمة مختلفة أو اسأل دليلك مباشرة</p>
             <button onClick={() => askAI(search)} style={{
               padding: '9px 22px', borderRadius: 12,
               background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -169,7 +169,7 @@ export default function FAQPage() {
                   >
                     <div style={{
                       width: 34, height: 34, borderRadius: 10, flexShrink: 0,
-                      background: isOpen ? 'rgba(139,26,26,0.1)' : '#F4F0EB',
+                      background: isOpen ? 'rgba(139,26,26,0.1)' : '#EAE4D9',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: isOpen ? '#8B1A1A' : '#5C4A3A', transition: 'all 0.15s',
                     }}>

@@ -99,7 +99,7 @@ export default function FormDetailClient({ form }: Props) {
 
           {/* File type badge */}
           <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{ background: '#F3EDE3', color: BRAND, borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>
+            <span style={{ background: '#EAE4D9', color: BRAND, borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>
               {form.fileType?.toUpperCase() ?? 'LINK'}
             </span>
             <span style={{ background: form.type === 'official' ? '#E8F5E9' : '#FFF9E6', color: form.type === 'official' ? '#2E7D32' : '#B8860B', borderRadius: 20, padding: '3px 10px', fontSize: 12 }}>
@@ -118,7 +118,8 @@ export default function FormDetailClient({ form }: Props) {
               <button
                 onClick={handleDownload}
                 style={{ background: BRAND, color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                {fileIcon} {isAr ? 'فتح النموذج' : 'Open Form'}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                {isAr ? 'فتح النموذج' : 'Open Form'}
               </button>
             )}
             <button
@@ -156,7 +157,7 @@ export default function FormDetailClient({ form }: Props) {
                 <button
                   key={p.slug}
                   onClick={() => router.push(`/procedures/${p.slug}`)}
-                  style={{ background: '#FAF8F5', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ display: 'flex', flexShrink: 0 }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                   <div>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1A1208' }}>{isAr ? p.title_ar : p.title_en}</p>

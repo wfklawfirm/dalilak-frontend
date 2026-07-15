@@ -175,7 +175,7 @@ export default function FormsPage() {
                     ) : (
                       <span style={{ padding: '5px 9px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 8, fontSize: 10 }}>بلا نموذج</span>
                     )}
-                    <button onClick={() => askAI(`ما هي متطلبات وخطوات معاملة: ${tx.title}؟`)} style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>AI</button>
+                    <button onClick={() => askAI(`ما هي متطلبات وخطوات معاملة: ${tx.title}؟`)} style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>اسأل</button>
                   </div>
                 </div>
               ))}
@@ -283,7 +283,7 @@ export default function FormsPage() {
                       style={{ flex: 1, padding: '8px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 10, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', boxShadow: '0 1px 4px rgba(139,26,26,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                      {isAr ? 'اسأل دليلك' : 'Ask AI'}
+                      {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
                     </button>
                     {form.url ? (
                       <a href={form.url} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '8px', background: '#fff', color: '#8B1A1A', border: '1.5px solid rgba(139,26,26,0.2)', borderRadius: 10, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>

@@ -86,7 +86,7 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
       background: 'rgba(255,255,255,0.97)',
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
-      borderTop: '1px solid #F0EBE0',
+      borderTop: '1px solid #EAE4D9',
       boxShadow: '0 -4px 24px rgba(0,0,0,0.08)',
       display: 'flex', alignItems: 'stretch',
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',

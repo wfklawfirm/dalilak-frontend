@@ -237,7 +237,7 @@ export function LoadingSkeleton({ lines = 3, height = 60, gap = 10 }: LoadingSke
         }
         .skeleton-line {
           border-radius: 10px;
-          background: linear-gradient(90deg, #EAE4D9 25%, #F4F0EB 50%, #EAE4D9 75%);
+          background: linear-gradient(90deg, #EAE4D9 25%, #FAFAF8 50%, #EAE4D9 75%);
           background-size: 800px 100%;
           animation: shimmer 1.4s infinite linear;
         }

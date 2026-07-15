@@ -123,7 +123,7 @@ export default function ExpatPropertyPackPage() {
     if (action === 'upload_document') return isAr ? 'ارفع مستنداً' : 'Upload Doc'
     if (action === 'generate_checklist') return 'Checklist'
     if (action === 'start_flow') return isAr ? 'ابدأ المسار' : 'Start Path'
-    return isAr ? 'اسأل دليلك' : 'Ask AI'
+    return isAr ? 'اسأل دليلك' : 'Ask Dalilak'
   }
 
   const currentSection = PACK_SECTIONS.find(s => s.id === activeSection)!

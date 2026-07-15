@@ -193,7 +193,7 @@ textarea:focus { outline: none; }
 }
 .prose-table-wrap td {
   padding: 7px 12px;
-  border-bottom: 1px solid #F0EBE0;
+  border-bottom: 1px solid #EAE4D9;
   color: #1A1208;
   line-height: 1.5;
 }
@@ -315,7 +315,7 @@ textarea:focus { outline: none; }
 
 /* ── Skeleton shimmer ───────────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, #EAE4D9 25%, #F0EBE0 50%, #EAE4D9 75%);
+  background: linear-gradient(90deg, #EAE4D9 25%, #FAFAF8 50%, #EAE4D9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 8px;

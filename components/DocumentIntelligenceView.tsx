@@ -42,7 +42,7 @@ import {
 
 const card: React.CSSProperties = {
   background: '#fff', borderRadius: 16,
-  border: '1.5px solid #F0F0F0',
+  border: '1.5px solid #EAE4D9',
   overflow: 'hidden',
   marginBottom: 10,
 }
@@ -141,7 +141,7 @@ export function ExtractedFactsTable({ facts, isAr }: { facts: ExtractedFact[]; i
         return (
           <div key={i} style={{
             display: 'flex', gap: 10, padding: '9px 12px',
-            background: '#FAFAF9', borderRadius: 10, border: '1px solid #F0F0F0',
+            background: '#FAFAF8', borderRadius: 10, border: '1px solid #EAE4D9',
             flexDirection: isAr ? 'row' : 'row',
           }}>
             <div style={{ flex: '0 0 120px', fontSize: 11.5, color: '#5C4A3A', fontWeight: 600 }}>{f.label}</div>
@@ -175,8 +175,8 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {procedures.map((p, i) => (
         <div key={i} style={{
-          padding: '11px 13px', borderRadius: 12, border: '1.5px solid #F0F0F0',
-          background: '#FAFAF9', display: 'flex', alignItems: 'flex-start', gap: 10,
+          padding: '11px 13px', borderRadius: 12, border: '1.5px solid #EAE4D9',
+          background: '#FAFAF8', display: 'flex', alignItems: 'flex-start', gap: 10,
         }}>
           <span style={{
             fontSize: 9, fontWeight: 700, color: relevColor(p.relevance),
@@ -363,8 +363,8 @@ export function RecommendedDraftsPanel({ drafts, isAr, onGenerate }: {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {drafts.map((d, i) => (
         <div key={i} style={{
-          padding: '12px 13px', borderRadius: 12, border: '1.5px solid #F0F0F0',
-          background: '#FAFAF9', display: 'flex', alignItems: 'flex-start', gap: 10,
+          padding: '12px 13px', borderRadius: 12, border: '1.5px solid #EAE4D9',
+          background: '#FAFAF8', display: 'flex', alignItems: 'flex-start', gap: 10,
         }}>
           <div style={{
             width: 38, height: 38, borderRadius: 10, flexShrink: 0,
@@ -424,7 +424,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
           { label: isAr ? 'التفسير القانوني' : 'Legal Interpretation', level: confidence.legalInterpretation },
           { label: isAr ? 'الإجمالي' : 'Overall',                   level: confidence.overall },
         ].map((row, i) => (
-          <div key={i} style={{ padding: '8px 11px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #F0F0F0' }}>
+          <div key={i} style={{ padding: '8px 11px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9' }}>
             <div style={{ fontSize: 10, color: '#5C4A3A', marginBottom: 3 }}>{row.label}</div>
             <div style={{ fontSize: 11, fontWeight: 700, color: confColor(row.level) }}>
               {confidenceLabel(row.level, isAr)}
@@ -446,7 +446,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
           {evidence.map((e, i) => {
             const [bg, fg] = riskColors(e.reliability === 'high' ? 'low' : e.reliability === 'medium' ? 'medium' : 'high')
             return (
-              <div key={i} style={{ padding: '8px 12px', borderRadius: 10, background: '#FAFAF9', border: '1px solid #F0F0F0' }}>
+              <div key={i} style={{ padding: '8px 12px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4 }}>
                   <span style={{ fontSize: 9, fontWeight: 700, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 10, padding: '2px 7px' }}>
                     {sourceTypeLabel(e.sourceType, isAr)}
@@ -565,7 +565,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
                   onClick={() => a.actionType === 'request_human_review' ? onRequestHumanReview() : onAction(a)}
                   style={{
                     padding: '9px 14px', borderRadius: 10,
-                    border: '1.5px solid #F0F0F0', background: '#FAFAF9',
+                    border: '1.5px solid #EAE4D9', background: '#FAFAF8',
                     color: '#2D1B0E', fontSize: 11.5, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 8,
@@ -879,7 +879,7 @@ export default function DocumentIntelligenceView({
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.extractedFacts.map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #F0F0F0' : 'none' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
                 <span style={{ fontSize: 11, color: '#9C8E80', flex: '0 0 120px', paddingTop: 1 }}>{f.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1A1208', flex: 1 }}>{f.value}</span>
               </div>

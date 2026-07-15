@@ -209,13 +209,13 @@ export default function AuthoritiesPage() {
                   {/* Stats row */}
                   <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
                     {auth.proceduresHandled?.length > 0 && (
-                      <span style={{ fontSize: 10.5, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontSize: 10.5, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         {auth.proceduresHandled.length} {isAr ? 'إجراء' : 'procedures'}
                       </span>
                     )}
                     {auth.formsLinked?.length > 0 && (
-                      <span style={{ fontSize: 10.5, color: '#5C4A3A', background: '#F4F0EB', borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontSize: 10.5, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         {auth.formsLinked.length} {isAr ? 'نموذج' : 'forms'}
                       </span>
@@ -223,7 +223,7 @@ export default function AuthoritiesPage() {
                   </div>
 
                   {/* Footer */}
-                  <div style={{ borderTop: '1px solid #F0EBE0', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: 10, color: '#9C8E80' }}>
                       {auth.country}
                     </span>

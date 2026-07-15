@@ -206,7 +206,7 @@ export default function MyFilesPage() {
                     style={{
                       width: '100%', textAlign: 'right', padding: '14px 16px', borderRadius: 18,
                       border: isActive ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
-                      background: isActive ? '#FFFBF9' : '#fff',
+                      background: isActive ? '#FEF7F7' : '#fff',
                       boxShadow: isActive ? '0 2px 10px rgba(139,26,26,0.13)' : '0 1px 3px rgba(0,0,0,0.04)',
                       cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'all 0.15s',
                     }}
@@ -223,7 +223,7 @@ export default function MyFilesPage() {
                       {proc.title_ar}
                     </h3>
                     {/* Progress bar */}
-                    <div style={{ width: '100%', background: '#F0EBE0', borderRadius: 99, height: 5, marginBottom: 5 }}>
+                    <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 5, marginBottom: 5 }}>
                       <div style={{ width: `${proc.completion_pct}%`, background: barColor(proc.completion_pct), height: 5, borderRadius: 99, transition: 'width 0.4s ease' }} />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -254,7 +254,7 @@ export default function MyFilesPage() {
                 <div style={{ background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
 
                   {/* Panel header */}
-                  <div style={{ padding: '20px 22px 18px', borderBottom: '1px solid #F0EBE0', background: 'linear-gradient(135deg, #FFFBF9 0%, #FFF7F5 100%)' }}>
+                  <div style={{ padding: '20px 22px 18px', borderBottom: '1px solid #EAE4D9', background: '#FAFAF8' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                       <div style={{ flex: 1 }}>
                         <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 7px', lineHeight: 1.3 }}>
@@ -304,7 +304,7 @@ export default function MyFilesPage() {
                           {selected.completion_pct}%
                         </span>
                       </div>
-                      <div style={{ width: '100%', background: '#F0EBE0', borderRadius: 99, height: 10 }}>
+                      <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 10 }}>
                         <div style={{ width: `${selected.completion_pct}%`, background: barColor(selected.completion_pct), height: 10, borderRadius: 99, transition: 'width 0.4s ease' }} />
                       </div>
                       {selected.next_step && selected.next_step !== 'مكتمل' && (

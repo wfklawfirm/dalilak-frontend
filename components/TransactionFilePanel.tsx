@@ -187,25 +187,35 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {tx.steps && tx.steps.length > 0 && !compact && (
           <div>
             <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>الخطوات</p>
-            <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {tx.steps.slice(0, 4).map((s, i) => (
-                <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                  <span style={{
-                    flexShrink: 0, width: 24, height: 24, borderRadius: '50%',
-                    background: 'rgba(107,39,55,0.08)', color: '#6b2737',
-                    fontSize: 11, fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
-                  }}>
-                    {(s.order ?? i) + 1}
-                  </span>
-                  <div>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 2px' }}>{s.title}</p>
-                    {s.authority && (
-                      <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{s.authority}</p>
-                    )}
-                  </div>
-                </li>
-              ))}
+            <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
+              {tx.steps.slice(0, 4).map((s, i) => {
+                const visibleCount = Math.min(tx.steps.length, 4)
+                const isLast = i === visibleCount - 1
+                return (
+                  <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'stretch', paddingBottom: isLast ? 0 : 10 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                      <span style={{
+                        width: 24, height: 24, borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
+                        fontSize: 10, fontWeight: 800,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                        boxShadow: '0 2px 6px rgba(139,26,26,0.22)',
+                      }}>
+                        {(s.order ?? i) + 1}
+                      </span>
+                      {!isLast && (
+                        <div style={{ width: 1.5, flex: 1, background: 'linear-gradient(to bottom, rgba(139,26,26,0.22), rgba(139,26,26,0.05))', marginTop: 4, borderRadius: 1 }} />
+                      )}
+                    </div>
+                    <div style={{ paddingTop: 3 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 2px' }}>{s.title}</p>
+                      {s.authority && (
+                        <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{s.authority}</p>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
             </ol>
             {tx.steps.length > 4 && (
               <p style={{ fontSize: 11, color: '#9C8E80', marginTop: 6, textAlign: 'center' }}>

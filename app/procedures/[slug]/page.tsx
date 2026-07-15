@@ -89,24 +89,35 @@ export default function ProcedurePage() {
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <header style={{
         background:'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
-        boxShadow:'0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
-        padding:'14px 16px', position:'sticky', top:0, zIndex:50,
+        boxShadow:'0 4px 24px rgba(80,10,10,0.3)',
+        padding:'13px 16px', position:'sticky', top:0, zIndex:50,
       }}>
         <div style={{ maxWidth:820, margin:'0 auto', display:'flex', alignItems:'center', gap:10 }}>
           <button
-            onClick={() => router.push('/services')}
+            onClick={() => router.push('/procedures')}
             style={{ background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:9, color:'#fff', cursor:'pointer', padding:'6px 8px', display:'flex', flexShrink:0 }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
-          <div style={{ flex:1, fontSize:14, fontWeight:700, color:'#fff', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-            {procedure.title_ar}
+          <div style={{ display:'flex', alignItems:'center', gap:9, flex:1, minWidth:0 }}>
+            <div style={{ width:32, height:32, borderRadius:9, background:'rgba(255,255,255,0.15)', border:'1.5px solid rgba(255,255,255,0.25)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden', flexShrink:0 }}>
+              <img src="/logo.PNG" alt="دليلك" style={{ width:24, height:24, objectFit:'contain', display:'block' }} />
+            </div>
+            <div style={{ minWidth:0 }}>
+              <h1 style={{ color:'#fff', fontSize:14, fontWeight:800, margin:0, lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                {procedure.title_ar}
+              </h1>
+              <p style={{ color:'rgba(255,255,255,0.6)', fontSize:9.5, margin:0, marginTop:1 }}>
+                {procedure.category} · {procedure.authority}
+              </p>
+            </div>
           </div>
           {procedure.status === 'verified' && (
-            <span style={{ fontSize:10, background:'rgba(34,197,94,0.2)', color:'#86EFAC', borderRadius:20, padding:'3px 10px', fontWeight:700, flexShrink:0 }}>
-              <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>محقق</span>
+            <span style={{ fontSize:10, background:'rgba(34,197,94,0.2)', color:'#86EFAC', borderRadius:20, padding:'3px 10px', fontWeight:700, flexShrink:0, display:'inline-flex', alignItems:'center', gap:4 }}>
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              محقق
             </span>
           )}
         </div>
@@ -116,9 +127,9 @@ export default function ProcedurePage() {
 
         {/* ── Breadcrumb ───────────────────────────────────────────────── */}
         <nav style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#9C8E80', marginBottom:16 }}>
-          <Link href="/services" style={{ color:'#8B1A1A', textDecoration:'none', fontWeight:600 }}>الخدمات</Link>
+          <Link href="/procedures" style={{ color:'#8B1A1A', textDecoration:'none', fontWeight:600 }}>المعاملات</Link>
           <span>›</span>
-          <span style={{ color:'#2D1B0E' }}>{procedure.title_ar}</span>
+          <span style={{ color:'#2D1B0E', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:200 }}>{procedure.title_ar}</span>
         </nav>
 
         {/* ── Main card ────────────────────────────────────────────────── */}
@@ -247,21 +258,32 @@ export default function ProcedurePage() {
               </span>
               خطوات الإجراء
             </h2>
-            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-              {procedure.steps.map((step, i) => (
-                <div key={i} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
-                  <div style={{
-                    width:28, height:28, borderRadius:'50%', flexShrink:0,
-                    background:'linear-gradient(135deg, #8B1A1A, #6b2737)', color:'#fff',
-                    display:'flex', alignItems:'center', justifyContent:'center',
-                    fontSize:11, fontWeight:800,
-                  }}>{step.order}</div>
-                  <div style={{ flex:1, paddingTop:4 }}>
-                    <p style={{ fontSize:13, fontWeight:700, color:'#1A1208', margin:'0 0 2px' }}>{step.title_ar}</p>
-                    {step.desc_ar && <p style={{ fontSize:12, color:'#5C4A3A', margin:0, lineHeight:1.55 }}>{step.desc_ar}</p>}
+            <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+              {procedure.steps.map((step, i) => {
+                const isLast = i === procedure.steps.length - 1
+                return (
+                  <div key={i} style={{ display:'flex', gap:14, alignItems:'stretch', paddingBottom: isLast ? 0 : 16 }}>
+                    {/* Number + connector */}
+                    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0 }}>
+                      <div style={{
+                        width:30, height:30, borderRadius:'50%', flexShrink:0,
+                        background:'linear-gradient(135deg, #8B1A1A, #6b2737)', color:'#fff',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        fontSize:11, fontWeight:800,
+                        boxShadow:'0 2px 8px rgba(139,26,26,0.25)',
+                      }}>{step.order}</div>
+                      {!isLast && (
+                        <div style={{ width:2, flex:1, background:'linear-gradient(to bottom, rgba(139,26,26,0.25), rgba(139,26,26,0.06))', marginTop:6, borderRadius:1 }} />
+                      )}
+                    </div>
+                    {/* Content */}
+                    <div style={{ flex:1, paddingTop:4, paddingBottom: isLast ? 0 : 0 }}>
+                      <p style={{ fontSize:13, fontWeight:700, color:'#1A1208', margin:'0 0 3px' }}>{step.title_ar}</p>
+                      {step.desc_ar && <p style={{ fontSize:12, color:'#5C4A3A', margin:0, lineHeight:1.6 }}>{step.desc_ar}</p>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}

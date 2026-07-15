@@ -182,7 +182,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
         </div>
 
         {/* Header */}
-        <div style={{ padding: '0 18px 12px', borderBottom: '1px solid #F0EBE0' }}>
+        <div style={{ padding: '0 18px 12px', borderBottom: '1px solid #EAE4D9' }}>
           {/* Progress bar */}
           <div style={{ display: 'flex', gap: 4, marginBottom: 10 }}>
             {Array.from({ length: Math.max(progressDenominator, 1) }).map((_, i) => (

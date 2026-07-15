@@ -24,7 +24,7 @@ export default function ServiceGroupSheet({
   if (!group) return null
 
   const T = isAr
-    ? { close: 'إغلاق', action_start: 'ابدأ', action_upload: 'ارفع مستنداً', action_ask: 'اسأل AI', action_checklist: 'Checklist' }
+    ? { close: 'إغلاق', action_start: 'ابدأ', action_upload: 'ارفع مستنداً', action_ask: 'اسأل دليلك', action_checklist: 'Checklist' }
     : { close: 'Close', action_start: 'Start', action_upload: 'Upload Doc', action_ask: 'Ask Dalilak', action_checklist: 'Checklist' }
 
   const actionLabel = (item: ServiceItem): React.ReactNode => {
@@ -124,14 +124,14 @@ export default function ServiceGroupSheet({
                 width: '100%', padding: '13px 14px',
                 marginBottom: 8,
                 background: '#fff', borderRadius: 14,
-                border: '1.5px solid #F0F0F0',
+                border: '1.5px solid #EAE4D9',
                 cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 12,
                 textAlign: isAr ? 'right' : 'left',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FAFAF8' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0F0F0'; e.currentTarget.style.background = '#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
               onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
             >

@@ -47,10 +47,10 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
-  'الجهة المختصة':        { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
-  'الجهة':                { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
-  'الجهات':               { bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
-  'responsible authority':{ bg: '#F4F0EB', border: '#D5CEC4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'الجهة المختصة':        { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'الجهة':                { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'الجهات':               { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
+  'responsible authority':{ bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
   'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
   'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
   'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
@@ -379,7 +379,7 @@ export function TrustBadge({
   }, [activeCitation])
 
   return (
-    <div style={{ marginTop: 10, padding: '8px 12px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #F0EBE0' }}>
+    <div style={{ marginTop: 10, padding: '8px 12px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #EAE4D9' }}>
       <div
         style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: hasSources ? 'pointer' : 'default' }}
         onClick={() => hasSources && setExpanded(e => !e)}
@@ -409,7 +409,7 @@ export function TrustBadge({
       </div>
 
       {expanded && hasSources && (
-        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #F0EBE0' }}>
+        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #EAE4D9' }}>
           <p style={{ fontSize: 10, fontWeight: 700, color: '#5C3A1A', margin: '0 0 6px' }}>
             {isAr ? 'المصادر المستخدمة:' : 'Sources used:'}
           </p>
@@ -707,7 +707,7 @@ export default function AgentResponseRenderer({
 
       <p style={{
         fontSize: 10, color: '#C4B5A5', marginTop: 10,
-        paddingTop: 8, borderTop: '1px solid #F0EBE0',
+        paddingTop: 8, borderTop: '1px solid #EAE4D9',
         textAlign: isAr ? 'right' : 'left',
       }}>
         {isAr

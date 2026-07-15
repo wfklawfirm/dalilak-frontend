@@ -178,7 +178,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             {isAr ? 'استوديو الصياغة' : 'Drafting Studio'}
           </h2>
           <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
-            {isAr ? 'أنشئ مسودات قانونية أولية بالذكاء الاصطناعي' : 'Generate legal draft documents with AI'}
+            {isAr ? 'أنشئ مسودات قانونية أولية عبر دليلك' : 'Generate initial legal drafts with Dalilak'}
           </p>
         </div>
         {onClose && (
@@ -231,7 +231,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = '#8B1A1A'; (e.currentTarget as HTMLElement).style.background = '#FEF2F2' }}
               onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = '#EAE4D9'; (e.currentTarget as HTMLElement).style.background = '#fff' }}
               >
-                <div style={{ marginBottom: 6, display: 'flex' }}><TemplateIcon slug={tpl.slug} size={24} /></div>
+                <div style={{ marginBottom: 6, display: 'flex', color: '#8B1A1A' }}><TemplateIcon slug={tpl.slug} size={24} /></div>
                 <p style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
                 <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
               </button>
