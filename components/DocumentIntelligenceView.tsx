@@ -60,38 +60,6 @@ const sectionBody: React.CSSProperties = {
   padding: '14px 16px',
 }
 
-// ── CollapsibleSection ─────────────────────────────────────────────────────────
-
-function CollapsibleSection({
-  icon, title, count, badgeColor, defaultOpen = false, children,
-}: {
-  icon: React.ReactNode
-  title: string
-  count?: number
-  badgeColor?: string
-  defaultOpen?: boolean
-  children: React.ReactNode
-}) {
-  const [open, setOpen] = useState(defaultOpen)
-  return (
-    <div style={card}>
-      <button onClick={() => setOpen(o => !o)} style={sectionHeader(open)}>
-        <span style={{ display: 'flex', flexShrink: 0 }}>{icon}</span>
-        <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{title}</span>
-        {count !== undefined && (
-          <span style={{
-            fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20,
-            background: badgeColor ? `${badgeColor}18` : '#EAE4D9',
-            color: badgeColor ?? '#5C4A3A',
-          }}>{count}</span>
-        )}
-        <span style={{ color: '#9C8E80', display: 'inline-flex', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
-      </button>
-      {open && <div style={sectionBody}>{children}</div>}
-    </div>
-  )
-}
-
 // ── DocumentTypeBadge ──────────────────────────────────────────────────────────
 
 export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
@@ -329,79 +297,6 @@ export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr
           </div>
         )
       })}
-    </div>
-  )
-}
-
-// ── RecommendedDraftsPanel ─────────────────────────────────────────────────────
-
-export function RecommendedDraftsPanel({ drafts, isAr, onGenerate }: {
-  drafts: RecommendedDraft[]
-  isAr: boolean
-  onGenerate: (draft: RecommendedDraft) => void
-}) {
-  if (!drafts.length) return (
-    <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
-      {isAr ? 'لا توجد نماذج مقترحة.' : 'No draft recommendations.'}
-    </p>
-  )
-  const DocSvg = (s=14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-  const catIcon: Record<string, React.ReactNode> = {
-    notice:               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>,
-    request:              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>,
-    objection:            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>,
-    declaration:          DocSvg(),
-    undertaking:          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>,
-    settlement:           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
-    contract_addendum:    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
-    administrative_letter:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"/></svg>,
-    legal_letter:         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>,
-    checklist:            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
-    form_draft:           DocSvg(),
-  }
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {drafts.map((d, i) => (
-        <div key={i} style={{
-          padding: '12px 13px', borderRadius: 12, border: '1.5px solid #EAE4D9',
-          background: '#FAFAF8', display: 'flex', alignItems: 'flex-start', gap: 10,
-        }}>
-          <div style={{
-            width: 38, height: 38, borderRadius: 10, flexShrink: 0,
-            background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            {catIcon[d.category] ?? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', marginBottom: 3 }}>
-              {isAr ? d.titleAr : d.titleEn}
-            </div>
-            <div style={{ fontSize: 11, color: '#5C4A3A', lineHeight: 1.45 }}>{d.recommendedBecause}</div>
-            {d.requiresLawyerReview && (
-              <div style={{ fontSize: 10, color: '#B45309', fontWeight: 600, marginTop: 4, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                {isAr ? 'يوصى بمراجعة محامٍ قبل الاستخدام' : 'Lawyer review recommended before use'}
-              </div>
-            )}
-          </div>
-          <button
-            onClick={() => onGenerate(d)}
-            style={{
-              padding: '7px 13px', borderRadius: 9, border: 'none',
-              background: 'linear-gradient(135deg,#8B1A1A,#6b2737)',
-              color: '#fff', fontSize: 11, fontWeight: 700,
-              cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0, whiteSpace: 'nowrap',
-            }}
-          >
-            <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
-              {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
-              {isAr ? 'أنشئ' : 'Create'}
-              {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
-            </span>
-          </button>
-        </div>
-      ))}
     </div>
   )
 }
