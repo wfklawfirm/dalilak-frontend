@@ -65,7 +65,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               {service.category}
             </span>
             {service.fees && (
-              <span style={{ fontSize: 10.5, color: '#065F46', background: '#ECFDF5', borderRadius: 20, padding: '3px 10px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                 {service.fees}
               </span>
             )}

@@ -22,7 +22,7 @@ const LEVEL_CONFIG: Record<string, {
   barColor: string
   iconBg: string
 }> = {
-  low:      { label: 'منخفض',    bg: '#F0FDF4', text: '#15803D', border: '#BBF7D0', barColor: '#16a34a', iconBg: '#16a34a' },
+  low:      { label: 'منخفض',    bg: '#FFFBEB', text: '#78350F', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
   medium:   { label: 'متوسط',    bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
   high:     { label: 'عالٍ',     bg: '#FFF7ED', text: '#ea580c', border: '#FED7AA', barColor: '#ea580c', iconBg: '#ea580c' },
   critical: { label: 'حرج',      bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
@@ -30,7 +30,7 @@ const LEVEL_CONFIG: Record<string, {
 }
 
 const ACTION_COLORS: Record<string, string> = {
-  continue:      '#16a34a',
+  continue:      '#78350F',
   verify:        '#B8860B',
   lawyer_review: '#ea580c',
   admin_review:  '#8B1A1A',

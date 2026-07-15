@@ -35,7 +35,7 @@ function ResetForm() {
     return (
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.5">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>

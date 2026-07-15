@@ -49,16 +49,16 @@ export default function HumanReviewCTA({
   if (submitted) {
     return (
       <div dir="rtl" style={{
-        background: '#F0FDF4', border: '1.5px solid #BBF7D0',
+        background: '#FFFBEB', border: '1.5px solid #FDE68A',
         borderRadius: 14, padding: '14px 16px', textAlign: 'center',
       }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#15803D', margin: '0 0 3px' }}>تم إرسال طلب المراجعة</p>
-        <p style={{ fontSize: 11.5, color: '#16A34A', margin: 0 }}>سيتواصل معك أحد المختصين قريباً</p>
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#78350F', margin: '0 0 3px' }}>تم إرسال طلب المراجعة</p>
+        <p style={{ fontSize: 11.5, color: '#78350F', margin: 0 }}>سيتواصل معك أحد المختصين قريباً</p>
       </div>
     )
   }

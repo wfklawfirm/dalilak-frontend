@@ -10,7 +10,7 @@ const STATUS_CONFIG: Record<string, { label: string; style: React.CSSProperties;
   draft:     { label: 'مسودة',    style: { background: '#EAE4D9', color: '#5C4A3A' },          next: ['review'] },
   review:    { label: 'مراجعة',   style: { background: '#FFFBEB', color: '#B8860B' },           next: ['approved', 'draft'] },
   approved:  { label: 'معتمد',    style: { background: 'rgba(107,39,55,0.1)', color: '#6b2737' }, next: ['published', 'review'] },
-  published: { label: 'منشور',    style: { background: '#F0FDF4', color: '#16A34A' },           next: ['expired'] },
+  published: { label: 'منشور',    style: { background: '#FFFBEB', color: '#78350F' },           next: ['expired'] },
   expired:   { label: 'منتهي',    style: { background: '#FEF2F2', color: '#8B1A1A' },           next: [] },
 }
 
@@ -18,7 +18,7 @@ const TRANSITION_CONFIG: Record<string, { label: string; bg: string; color: stri
   review:    { label: 'إرسال للمراجعة', bg: '#B8860B', color: '#fff' },
   approved:  { label: 'اعتماد',         bg: '#6b2737', color: '#fff' },
   draft:     { label: 'إرجاع للمسودة',  bg: '#EAE4D9', color: '#5C4A3A' },
-  published: { label: 'نشر',            bg: '#16A34A', color: '#fff' },
+  published: { label: 'نشر',            bg: '#78350F', color: '#fff' },
   expired:   { label: 'تحديد كمنتهي',  bg: '#8B1A1A', color: '#fff' },
 }
 

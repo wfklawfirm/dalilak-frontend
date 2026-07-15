@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
 const STATUS_STYLE: Record<TransactionStatus, React.CSSProperties> = {
   draft:        { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
   in_progress:  { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
-  ready:        { background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' },
+  ready:        { background: '#FFFBEB', color: '#78350F', border: '1px solid #FDE68A' },
   needs_review: { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
   completed:    { background: 'rgba(107,39,55,0.08)', color: '#6b2737', border: '1px solid rgba(107,39,55,0.2)' },
   archived:     { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
@@ -39,7 +39,7 @@ const RISK_LABEL: Record<RiskLevel, string> = {
 }
 
 const RISK_DOT_COLOR: Record<RiskLevel, string> = {
-  low:     '#16a34a',
+  low:     '#B45309',
   medium:  '#B8860B',
   high:    '#ea580c',
   critical:'#8B1A1A',
@@ -125,7 +125,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
           <StatCard label="الخطوات" value={stepsCount} />
           <StatCard label="الوثائق المطلوبة" value={requiredCount} />
-          <StatCard label="الوثائق المرفوعة" value={uploadedCount} valueColor="#16A34A" />
+          <StatCard label="الوثائق المرفوعة" value={uploadedCount} valueColor="#78350F" />
           <StatCard label="الناقص" value={missingCount} valueColor={missingCount > 0 ? '#8B1A1A' : '#1A1208'} />
         </div>
 
@@ -134,13 +134,13 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#9C8E80', marginBottom: 5 }}>
               <span>تقدم المستندات</span>
-              <span style={{ fontWeight: 700, color: progressPct === 100 ? '#16A34A' : '#8B1A1A' }}>{progressPct}%</span>
+              <span style={{ fontWeight: 700, color: progressPct === 100 ? '#78350F' : '#8B1A1A' }}>{progressPct}%</span>
             </div>
             <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 6, overflow: 'hidden' }}>
               <div style={{
                 width: `${progressPct}%`, height: 6, borderRadius: 99,
                 background: progressPct === 100
-                  ? 'linear-gradient(90deg, #16a34a, #22C55E)'
+                  ? 'linear-gradient(90deg, #78350F, #B45309)'
                   : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
                 transition: 'width 0.5s ease',
               }} />

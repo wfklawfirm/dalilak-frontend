@@ -116,12 +116,12 @@ interface StatusBadgeProps {
 const STATUS_MAP: Record<string, { labelAr: string; labelEn: string; color: string; bg: string }> = {
   draft: { labelAr: 'مسودة', labelEn: 'Draft', color: '#5C4A3A', bg: '#EAE4D9' },
   in_progress: { labelAr: 'قيد التنفيذ', labelEn: 'In Progress', color: '#B8860B', bg: '#FFFBEB' },
-  ready: { labelAr: 'جاهزة', labelEn: 'Ready', color: '#16a34a', bg: '#F0FDF4' },
+  ready: { labelAr: 'جاهزة', labelEn: 'Ready', color: '#78350F', bg: '#FFFBEB' },
   needs_review: { labelAr: 'تحتاج مراجعة', labelEn: 'Needs Review', color: '#CA8A04', bg: '#FFFBEB' },
-  completed: { labelAr: 'مكتملة', labelEn: 'Completed', color: '#16a34a', bg: '#F0FDF4' },
+  completed: { labelAr: 'مكتملة', labelEn: 'Completed', color: '#78350F', bg: '#FFFBEB' },
   archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#9C8E80', bg: '#EAE4D9' },
   pending: { labelAr: 'معلّق', labelEn: 'Pending', color: '#B8860B', bg: '#FFFBEB' },
-  verified: { labelAr: 'موثّق', labelEn: 'Verified', color: '#16a34a', bg: '#F0FDF4' },
+  verified: { labelAr: 'موثّق', labelEn: 'Verified', color: '#78350F', bg: '#FFFBEB' },
   partially_verified: { labelAr: 'موثّق جزئياً', labelEn: 'Partially Verified', color: '#B8860B', bg: '#FFFBEB' },
 }
 
@@ -142,7 +142,7 @@ interface ConfidenceBadgeProps {
 
 export function ConfidenceBadge({ level, isAr = true }: ConfidenceBadgeProps) {
   const map = {
-    high: { ar: 'ثقة عالية', en: 'High Confidence', color: '#16a34a', bg: '#F0FDF4' },
+    high: { ar: 'ثقة عالية', en: 'High Confidence', color: '#78350F', bg: '#FFFBEB' },
     medium: { ar: 'ثقة متوسطة', en: 'Medium Confidence', color: '#B8860B', bg: '#FFFBEB' },
     low: { ar: 'ثقة منخفضة', en: 'Low Confidence', color: '#DC2626', bg: '#FEF2F2' },
   }
@@ -162,7 +162,7 @@ interface RiskBadgeProps {
 
 export function RiskBadge({ level, isAr = true }: RiskBadgeProps) {
   const map = {
-    low:      { ar: 'خطر منخفض', en: 'Low Risk',      color: '#16a34a', bg: '#F0FDF4' },
+    low:      { ar: 'خطر منخفض', en: 'Low Risk',      color: '#78350F', bg: '#FFFBEB' },
     medium:   { ar: 'خطر متوسط', en: 'Medium Risk',    color: '#B8860B', bg: '#FFFBEB' },
     high:     { ar: 'خطر عالٍ',  en: 'High Risk',      color: '#ea580c', bg: '#FFF7ED' },
     critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#DC2626', bg: '#FEF2F2' },

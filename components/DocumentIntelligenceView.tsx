@@ -69,7 +69,7 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
   isAr: boolean
 }) {
   const meta = getDocCategoryMeta(category)
-  const confColor = confidence === 'high' ? '#16A34A' : confidence === 'medium' ? '#B45309' : '#9C8E80'
+  const confColor = confidence === 'high' ? '#78350F' : confidence === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
       <div style={{
@@ -105,7 +105,7 @@ export function ExtractedFactsTable({ facts, isAr }: { facts: ExtractedFact[]; i
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       {facts.map((f, i) => {
-        const confColor = f.confidence === 'high' ? '#16A34A' : f.confidence === 'medium' ? '#B45309' : '#9C8E80'
+        const confColor = f.confidence === 'high' ? '#78350F' : f.confidence === 'medium' ? '#B45309' : '#9C8E80'
         return (
           <div key={i} style={{
             display: 'flex', gap: 10, padding: '9px 12px',
@@ -138,7 +138,7 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
       {isAr ? 'لا توجد معاملات مرتبطة محددة.' : 'No related procedures identified.'}
     </p>
   )
-  const relevColor = (r: string) => r === 'high' ? '#16A34A' : r === 'medium' ? '#B45309' : '#9C8E80'
+  const relevColor = (r: string) => r === 'high' ? '#78350F' : r === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {procedures.map((p, i) => (
@@ -198,8 +198,8 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
     return ['#EAE4D9', '#5C4A3A']
   }
   if (!fields.length && !documents.length) return (
-    <p style={{ fontSize: 11.5, color: '#16A34A', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p style={{ fontSize: 11.5, color: '#78350F', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {isAr ? 'لا نواقص واضحة تم اكتشافها.' : 'No obvious missing items detected.'}
     </p>
   )
@@ -268,8 +268,8 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
 
 export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr: boolean }) {
   if (!risks.length) return (
-    <p style={{ fontSize: 11.5, color: '#16A34A', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p style={{ fontSize: 11.5, color: '#78350F', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {isAr ? 'لم تُكتشف مخاطر واضحة.' : 'No obvious risks detected.'}
     </p>
   )
@@ -308,7 +308,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
   confidence: UniversalDocumentAnalysis['confidence']
   isAr: boolean
 }) {
-  const confColor = (c: string) => c === 'high' ? '#16A34A' : c === 'medium' ? '#B45309' : '#9C8E80'
+  const confColor = (c: string) => c === 'high' ? '#78350F' : c === 'medium' ? '#B45309' : '#9C8E80'
   return (
     <div>
       {/* Confidence summary */}
@@ -347,8 +347,8 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
                     {sourceTypeLabel(e.sourceType, isAr)}
                   </span>
                   {e.verified && (
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#16A34A', background: '#DCFCE7', borderRadius: 10, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                       {isAr ? 'موثّق' : 'Verified'}
                     </span>
                   )}
@@ -602,8 +602,8 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
                   placeholder={isAr ? `أدخل ${f}` : `Enter ${f}`}
                   style={{
                     width: '100%', padding: '9px 12px', borderRadius: 10,
-                    border: `1.5px solid ${fields[f]?.trim() ? '#D1FAE5' : '#FEE2E2'}`,
-                    background: fields[f]?.trim() ? '#F0FDF4' : '#FFF',
+                    border: `1.5px solid ${fields[f]?.trim() ? '#FDE68A' : '#FEE2E2'}`,
+                    background: fields[f]?.trim() ? '#FFFBEB' : '#FFF',
                     fontSize: 12, color: '#1A1208', fontFamily: 'inherit',
                     outline: 'none',
                   }}
@@ -761,7 +761,7 @@ export default function DocumentIntelligenceView({
           </div>
         </div>
         <div style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#DC2626' : riskSummary === 'medium' ? '#B45309' : '#16A34A', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#F0FDF4', borderRadius: 20, padding: '3px 10px' }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#DC2626' : riskSummary === 'medium' ? '#B45309' : '#78350F', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#FFFBEB', borderRadius: 20, padding: '3px 10px' }}>
           {isAr ? (riskSummary === 'low' ? 'مخاطر منخفضة' : riskSummary === 'medium' ? 'مخاطر متوسطة' : 'مخاطر عالية') : (riskSummary === 'low' ? 'Low Risk' : riskSummary === 'medium' ? 'Medium Risk' : 'High Risk')}
         </span>
       </div>

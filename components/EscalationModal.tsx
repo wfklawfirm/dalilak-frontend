@@ -110,11 +110,11 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
         {submitted ? (
           <div style={{ textAlign: 'center', padding: '28px 0' }}>
             <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
-              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.5">
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#15803D', margin: '0 0 6px' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#78350F', margin: '0 0 6px' }}>
               {isAr ? 'تم إرسال طلبك بنجاح' : 'Request sent successfully'}
             </p>
             <p style={{ fontSize: 12, color: '#5C4A3A', margin: '0 0 20px' }}>

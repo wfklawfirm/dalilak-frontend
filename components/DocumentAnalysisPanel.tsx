@@ -28,7 +28,7 @@ const DOC_TYPE_AR: Record<string, string> = {
 }
 
 const CONF_STYLE: Record<string, React.CSSProperties> = {
-  high:    { color: '#16a34a', background: '#F0FDF4', border: '1px solid #BBF7D0' },
+  high:    { color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A' },
   medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
   low:     { color: '#ea580c', background: '#FFF7ED', border: '1px solid #FED7AA' },
   unknown: { color: '#5C4A3A', background: '#EAE4D9', border: '1px solid #D5CEC4' },
@@ -56,7 +56,7 @@ const RISK_AR: Record<string, string> = {
 }
 
 const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
-  strong:     { color: '#16a34a' },
+  strong:     { color: '#78350F' },
   acceptable: { color: '#8B1A1A' },
   weak:       { color: '#B8860B' },
   missing:    { color: '#991B1B' },
@@ -147,7 +147,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                 <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{f.value}</span>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                   {f.confidence === 'high'
-                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#16A34A"/></svg>
+                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#B45309"/></svg>
                     : f.confidence === 'medium'
                     ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
                     : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>}
@@ -288,7 +288,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                     <span style={{
                       flexShrink: 0, width: 16, height: 16, borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: c.found ? '#16a34a' : '#FEF2F2', color: c.found ? '#fff' : '#DC2626',
+                      background: c.found ? '#B45309' : '#FEF2F2', color: c.found ? '#fff' : '#DC2626',
                     }}>
                       {c.found
                         ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>

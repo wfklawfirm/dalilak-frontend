@@ -11,7 +11,7 @@ interface Props {
 }
 
 const NODE_COLORS: Record<NodeType, string> = {
-  start: '#22c55e',
+  start: '#8B1A1A',
   question: '#6b2737',
   document: '#2D1B0E',
   action: '#8B1A1A',
@@ -19,7 +19,7 @@ const NODE_COLORS: Record<NodeType, string> = {
   risk: '#c2592e',
   draft: '#6B4226',
   human_review: '#9B4444',
-  completion: '#22c55e',
+  completion: '#B45309',
   warning: '#DC2626',
 }
 
@@ -52,7 +52,7 @@ const NODE_LABELS_AR: Record<NodeType, string> = {
 const STATUS_COLORS: Record<NonNullable<NodeStatus>, string> = {
   not_started: '#9C8E80',
   current: '#B8860B',
-  completed: '#16a34a',
+  completed: '#B45309',
   blocked: '#DC2626',
   needs_review: '#CA8A04',
 }
@@ -92,10 +92,10 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: '#5C4A3A' }}>{isAr ? 'تقدم الإجراء' : 'Procedure Progress'}</span>
-            <span style={{ fontSize: 12, fontWeight: 800, color: progressPct >= 80 ? '#16a34a' : progressPct >= 50 ? '#B8860B' : '#8B1A1A' }}>{progressPct}%</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: progressPct >= 80 ? '#78350F' : progressPct >= 50 ? '#B8860B' : '#8B1A1A' }}>{progressPct}%</span>
           </div>
           <div style={{ height: 8, background: '#EAE4D9', borderRadius: 4, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${progressPct}%`, background: progressPct >= 80 ? '#16a34a' : progressPct >= 50 ? '#B8860B' : '#8B1A1A', borderRadius: 4, transition: 'width 0.5s ease' }} />
+            <div style={{ height: '100%', width: `${progressPct}%`, background: progressPct >= 80 ? '#B45309' : progressPct >= 50 ? '#B8860B' : '#8B1A1A', borderRadius: 4, transition: 'width 0.5s ease' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
             <span style={{ fontSize: 10, color: '#9C8E80' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>

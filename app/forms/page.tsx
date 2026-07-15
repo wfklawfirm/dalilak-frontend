@@ -46,8 +46,8 @@ export default function FormsPage() {
 
   const askAI = (prompt: string) => router.push(`/?q=${encodeURIComponent(prompt)}`)
 
-  const typeColor = (t: string) => t === 'official' ? '#15803D' : '#B45309'
-  const typeBg = (t: string) => t === 'official' ? '#F0FDF4' : '#FFFBEB'
+  const typeColor = (t: string) => t === 'official' ? '#78350F' : '#B45309'
+  const typeBg = (t: string) => t === 'official' ? '#FFFBEB' : '#FFF7ED'
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
@@ -264,9 +264,9 @@ export default function FormsPage() {
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         <span style={{
                           fontSize: 9.5, borderRadius: 6, padding: '2px 8px', fontWeight: 600,
-                          color: form.type === 'official' ? '#065F46' : '#854D0E',
-                          background: form.type === 'official' ? '#ECFDF5' : '#FFFBEB',
-                          border: `1px solid ${form.type === 'official' ? '#A7F3D0' : '#FEF3C7'}`,
+                          color: form.type === 'official' ? '#8B1A1A' : '#854D0E',
+                          background: form.type === 'official' ? '#FEF2F2' : '#FFFBEB',
+                          border: `1px solid ${form.type === 'official' ? 'rgba(139,26,26,0.2)' : '#FEF3C7'}`,
                         }}>
                           {isAr ? (form.type === 'official' ? 'رسمي' : 'مسودة') : form.type}
                         </span>

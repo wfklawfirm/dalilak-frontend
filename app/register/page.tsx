@@ -112,8 +112,8 @@ export default function RegisterPage() {
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <span style={{
             display: 'inline-block', fontSize: 11.5, fontWeight: 700,
-            background: '#F0FDF4', color: '#15803D',
-            border: '1px solid #BBF7D0', borderRadius: 20, padding: '3px 12px',
+            background: '#FFFBEB', color: '#78350F',
+            border: '1px solid #FDE68A', borderRadius: 20, padding: '3px 12px',
           }}>
             مجاني لمدة 3 أيام
           </span>

@@ -104,7 +104,7 @@ export default function MyFilesPage() {
   const statusStyle = (s: string): React.CSSProperties => {
     const map: Record<string, React.CSSProperties> = {
       active:    { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
-      completed: { background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' },
+      completed: { background: '#FFFBEB', color: '#78350F', border: '1px solid #FDE68A' },
       cancelled: { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
     }
     return map[s] || { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' }
@@ -112,9 +112,9 @@ export default function MyFilesPage() {
 
   const statusLabel = (s: string) => ({ active: 'جارية', completed: 'مكتملة', cancelled: 'ملغاة' }[s] || s)
 
-  const pctColor = (pct: number) => pct === 100 ? '#16A34A' : '#8B1A1A'
+  const pctColor = (pct: number) => pct === 100 ? '#78350F' : '#8B1A1A'
   const barColor  = (pct: number) => pct === 100
-    ? 'linear-gradient(90deg, #16A34A, #22C55E)'
+    ? 'linear-gradient(90deg, #78350F, #B45309)'
     : 'linear-gradient(90deg, #8B1A1A, #C53030)'
 
   return (
@@ -335,8 +335,8 @@ export default function MyFilesPage() {
                         </p>
                       )}
                       {selected.completion_pct === 100 && (
-                        <p style={{ fontSize: 12.5, color: '#16A34A', margin: '8px 0 0', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        <p style={{ fontSize: 12.5, color: '#78350F', margin: '8px 0 0', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                           تمت المعاملة بنجاح!
                         </p>
                       )}
@@ -358,15 +358,15 @@ export default function MyFilesPage() {
                           style={{
                             width: '100%', textAlign: 'right', display: 'flex', alignItems: 'flex-start', gap: 12,
                             padding: '11px 13px', borderRadius: 12,
-                            border: step.done ? '1.5px solid #BBF7D0' : '1.5px solid #EAE4D9',
-                            background: step.done ? '#F0FDF4' : '#FAFAF8',
+                            border: step.done ? '1.5px solid #FDE68A' : '1.5px solid #EAE4D9',
+                            background: step.done ? '#FFFBEB' : '#FAFAF8',
                             cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'all 0.15s',
                           }}
                         >
                           <span style={{
                             flexShrink: 0, width: 24, height: 24, borderRadius: '50%',
-                            border: step.done ? '2px solid #16A34A' : '2px solid #D4C5B0',
-                            background: step.done ? '#16A34A' : 'transparent',
+                            border: step.done ? '2px solid #B45309' : '2px solid #D4C5B0',
+                            background: step.done ? '#B45309' : 'transparent',
                             color: step.done ? '#fff' : '#9C8E80',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 10, fontWeight: 800, marginTop: 2, flexShrink: 0,
@@ -376,15 +376,15 @@ export default function MyFilesPage() {
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{
                               fontSize: 13, fontWeight: 700, margin: '0 0 2px',
-                              color: step.done ? '#15803D' : '#1A1208',
+                              color: step.done ? '#78350F' : '#1A1208',
                               textDecoration: step.done ? 'line-through' : 'none',
                             }}>
                               {step.title_ar}
                             </p>
                             <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{step.desc_ar}</p>
                             {step.done && step.done_at && (
-                              <p style={{ fontSize: 10.5, color: '#16A34A', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                              <p style={{ fontSize: 10.5, color: '#78350F', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 {new Date(step.done_at).toLocaleDateString('ar-LB')}
                               </p>
                             )}
@@ -405,12 +405,12 @@ export default function MyFilesPage() {
                             <div key={i} style={{
                               display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',
                               borderRadius: 10, border: '1.5px solid',
-                              borderColor: doc.uploaded ? '#BBF7D0' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
-                              background: doc.uploaded ? '#F0FDF4' : doc.required ? '#FEF7F7' : '#FAFAF8',
+                              borderColor: doc.uploaded ? '#FDE68A' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
+                              background: doc.uploaded ? '#FFFBEB' : doc.required ? '#FEF7F7' : '#FAFAF8',
                             }}>
                               <div style={{
                                 width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                                background: doc.uploaded ? '#16A34A' : doc.required ? '#FEF2F2' : '#EAE4D9',
+                                background: doc.uploaded ? '#B45309' : doc.required ? '#FEF2F2' : '#EAE4D9',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 color: doc.uploaded ? '#fff' : doc.required ? '#8B1A1A' : '#9C8E80',
                               }}>
@@ -420,7 +420,7 @@ export default function MyFilesPage() {
                                 }
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
-                                <p style={{ fontSize: 12.5, fontWeight: 700, color: doc.uploaded ? '#15803D' : '#1A1208', margin: 0, textDecoration: doc.uploaded ? 'line-through' : 'none' }}>
+                                <p style={{ fontSize: 12.5, fontWeight: 700, color: doc.uploaded ? '#78350F' : '#1A1208', margin: 0, textDecoration: doc.uploaded ? 'line-through' : 'none' }}>
                                   {doc.name_ar}
                                 </p>
                                 {doc.required && !doc.uploaded && (
@@ -428,7 +428,7 @@ export default function MyFilesPage() {
                                 )}
                               </div>
                               {doc.uploaded && (
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                               )}
                             </div>
                           ))}

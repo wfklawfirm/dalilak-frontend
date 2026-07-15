@@ -205,7 +205,7 @@ export interface DocCategoryMeta {
 export const DOC_CATEGORY_META: DocCategoryMeta[] = [
   { category: 'contract',        titleAr: 'عقد',                   titleEn: 'Contract',           icon: '📝', color: '#6B4226', subtypes: ['عقد إيجار','عقد بيع','عقد خدمات','عقد عمل','عقد شراكة','اتفاقية تسوية','وعد بالبيع'] },
   { category: 'property',        titleAr: 'مستند عقاري',           titleEn: 'Property Document',  icon: '🏛️', color: '#854D0E', subtypes: ['سند ملكية','إفادة عقارية','كشف مساحي','ملف بيع','ضريبة عقارية','براءة ذمة','رخصة بناء'] },
-  { category: 'civil_status',    titleAr: 'قيد مدني',              titleEn: 'Civil Status',        icon: '👤', color: '#065F46', subtypes: ['إخراج قيد فردي','إخراج قيد عائلي','شهادة ميلاد','عقد زواج','شهادة وفاة','طلاق','حصر إرث'] },
+  { category: 'civil_status',    titleAr: 'قيد مدني',              titleEn: 'Civil Status',        icon: '👤', color: '#8B1A1A', subtypes: ['إخراج قيد فردي','إخراج قيد عائلي','شهادة ميلاد','عقد زواج','شهادة وفاة','طلاق','حصر إرث'] },
   { category: 'notarial',        titleAr: 'وثيقة كتابة عدل',      titleEn: 'Notarial Document',   icon: '⚖️', color: '#B8860B', subtypes: ['وكالة عامة','وكالة خاصة','وكالة بيع','إقرار','تعهد','توكيل','وكالة من الخارج'] },
   { category: 'company',         titleAr: 'مستند شركة',            titleEn: 'Company Document',    icon: '🏢', color: '#9D174D', subtypes: ['سجل تجاري','عقد تأسيس','نظام داخلي','تسجيل ضريبي','قرار مجلس إدارة','شهادة تسجيل'] },
   { category: 'tax',             titleAr: 'مستند ضريبي',           titleEn: 'Tax Document',        icon: '💰', color: '#5F3A2E', subtypes: ['براءة ذمة ضريبية','ضريبة عقارية','ضريبة دخل','ضريبة قيمة مضافة','اعتراض ضريبي'] },
@@ -339,7 +339,7 @@ export function riskColors(level: string): [string, string] {
     critical: ['#FEE2E2', '#B91C1C'],
     high:     ['#FEE2E2', '#DC2626'],
     medium:   ['#FEF3C7', '#B45309'],
-    low:      ['#DCFCE7', '#16A34A'],
+    low:      ['#FFFBEB', '#78350F'],
     unknown:  ['#EAE4D9', '#5C4A3A'],
   }
   return map[level] ?? map.unknown

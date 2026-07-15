@@ -95,7 +95,7 @@ export default function PlaybookPage() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 13, color: "#5C4A3A", display: 'flex', alignItems: 'center', gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{isAr ? 'حالة التحقق:' : 'Verification:'}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: activeFlowchart.verificationStatus === 'verified' ? '#16a34a' : '#B8860B', background: activeFlowchart.verificationStatus === 'verified' ? '#F0FDF4' : '#FFFBEB', borderRadius: 8, padding: '2px 8px' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: activeFlowchart.verificationStatus === 'verified' ? '#78350F' : '#B8860B', background: activeFlowchart.verificationStatus === 'verified' ? '#FFFBEB' : '#FFFBEB', borderRadius: 8, padding: '2px 8px' }}>
                 {activeFlowchart.verificationStatus === 'verified' ? (isAr ? 'موثّق' : 'Verified') : activeFlowchart.verificationStatus === 'partially_verified' ? (isAr ? 'موثّق جزئياً' : 'Partially Verified') : (isAr ? 'مسودة' : 'Draft')}
               </span>
             </div>
@@ -120,15 +120,15 @@ export default function PlaybookPage() {
           <SectionCard
             title={isAr ? 'المستندات المطلوبة' : 'Required Documents'}
             icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>}
-            bg="#F0FDF4"
-            border="#BBF7D0"
+            bg="#FEF2F2"
+            border="rgba(139,26,26,0.15)"
             collapsible={true}
             defaultOpen={true}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {proc.requiredDocuments.map((doc, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ color: '#16a34a', flexShrink: 0, display: 'inline-flex' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                  <span style={{ color: '#8B1A1A', flexShrink: 0, display: 'inline-flex' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                   <span style={{ fontSize: 13, color: '#1A1208' }}>{doc}</span>
                 </div>
               ))}

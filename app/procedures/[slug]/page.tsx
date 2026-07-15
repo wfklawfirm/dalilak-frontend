@@ -56,7 +56,6 @@ export default function ProcedurePage() {
 
   const tierLabel = ['', 'قانون رسمي', 'جهة حكومية', 'تعميم رسمي', 'مصدر مهني', 'معلومة تشغيلية']
 
-  /* ── Loading ─────────────────────────────────────────────────────────── */
   if (loading) return (
     <div style={{ minHeight:'100vh', background:'#FAFAF8', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Cairo','Inter',sans-serif" }} dir="rtl">
       <div style={{ textAlign:'center' }}>
@@ -67,7 +66,6 @@ export default function ProcedurePage() {
     </div>
   )
 
-  /* ── Error ───────────────────────────────────────────────────────────── */
   if (error || !procedure) return (
     <div style={{ minHeight:'100vh', background:'#FAFAF8', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Cairo','Inter',sans-serif", gap:12 }} dir="rtl">
       <div style={{ display:'flex', justifyContent:'center', marginBottom:8 }}><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M8 15s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
@@ -86,7 +84,6 @@ export default function ProcedurePage() {
         .start-btn { transition: all 0.15s ease; }
       `}</style>
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
       <header style={{
         background:'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow:'0 4px 24px rgba(80,10,10,0.3)',
@@ -125,24 +122,21 @@ export default function ProcedurePage() {
 
       <div className="proc-page-content" style={{ maxWidth:820, margin:'0 auto', padding:'16px 14px 80px' }}>
 
-        {/* ── Breadcrumb ───────────────────────────────────────────────── */}
         <nav style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#9C8E80', marginBottom:16 }}>
           <Link href="/procedures" style={{ color:'#8B1A1A', textDecoration:'none', fontWeight:600 }}>المعاملات</Link>
           <span>›</span>
           <span style={{ color:'#2D1B0E', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:200 }}>{procedure.title_ar}</span>
         </nav>
 
-        {/* ── Main card ────────────────────────────────────────────────── */}
         <div style={{ background:'#fff', borderRadius:20, padding:'22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
           <h1 style={{ fontSize:21, fontWeight:900, color:'#1A1208', margin:'0 0 3px', lineHeight:1.3 }}>{procedure.title_ar}</h1>
           <p style={{ fontSize:12, color:'#9C8E80', margin:'0 0 14px' }}>{procedure.title_en}</p>
           <p style={{ fontSize:13.5, color:'#2D1B0E', lineHeight:1.75, margin:'0 0 20px' }}>{procedure.summary_ar}</p>
 
-          {/* Quick stats */}
           <div style={{ display:'grid', gridTemplateColumns: procedure.fee_ar ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)', gap:10, marginBottom:procedure.fee_ar ? 8 : 20 }}>
             {[
               { svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/></svg>, label:'المدة',  value:procedure.duration_ar, bg:'#FEF2F2', border:'rgba(139,26,26,0.1)' },
-              ...(procedure.fee_ar ? [{ svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#065F46" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>, label:'الرسوم', value:procedure.fee_ar, bg:'#F0FDF4', border:'#BBF7D0' }] : []),
+              ...(procedure.fee_ar ? [{ svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>, label:'الرسوم', value:procedure.fee_ar, bg:'#FFFBEB', border:'#FDE68A' }] : []),
               { svgPath: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>, label:'الجهة',  value:procedure.authority,   bg:'#FEF9EC', border:'#FDE68A' },
             ].map((stat, i) => (
               <div key={i} style={{ background:stat.bg, border:`1px solid ${stat.border}`, borderRadius:14, padding:'13px 10px', textAlign:'center' }}>
@@ -153,7 +147,6 @@ export default function ProcedurePage() {
             ))}
           </div>
 
-          {/* Fee disclaimer — always shown */}
           <div style={{
             display:'flex', alignItems:'flex-start', gap:8,
             background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:11,
@@ -167,7 +160,6 @@ export default function ProcedurePage() {
             </p>
           </div>
 
-          {/* Tags */}
           {procedure.tags && procedure.tags.length > 0 && (
             <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:18 }}>
               {procedure.tags.map((tag, i) => (
@@ -178,9 +170,8 @@ export default function ProcedurePage() {
             </div>
           )}
 
-          {/* CTA button */}
           {started ? (
-            <div style={{ width:'100%', background:'linear-gradient(135deg,#15803D,#16A34A)', color:'#fff', padding:'16px', borderRadius:14, textAlign:'center', fontWeight:800, fontSize:16, boxShadow:'0 4px 16px rgba(22,163,74,0.3)' }}>
+            <div style={{ width:'100%', background:'linear-gradient(135deg,#8B1A1A,#6b2737)', color:'#fff', padding:'16px', borderRadius:14, textAlign:'center', fontWeight:800, fontSize:16, boxShadow:'0 4px 16px rgba(139,26,26,0.3)' }}>
               <span style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>تم إنشاء الملف — جارٍ التحويل...</span>
             </div>
           ) : (
@@ -209,7 +200,6 @@ export default function ProcedurePage() {
           )}
         </div>
 
-        {/* ── Documents ────────────────────────────────────────────────── */}
         {procedure.documents && procedure.documents.length > 0 && (
           <div style={{ background:'#fff', borderRadius:20, padding:'20px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize:15, fontWeight:800, color:'#1A1208', margin:'0 0 14px', display:'flex', alignItems:'center', gap:8 }}>
@@ -220,7 +210,7 @@ export default function ProcedurePage() {
               {procedure.documents.map((doc, i) => (
                 <div key={i} style={{
                   display:'flex', alignItems:'center', gap:10, padding:'10px 13px', borderRadius:11,
-                  background: doc.required ? '#FAFAF8' : '#FAFAF8',
+                  background:'#FAFAF8',
                   border: doc.required ? '1.5px solid #EAE4D9' : '1px solid #EAE4D9',
                 }}>
                   <span style={{ flexShrink:0, display:'inline-flex', alignItems:'center' }}>
@@ -249,7 +239,6 @@ export default function ProcedurePage() {
           </div>
         )}
 
-        {/* ── Steps ────────────────────────────────────────────────────────── */}
         {procedure.steps && procedure.steps.length > 0 && (
           <div style={{ background:'#fff', borderRadius:20, padding:'20px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize:15, fontWeight:800, color:'#1A1208', margin:'0 0 14px', display:'flex', alignItems:'center', gap:8 }}>
@@ -263,7 +252,6 @@ export default function ProcedurePage() {
                 const isLast = i === procedure.steps.length - 1
                 return (
                   <div key={i} style={{ display:'flex', gap:14, alignItems:'stretch', paddingBottom: isLast ? 0 : 16 }}>
-                    {/* Number + connector */}
                     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0 }}>
                       <div style={{
                         width:30, height:30, borderRadius:'50%', flexShrink:0,
@@ -276,8 +264,7 @@ export default function ProcedurePage() {
                         <div style={{ width:2, flex:1, background:'linear-gradient(to bottom, rgba(139,26,26,0.25), rgba(139,26,26,0.06))', marginTop:6, borderRadius:1 }} />
                       )}
                     </div>
-                    {/* Content */}
-                    <div style={{ flex:1, paddingTop:4, paddingBottom: isLast ? 0 : 0 }}>
+                    <div style={{ flex:1, paddingTop:4 }}>
                       <p style={{ fontSize:13, fontWeight:700, color:'#1A1208', margin:'0 0 3px' }}>{step.title_ar}</p>
                       {step.desc_ar && <p style={{ fontSize:12, color:'#5C4A3A', margin:0, lineHeight:1.6 }}>{step.desc_ar}</p>}
                     </div>
@@ -288,7 +275,6 @@ export default function ProcedurePage() {
           </div>
         )}
 
-        {/* ── Source + Playbook ─────────────────────────────────────────────── */}
         <div style={{ background:'#fff', borderRadius:20, padding:'16px 22px', border:'1.5px solid #EAE4D9', marginBottom:14, boxShadow:'0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
             <div>

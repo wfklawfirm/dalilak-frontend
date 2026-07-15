@@ -10,8 +10,8 @@ interface Props {
 }
 
 export default function TransactionScoreWidget({ score, isAr, onAction }: Props) {
-  const scoreColor = score.score >= 80 ? '#16a34a' : score.score >= 50 ? '#B8860B' : '#DC2626'
-  const scoreBg = score.score >= 80 ? '#F0FDF4' : score.score >= 50 ? '#FFFBEB' : '#FEF2F2'
+  const scoreColor = score.score >= 80 ? '#78350F' : score.score >= 50 ? '#B8860B' : '#DC2626'
+  const scoreBg = score.score >= 80 ? '#FFFBEB' : score.score >= 50 ? '#FFFBEB' : '#FEF2F2'
 
   const statusLabel = score.status === 'ready_for_review'
     ? (isAr ? 'جاهز للمراجعة' : 'Ready for Review')
@@ -86,13 +86,13 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
           <div key={item.key}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
               <span style={{ fontSize: 10.5, color: '#5C4A3A', fontWeight: 600 }}>{item.key}</span>
-              <span style={{ fontSize: 10.5, fontWeight: 700, color: item.value >= 70 ? '#16a34a' : item.value >= 40 ? '#B8860B' : '#DC2626' }}>{item.value}%</span>
+              <span style={{ fontSize: 10.5, fontWeight: 700, color: item.value >= 70 ? '#78350F' : item.value >= 40 ? '#B8860B' : '#DC2626' }}>{item.value}%</span>
             </div>
             <div style={{ height: 4, background: '#EAE4D9', borderRadius: 2, overflow: 'hidden' }}>
               <div style={{
                 height: '100%',
                 width: `${item.value}%`,
-                background: item.value >= 70 ? '#16a34a' : item.value >= 40 ? '#B8860B' : '#DC2626',
+                background: item.value >= 70 ? '#B45309' : item.value >= 40 ? '#B8860B' : '#DC2626',
                 borderRadius: 2,
               }} />
             </div>

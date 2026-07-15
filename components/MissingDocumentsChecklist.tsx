@@ -67,7 +67,7 @@ export default function MissingDocumentsChecklist({
         <div style={{ width: 120, background: '#EAE4D9', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
           <div style={{
             width: `${pct}%`, height: 5, borderRadius: 99,
-            background: pct === 100 ? '#16a34a' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+            background: pct === 100 ? '#B45309' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
             transition: 'width 0.5s ease',
           }} />
         </div>
@@ -86,7 +86,7 @@ export default function MissingDocumentsChecklist({
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px',
-                background: isUploaded ? 'rgba(240,253,244,0.5)' : '#fff',
+                background: isUploaded ? 'rgba(255,251,235,0.4)' : '#fff',
                 borderBottom: i < allDocs.length - 1 ? '1px solid #EAE4D9' : 'none',
               }}
             >
@@ -94,7 +94,7 @@ export default function MissingDocumentsChecklist({
               <span style={{
                 flexShrink: 0, width: 22, height: 22, borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: isUploaded ? '#16a34a' : needsReview ? '#B8860B' : '#8B1A1A',
+                background: isUploaded ? '#B45309' : needsReview ? '#B8860B' : '#8B1A1A',
               }}>
                 {isUploaded
                   ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>

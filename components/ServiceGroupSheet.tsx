@@ -36,7 +36,7 @@ export default function ServiceGroupSheet({
 
   const verBadge = (status: ServiceItem['verificationStatus']) => {
     const colors: Record<string, [string, string]> = {
-      verified: ['#DCFCE7', '#16A34A'],
+      verified: ['#FFFBEB', '#78350F'],
       partially_verified: ['#FEF3C7', '#B45309'],
       needs_review: ['#FEE2E2', '#DC2626'],
       draft: ['#EAE4D9', '#5C4A3A'],

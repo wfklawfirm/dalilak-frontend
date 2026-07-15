@@ -33,7 +33,7 @@ interface ContentGapEntry {
 }
 
 const PLAN_STYLE: Record<string, React.CSSProperties> = {
-  paid:      { background: '#F0FDF4', color: '#16A34A' },
+  paid:      { background: '#FFFBEB', color: '#78350F' },
   trial:     { background: 'rgba(107,39,55,0.1)', color: '#6b2737' },
   admin:     { background: 'rgba(107,39,55,0.15)', color: '#4a1020' },
   suspended: { background: '#FEF2F2', color: '#8B1A1A' },
@@ -235,7 +235,7 @@ export default function AdminPage() {
       </header>
 
       {/* Flash */}
-      {msg   && <div style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 12, color: '#15803D', fontSize: 13, textAlign: 'center' }}>{msg}</div>}
+      {msg   && <div style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12, color: '#78350F', fontSize: 13, textAlign: 'center' }}>{msg}</div>}
       {error && <div style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.25)', borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center' }}>{error}</div>}
 
       {/* Tabs */}
@@ -281,7 +281,7 @@ export default function AdminPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px,1fr))', gap: 12 }}>
               {[
                 { label: 'إجمالي المستخدمين', value: stats.total,           bg: '#fff',                 ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
-                { label: 'مدفوعون',            value: stats.paid,            bg: '#F0FDF4',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
+                { label: 'مدفوعون',            value: stats.paid,            bg: '#FFFBEB',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
                 { label: 'تجريبي نشط',         value: stats.trial_active,    bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
                 { label: 'تجريبي منتهي',       value: stats.trial_expired,   bg: '#FFF7ED',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
                 { label: 'معطّلون',            value: stats.suspended,       bg: '#FEF2F2',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
@@ -462,7 +462,7 @@ export default function AdminPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                       <span style={{ display: 'inline-flex' }}>
                         {f.rating === 'up'
-                          ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path strokeLinecap="round" strokeLinejoin="round" d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+                          ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path strokeLinecap="round" strokeLinejoin="round" d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
                           : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
                         }
                       </span>
@@ -501,7 +501,7 @@ export default function AdminPage() {
                     <p style={{ fontSize: 13, color: '#2D1B0E', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{e.question}</p>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                       {e.user_email && <span style={{ fontSize: 11, color: '#8B1A1A', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
-                      {e.user_phone && <span style={{ fontSize: 11, color: '#16a34a', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
+                      {e.user_phone && <span style={{ fontSize: 11, color: '#78350F', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
                       <span style={{ fontSize: 11, color: '#9C8E80' }}>@{e.username}</span>
                     </div>
                   </div>
@@ -536,7 +536,7 @@ export default function AdminPage() {
               {[
                 { k: 'open',      dot: '#DC2626', label: 'مفتوح' },
                 { k: 'in_review', dot: '#CA8A04', label: 'قيد المراجعة' },
-                { k: 'resolved',  dot: '#16A34A', label: 'محلول' },
+                { k: 'resolved',  dot: '#B45309', label: 'محلول' },
                 { k: 'ignored',   dot: '#9C8E80', label: 'متجاهَل' },
               ].map(f => (
                 <button key={f.k}
@@ -587,8 +587,8 @@ export default function AdminPage() {
                             style={{
                               fontSize: 10, padding: '3px 8px', borderRadius: 7, border: 'none', cursor: 'pointer',
                               fontFamily: 'inherit', fontWeight: 700,
-                              background: s === 'resolved' ? '#F0FDF4' : s === 'ignored' ? '#EAE4D9' : '#FFFBEB',
-                              color: s === 'resolved' ? '#16A34A' : s === 'ignored' ? '#5C4A3A' : '#CA8A04',
+                              background: s === 'resolved' ? '#FFFBEB' : s === 'ignored' ? '#EAE4D9' : '#FFFBEB',
+                              color: s === 'resolved' ? '#78350F' : s === 'ignored' ? '#5C4A3A' : '#CA8A04',
                             }}
                           >
                             {s === 'in_review' ? 'مراجعة' : s === 'resolved' ? 'محلول' : 'تجاهل'}
