@@ -36,8 +36,7 @@ export default function ProcedureDetailClient() {
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; }`}</style>
 
-      {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '12px 16px' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '12px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button onClick={() => router.push('/procedures')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -52,7 +51,6 @@ export default function ProcedureDetailClient() {
 
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
-        {/* Hero card */}
         <div style={{ background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 20, padding: '20px 18px', marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
             <div style={{ width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)', border: '1.5px solid rgba(139,26,26,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
@@ -92,7 +90,6 @@ export default function ProcedureDetailClient() {
           </div>
         </div>
 
-        {/* CTA buttons */}
         <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
           <button onClick={askAI} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 3px 12px rgba(139,26,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
@@ -104,7 +101,6 @@ export default function ProcedureDetailClient() {
           </button>
         </div>
 
-        {/* Playbook link */}
         <div style={{ marginBottom: 16 }}>
           <button onClick={() => router.push(`/procedures/${slug}/playbook`)} style={{ width: '100%', padding: '11px 16px', background: '#FAFAF8', color: '#2D1B0E', border: '1.5px solid #D5CEC4', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
@@ -112,7 +108,6 @@ export default function ProcedureDetailClient() {
           </button>
         </div>
 
-        {/* Required Documents */}
         {proc.requiredDocuments.length > 0 && (
           <Section title={isAr ? 'المستندات المطلوبة' : 'Required Documents'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>} bg="#F0FDF4" border="#BBF7D0">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -122,7 +117,7 @@ export default function ProcedureDetailClient() {
                   <div>
                     <span style={{ fontSize: 13, fontWeight: 600, color: '#1A1208' }}>{isAr ? doc.name_ar : doc.name_en}</span>
                     {doc.original_required && <span style={{ fontSize: 9.5, color: '#15803D', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 6, padding: '0 5px', marginRight: 5 }}>{isAr ? 'أصل' : 'original'}</span>}
-                    {doc.copies_required && <span style={{ fontSize: 9.5, color: '#5C4A3A' }}> ×{doc.copies_required}</span>}
+                    {doc.copies_required && <span style={{ fontSize: 9.5, color: '#5C4A3A' }}> x{doc.copies_required}</span>}
                     {(isAr ? doc.notes_ar : doc.notes_en) && <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>{isAr ? doc.notes_ar : doc.notes_en}</p>}
                   </div>
                 </div>
@@ -131,7 +126,6 @@ export default function ProcedureDetailClient() {
           </Section>
         )}
 
-        {/* Steps */}
         {proc.steps.length > 0 && (
           <Section title={isAr ? 'الخطوات' : 'Steps'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>} bg="#FFF7ED" border="#FED7AA">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -156,7 +150,6 @@ export default function ProcedureDetailClient() {
           </Section>
         )}
 
-        {/* Authority */}
         {proc.authority && (
           <Section title={isAr ? 'الجهة المختصة' : 'Responsible Authority'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>} bg="#FAFAF8" border="#EAE4D9">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -174,7 +167,6 @@ export default function ProcedureDetailClient() {
           </Section>
         )}
 
-        {/* Fees */}
         {proc.fees && proc.fees.length > 0 && (
           <Section title={isAr ? 'الرسوم' : 'Fees'} icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} bg="#FFFBEB" border="#FDE68A">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -188,7 +180,6 @@ export default function ProcedureDetailClient() {
           </Section>
         )}
 
-        {/* Ask AI CTA */}
         <div style={{ marginTop: 4, padding: '16px', background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, textAlign: 'center' }}>
           <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: '0 0 12px', lineHeight: 1.5 }}>
             {isAr ? 'لديك سؤال محدد حول هذه المعاملة؟' : 'Have a specific question about this procedure?'}
@@ -204,7 +195,6 @@ export default function ProcedureDetailClient() {
   )
 }
 
-// ── Section helper ─────────────────────────────────────────────────────────────
 function Section({
   title, icon, bg, border, children,
 }: {

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
@@ -36,6 +36,16 @@ export default function MyFilesPage() {
   const [selected, setSelected] = useState<MyProc | null>(null)
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const detailRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to detail panel on mobile when item selected
+  useEffect(() => {
+    if (selected && detailRef.current && window.innerWidth <= 767) {
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 80)
+    }
+  }, [selected])
 
   useEffect(() => {
     const token = getToken()
@@ -118,6 +128,7 @@ export default function MyFilesPage() {
         @keyframes mf-spin { to { transform: rotate(360deg) } }
         @media (max-width: 767px) {
           .mf-main-grid { grid-template-columns: 1fr !important; }
+          .mf-back-btn { display: flex !important; }
         }
       `}</style>
 
@@ -240,7 +251,18 @@ export default function MyFilesPage() {
             </div>
 
             {/* Detail panel */}
-            <div>
+            <div ref={detailRef}>
+              {/* Mobile back button */}
+              {selected && (
+                <button
+                  onClick={() => setSelected(null)}
+                  className="mf-back-btn"
+                  style={{ display: 'none', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px', background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 9, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: '#5C4A3A' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+                  العودة إلى القائمة
+                </button>
+              )}
               {!selected ? (
                 <div style={{
                   background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9',

@@ -161,7 +161,10 @@ export default function AuthoritiesPage() {
         .auth-card { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
         .auth-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 20px rgba(139,26,26,0.12) !important; transform: translateY(-1px); }
         .type-chip:hover { opacity: 0.85; }
-        @media (max-width: 600px) { .auth-grid { grid-template-columns: 1fr !important; } }
+        .type-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
+        .type-chip-row::-webkit-scrollbar { display: none; }
+        @media (max-width: 480px) { .auth-grid { grid-template-columns: 1fr !important; } }
+        @media (min-width: 481px) and (max-width: 720px) { .auth-grid { grid-template-columns: repeat(2, 1fr) !important; } }
       `}</style>
 
       {/* Header */}
@@ -266,7 +269,7 @@ export default function AuthoritiesPage() {
         </div>
 
         {/* Type filter chips */}
-        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16 }}>
+        <div className="type-chip-row" style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16 }}>
           {TYPE_FILTERS.map(f => {
             const active = typeFilter === f.key
             return (

@@ -43,6 +43,9 @@ export default function FAQPage() {
         ::-webkit-scrollbar { width: 3px; height: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; }
         .faq-card:hover { border-color: #8B1A1A !important; }
+        .faq-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
+        .faq-chip-row::-webkit-scrollbar { display: none; }
+        @media (max-width: 400px) { .faq-stats { grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; } }
       `}</style>
 
       {/* Header */}
@@ -96,7 +99,7 @@ export default function FAQPage() {
         </div>
 
         {/* Category filters */}
-        <div style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 14 }}>
+        <div className="faq-chip-row" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 14 }}>
           <button onClick={() => setCatFilter('all')} style={{
             padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
             fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,

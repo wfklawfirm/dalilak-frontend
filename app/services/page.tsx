@@ -260,7 +260,7 @@ export default function ServicesPage() {
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
       <style>{`
         * { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 4px; height: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
         .svc-card { transition: border-color 0.14s, box-shadow 0.14s, transform 0.14s; }
         .svc-card:hover { border-color: rgba(139,26,26,0.4) !important; box-shadow: 0 4px 18px rgba(139,26,26,0.13) !important; transform: translateY(-2px); }
@@ -268,10 +268,17 @@ export default function ServicesPage() {
         .cat-chip:hover { border-color: #8B1A1A !important; color: #8B1A1A !important; background: #FEF7F7 !important; }
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .svc-animate { animation: svc-fade 0.2s ease forwards; }
-        @media (max-width: 600px) {
-          .cat-chips-row { gap: 6px !important; }
-          .svc-grid { grid-template-columns: 1fr !important; }
+        .cat-chips-row::-webkit-scrollbar { display: none; }
+        .cat-chips-row { -ms-overflow-style: none; scrollbar-width: none; }
+        @media (max-width: 599px) {
+          .svc-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+          .svc-card { padding: 10px !important; }
+          .svc-card h3 { font-size: 11.5px !important; line-height: 1.35 !important; }
+          .svc-icon { font-size: 15px !important; }
+          .svc-cat { font-size: 9px !important; padding: 1px 5px !important; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+          .svc-meta { display: none !important; }
         }
+        @media (min-width: 600px) and (max-width: 899px) { .svc-grid { grid-template-columns: repeat(3, 1fr) !important; } }
       `}</style>
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
@@ -321,58 +328,55 @@ export default function ServicesPage() {
         </div>
       </header>
 
-      {/* ── Search banner ──────────────────────────────────────────────────── */}
-      <div style={{ background: 'linear-gradient(180deg, #6b2737 0%, #4a1020 100%)', padding: '18px 16px 28px' }}>
-        <div style={{ maxWidth: 1024, margin: '0 auto' }}>
-          <div style={{ position: 'relative' }}>
-            <span style={{
-              position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)',
-              color: '#9C8E80', display: 'flex', alignItems: 'center', pointerEvents: 'none',
-            }}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
-              </svg>
-            </span>
-            <input
-              type="text"
-              placeholder="ابحث: جواز سفر، تسجيل شركة، ترخيص بناء، تصريح عمل..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+      {/* ── Search bar ─────────────────────────────────────────────────────── */}
+      <div style={{ background: '#FAFAF8', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
+        <div style={{ position: 'relative', background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+          <span style={{
+            position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
+            color: '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none',
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
+            </svg>
+          </span>
+          <input
+            type="text"
+            placeholder="ابحث: جواز سفر، تسجيل شركة، ترخيص بناء..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%', padding: '12px 44px 12px 42px', borderRadius: 14,
+              fontSize: 13.5, border: 'none', outline: 'none',
+              fontFamily: "'Cairo','Inter',sans-serif",
+              direction: 'rtl', color: '#1A1208', background: 'transparent',
+            }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
               style={{
-                width: '100%', padding: '14px 48px 14px 44px', borderRadius: 16,
-                fontSize: 14, border: 'none', outline: 'none',
-                fontFamily: "'Cairo','Inter',sans-serif",
-                boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
-                direction: 'rtl', color: '#1A1208', background: '#fff',
+                position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                background: '#EAE4D9', border: 'none', borderRadius: '50%',
+                width: 22, height: 22, cursor: 'pointer', color: '#5C4A3A',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
-            />
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                style={{
-                  position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
-                  background: '#EAE4D9', border: 'none', borderRadius: '50%',
-                  width: 24, height: 24, cursor: 'pointer', color: '#5C4A3A',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
-                </svg>
-              </button>
-            )}
-          </div>
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
       {/* ── Main Content ───────────────────────────────────────────────────── */}
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '18px 14px 100px' }}>
 
-        {/* ── Category chips ──────────────────────────────────────────────── */}
-        <div style={{ marginBottom: 20 }}>
+        {/* ── Category chips — horizontal scroll, no wrap ──────────────────── */}
+        <div style={{ marginBottom: 16, marginRight: -14, marginLeft: -14 }}>
           <div
             className="cat-chips-row"
-            style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+            style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: 7, paddingRight: 14, paddingLeft: 14, paddingBottom: 2 }}
           >
             {/* All / reset chip */}
             <button
@@ -385,6 +389,7 @@ export default function ServicesPage() {
                 background: !selectedCat ? '#FEF2F2' : '#fff',
                 color: !selectedCat ? '#8B1A1A' : '#5C4A3A',
                 boxShadow: !selectedCat ? '0 2px 8px rgba(139,26,26,0.15)' : 'none',
+                whiteSpace: 'nowrap', flexShrink: 0,
               }}
             >
               الكل ({ALL_SERVICES.length})
@@ -404,6 +409,7 @@ export default function ServicesPage() {
                     background: active ? '#FEF2F2' : '#fff',
                     color: active ? '#8B1A1A' : '#5C4A3A',
                     boxShadow: active ? '0 2px 8px rgba(139,26,26,0.15)' : 'none',
+                    whiteSpace: 'nowrap', flexShrink: 0,
                   }}
                 >
                   {cat.label_ar} <span style={{ opacity: 0.6, fontSize: 10 }}>({cat.count})</span>
@@ -473,7 +479,7 @@ export default function ServicesPage() {
         ) : (
           <div
             className="svc-grid svc-animate"
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
           >
             {filtered.map(service => (
               <button
@@ -489,10 +495,10 @@ export default function ServicesPage() {
               >
                 {/* Top row: icon + category */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <span style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 9px', border: '1px solid rgba(139,26,26,0.12)', fontWeight: 600 }}>
+                  <span className="svc-cat" style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 9px', border: '1px solid rgba(139,26,26,0.12)', fontWeight: 600 }}>
                     {service.category}
                   </span>
-                  <span style={{ fontSize: 20 }}>{service.icon}</span>
+                  <span className="svc-icon" style={{ fontSize: 20 }}>{service.icon}</span>
                 </div>
 
                 {/* Name */}
@@ -512,7 +518,7 @@ export default function ServicesPage() {
                 </p>
 
                 {/* Meta row */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                   {service.fees && (
                     <span style={{ fontSize: 10, color: '#065F46', background: '#F0FDF4', borderRadius: 20, padding: '2px 8px', border: '1px solid #D1FAE5', fontWeight: 600 }}>
                       {service.fees.length > 20 ? service.fees.slice(0, 20) + '…' : service.fees}

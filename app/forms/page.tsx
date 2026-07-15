@@ -56,6 +56,8 @@ export default function FormsPage() {
         ::-webkit-scrollbar { width: 3px; height: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; }
         .form-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 16px rgba(139,26,26,0.1) !important; }
+        .forms-filter-row { -ms-overflow-style: none; scrollbar-width: none; }
+        .forms-filter-row::-webkit-scrollbar { display: none; }
       `}</style>
 
       {/* Header */}
@@ -121,7 +123,7 @@ export default function FormsPage() {
 
         {/* Ministry filter — for transaction tabs */}
         {(viewTab === 'forms-tx' || viewTab === 'all-tx') && (
-          <div style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 12 }}>
+          <div className="forms-filter-row" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 12 }}>
             <button onClick={() => setMinistryFilter('all')} style={{
               padding: '4px 12px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap', fontSize: 10.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
               borderColor: ministryFilter === 'all' ? '#8B1A1A' : '#EAE4D9',
