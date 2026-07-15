@@ -1,14 +1,12 @@
 'use client'
 
-// ── /services/expat-property — Verified Vertical: Expat + Property + Contracts ──
-// Rewritten: complete + BottomNav added + brand colors updated
+// /services/expat-property — Expat + Property + Contracts Pack
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SERVICE_GROUPS, type ServiceItem } from '@/lib/serviceGroups'
 import BottomNav from '@/components/BottomNav'
 
-// Collect the relevant service items from the 3 groups
 const EXPAT_ITEMS = SERVICE_GROUPS.find(g => g.slug === 'expat')?.services ?? []
 const PROPERTY_ITEMS = SERVICE_GROUPS.find(g => g.slug === 'property')?.services ?? []
 const CONTRACT_ITEMS = SERVICE_GROUPS.find(g => g.slug === 'contracts')?.services ?? []
@@ -138,7 +136,6 @@ export default function ExpatPropertyPackPage() {
         .bottom-nav-padding { padding-bottom: 68px; }
       `}</style>
 
-      {/* ══ Header ══ */}
       <header style={{
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         padding: '14px 16px 18px', position: 'sticky', top: 0, zIndex: 50,
@@ -148,6 +145,8 @@ export default function ExpatPropertyPackPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <button
               onClick={() => router.push('/services')}
+              onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
+              onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: 'rgba(255,255,255,0.9)', cursor: 'pointer', padding: '6px 8px', display: 'flex', alignItems: 'center' }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -164,6 +163,8 @@ export default function ExpatPropertyPackPage() {
             </div>
             <button
               onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+              onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
+              onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
               style={{
                 background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)',
                 borderRadius: 8, padding: '5px 10px', color: '#fff',
@@ -174,12 +175,13 @@ export default function ExpatPropertyPackPage() {
             </button>
           </div>
 
-          {/* Section tabs */}
           <div style={{ display: 'flex', gap: 6 }}>
             {PACK_SECTIONS.map(s => (
               <button
                 key={s.id}
                 onClick={() => setActiveSection(s.id)}
+                onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
+                onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
                 style={{
                   padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
                   border: '1.5px solid',
@@ -198,10 +200,8 @@ export default function ExpatPropertyPackPage() {
         </div>
       </header>
 
-      {/* ══ Main Content ══ */}
       <div className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
 
-        {/* How it works */}
         <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #EAE4D9', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
@@ -231,7 +231,6 @@ export default function ExpatPropertyPackPage() {
           </div>
         </div>
 
-        {/* Current section header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
           <div style={{
             width: 36, height: 36, borderRadius: 10,
@@ -251,13 +250,14 @@ export default function ExpatPropertyPackPage() {
           </div>
         </div>
 
-        {/* Service cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           {currentSection.items.map(item => (
             <button
               key={item.id}
               className="svc-card"
               onClick={() => handleService(item)}
+              onTouchStart={e => (e.currentTarget.style.background = '#F5F0E8')}
+              onTouchEnd={e => (e.currentTarget.style.background = '#fff')}
               style={{
                 background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14,
                 padding: '13px 14px', cursor: 'pointer', fontFamily: 'inherit',
@@ -267,7 +267,6 @@ export default function ExpatPropertyPackPage() {
                 width: '100%',
               }}
             >
-              {/* Icon */}
               <div style={{
                 width: 40, height: 40, borderRadius: 11, flexShrink: 0,
                 background: `${currentSection.color}10`,
@@ -278,7 +277,6 @@ export default function ExpatPropertyPackPage() {
                 <ServiceIcon action={item.defaultAction} />
               </div>
 
-              {/* Text */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.3 }}>
                   {isAr ? item.titleAr : item.titleEn}
@@ -290,7 +288,6 @@ export default function ExpatPropertyPackPage() {
                 )}
               </div>
 
-              {/* Action badge */}
               <div style={{
                 flexShrink: 0,
                 display: 'flex', alignItems: 'center', gap: 4,
@@ -305,10 +302,11 @@ export default function ExpatPropertyPackPage() {
           ))}
         </div>
 
-        {/* Back to services */}
         <div style={{ marginTop: 20, textAlign: 'center' }}>
           <button
             onClick={() => router.push('/services')}
+            onTouchStart={e => (e.currentTarget.style.opacity = '0.5')}
+            onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
             style={{
               background: 'none', border: 'none', color: '#9C8E80',
               fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
@@ -324,7 +322,6 @@ export default function ExpatPropertyPackPage() {
 
       </div>
 
-      {/* ══ Bottom Nav ══ */}
       <BottomNav isAr={isAr} activeTab="services" />
     </div>
   )

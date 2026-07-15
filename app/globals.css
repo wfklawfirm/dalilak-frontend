@@ -106,8 +106,8 @@ textarea { font-family: inherit; }
 
 .icon-btn { transition: background 0.15s ease, color 0.15s ease; }
 .icon-btn:hover:not(:disabled) {
-  background: var(--surface) !important;
-  color: var(--text-2) !important;
+  background: var(--brand-light) !important;
+  color: var(--brand) !important;
 }
 
 /* ── Tap highlight ───────────────────────────────────── */

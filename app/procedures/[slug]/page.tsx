@@ -92,6 +92,8 @@ export default function ProcedurePage() {
         <div style={{ maxWidth:820, margin:'0 auto', display:'flex', alignItems:'center', gap:10 }}>
           <button
             onClick={() => router.push('/procedures')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:9, color:'#fff', cursor:'pointer', padding:'6px 8px', display:'flex', flexShrink:0 }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -112,7 +114,7 @@ export default function ProcedurePage() {
             </div>
           </div>
           {procedure.status === 'verified' && (
-            <span style={{ fontSize:10, background:'rgba(34,197,94,0.2)', color:'#86EFAC', borderRadius:20, padding:'3px 10px', fontWeight:700, flexShrink:0, display:'inline-flex', alignItems:'center', gap:4 }}>
+            <span style={{ fontSize:10, background:'rgba(251,191,36,0.2)', color:'#FDE68A', borderRadius:20, padding:'3px 10px', fontWeight:700, flexShrink:0, display:'inline-flex', alignItems:'center', gap:4, border:'1px solid rgba(251,191,36,0.3)' }}>
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
               محقق
             </span>
@@ -179,6 +181,8 @@ export default function ProcedurePage() {
               onClick={startProcedure}
               disabled={starting}
               className="start-btn"
+              onTouchStart={e => { if (!starting) { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.98)' } }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = starting ? '0.8' : '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 width:'100%', padding:'15px',
                 background: starting ? '#C53030' : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -188,6 +192,7 @@ export default function ProcedurePage() {
                 fontFamily:"'Cairo','Inter',sans-serif",
                 boxShadow:'0 4px 16px rgba(139,26,26,0.3)',
                 opacity: starting ? 0.8 : 1,
+                transition: 'opacity 0.12s, transform 0.12s',
               }}
             >
               <span style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}>
@@ -291,12 +296,15 @@ export default function ProcedurePage() {
             </div>
             <button
               onClick={() => router.push(`/procedures/${procedure.slug}/playbook`)}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 padding:'9px 18px', borderRadius:12,
                 background:'linear-gradient(135deg, #8B1A1A, #6b2737)', color:'#fff',
                 border:'none', cursor:'pointer', fontFamily:"'Cairo','Inter',sans-serif",
                 fontSize:12, fontWeight:700, display:'flex', alignItems:'center', gap:6,
                 boxShadow:'0 3px 10px rgba(139,26,26,0.25)',
+                transition: 'opacity 0.12s, transform 0.12s',
               }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>

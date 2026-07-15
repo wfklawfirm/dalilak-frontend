@@ -232,13 +232,15 @@ export default function TopNav({
               <button
                 onClick={onNewChat}
                 className="tn-ibtn"
+                onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 5,
                   height: 32, padding: '0 12px', borderRadius: 9,
                   border: '1.5px solid rgba(255,255,255,0.22)',
                   background: 'rgba(255,255,255,0.09)',
                   color: '#fff', fontSize: 11.5, fontWeight: 600,
-                  cursor: 'pointer', fontFamily: 'inherit',
+                  cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -312,6 +314,8 @@ export default function TopNav({
             <button
               className="tn-ibtn tn-hamburger"
               onClick={onMenuOpen}
+              onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
               aria-label={isAr ? 'القائمة' : 'Menu'}
               style={{
                 display: 'none', flexDirection: 'column', alignItems: 'center',
@@ -319,7 +323,7 @@ export default function TopNav({
                 height: 34, width: 36, borderRadius: 9,
                 border: '1.5px solid rgba(255,255,255,0.22)',
                 background: 'rgba(255,255,255,0.09)',
-                cursor: 'pointer',
+                cursor: 'pointer', transition: 'background 0.12s',
               }}
             >
               <span style={{ width: 15, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />

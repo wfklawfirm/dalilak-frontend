@@ -54,7 +54,10 @@ export default function ProceduresPage() {
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
+          <button onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
@@ -89,7 +92,7 @@ export default function ProceduresPage() {
               flex: 1, padding: '12px 8px', textAlign: 'center',
               borderRight: idx < 2 ? '1px solid #EAE4D9' : 'none',
             }}>
-              <div style={{ fontSize: 19, fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 'clamp(16px,5vw,19px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{stat.value}</div>
               <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 3 }}>{stat.label}</div>
             </div>
           ))}
@@ -152,6 +155,8 @@ export default function ProceduresPage() {
                   <button
                     onClick={() => setExpandedProc(isExpanded ? null : proc.slug)}
                     style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                   >
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: isExpanded ? 'rgba(139,26,26,0.1)' : '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
@@ -225,12 +230,16 @@ export default function ProceduresPage() {
                           })}
                         </div>
                       )}
-                      <button onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)} style={{
+                      <button onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)}
+                        onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                        onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+                        style={{
                         padding: '8px 18px', borderRadius: 10,
                         background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                         border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
                         cursor: 'pointer', fontFamily: 'inherit',
                         boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                        transition: 'opacity 0.12s, transform 0.12s',
                       }}>
                         {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask about this procedure'}
                       </button>
@@ -261,6 +270,8 @@ export default function ProceduresPage() {
                 <button
                   onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
                   style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
+                  onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                 >
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: '#EAE4D9', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0 }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
@@ -310,11 +321,15 @@ export default function ProceduresPage() {
                         <span style={{ fontSize: 11, color: '#5C4A3A' }}>{proc.fees.length > 180 ? proc.fees.slice(0, 180) + '…' : proc.fees}</span>
                       </div>
                     )}
-                    <button onClick={() => handleAsk(proc.title)} style={{
+                    <button onClick={() => handleAsk(proc.title)}
+                      onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                      onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+                      style={{
                       marginTop: 4, padding: '8px 18px', borderRadius: 10,
                       background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                       border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
                       cursor: 'pointer', fontFamily: 'inherit',
+                      transition: 'opacity 0.12s, transform 0.12s',
                     }}>
                       اسأل دليلك عن هذا الإجراء
                     </button>

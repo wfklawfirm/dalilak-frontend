@@ -117,7 +117,9 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.28)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
+            style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}
           ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
@@ -146,6 +148,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
                   onMouseLeave={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
+                  onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                  onTouchEnd={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } e.currentTarget.style.transform = 'scale(1)' }}
                 >
                   <span style={{ display: 'flex' }}>{ut.icon}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? ut.ar : ut.en}</span>
@@ -171,6 +175,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
                   onMouseLeave={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
+                  onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                  onTouchEnd={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } e.currentTarget.style.transform = 'scale(1)' }}
                 >
                   <span style={{ display: 'flex' }}>{tt.icon}</span>
                   <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', textAlign: 'center' }}>{isAr ? tt.ar : tt.en}</span>
@@ -197,6 +203,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' }}
+                  onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                  onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8'; e.currentTarget.style.transform = 'scale(1)' }}
                 >
                   <span style={{ flexShrink: 0, display: 'flex' }}>{g.icon}</span>
                   <div>
@@ -214,11 +222,13 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
           <div style={{ padding: '10px 16px 14px', borderTop: '1px solid #EAE4D9', flexShrink: 0 }}>
             <button
               onClick={() => setStep(s => (s - 1) as Step)}
+              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = '#EAE4D9' }}
               style={{
                 background: 'none', border: '1.5px solid #EAE4D9',
                 borderRadius: 10, padding: '8px 18px',
                 fontSize: 12, fontWeight: 600, color: '#5C4A3A',
-                cursor: 'pointer', fontFamily: 'inherit',
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
               }}
             >
               <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>

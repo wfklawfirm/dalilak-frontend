@@ -28,7 +28,10 @@ export default function DraftingStudioPage() {
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
+          <button onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
@@ -46,7 +49,7 @@ export default function DraftingStudioPage() {
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
 
         {/* Intro card */}
-        <div style={{ background: 'linear-gradient(135deg, #FEF2F2, #FFF7F7)', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '16px', marginBottom: 20 }}>
+        <div style={{ background: '#FEF2F2', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '16px', marginBottom: 20 }}>
           <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>
             ما هو استوديو الصياغة؟
           </h2>

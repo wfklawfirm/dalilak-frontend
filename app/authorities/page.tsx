@@ -273,7 +273,16 @@ export default function AuthoritiesPage() {
           {TYPE_FILTERS.map(f => {
             const active = typeFilter === f.key
             return (
-              <button key={f.key} onClick={() => setTypeFilter(f.key)} className="type-chip" style={{
+              <button key={f.key} onClick={() => setTypeFilter(f.key)} className="type-chip"
+                onTouchStart={e => {
+                  e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
+                  e.currentTarget.style.borderColor = active ? '#8B1A1A' : 'rgba(139,26,26,0.3)'
+                }}
+                onTouchEnd={e => {
+                  e.currentTarget.style.background = active ? '#FEF2F2' : '#fff'
+                  e.currentTarget.style.borderColor = active ? '#8B1A1A' : '#EAE4D9'
+                }}
+                style={{
                 padding: '6px 14px', borderRadius: 20, border: '1.5px solid',
                 fontSize: 11.5, fontWeight: 700, cursor: 'pointer',
                 fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
@@ -310,7 +319,10 @@ export default function AuthoritiesPage() {
             const colors = TYPE_COLORS[auth.type] || TYPE_COLORS.other
             const typeLabel = TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || 'أخرى'
             return (
-              <div key={auth.name_ar} className="auth-card" style={{
+              <div key={auth.name_ar} className="auth-card"
+                onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.10)' }}
+                onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)' }}
+                style={{
                 background: '#fff', border: '1.5px solid #EAE4D9',
                 borderRadius: 18, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 display: 'flex', flexDirection: 'column', gap: 0,
@@ -418,7 +430,10 @@ export default function AuthoritiesPage() {
                   ) : (
                     <span style={{ fontSize: 10, color: '#C4B5A5' }}>بلا موقع</span>
                   )}
-                  <button onClick={() => askAI(auth.name_ar)} style={{
+                  <button onClick={() => askAI(auth.name_ar)}
+                    onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
+                    style={{
                     fontSize: 10.5, color: '#8B1A1A', fontWeight: 700,
                     background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)',
                     borderRadius: 8, padding: '4px 10px', cursor: 'pointer',

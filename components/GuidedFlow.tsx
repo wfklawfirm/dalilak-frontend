@@ -214,7 +214,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {phase !== 'pick_category' && (
-              <button onClick={goBack} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px 4px 0', color: '#9C8E80', display: 'flex', alignItems: 'center' }}>
+              <button onClick={goBack}
+                onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
+                onTouchEnd={e => { e.currentTarget.style.color = '#9C8E80' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px 4px 0', color: '#9C8E80', display: 'flex', alignItems: 'center', transition: 'color 0.12s' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6'} />
                 </svg>
@@ -240,7 +243,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 </p>
               )}
             </div>
-            <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0 }}>
+            <button onClick={onClose}
+              onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
+              onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
+              style={{ background: '#EAE4D9', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.12s' }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>
@@ -368,9 +374,13 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   </button>
                 ))}
                 {!currentFlowStep.required && (
-                  <button onClick={handleSkipStep} style={{
+                  <button onClick={handleSkipStep}
+                    onTouchStart={e => { e.currentTarget.style.color = '#5C4A3A'; e.currentTarget.style.borderColor = '#C4B5A5' }}
+                    onTouchEnd={e => { e.currentTarget.style.color = '#9C8E80'; e.currentTarget.style.borderColor = '#D5CEC4' }}
+                    style={{
                     padding: '12px 16px', borderRadius: 14, border: '1.5px dashed #D5CEC4',
                     background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: '#9C8E80',
+                    transition: 'color 0.12s, border-color 0.12s',
                   }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       {isAr ? 'تخطي هذا السؤال' : 'Skip this question'}

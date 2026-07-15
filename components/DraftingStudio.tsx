@@ -182,7 +182,10 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
           </p>
         </div>
         {onClose && (
-          <button onClick={onClose} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+          <button onClick={onClose}
+            onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
+            style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         )}
       </div>
 
@@ -230,6 +233,8 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               }}
               onMouseOver={e => { (e.currentTarget as HTMLElement).style.borderColor = '#8B1A1A'; (e.currentTarget as HTMLElement).style.background = '#FEF2F2' }}
               onMouseOut={e => { (e.currentTarget as HTMLElement).style.borderColor = '#EAE4D9'; (e.currentTarget as HTMLElement).style.background = '#fff' }}
+              onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
               >
                 <div style={{ marginBottom: 6, display: 'flex', color: '#8B1A1A' }}><TemplateIcon slug={tpl.slug} size={24} /></div>
                 <p style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
@@ -288,11 +293,13 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
           <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
             <button
               onClick={() => setStage(1)}
+              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
               style={{
                 flex: 1, padding: '11px', borderRadius: 12,
                 border: '1.5px solid #EAE4D9', background: '#fff',
                 color: '#5C4A3A', fontSize: 13, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'inherit',
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
               }}
             >
               {isAr ? 'رجوع' : 'Back'}
@@ -300,6 +307,8 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             <button
               onClick={handleGeneratePreview}
               disabled={fields.filter(f => f.required).some(f => !fieldValues[f.key]?.trim())}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 flex: 2, padding: '11px', borderRadius: 12,
                 background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -307,6 +316,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                 cursor: 'pointer', fontFamily: 'inherit',
                 boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
                 opacity: fields.filter(f => f.required).some(f => !fieldValues[f.key]?.trim()) ? 0.5 : 1,
+                transition: 'opacity 0.12s, transform 0.12s',
               }}
             >
               {isAr ? 'معاينة وإرسال' : 'Preview & Send'}
@@ -333,17 +343,21 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
           <div style={{ display: 'flex', gap: 10 }}>
             <button
               onClick={() => setStage(2)}
+              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
               style={{
                 flex: 1, padding: '11px', borderRadius: 12,
                 border: '1.5px solid #EAE4D9', background: '#fff',
                 color: '#5C4A3A', fontSize: 13, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'inherit',
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
               }}
             >
               {isAr ? 'تعديل' : 'Edit'}
             </button>
             <button
               onClick={handleSend}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 flex: 2, padding: '11px', borderRadius: 12,
                 background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -351,6 +365,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                 cursor: 'pointer', fontFamily: 'inherit',
                 boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                transition: 'opacity 0.12s, transform 0.12s',
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

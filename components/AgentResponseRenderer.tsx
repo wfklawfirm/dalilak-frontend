@@ -37,12 +37,12 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'نظرة عامة':            { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'summary':              { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'overview':             { bg: '#FDF8F0', border: '#EAE4D9', icon: SvgSummary,  labelColor: '#7C5C1C' },
-  'المستندات المطلوبة':   { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
-  'الوثائق المطلوبة':     { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
-  'الوثائق':              { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
-  'المتطلبات':            { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
-  'الشروط':               { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
-  'required documents':   { bg: '#F0FDF4', border: '#BBF7D0', icon: SvgDocs,     labelColor: '#15803D' },
+  'المستندات المطلوبة':   { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
+  'الوثائق المطلوبة':     { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
+  'الوثائق':              { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
+  'المتطلبات':            { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
+  'الشروط':               { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
+  'required documents':   { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
   'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
   'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
@@ -58,12 +58,12 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'التكاليف':             { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
   'الأتعاب':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
   'fees':                 { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
-  'المدة':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
-  'مدة الإجراء':          { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
-  'المهل':                { bg: '#F0FDF4', border: '#86EFAC', icon: SvgClock,    labelColor: '#166534' },
-  'الخطوة التالية':       { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
-  'التوصية':              { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
-  'next step':            { bg: '#ECFDF5', border: '#6EE7B7', icon: SvgArrow,    labelColor: '#065F46' },
+  'المدة':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgClock,    labelColor: '#B45309' },
+  'مدة الإجراء':          { bg: '#FFFBEB', border: '#FDE68A', icon: SvgClock,    labelColor: '#B45309' },
+  'المهل':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgClock,    labelColor: '#B45309' },
+  'الخطوة التالية':       { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
+  'التوصية':              { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
+  'next step':            { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
   'تنبيه مهم':            { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
   'تنبيه':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
   'ملاحظة مهمة':          { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
@@ -325,9 +325,9 @@ export function AgentSectionCard({
 // ── Source badge ──────────────────────────────────────────────
 function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
   const map = {
-    official:      { label: 'مصدر رسمي', color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' },
+    official:      { label: 'مصدر رسمي', color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' },
     internal:      { label: 'قاعدة البيانات', color: '#8B1A1A', bg: '#FEF2F2', border: 'rgba(139,26,26,0.2)' },
-    user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
+    user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFF7ED', border: '#FED7AA' },
     unknown:       { label: 'غير محدد', color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' },
   }
   const s = map[type || 'unknown']
@@ -340,8 +340,8 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
 
 // ── Score color helper ────────────────────────────────────────
 function scoreStyle(score: number) {
-  if (score >= 0.75) return { color: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' }
-  if (score >= 0.50) return { color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' }
+  if (score >= 0.75) return { color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' }
+  if (score >= 0.50) return { color: '#92400E', bg: '#FFF7ED', border: '#FED7AA' }
   return { color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' }
 }
 
@@ -365,7 +365,7 @@ export function TrustBadge({
     low:     isAr ? 'منخفضة'    : 'Low',
     unknown: isAr ? 'غير محددة' : 'Unknown',
   }
-  const confColor = { high: '#15803D', medium: '#B45309', low: '#DC2626', unknown: '#5C4A3A' }
+  const confColor = { high: '#78350F', medium: '#B45309', low: '#DC2626', unknown: '#5C4A3A' }
 
   useEffect(() => {
     if (activeCitation != null) setExpanded(true)
@@ -556,13 +556,16 @@ export function ResponseActions({
   const hasDocs = Boolean(extractDocsList(content))
 
   const btn = (onClick: () => void, icon: ReactNode, label: string, active?: boolean, activeColor?: string, activeBg?: string, activeBorder?: string) => (
-    <button onClick={onClick} style={{
+    <button onClick={onClick}
+      onTouchStart={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#F5F0EA'; e.currentTarget.style.transform = 'scale(0.95)' }}
+      onTouchEnd={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+      style={{
       display: 'flex', alignItems: 'center', gap: 4,
       padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
       fontSize: 10.5, fontFamily: 'inherit', transition: 'all 0.15s',
-      border: `1px solid ${active ? (activeBorder || '#22c55e') : '#EAE4D9'}`,
-      background: active ? (activeBg || '#F0FDF4') : '#fff',
-      color: active ? (activeColor || '#16a34a') : '#5C4A3A',
+      border: `1px solid ${active ? (activeBorder || 'rgba(139,26,26,0.3)') : '#EAE4D9'}`,
+      background: active ? (activeBg || '#FEF2F2') : '#fff',
+      color: active ? (activeColor || '#8B1A1A') : '#5C4A3A',
     }}>{icon}{label}</button>
   )
 
@@ -573,14 +576,14 @@ export function ResponseActions({
           {copied ? <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/> : <><rect x="9" y="9" width="13" height="13" rx="2"/><path strokeLinecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></>}
         </svg>,
         isAr ? (copied ? 'تم النسخ' : 'نسخ الجواب') : (copied ? 'Copied' : 'Copy'),
-        copied, '#16a34a', '#F0FDF4', '#22c55e',
+        copied, '#8B1A1A', '#FEF2F2', 'rgba(139,26,26,0.3)',
       )}
       {hasDocs && btn(docsCopied ? () => {} : copyDocs,
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>,
         isAr ? (docsCopied ? 'تم' : 'نسخ المستندات') : (docsCopied ? 'Done' : 'Copy Docs'),
-        docsCopied, '#16a34a', '#F0FDF4', '#22c55e',
+        docsCopied, '#8B1A1A', '#FEF2F2', 'rgba(139,26,26,0.3)',
       )}
       {btn(downloadChecklist,
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -601,7 +604,7 @@ export function ResponseActions({
           <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
         </svg>,
         isAr ? 'مفيد' : 'Helpful',
-        feedback === 'up', '#16a34a', '#F0FDF4', '#22c55e',
+        feedback === 'up', '#78350F', '#FFFBEB', '#FDE68A',
       )}
       {btn(() => submitFeedback('down'),
         <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'down' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">

@@ -141,6 +141,8 @@ export default function MyFilesPage() {
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -214,6 +216,8 @@ export default function MyFilesPage() {
                     key={proc.id}
                     onClick={() => setSelected(proc)}
                     className="proc-btn"
+                    onTouchStart={e => { if (!isActive) { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.background = '#FEF9F9' } }}
+                    onTouchEnd={e => { if (!isActive) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' } }}
                     style={{
                       width: '100%', textAlign: 'right', padding: '14px 16px', borderRadius: 18,
                       border: isActive ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
@@ -355,6 +359,8 @@ export default function MyFilesPage() {
                           key={step.step}
                           onClick={() => toggleStep(selected, step.step)}
                           className="step-btn"
+                          onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.99)'; e.currentTarget.style.background = step.done ? '#FFF3C4' : '#FEF2F2' }}
+                          onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = step.done ? '#FFFBEB' : '#FAFAF8' }}
                           style={{
                             width: '100%', textAlign: 'right', display: 'flex', alignItems: 'flex-start', gap: 12,
                             padding: '11px 13px', borderRadius: 12,

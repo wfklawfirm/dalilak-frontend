@@ -99,14 +99,22 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
           <button
             key={tab.id}
             onClick={() => handleTab(tab.id)}
+            onTouchStart={e => {
+              e.currentTarget.style.background = active ? 'rgba(139,26,26,0.06)' : 'rgba(0,0,0,0.04)'
+              e.currentTarget.style.transform = 'scale(0.95)'
+            }}
+            onTouchEnd={e => {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
             style={{
               flex: 1, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
               gap: 3, padding: '7px 4px 5px',
               border: 'none', background: 'transparent', cursor: 'pointer',
               color: active ? '#8B1A1A' : '#A89D92',
-              fontFamily: 'inherit', transition: 'all 0.18s',
-              position: 'relative',
+              fontFamily: 'inherit', transition: 'background 0.12s, transform 0.12s',
+              position: 'relative', borderRadius: 8,
             }}>
             {active && (
               <span style={{

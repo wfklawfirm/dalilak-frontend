@@ -51,7 +51,10 @@ export default function FAQPage() {
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
+          <button onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
@@ -140,11 +143,15 @@ export default function FAQPage() {
             </div>
             <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>لم يُعثر على نتائج</p>
             <p style={{ fontSize: 12, margin: '0 0 14px' }}>جرّب كلمة مختلفة أو اسأل دليلك مباشرة</p>
-            <button onClick={() => askAI(search)} style={{
+            <button onClick={() => askAI(search)}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+              style={{
               padding: '9px 22px', borderRadius: 12,
               background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
               border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+              transition: 'opacity 0.12s, transform 0.12s',
             }}>
               {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
@@ -164,6 +171,8 @@ export default function FAQPage() {
                   {/* Question row */}
                   <button
                     onClick={() => setExpanded(isOpen ? null : item.id)}
+                    onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                     style={{
                       width: '100%', padding: '12px 14px', background: 'none', border: 'none',
                       cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right',
@@ -203,6 +212,8 @@ export default function FAQPage() {
                       </p>
                       <button
                         onClick={() => askAI(isAr ? item.question_ar : item.question_en)}
+                        onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                        onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                         style={{
                           padding: '7px 18px', borderRadius: 10,
                           background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
@@ -210,6 +221,7 @@ export default function FAQPage() {
                           cursor: 'pointer', fontFamily: 'inherit',
                           display: 'inline-flex', alignItems: 'center', gap: 6,
                           boxShadow: '0 2px 6px rgba(139,26,26,0.25)',
+                          transition: 'opacity 0.12s, transform 0.12s',
                         }}
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

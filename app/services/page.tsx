@@ -196,12 +196,14 @@ function ServiceSheet({ service, onClose, onAsk }: {
         <div style={{ padding: '12px 20px 28px', borderTop: '1px solid #EAE4D9', display: 'flex', gap: 10 }}>
           <button
             onClick={() => onAsk(service.chatPrompt_ar || service.name_ar)}
+            onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+            onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
             style={{
               flex: 1, padding: '13px 16px', borderRadius: 14,
               background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none',
               color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: '0 3px 12px rgba(139,26,26,0.3)',
+              boxShadow: '0 3px 12px rgba(139,26,26,0.3)', transition: 'opacity 0.12s, transform 0.12s',
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -211,10 +213,12 @@ function ServiceSheet({ service, onClose, onAsk }: {
           </button>
           <button
             onClick={onClose}
+            onTouchStart={e => { e.currentTarget.style.background = '#EAE4D9' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#FAFAF8' }}
             style={{
               padding: '13px 16px', borderRadius: 14, background: '#FAFAF8',
               border: '1.5px solid #EAE4D9', color: '#5C4A3A', fontSize: 12,
-              fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
             }}
           >
             إغلاق
@@ -290,6 +294,8 @@ export default function ServicesPage() {
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={() => router.push('/')}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{
               background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
               borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
@@ -382,6 +388,14 @@ export default function ServicesPage() {
             <button
               onClick={() => setSelectedCat(null)}
               className="cat-chip"
+              onTouchStart={e => {
+                e.currentTarget.style.background = !selectedCat ? '#FDE8E8' : '#FEF9F9'
+                e.currentTarget.style.borderColor = '#8B1A1A'
+              }}
+              onTouchEnd={e => {
+                e.currentTarget.style.background = !selectedCat ? '#FEF2F2' : '#fff'
+                e.currentTarget.style.borderColor = !selectedCat ? '#8B1A1A' : '#EAE4D9'
+              }}
               style={{
                 padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
                 fontFamily: 'inherit', fontSize: 12, fontWeight: 700,
@@ -402,6 +416,14 @@ export default function ServicesPage() {
                   key={cat.slug}
                   onClick={() => setSelectedCat(active ? null : cat.slug)}
                   className="cat-chip"
+                  onTouchStart={e => {
+                    e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
+                    e.currentTarget.style.borderColor = '#8B1A1A'
+                  }}
+                  onTouchEnd={e => {
+                    e.currentTarget.style.background = active ? '#FEF2F2' : '#fff'
+                    e.currentTarget.style.borderColor = active ? '#8B1A1A' : '#EAE4D9'
+                  }}
                   style={{
                     padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 12, fontWeight: active ? 700 : 600,
@@ -491,7 +513,10 @@ export default function ServicesPage() {
                   padding: '16px', border: '1.5px solid #EAE4D9',
                   textAlign: 'right', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                   fontFamily: 'inherit', cursor: 'pointer', width: '100%',
+                  transition: 'all 0.14s',
                 }}
+                onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)'; e.currentTarget.style.transform = 'scale(0.98)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
               >
                 {/* Top row: icon + category */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -520,7 +545,7 @@ export default function ServicesPage() {
                 {/* Meta row */}
                 <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                   {service.fees && (
-                    <span style={{ fontSize: 10, color: '#065F46', background: '#F0FDF4', borderRadius: 20, padding: '2px 8px', border: '1px solid #D1FAE5', fontWeight: 600 }}>
+                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                       {service.fees.length > 20 ? service.fees.slice(0, 20) + '…' : service.fees}
                     </span>
                   )}

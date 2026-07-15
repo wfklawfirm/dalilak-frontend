@@ -104,11 +104,13 @@ export default function ServiceGroupSheet({
           </div>
           <button
             onClick={onClose}
+            onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
             style={{
               width: 32, height: 32, borderRadius: 8,
               background: '#EAE4D9', border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#5C4A3A', fontSize: 16, flexShrink: 0,
+              color: '#5C4A3A', fontSize: 16, flexShrink: 0, transition: 'background 0.12s',
             }}
             aria-label={T.close}
           ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>

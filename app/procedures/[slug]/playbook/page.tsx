@@ -249,6 +249,8 @@ export default function PlaybookPage() {
                 : `Explain this procedure: ${proc?.title ?? slug}`
               router.push(`/?q=${encodeURIComponent(q)}`)
             }}
+            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.26)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
             style={{
               background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.35)',
               borderRadius: 12, padding: '10px 24px', color: '#fff',

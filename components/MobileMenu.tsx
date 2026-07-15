@@ -178,11 +178,13 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
             {/* Close */}
             <button
               onClick={onClose}
+              onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.26)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)' }}
               style={{
                 width: 30, height: 30, borderRadius: '50%',
                 background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'rgba(255,255,255,0.8)', flexShrink: 0,
+                color: 'rgba(255,255,255,0.8)', flexShrink: 0, transition: 'background 0.12s',
               }}
             ><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
           </div>
@@ -209,9 +211,9 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
               {currentUser?.plan && (
                 <span style={{
                   fontSize: 10, fontWeight: 700,
-                  background: currentUser.plan === 'paid' ? 'rgba(52,211,153,0.2)' : 'rgba(251,191,36,0.2)',
-                  color: currentUser.plan === 'paid' ? '#6EE7B7' : '#FDE68A',
-                  border: `1px solid ${currentUser.plan === 'paid' ? 'rgba(52,211,153,0.35)' : 'rgba(251,191,36,0.35)'}`,
+                  background: currentUser.plan === 'paid' ? 'rgba(255,255,255,0.15)' : 'rgba(251,191,36,0.2)',
+                  color: currentUser.plan === 'paid' ? '#fff' : '#FDE68A',
+                  border: `1px solid ${currentUser.plan === 'paid' ? 'rgba(255,255,255,0.35)' : 'rgba(251,191,36,0.35)'}`,
                   borderRadius: 20, padding: '2px 9px', letterSpacing: '0.2px',
                 }}>
                   {currentUser.plan === 'paid' ? (isAr ? 'مشترك' : 'Paid') : (isAr ? 'تجريبي' : 'Trial')}
@@ -298,12 +300,15 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
         <div style={{ padding: '12px 16px 24px', borderTop: '1px solid #EAE4D9' }}>
           <button
             onClick={handleLogout}
+            onTouchStart={e => { e.currentTarget.style.background = '#FEE2E2' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
             style={{
               width: '100%', padding: '12px', borderRadius: 12,
               background: '#FEF2F2', border: '1.5px solid #FECACA',
               color: '#dc2626', fontSize: 13, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              transition: 'background 0.12s',
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

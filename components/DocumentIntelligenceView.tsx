@@ -164,11 +164,14 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
           {onStartFlow && (
             <button
               onClick={() => onStartFlow(p.procedureSlug)}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.96)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 padding: '5px 12px', borderRadius: 8, border: 'none',
                 background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10.5,
                 fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
                 boxShadow: '0 1px 4px rgba(139,26,26,0.2)',
+                transition: 'opacity 0.12s, transform 0.12s',
               }}
             >
               <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
@@ -400,6 +403,8 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
           <button
             key={i}
             onClick={() => a.actionType === 'request_human_review' ? onRequestHumanReview() : onAction(a)}
+            onTouchStart={e => { if (i < 2) { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' } else { e.currentTarget.style.background = '#D5CEC4' } }}
+            onTouchEnd={e => { if (i < 2) { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' } else { e.currentTarget.style.background = '#EAE4D9' } }}
             style={{
               padding: '12px 16px', borderRadius: 12, border: 'none',
               background: i === 0
@@ -412,6 +417,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
               cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', gap: 8,
               textAlign: isAr ? 'right' : 'left',
+              transition: 'opacity 0.12s, transform 0.12s',
             }}
           >
             <span style={{ display: 'flex', flexShrink: 0 }}>{actionIcon(a.actionType)}</span>
@@ -423,11 +429,13 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
       {/* Human review always visible */}
       <button
         onClick={onRequestHumanReview}
+        onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.25)' }}
+        onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
         style={{
           marginTop: 10, width: '100%', padding: '10px 16px', borderRadius: 12,
           border: '1.5px solid #EAE4D9', background: '#fff', color: '#2D1B0E',
           fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-          display: 'flex', alignItems: 'center', gap: 8,
+          display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.12s',
         }}
       >
         <span style={{ display: 'flex', flexShrink: 0 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></span>
@@ -439,10 +447,13 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
         <>
           <button
             onClick={() => setShowSecondary(s => !s)}
+            onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
+            onTouchEnd={e => { e.currentTarget.style.color = '#5C4A3A' }}
             style={{
               marginTop: 8, width: '100%', padding: '8px 12px',
               border: 'none', background: 'none', color: '#5C4A3A',
               fontSize: 11.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              transition: 'color 0.12s',
             }}
           >
             <span style={{display:'inline-flex',alignItems:'center',gap:4}}>
@@ -458,12 +469,15 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
                 <button
                   key={i}
                   onClick={() => a.actionType === 'request_human_review' ? onRequestHumanReview() : onAction(a)}
+                  onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.25)'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = '#FAFAF8'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
                   style={{
                     padding: '9px 14px', borderRadius: 10,
                     border: '1.5px solid #EAE4D9', background: '#FAFAF8',
                     color: '#2D1B0E', fontSize: 11.5, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 8,
+                    transition: 'all 0.12s',
                   }}
                 >
                   <span>{actionIcon(a.actionType)}</span>
@@ -625,6 +639,8 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
 
         <button
           onClick={handleGenerate}
+          onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+          onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
           style={{
             width: '100%', padding: '13px', borderRadius: 13,
             background: 'linear-gradient(135deg,#8B1A1A,#6b2737)',
@@ -632,6 +648,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
             cursor: 'pointer', fontFamily: 'inherit',
             boxShadow: '0 4px 14px rgba(139,26,26,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            transition: 'opacity 0.12s, transform 0.12s',
           }}
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -670,6 +687,8 @@ export function RecommendedDraftsPanel({
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
+          onTouchStart={e => { e.currentTarget.style.background = '#FEF9F9'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)'; e.currentTarget.style.transform = 'scale(0.97)' }}
+          onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
           >
             <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -721,7 +740,10 @@ function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{ ...card }}>
-      <button style={sectionHeader(open)} onClick={() => setOpen(o => !o)}>
+      <button style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
+        onTouchStart={e => { e.currentTarget.style.background = '#FAFAF8' }}
+        onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
+      >
         <span style={{ display: 'flex', alignItems: 'center', color: '#8B1A1A' }}>{icon}</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', flex: 1 }}>{title}</span>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"

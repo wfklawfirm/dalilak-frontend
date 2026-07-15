@@ -12,7 +12,6 @@ interface Props {
 }
 
 const BRAND = '#8B1A1A'
-const GOLD  = '#B8860B'
 
 export default function FormDetailClient({ form }: Props) {
   const router = useRouter()
@@ -54,7 +53,6 @@ export default function FormDetailClient({ form }: Props) {
   return (
     <div dir={dir} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: isAr ? "'Cairo',sans-serif" : "'Inter',sans-serif" }}>
 
-      {/* ── Header ── */}
       <header style={{
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
@@ -63,6 +61,8 @@ export default function FormDetailClient({ form }: Props) {
         <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={() => router.back()}
+            onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
+            onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
@@ -86,7 +86,6 @@ export default function FormDetailClient({ form }: Props) {
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-        {/* ── Form card ── */}
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
             <span style={{ display: 'flex', flexShrink: 0 }}>{fileIcon}</span>
@@ -97,12 +96,11 @@ export default function FormDetailClient({ form }: Props) {
             </div>
           </div>
 
-          {/* File type badge */}
           <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <span style={{ background: '#EAE4D9', color: BRAND, borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>
               {form.fileType?.toUpperCase() ?? 'LINK'}
             </span>
-            <span style={{ background: form.type === 'official' ? '#E8F5E9' : '#FFF9E6', color: form.type === 'official' ? '#2E7D32' : '#B8860B', borderRadius: 20, padding: '3px 10px', fontSize: 12 }}>
+            <span style={{ background: '#FFFBEB', color: '#78350F', borderRadius: 20, padding: '3px 10px', fontSize: 12 }}>
               {form.type === 'official' ? (isAr ? 'نموذج رسمي' : 'Official Form') : isAr ? 'مسودة' : 'Draft'}
             </span>
             {form.lastReviewed && (
@@ -112,26 +110,28 @@ export default function FormDetailClient({ form }: Props) {
             )}
           </div>
 
-          {/* Action buttons */}
           <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {form.url && (
               <button
                 onClick={handleDownload}
-                style={{ background: BRAND, color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+                onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
+                style={{ background: BRAND, color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.1s' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 {isAr ? 'فتح النموذج' : 'Open Form'}
               </button>
             )}
             <button
               onClick={handleAskAI}
-              style={{ background: '#fff', color: BRAND, border: `1.5px solid ${BRAND}`, borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+              onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
+              style={{ background: '#fff', color: BRAND, border: `1.5px solid ${BRAND}`, borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.1s' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
               {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
           </div>
         </div>
 
-        {/* ── How to use ── */}
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
@@ -145,7 +145,6 @@ export default function FormDetailClient({ form }: Props) {
           </ol>
         </div>
 
-        {/* ── Related procedures ── */}
         {relatedProcedures.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -157,7 +156,9 @@ export default function FormDetailClient({ form }: Props) {
                 <button
                   key={p.slug}
                   onClick={() => router.push(`/procedures/${p.slug}`)}
-                  style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  onTouchStart={e => (e.currentTarget.style.background = '#F0EBE0')}
+                  onTouchEnd={e => (e.currentTarget.style.background = '#FAFAF8')}
+                  style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.15s' }}>
                   <span style={{ display: 'flex', flexShrink: 0 }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                   <div>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1A1208' }}>{isAr ? p.title_ar : p.title_en}</p>
@@ -169,7 +170,6 @@ export default function FormDetailClient({ form }: Props) {
           </div>
         )}
 
-        {/* ── Disclaimer ── */}
         <div style={{ background: '#FFF9E6', border: '1px solid #F0E0A0', borderRadius: 14, padding: '12px 16px' }}>
           <p style={{ margin: 0, fontSize: 12, color: '#7A6020', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A6020" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -181,7 +181,6 @@ export default function FormDetailClient({ form }: Props) {
 
       </div>
 
-      {/* Bottom Nav — mobile */}
       <div className="bottom-nav-wrapper">
         <BottomNav isAr={true} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>

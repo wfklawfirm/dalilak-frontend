@@ -830,7 +830,7 @@ export default function Home() {
                       padding:'14px 8px 16px',
                       borderRight: i < 2 ? '1px solid #EAE4D9' : 'none',
                     }}>
-                      <span style={{ fontSize:20, fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.6px', lineHeight:1 }}>{s.num}</span>
+                      <span style={{ fontSize:'clamp(17px,5vw,20px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.6px', lineHeight:1 }}>{s.num}</span>
                       <span style={{ fontSize:10, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center' }}>{isAr ? s.lAr : s.lEn}</span>
                     </div>
                   ))}
@@ -862,8 +862,8 @@ export default function Home() {
                         }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 4px 14px rgba(139,26,26,0.09)' }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)' }}
-                        onTouchStart={e => { e.currentTarget.style.background='#EAE4D9'; e.currentTarget.style.transform='scale(0.97)' }}
-                        onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='scale(1)' }}
+                        onTouchStart={e => { e.currentTarget.style.background='rgba(254,242,242,0.9)'; e.currentTarget.style.borderColor='rgba(139,26,26,0.3)'; e.currentTarget.style.transform='scale(0.97)' }}
+                        onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.transform='scale(1)' }}
                       >
                         <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:`${group.color}14`, border:`1px solid ${group.color}28`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
                           <ServiceGroupIcon slug={group.slug} />
@@ -982,6 +982,8 @@ export default function Home() {
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5' }}
+                onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)' }}
+                onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
               >
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.6, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> {q}
               </button>
@@ -1002,6 +1004,8 @@ export default function Home() {
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5' }}
+              onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> إعادة المحاولة
             </button>

@@ -171,7 +171,7 @@ export function DesktopModeSelector({
               fontWeight: 600, cursor: 'pointer', border: 'none',
               background: active ? '#fff' : 'transparent',
               color: active ? '#8B1A1A' : '#9C8E80',
-              boxShadow: active ? '0 1px 4px rgba(0,0,0,0.12)' : 'none',
+              boxShadow: active ? '0 1px 6px rgba(139,26,26,0.18)' : 'none',
               fontFamily: 'inherit', transition: 'all 0.18s ease',
               whiteSpace: 'nowrap',
             }}
