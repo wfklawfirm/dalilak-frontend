@@ -75,6 +75,16 @@ function ServiceGroupIcon({ slug }: { slug: string }) {
       <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
     </svg>
   )
+  if (slug === 'industry') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l6-7v7l6-7v7l6-7v11H3V10z"/>
+    </svg>
+  )
+  if (slug === 'labor') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+    </svg>
+  )
   // forms-docs
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -99,6 +109,9 @@ const QUESTION_POOL_AR = [
   'ما هي رسوم التسجيل في الضمان الاجتماعي؟',
   'كيف أطعن في قرار إداري؟',
   'ما خطوات تجديد إقامة الأجانب في لبنان؟',
+  'كيف أحصل على إجازة عمل لموظف أجنبي؟',
+  'كيف أحسب تعويض نهاية الخدمة في لبنان؟',
+  'كيف أحصل على ترخيص إنشاء منشأة صناعية؟',
 ]
 
 const QUESTION_POOL_EN = [
@@ -113,6 +126,9 @@ const QUESTION_POOL_EN = [
   'What are the real estate transfer procedures?',
   'How do I get a certificate of good conduct?',
   'What documents are needed to register a newborn?',
+  'How do I obtain a work permit for a foreign employee?',
+  'How is end-of-service gratuity calculated in Lebanon?',
+  'How do I get an industrial facility license in Lebanon?',
   'How do I get a professional practice license?',
   'What are the social security registration fees?',
   'How do I appeal an administrative decision?',
@@ -679,7 +695,7 @@ export default function Home() {
         .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; }
 
         @media (min-width: 640px) {
-          .wlc-svc-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+          .wlc-svc-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
         }
       `}</style>
 
