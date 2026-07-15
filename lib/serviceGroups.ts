@@ -347,7 +347,7 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
     titleAr: 'الشركات والأعمال',
     titleEn: 'Business & Companies',
     icon: '🏭',
-    color: '#1E3A5F',
+    color: '#B8860B',
     priority: 5,
     descriptionAr: 'تأسيس الشركات والتراخيص التجارية والضمان الاجتماعي',
     descriptionEn: 'Company formation, commercial licenses, and social security',

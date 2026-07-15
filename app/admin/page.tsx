@@ -610,6 +610,62 @@ export default function AdminPage() {
         )}
 
       </div>
+
+      {/* ── EDIT USER MODAL ── */}
+      {editUser && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+          onClick={e => { if (e.target === e.currentTarget) setEditUser(null) }}>
+          <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>تعديل: {editUser.username}</h2>
+              <button onClick={() => setEditUser(null)} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ padding: '10px 14px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #EAE4D9', fontSize: 12, color: '#5C4A3A' }}>
+                <span style={{ color: '#9C8E80' }}>البريد: </span>{editUser.email}
+              </div>
+              <div>
+                <label style={LBL}>الخطة</label>
+                <select value={editPlan} onChange={e => setEditPlan(e.target.value)} style={INP}>
+                  <option value="trial">تجريبي</option>
+                  <option value="paid">مدفوع</option>
+                  <option value="admin">مشرف</option>
+                  <option value="suspended">موقوف</option>
+                </select>
+              </div>
+              {editPlan === 'paid' && (
+                <div>
+                  <label style={LBL}>مدفوع حتى (اختياري)</label>
+                  <input
+                    type="date"
+                    value={editPaidUntil}
+                    onChange={e => setEditPaidUntil(e.target.value)}
+                    style={INP}
+                  />
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
+                <button
+                  onClick={handleUpdate}
+                  disabled={loading}
+                  style={{ flex: 1, padding: '10px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}
+                >
+                  {loading ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}
+                </button>
+                <button
+                  onClick={() => setEditUser(null)}
+                  style={{ padding: '10px 18px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  إلغاء
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

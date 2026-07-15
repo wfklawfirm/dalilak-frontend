@@ -69,8 +69,8 @@ const PLAN_FEATURES: Record<PlanTier, PlanFeatures> = {
     procedureDetailEnabled: true,
     label_ar: 'إداري',
     label_en: 'Admin',
-    color: '#6D28D9',
-    bg: '#F5F3FF',
+    color: '#8B1A1A',
+    bg: '#FEF2F2',
   },
 }
 
