@@ -29,7 +29,7 @@ echo === Staged files ===
 git status --short
 
 REM 5. Commit
-git commit -m "feat: add 101 comprehensive Ministry of Finance services (income tax, VAT, built-property tax, indirect taxes/stamp duty, improvement tax, inheritance duty, tax objections x3, pension dept x10, customs x10, land registry x2, cross-cutting x6) + new pensions category; sprint55 s2 stats strips->premium cards"
+git commit -m "feat: 101 MoF services + pensions category + 850 dawlati links archived via Wayback; feat: discovered live dawlati.gov.lb 2026 relaunch (OMSAR) - repointed official portal link + 3 tourism services to live site, added 7 new agriculture services (seed import permits, food factory/brand registration) sourced from live dawlati REST API; docs: system_prompt.txt updated with live portal status and scope"
 
 REM 6. Push to trigger Vercel rebuild
 echo.
