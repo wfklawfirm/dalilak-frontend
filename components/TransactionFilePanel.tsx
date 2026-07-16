@@ -109,7 +109,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
               display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
             }}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         )}
       </div>
@@ -266,4 +266,12 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
   )
 }
 
-function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; val
+function StatCard({ label, value, valueColor = '#1A1208' }: { label:
+string; value: string | number; valueColor?: string }) {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: 15, fontWeight: 800, color: valueColor, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 10, color: '#9C8E80', marginTop: 2, fontWeight: 500 }}>{label}</div>
+    </div>
+  )
+}

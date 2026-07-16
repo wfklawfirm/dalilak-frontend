@@ -88,6 +88,6 @@ export function isFeatureGated(plan: string | undefined, feature: keyof PlanFeat
 
 export function getUpgradeMessage(isAr: boolean): string {
   return isAr
-    ? '⭐ هذه الميزة متاحة في خطة بروفيشنال. تواصل معنا للترقية.'
-    : '⭐ This feature is available in the Pro plan. Contact us to upgrade.'
+    ? 'هذه الميزة متاحة في خطة بروفيشنال. تواصل معنا للترقية.'
+    : 'This feature is available in the Pro plan. Contact us to upgrade.'
 }

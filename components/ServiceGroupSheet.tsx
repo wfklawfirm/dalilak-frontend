@@ -28,10 +28,10 @@ export default function ServiceGroupSheet({
     : { close: 'Close', action_start: 'Start', action_upload: 'Upload Doc', action_ask: 'Ask Dalilak', action_checklist: 'Checklist' }
 
   const actionLabel = (item: ServiceItem): React.ReactNode => {
-    if (item.defaultAction === 'upload_document') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>{isAr ? 'ارفع مستنداً' : 'Upload Document'}</>
-    if (item.defaultAction === 'generate_checklist') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Checklist</>
-    if (item.defaultAction === 'ask_ai') return <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{isAr ? 'اسأل دليلك' : 'Ask Dalilak'}</>
-    return <><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><polygon points="6,3 20,12 6,21"/></svg>{isAr ? 'ابدأ' : 'Start'}</>
+    if (item.defaultAction === 'upload_document') return <><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>{isAr ? 'ارفع مستنداً' : 'Upload Document'}</>
+    if (item.defaultAction === 'generate_checklist') return <><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Checklist</>
+    if (item.defaultAction === 'ask_ai') return <><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>{isAr ? 'اسأل دليلك' : 'Ask Dalilak'}</>
+    return <><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: 3 }}><polygon points="6,3 20,12 6,21"/></svg>{isAr ? 'ابدأ' : 'Start'}</>
   }
 
   const verBadge = (status: ServiceItem['verificationStatus']) => {
@@ -60,6 +60,7 @@ export default function ServiceGroupSheet({
       {/* Backdrop */}
       <div
         onClick={onClose}
+        aria-hidden="true"
         style={{
           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
           zIndex: 200, backdropFilter: 'blur(2px)',
@@ -68,7 +69,9 @@ export default function ServiceGroupSheet({
       />
 
       {/* Sheet */}
-      <div role="dialog" aria-modal="true" aria-label={isAr ? group.titleAr : group.titleEn} style={{
+      <div role="dialog" aria-modal="true" aria-label={isAr ? group.titleAr : group.titleEn}
+        tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
+        style={{
         position: 'fixed', left: 0, right: 0, bottom: 0,
         zIndex: 201,
         background: '#fff',
@@ -122,7 +125,7 @@ export default function ServiceGroupSheet({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#5C4A3A', fontSize: 16, flexShrink: 0, transition: 'background 0.12s',
             }}
-          ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+          ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         {/* Services list */}
@@ -158,7 +161,7 @@ export default function ServiceGroupSheet({
               }}>
                 {item.icon
                   ? <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
-                  : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  : <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 }
               </div>
 
@@ -168,4 +171,29 @@ export default function ServiceGroupSheet({
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
                     {isAr ? item.titleAr : item.titleEn}
                   </span>
-                  {verBadge(item.verificat
+                </div>
+                {(isAr ? item.descriptionAr : item.descriptionEn) && (
+                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.4 }}>
+                    {isAr ? item.descriptionAr : item.descriptionEn}
+                  </div>
+                )}
+              </div>
+
+              {/* CTA */}
+              <div style={{
+                padding: '5px 10px', borderRadius: 8,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
+                fontSize: 10.5, fontWeight: 700,
+                whiteSpace: 'nowrap', flexShrink: 0,
+                display: 'flex', alignItems: 'center', gap: 4,
+                boxShadow: '0 2px 6px rgba(139,26,26,0.2)',
+              }}>
+                {actionLabel(item)}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}

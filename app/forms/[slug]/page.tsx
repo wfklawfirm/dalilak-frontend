@@ -11,9 +11,9 @@ export async function generateStaticParams() {
 // ── SEO metadata ──────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const form = FORMS_DATA.find(f => f.slug === params.slug)
-  if (!form) return { title: 'نموذج — دليلك AI' }
+  if (!form) return { title: 'نموذج — دليلك' }
 
-  const title = `${form.title_ar} — دليلك AI`
+  const title = `${form.title_ar} — دليلك`
   const desc = `تنزيل نموذج ${form.title_ar} من ${form.authority_ar}. ${form.category_ar}. دليلك للمعاملات الحكومية اللبنانية.`
   return {
     title,
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title,
       description: desc,
-      siteName: 'دليلك AI',
+      siteName: 'دليلك',
       locale: 'ar_LB',
     },
     alternates: {

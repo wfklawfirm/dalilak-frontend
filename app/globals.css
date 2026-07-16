@@ -17,6 +17,7 @@
 
   --border:       #EAE4D9;
   --border-light: #EAE4D9;
+  --border-strong: #D5CEC4;
 
   --text-1:       #1A1208;
   --text-2:       #5C4A3A;
@@ -90,6 +91,26 @@ textarea { font-family: inherit; }
   100% { background-position: 200% 0; }
 }
 
+@keyframes divSection {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  40%       { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 16px rgba(139,26,26,0.22); }
+  50%       { transform: scale(0.95); box-shadow: 0 2px 8px rgba(139,26,26,0.12); }
+}
+
+@keyframes streaming-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
 /* ── Message entrance ────────────────────────────────── */
 .msg-in { animation: fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) forwards; }
 
@@ -116,18 +137,32 @@ button, [role="button"] { touch-action: manipulation; user-select: none; }
 a { touch-action: manipulation; }
 
 /* ── Focus ring ──────────────────────────────────────── */
-button:focus-visible {
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+select:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 textarea:focus { outline: none; }
+textarea:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
-/* ── Global input focus — brand border ───────────────── */
-/* Only overrides border-color; box-shadow is left to wrapper (search bars)
-   or page-level JS for inputs that own their own border (admin forms). */
+/* ── Global input focus — brand border + ring ─────────── */
 input:focus {
   outline: none;
   border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px rgba(139,26,26,0.08) !important;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+/* Remove double-ring inside search containers (container already has ring) */
+.search-wrap input:focus {
+  box-shadow: none !important;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -277,7 +312,6 @@ input:focus {
   border: 1px solid transparent;
 }
 .badge-brand   { background: #FEF2F2; color: var(--brand); border-color: rgba(139,26,26,0.18); }
-.badge-green   { background: #F0FDF4; color: #15803D;      border-color: #BBF7D0; }
 .badge-amber   { background: #FFFBEB; color: #92400E;      border-color: #FDE68A; }
 .badge-neutral { background: var(--surface-2); color: var(--text-2); border-color: var(--border); }
 
@@ -338,6 +372,26 @@ input:focus {
   border-radius: 8px;
 }
 
+/* ── Slide up for bottom sheets / modals ────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slideUp 0.24s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ── Slide in from bottom (sheets / drawers) ─────────── */
+@keyframes sheetIn {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ── Fade in (simple opacity) ────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.2s ease both; }
+
 /* ── Reduced-motion accessibility ────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -353,6 +407,43 @@ input:focus {
 .scale-in  { will-change: transform, opacity; }
 .send-btn  { will-change: transform; }
 .card-hover { will-change: transform; }
+.streaming-cursor { will-change: opacity; }
+
+
+/* ── Skip link (WCAG 2.1 — Level A) ─────────────────── */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 0 0 10px 10px;
+  text-decoration: none;
+  z-index: 9999;
+  white-space: nowrap;
+  transition: top 0.12s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ── Screen-reader only (visually hidden) ─────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
 
 /* ── Empty state ─────────────────────────────────────── */
 .empty-state {

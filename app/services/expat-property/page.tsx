@@ -24,7 +24,7 @@ const PACK_SECTIONS: PackSection[] = [
   {
     id: 'expat',
     icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
     ),
@@ -36,7 +36,7 @@ const PACK_SECTIONS: PackSection[] = [
   {
     id: 'property',
     icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"/>
       </svg>
     ),
@@ -48,7 +48,7 @@ const PACK_SECTIONS: PackSection[] = [
   {
     id: 'contracts',
     icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
       </svg>
     ),
@@ -75,22 +75,22 @@ const HOW_IT_WORKS_EN = [
 
 function ServiceIcon({ action }: { action: string }) {
   if (action === 'upload_document') return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
     </svg>
   )
   if (action === 'generate_checklist') return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
     </svg>
   )
   if (action === 'start_flow') return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/>
     </svg>
   )
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
     </svg>
   )
@@ -153,7 +153,7 @@ export default function ExpatPropertyPackPage() {
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: 'rgba(255,255,255,0.9)', cursor: 'pointer', padding: '6px 8px', display: 'flex', alignItems: 'center' }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
               </svg>
             </button>
@@ -168,6 +168,7 @@ export default function ExpatPropertyPackPage() {
             <button
               type="button"
               onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+              aria-label="تغيير اللغة"
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
               style={{
@@ -185,6 +186,7 @@ export default function ExpatPropertyPackPage() {
               <button
                 type="button"
                 key={s.id}
+                aria-pressed={activeSection === s.id}
                 onClick={() => setActiveSection(s.id)}
                 onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
                 onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
@@ -206,11 +208,11 @@ export default function ExpatPropertyPackPage() {
         </div>
       </header>
 
-      <div className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
+      <div id="main-content" className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
 
         <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #EAE4D9', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
             </svg>
             {isAr ? 'كيف يعمل المسار؟' : 'How does the path work?'}
@@ -321,7 +323,7 @@ export default function ExpatPropertyPackPage() {
               display: 'inline-flex', alignItems: 'center', gap: 5,
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
             </svg>
             {isAr ? 'العودة إلى الخدمات' : 'Back to Services'}
@@ -330,7 +332,7 @@ export default function ExpatPropertyPackPage() {
 
       </div>
 
-      <BottomNav isAr={isAr} activeTab="services" />
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
     </div>
   )
 }

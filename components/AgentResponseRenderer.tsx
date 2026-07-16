@@ -17,17 +17,17 @@ import { authHeaders } from '@/lib/auth'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 // ── Section icons ─────────────────────────────────────────────
-const SvgSummary  = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/></svg>
-const SvgDocs     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-const SvgSteps    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-const SvgBuilding = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-const SvgForm     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-const SvgFee      = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-const SvgClock    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>
-const SvgArrow    = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-const SvgWarn     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-const SvgScales   = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-const SvgLink     = <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+const SvgSummary  = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/></svg>
+const SvgDocs     = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+const SvgSteps    = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+const SvgBuilding = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+const SvgForm     = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+const SvgFee      = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+const SvgClock    = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>
+const SvgArrow    = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+const SvgWarn     = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+const SvgScales   = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+const SvgLink     = <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
 
 // ── Section style map ─────────────────────────────────────────
 const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode; labelColor: string }> = {
@@ -266,7 +266,7 @@ export function MarkdownFallbackRenderer({
       while (i < lines.length && /^[-*•] /.test(lines[i])) {
         const content = lines[i].replace(/^[-*•] /, '')
         items.push(<li key={i} style={{ marginBottom: '0.28rem', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
-          <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A"/></svg></span>
+          <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 4, display: 'inline-flex' }}><svg aria-hidden="true" width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A"/></svg></span>
           <span>{inlineFormat(content, i, onCitation, activeCitation)}</span>
         </li>)
         i++
@@ -381,10 +381,14 @@ export function TrustBadge({
   return (
     <div style={{ marginTop: 10, padding: '8px 12px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #EAE4D9' }}>
       <div
+        role={hasSources ? 'button' : undefined}
+        tabIndex={hasSources ? 0 : undefined}
+        aria-expanded={hasSources ? expanded : undefined}
+        onKeyDown={hasSources ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpanded(prev => !prev) } } : undefined}
         style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: hasSources ? 'pointer' : 'default' }}
         onClick={() => hasSources && setExpanded(e => !e)}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2" style={{ flexShrink: 0 }}>
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2" style={{ flexShrink: 0 }}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <div style={{ flex: 1, fontSize: 10, color: '#9C8E80', lineHeight: 1.5 }}>
@@ -402,7 +406,7 @@ export function TrustBadge({
           </span>
         )}
         {hasSources && (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         )}
@@ -468,14 +472,14 @@ export function TrustBadge({
                       {isAr ? `آخر تحديث: ${src.lastUpdated}` : `Last updated: ${src.lastUpdated}`}
                     </span>
                   )}
-                  {isActive && (src as any).snippet && (
+                  {isActive && src.snippet && (
                     <p style={{
                       fontSize: 10, color: '#5C4A3A', margin: '5px 0 0',
                       padding: '5px 7px', borderRadius: 6,
                       background: '#FFF', border: '1px solid #FECACA',
                       lineHeight: 1.6, direction: 'rtl', textAlign: 'right',
                     }}>
-                      {(src as any).snippet}
+                      {src.snippet}
                     </p>
                   )}
                 </div>
@@ -556,7 +560,7 @@ export function ResponseActions({
   const hasDocs = Boolean(extractDocsList(content))
 
   const btn = (onClick: () => void, icon: ReactNode, label: string, active?: boolean, activeColor?: string, activeBg?: string, activeBorder?: string) => (
-    <button type="button" onClick={onClick}
+    <button type="button" aria-label={label} aria-pressed={active !== undefined ? active : undefined} onClick={onClick}
       onTouchStart={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#F5F0EA'; e.currentTarget.style.transform = 'scale(0.95)' }}
       onTouchEnd={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
       style={{
@@ -572,42 +576,42 @@ export function ResponseActions({
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
       {btn(copy,
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           {copied ? <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/> : <><rect x="9" y="9" width="13" height="13" rx="2"/><path strokeLinecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></>}
         </svg>,
         isAr ? (copied ? 'تم النسخ' : 'نسخ الجواب') : (copied ? 'Copied' : 'Copy'),
         copied, '#8B1A1A', '#FEF2F2', 'rgba(139,26,26,0.3)',
       )}
       {hasDocs && btn(docsCopied ? () => {} : copyDocs,
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
         </svg>,
         isAr ? (docsCopied ? 'تم' : 'نسخ المستندات') : (docsCopied ? 'Done' : 'Copy Docs'),
         docsCopied, '#8B1A1A', '#FEF2F2', 'rgba(139,26,26,0.3)',
       )}
       {btn(downloadChecklist,
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>,
         isAr ? 'تحميل Checklist' : 'Download',
       )}
       {onFollowUp && btn(
         () => onFollowUp(isAr ? 'أريد توضيحاً أكثر عن هذا الموضوع' : 'Can you elaborate more on this?'),
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
         </svg>,
         isAr ? 'اسأل متابعة' : 'Follow-up',
       )}
       <span style={{ color: '#D5CEC4', alignSelf: 'center' }}>|</span>
       {btn(() => submitFeedback('up'),
-        <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'up' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'up' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
         </svg>,
         isAr ? 'مفيد' : 'Helpful',
         feedback === 'up', '#78350F', '#FFFBEB', '#FDE68A',
       )}
       {btn(() => submitFeedback('down'),
-        <svg width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'down' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill={feedback === 'down' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/>
         </svg>,
         isAr ? 'غير مفيد' : 'Not helpful',
@@ -690,4 +694,50 @@ export default function AgentResponseRenderer({
               <div key={i} style={{ animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
                 <AgentSectionCard
                   header={sec.header}
-                
+                  lines={sec.lines}
+                  style={style}
+                  onCitation={handleCitation}
+                  activeCitation={activeCitation}
+                />
+              </div>
+            )
+          })}
+        </div>
+      ) : (
+        <MarkdownFallbackRenderer
+          lines={content.split('\n')}
+          onCitation={handleCitation}
+          activeCitation={activeCitation}
+        />
+      )}
+      {streaming && <StreamingCursor />}
+
+      <TrustBadge
+        isAr={isAr}
+        sources={sources}
+        confidence={confidence}
+        lastReviewed={lastReviewed}
+        activeCitation={activeCitation}
+        defaultExpanded={defaultExpandSources}
+      />
+
+      <ResponseActions
+        content={content}
+        isAr={isAr}
+        onFollowUp={onFollowUp}
+        question={question}
+        confidence={confidence}
+      />
+
+      <p style={{
+        fontSize: 10, color: '#C4B5A5', marginTop: 10,
+        paddingTop: 8, borderTop: '1px solid #EAE4D9',
+        textAlign: isAr ? 'right' : 'left',
+      }}>
+        {isAr
+          ? 'دليلك: معلومات إرشادية لا تُغني عن المختص القانوني.'
+          : 'Dalilak: Informational only — does not replace legal counsel.'}
+      </p>
+    </div>
+  )
+}

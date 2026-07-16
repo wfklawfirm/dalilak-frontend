@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: 'ملفاتي | دليلك AI',
+  title: 'ملفاتي | دليلك',
 }
 
 export default function MyFilesLayout({ children }: { children: ReactNode }) {

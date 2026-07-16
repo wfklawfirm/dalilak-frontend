@@ -37,7 +37,7 @@ export function PageHeader({ icon: _icon, titleAr, titleEn, subtitleAr, subtitle
               padding: '6px 8px', display: 'flex', flexShrink: 0,
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>
             </svg>
           </button>
@@ -86,6 +86,10 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
   return (
     <div style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}>
       <div
+        role={collapsible ? 'button' : undefined}
+        tabIndex={collapsible ? 0 : undefined}
+        aria-expanded={collapsible ? open : undefined}
+        onKeyDown={collapsible ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(o => !o) } } : undefined}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -94,6 +98,7 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
           cursor: collapsible ? 'pointer' : 'default',
           borderBottom: open ? `1px solid ${border}` : 'none',
           transition: 'background 0.12s',
+          userSelect: 'none',
         }}
         onClick={() => { if (collapsible) setOpen(o => !o) }}
         onTouchStart={collapsible ? (e => { e.currentTarget.style.background = '#F5F0EA' }) : undefined}
@@ -104,7 +109,7 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
           {title}
         </h3>
         {collapsible && (
-          <span style={{ display:'inline-flex', alignItems:'center', color: '#9C8E80', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
+          <span style={{ display:'inline-flex', alignItems:'center', color: '#9C8E80', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
         )}
       </div>
       {open && (
@@ -179,7 +184,7 @@ export function RiskBadge({ level, isAr = true }: RiskBadgeProps) {
   const info = map[level]
   return (
     <span style={{ fontSize: 10.5, fontWeight: 700, color: info.color, background: info.bg, borderRadius: 8, padding: '2px 9px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-      <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill={info.color}/></svg>
+      <svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill={info.color}/></svg>
       {isAr ? info.ar : info.en}
     </span>
   )
@@ -197,7 +202,7 @@ interface EmptyStateProps {
   actionLabel?: string
 }
 
-const DefaultEmptyIcon = <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+const DefaultEmptyIcon = <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
 
 export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitleAr, subtitleEn, isAr, action, actionLabel }: EmptyStateProps) {
   return (

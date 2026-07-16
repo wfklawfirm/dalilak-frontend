@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
@@ -12,12 +12,21 @@ function ServiceSheet({ service, onClose, onAsk }: {
   onClose: () => void
   onAsk: (q: string) => void
 }) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => { closeRef.current?.focus() }, [])
   return (
     <div
+      role="presentation"
       style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(3px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
+      onKeyDown={e => { if (e.key === 'Escape') onClose() }}
     >
-      <div style={{
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={service.name_ar}
+        onKeyDown={e => { if (e.key === 'Escape') onClose() }}
+        style={{
         background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 720,
         margin: '0 auto', maxHeight: '82vh', overflow: 'hidden', display: 'flex',
         flexDirection: 'column', boxShadow: '0 -8px 40px rgba(0,0,0,0.2)',
@@ -46,6 +55,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               </p>
             </div>
             <button
+              ref={closeRef}
               type="button"
               aria-label="إغلاق"
               onClick={onClose}
@@ -55,7 +65,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
               </svg>
             </button>
@@ -77,7 +87,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               </span>
             )}
             {service.online_available && (
-              <span style={{ fontSize: 10.5, color: '#065F46', background: '#ECFDF5', borderRadius: 20, padding: '3px 10px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '3px 10px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
                 متاح أونلاين
               </span>
             )}
@@ -97,14 +107,14 @@ function ServiceSheet({ service, onClose, onAsk }: {
             <div style={{ marginBottom: 16 }}>
               <h3 style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FEF2F2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </span>
                 المستندات المطلوبة
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.required_documents.map((doc, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#FAFAF8', borderRadius: 9, border: '1px solid #EAE4D9' }}>
-                    <svg width="8" height="8" viewBox="0 0 10 10" style={{ flexShrink: 0 }}><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
+                    <svg aria-hidden="true" width="8" height="8" viewBox="0 0 10 10" style={{ flexShrink: 0 }}><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
                     <span style={{ fontSize: 12, color: '#1A1208', lineHeight: 1.4 }}>{doc}</span>
                   </div>
                 ))}
@@ -119,7 +129,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10,
               padding: '10px 13px', marginBottom: 16,
             }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
               </svg>
               <p style={{ margin: 0, fontSize: 11.5, color: '#78350F', lineHeight: 1.6 }}>
@@ -133,7 +143,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             <div style={{ marginBottom: 16 }}>
               <h3 style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FFFBEB', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </span>
                 النماذج المطلوبة
               </h3>
@@ -145,7 +155,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                   return url ? (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer"
                       style={{ fontSize: 12, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 8, padding: '7px 10px', border: '1px solid rgba(139,26,26,0.15)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                       {label || 'تحميل النموذج'}
                     </a>
                   ) : (
@@ -163,7 +173,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.phone && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#2D1B0E' }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
                     {service.phone}
@@ -171,7 +181,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 )}
                 {service.working_hours && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#2D1B0E' }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/>
                     </svg>
                     {service.working_hours}
@@ -179,7 +189,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 )}
                 {service.website && (
                   <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#8B1A1A', fontWeight: 600, textDecoration: 'none' }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
                     الموقع الرسمي
@@ -209,7 +219,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               boxShadow: '0 3px 12px rgba(139,26,26,0.3)', transition: 'opacity 0.12s, transform 0.12s',
             }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
             اسأل دليلك
@@ -291,7 +301,8 @@ export default function ServicesPage() {
         .cat-chip:hover { border-color: #8B1A1A !important; color: #8B1A1A !important; background: #FEF7F7 !important; }
         @keyframes svc-header-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .svc-animate { animation: svc-fade 0.2s cubic-bezier(0.22,1,0.36,1) forwards; }
+        @keyframes svcEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes svcStatsIn { from { opacity: 0; transform: translateY(-5px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
         .cat-chips-row::-webkit-scrollbar { display: none; }
         .cat-chips-row { -ms-overflow-style: none; scrollbar-width: none; }
         @media (max-width: 599px) {
@@ -315,7 +326,7 @@ export default function ServicesPage() {
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
-            aria-label="الرئيسية"
+            aria-label="الرجوع"
             onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -325,7 +336,7 @@ export default function ServicesPage() {
               display: 'flex', flexShrink: 0,
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -351,20 +362,20 @@ export default function ServicesPage() {
               background: 'rgba(255,255,255,0.15)', borderRadius: 20,
               padding: '3px 10px', flexShrink: 0, border: '1px solid rgba(255,255,255,0.2)',
             }}>
-              {filtered.length} نتيجة
+              <span aria-live="polite" aria-atomic="true">{filtered.length} نتيجة</span>
             </span>
           )}
         </div>
       </header>
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
-      <div style={{ background: '#FAFAF8', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
+      <div id="main-content" style={{ background: '#FAFAF8', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
         <div style={{ position: 'relative', background: '#fff', border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
           <span style={{
             position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
             color: searchFocused ? '#8B1A1A' : '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none', transition: 'color 0.18s',
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
             </svg>
           </span>
@@ -395,7 +406,7 @@ export default function ServicesPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
               </svg>
             </button>
@@ -406,6 +417,29 @@ export default function ServicesPage() {
       {/* ── Main Content ───────────────────────────────────────────────────── */}
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '18px 14px 100px' }}>
 
+        {/* ── Stats strip — premium individual cards ─────────────────────────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
+          {[
+            { value: String(ALL_SERVICES.length), label: 'خدمة حكومية', featured: true },
+            { value: String(SERVICE_CATEGORIES.length), label: 'فئة خدمية', featured: false },
+            { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: 'خدمة أونلاين', featured: false },
+          ].map((stat, i) => (
+            <div key={stat.label} style={{
+              padding: '14px 8px 16px', textAlign: 'center',
+              background: stat.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+              border: stat.featured ? '1.5px solid rgba(139,26,26,0.18)' : '1.5px solid #EAE4D9',
+              borderRadius: 12,
+              boxShadow: stat.featured ? '0 2px 10px rgba(139,26,26,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              animation: 'svcStatsIn 0.28s cubic-bezier(0.22,1,0.36,1) both',
+              animationDelay: `${0.06 + i * 0.07}s`,
+            }}>
+              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
         {/* ── Category chips — horizontal scroll, no wrap ──────────────────── */}
         <div style={{ marginBottom: 16, marginRight: -14, marginLeft: -14 }}>
           <div
@@ -415,6 +449,7 @@ export default function ServicesPage() {
             {/* All / reset chip */}
             <button
               type="button"
+              aria-pressed={!selectedCat}
               onClick={() => setSelectedCat(null)}
               className="cat-chip"
               onTouchStart={e => {
@@ -445,6 +480,7 @@ export default function ServicesPage() {
                 <button
                   type="button"
                   key={cat.slug}
+                  aria-pressed={active}
                   onClick={() => setSelectedCat(active ? null : cat.slug)}
                   className="cat-chip"
                   onTouchStart={e => {
@@ -477,14 +513,184 @@ export default function ServicesPage() {
 
         {/* ── Results meta bar ────────────────────────────────────────────── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
-            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
-              {filtered.length === ALL_SERVICES.length
-                ? 'جميع الخدمات'
-                : `${filtered.length} خدمة`}
-            </span>
-          </div>
+          <span style={{ fontSize: 12, color: '#9C8E80', fontWeight: 500 }}>
+            {filtered.length === ALL_SERVICES.length
+              ? `${ALL_SERVICES.length} خدمة حكومية`
+              : `${filtered.length} خدمة`}
+          </span>
           {activeCatLabel && (
             <>
-              <span style={{ color: '#D4C5B0', fontSize: 12 }}
+              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
+              <button
+                type="button"
+                aria-label={`إزالة فلتر الفئة: ${activeCatLabel}`}
+                onClick={() => setSelectedCat(null)}
+                style={{
+                  fontSize: 11, color: '#8B1A1A', fontWeight: 700,
+                  background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)',
+                  borderRadius: 20, padding: '2px 10px', cursor: 'pointer',
+                  fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
+                }}
+              >
+                {activeCatLabel}
+                <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </>
+          )}
+          {search && (
+            <>
+              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
+              <span style={{ fontSize: 11, color: '#9C8E80' }}>نتائج لـ "{search}"</span>
+            </>
+          )}
+        </div>
+
+        {/* ── Grid ────────────────────────────────────────────────────────── */}
+        {filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '80px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
+              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.4">
+                <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
+              </svg>
+            </div>
+            <p style={{ color: '#5C4A3A', fontSize: 14, fontWeight: 600, margin: '0 0 5px' }}>
+              لا توجد نتائج مطابقة
+            </p>
+            <p style={{ color: '#9C8E80', fontSize: 12.5, margin: '0 0 18px' }}>
+              جرّب مصطلحاً مختلفاً أو اسأل دليلك مباشرةً
+            </p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => router.push(`/?q=${encodeURIComponent(search)}`)}
+                onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+                style={{
+                  padding: '10px 20px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                  color: '#fff', border: 'none', borderRadius: 12,
+                  fontFamily: 'inherit', fontSize: 13, fontWeight: 700,
+                  cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+                  transition: 'opacity 0.12s, transform 0.12s',
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                }}
+              >
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                اسأل دليلك
+              </button>
+              <button
+                type="button"
+                onClick={() => { setSearch(''); setSelectedCat(null) }}
+                onTouchStart={e => { e.currentTarget.style.background = '#EAE4D9' }}
+                onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
+                style={{
+                  padding: '10px 20px', background: '#fff', border: '1.5px solid #EAE4D9',
+                  color: '#5C4A3A', borderRadius: 12,
+                  fontFamily: 'inherit', fontSize: 13, fontWeight: 600,
+                  cursor: 'pointer', transition: 'background 0.12s',
+                }}
+              >
+                عرض كل الخدمات
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="svc-grid"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
+          >
+            {filtered.map((service, svcIdx) => (
+              <button
+                type="button"
+                key={service.id}
+                aria-label={service.name_ar}
+                onClick={() => setSelectedService(service)}
+                className="svc-card"
+                style={{
+                  display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,
+                  padding: '14px', border: '1.5px solid #EAE4D9',
+                  textAlign: 'right', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  fontFamily: 'inherit', cursor: 'pointer', width: '100%',
+                  transition: 'all 0.14s', position: 'relative', overflow: 'hidden',
+                  animation: 'svcEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay: `${Math.min(svcIdx, 20) * 0.03}s`,
+                }}
+                onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)'; e.currentTarget.style.transform = 'scale(0.98)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
+              >
+                {/* Top row: icon badge + chevron */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: 11,
+                    background: 'linear-gradient(135deg, #FEF2F2, #FCE8E8)',
+                    border: '1px solid rgba(139,26,26,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    <span className="svc-icon" style={{ fontSize: 20, lineHeight: 1 }}>{service.icon}</span>
+                  </div>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="2" style={{ flexShrink: 0, marginTop: 3 }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                  </svg>
+                </div>
+
+                {/* Name */}
+                <h3 style={{
+                  fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', lineHeight: 1.4,
+                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                  flex: 1,
+                }}>
+                  {service.name_ar}
+                </h3>
+
+                {/* Authority */}
+                <p style={{
+                  fontSize: 10.5, color: '#8B1A1A', margin: '0 0 10px', fontWeight: 700,
+                  display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                }}>
+                  {service.authority_ar}
+                </p>
+
+                {/* Meta row */}
+                <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                  {service.fees && (
+                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                      {service.fees.length > 18 ? service.fees.slice(0, 18) + '…' : service.fees}
+                    </span>
+                  )}
+                  {service.processing_time && (
+                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                      {service.processing_time}
+                    </span>
+                  )}
+                  {service.online_available && (
+                    <span style={{ fontSize: 10, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '2px 8px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
+                      أونلاين
+                    </span>
+                  )}
+                  {service.required_documents && service.required_documents.length > 0 && (
+                    <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
+                      {service.required_documents.length} وثيقة
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Service Detail Sheet ─────────────────────────────────────────────── */}
+      {selectedService && (
+        <ServiceSheet
+          service={selectedService}
+          onClose={() => setSelectedService(null)}
+          onAsk={handleAsk}
+        />
+      )}
+
+      <div className="bottom-nav-wrapper"><BottomNav isAr={true} activeTab="services" /></div>
+    </div>
+  )
+}

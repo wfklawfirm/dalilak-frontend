@@ -16,15 +16,15 @@ export default function ForgotPasswordPage() {
     try {
       await apiForgotPassword(email.trim())
       setSent(true)
-    } catch (err: any) {
-      setError(err.message || 'خطأ — حاول مرة أخرى')
+    } catch (err) {
+      setError((err instanceof Error ? err.message : 'خطأ — حاول مرة أخرى'))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={{
+    <div id="main-content" style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
         {sent ? (
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5">
+              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
             </div>
@@ -128,7 +128,7 @@ export default function ForgotPasswordPage() {
             </p>
 
             {error && (
-              <div style={{
+              <div role="alert" style={{
                 marginBottom: 14, padding: '10px 14px',
                 background: '#FEF2F2', border: '1.5px solid #FECACA',
                 borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center',
@@ -139,11 +139,13 @@ export default function ForgotPasswordPage() {
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+                <label htmlFor="fp-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
                   البريد الإلكتروني <span style={{ color: '#8B1A1A' }}>*</span>
                 </label>
                 <input
+                  id="fp-email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="auth-input"
@@ -177,7 +179,7 @@ export default function ForgotPasswordPage() {
 
       <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
         <span style={{ display:'inline-flex', alignItems:'center', gap:4, justifyContent:'center' }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
+          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
           خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
         </span>
       </p>

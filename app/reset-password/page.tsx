@@ -24,8 +24,8 @@ function ResetForm() {
     try {
       await apiResetPassword(token.trim(), password)
       setDone(true)
-    } catch (err: any) {
-      setError(err.message || 'خطأ — تحقق من الرمز')
+    } catch (err) {
+      setError((err instanceof Error ? err.message : 'خطأ — تحقق من الرمز'))
     } finally {
       setLoading(false)
     }
@@ -35,7 +35,7 @@ function ResetForm() {
     return (
       <div style={{ textAlign: 'center' }}>
         <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.5">
+          <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
@@ -66,7 +66,7 @@ function ResetForm() {
       </p>
 
       {error && (
-        <div style={{
+        <div role="alert" style={{
           marginBottom: 14, padding: '10px 14px',
           background: '#FEF2F2', border: '1.5px solid #FECACA',
           borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center',
@@ -77,10 +77,11 @@ function ResetForm() {
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+          <label htmlFor="rp-token" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
             رمز الاستعادة <span style={{ color: '#8B1A1A' }}>*</span>
           </label>
           <input
+            id="rp-token"
             type="text"
             value={token}
             onChange={e => setToken(e.target.value)}
@@ -93,11 +94,12 @@ function ResetForm() {
           />
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+          <label htmlFor="rp-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
             كلمة المرور الجديدة <span style={{ color: '#8B1A1A' }}>*</span>
           </label>
           <div style={{ position: 'relative' }}>
             <input
+              id="rp-password"
               type={showPass ? 'text' : 'password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -107,11 +109,11 @@ function ResetForm() {
               autoComplete="new-password"
               style={{ direction: 'ltr', textAlign: 'left', paddingLeft: 44 }}
             />
-            <button type="button" tabIndex={-1} onClick={() => setShowPass(s => !s)}
+            <button type="button" tabIndex={-1} aria-label={showPass ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'} onClick={() => setShowPass(s => !s)}
               style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex', alignItems: 'center' }}>
               {showPass
-                ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
-                : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                ? <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                : <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
               }
             </button>
           </div>
@@ -119,10 +121,11 @@ function ResetForm() {
 
         {/* Confirm password */}
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
+          <label htmlFor="rp-confirm" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
             تأكيد كلمة المرور <span style={{ color: '#8B1A1A' }}>*</span>
           </label>
           <input
+            id="rp-confirm"
             type={showPass ? 'text' : 'password'}
             value={confirm}
             onChange={e => setConfirm(e.target.value)}
@@ -151,7 +154,7 @@ function ResetForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div style={{
+    <div id="main-content" style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -221,7 +224,7 @@ export default function ResetPasswordPage() {
 
       <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, justifyContent: 'center' }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
+          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
           خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
         </span>
       </p>

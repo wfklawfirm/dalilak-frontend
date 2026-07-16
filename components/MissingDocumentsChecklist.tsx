@@ -100,10 +100,10 @@ export default function MissingDocumentsChecklist({
                 background: isUploaded ? '#B45309' : needsReview ? '#B8860B' : '#8B1A1A',
               }}>
                 {isUploaded
-                  ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  ? <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                   : needsReview
-                  ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01"/></svg>
-                  : <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
+                  ? <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01"/></svg>
+                  : <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
               </span>
 
               {/* Title + notes */}
@@ -118,7 +118,7 @@ export default function MissingDocumentsChecklist({
                   <p style={{ fontSize: 11, color: '#9C8E80', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.missing.reason}</p>
                 )}
                 {doc.notes && (
-                  <p style={{ fontSize: 11, color: '#B0A090', margin: 0 }}>{doc.notes}</p>
+                  <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{doc.notes}</p>
                 )}
               </div>
 
@@ -142,3 +142,20 @@ export default function MissingDocumentsChecklist({
                     flexShrink: 0, fontSize: 10.5, padding: '4px 10px',
                     background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                     color: '#fff', border: 'none', borderRadius: 8,
+                    cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s',
+                  }}
+                  aria-label={`رفع وثيقة: ${doc.title}`}
+                  onTouchStart={e => { e.currentTarget.style.opacity = '0.8' }}
+                  onTouchEnd={e => { e.currentTarget.style.opacity = '1' }}
+                >
+                  رفع
+                </button>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+    </>
+  )
+}

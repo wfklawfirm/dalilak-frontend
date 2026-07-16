@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { getFlow, buildFlowPrompt } from '@/lib/flows'
 import type { FlowAnswers } from '@/lib/flows'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
@@ -25,12 +25,12 @@ const ALL_PROCEDURES = ALL_SERVICES.map(s => ({
 
 // ── Intent SVG icons ───────────────────────────────────────────────────────────
 const INTENT_ICONS: Record<string, JSX.Element> = {
-  docs: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
-  steps: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
-  authority: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
-  form: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
-  checklist: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>,
-  expat: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+  docs: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+  steps: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
+  authority: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+  form: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>,
+  checklist: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>,
+  expat: <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
 }
 
 // ── Intent options (shown after selecting a procedure) ─────────────────────────
@@ -48,6 +48,17 @@ type WizardPhase = 'pick_category' | 'pick_procedure' | 'flow_questions' | 'lega
 
 export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: GuidedFlowProps) {
   const initProc = initialSlug ? ALL_PROCEDURES.find(p => p.slug === initialSlug) ?? null : null
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  // Focus close button when modal opens
+  useEffect(() => { closeRef.current?.focus() }, [])
+
+  // Escape key closes modal
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onClose])
 
   const [phase, setPhase] = useState<WizardPhase>(
     initProc ? (getFlow(initProc.slug) ? 'flow_questions' : 'legacy_intent') : 'pick_category'
@@ -183,7 +194,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
   return (
     <>
       {/* Backdrop */}
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, backdropFilter: 'blur(2px)', animation: 'gfFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }} />
+      <div aria-hidden="true" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, backdropFilter: 'blur(2px)', animation: 'gfFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }} />
 
       {/* Panel */}
       <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختيار الخدمة' : 'Select Service'} style={{
@@ -214,11 +225,11 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {phase !== 'pick_category' && (
-              <button type="button" onClick={goBack}
+              <button type="button" onClick={goBack} aria-label={isAr ? 'رجوع' : 'Back'}
                 onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
                 onTouchEnd={e => { e.currentTarget.style.color = '#9C8E80' }}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px 4px 0', color: '#9C8E80', display: 'flex', alignItems: 'center', transition: 'color 0.12s' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6'} />
                 </svg>
               </button>
@@ -243,11 +254,11 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 </p>
               )}
             </div>
-            <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
+            <button ref={closeRef} type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
               onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
               style={{ background: '#EAE4D9', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.12s' }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+              <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>
         </div>
@@ -260,9 +271,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
             <>
               {/* Global search */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input
                   value={search}
+                  aria-label={isAr ? 'ابحث في كل الخدمات' : 'Search all services'}
                   onChange={e => {
                     setSearch(e.target.value)
                     if (e.target.value.trim()) setPhase('pick_procedure')
@@ -304,7 +316,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           {phase === 'pick_procedure' && (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -315,15 +327,16 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
                 />
                 {search && (
-                  <button type="button" onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex' }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
+                  <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex' }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
                   </button>
                 )}
               </div>
 
+              <div aria-live="polite" aria-atomic="false">
               {filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '32px 16px', color: '#9C8E80' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 8, opacity: 0.5 }}><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                <div role="status" style={{ textAlign: 'center', padding: '32px 16px', color: '#9C8E80' }}>
+                  <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 8, opacity: 0.5 }}><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                   <p style={{ fontSize: 13, margin: 0 }}>{isAr ? 'لا توجد نتائج' : 'No results found'}</p>
                 </div>
               ) : (
@@ -341,7 +354,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                     onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
                         <span style={{ display: 'flex', flexShrink: 0, color: '#8B1A1A', marginTop: 1 }}>
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         </span>
                         <span style={{ fontSize: 11.5, fontWeight: 600, color: '#1A1208', lineHeight: 1.35 }}>{p.ar}</span>
                       </div>
@@ -352,8 +365,132 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   ))}
                 </div>
               )}
+              </div>
             </>
           )}
 
-          {/* ── Phase 2: Flow questions ── */}
-          {phase === 'f
+          {phase === 'flow_questions' && currentFlowStep && (
+            <div style={{ animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
+              {/* Selected procedure label */}
+              {selectedProc && (
+                <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  {selectedProc.ar}
+                </div>
+              )}
+
+              {/* Question */}
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 18px', lineHeight: 1.4 }}>
+                {isAr ? currentFlowStep.questionAr : currentFlowStep.questionEn}
+              </h3>
+
+              {/* Options */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                {currentFlowStep.options.map((opt, i) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleFlowAnswer(opt.value)}
+                    style={{
+                      width: '100%', padding: '13px 16px', borderRadius: 14,
+                      background: '#fff', border: '1.5px solid #EAE4D9',
+                      cursor: 'pointer', fontFamily: 'inherit',
+                      textAlign: isAr ? 'right' : 'left',
+                      fontSize: 13.5, fontWeight: 600, color: '#1A1208',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      transition: 'border-color 0.15s, background 0.15s, transform 0.15s',
+                      animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                      animationDelay: `${i * 0.06}s`,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.98)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{
+                        width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                        background: 'rgba(139,26,26,0.08)', border: '1.5px solid rgba(139,26,26,0.18)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 10.5, fontWeight: 800, color: '#8B1A1A',
+                      }}>
+                        {i + 1}
+                      </span>
+                      {isAr ? opt.labelAr : opt.labelEn}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Skip */}
+              {!currentFlowStep.required && (
+                <button
+                  type="button"
+                  onClick={handleSkipStep}
+                  style={{
+                    marginTop: 14, width: '100%', padding: '10px', borderRadius: 12,
+                    border: '1px dashed #D5CEC4', background: 'none',
+                    color: '#9C8E80', fontSize: 12, fontWeight: 600,
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    transition: 'border-color 0.12s, color 0.12s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#D5CEC4'; e.currentTarget.style.color = '#9C8E80' }}
+                >
+                  {isAr ? 'تخطّ هذا السؤال ←' : 'Skip this question →'}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* ── Phase 3: Legacy intent ── */}
+          {phase === 'legacy_intent' && (
+            <div style={{ animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
+              {selectedProc && (
+                <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  {selectedProc.ar}
+                </div>
+              )}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 9 }}>
+                {INTENTS.map((intent, i) => (
+                  <button
+                    key={intent.iconKey}
+                    type="button"
+                    onClick={() => handleLegacyIntent(intent)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', gap: 6,
+                      padding: '13px 12px', borderRadius: 14,
+                      background: '#fff', border: '1.5px solid #EAE4D9',
+                      cursor: 'pointer', fontFamily: 'inherit',
+                      textAlign: isAr ? 'right' : 'left',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      transition: 'border-color 0.15s, background 0.15s, transform 0.15s',
+                      animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                      animationDelay: `${Math.min(i, 6) * 0.06}s`,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'translateY(0)' }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+                  >
+                    <span style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FDE4E4)', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                      {INTENT_ICONS[intent.iconKey]}
+                    </span>
+                    <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208' }}>
+                      {isAr ? intent.ar : intent.en}
+                    </span>
+                    <span style={{ fontSize: 10.5, color: '#9C8E80', lineHeight: 1.4 }}>
+                      {isAr ? intent.desc_ar : intent.desc_en}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>{/* end content */}
+      </div>{/* end panel */}
+    </>
+  )
+}

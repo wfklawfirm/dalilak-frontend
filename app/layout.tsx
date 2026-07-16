@@ -3,16 +3,45 @@ import type { ReactNode } from 'react'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'دليلك — مساعدك في المعاملات اللبنانية',
-  description: 'دليلك هو دليلك الذكي لكل المعاملات الحكومية اللبنانية',
+  title: 'دليلك — دليل المواطن اللبناني للمعاملات الحكومية',
+  description: 'دليلك: مساعدك الذكي لكل المعاملات الحكومية اللبنانية — جوازات السفر، سجل النفوس، تسجيل الشركات، تراخيص البناء، والمزيد. معلومات موثوقة ومحدّثة.',
+  keywords: ['دليلك', 'معاملات لبنانية', 'جواز سفر', 'سجل نفوس', 'تسجيل شركة', 'ترخيص بناء', 'وزارة الداخلية', 'دولتي', 'مواطن لبناني'],
+  authors: [{ name: 'دليلك', url: 'https://dalilak-frontend.vercel.app' }],
+  creator: 'دليلك',
+  publisher: 'دليلك',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/logo.PNG',
+    shortcut: '/favicon.svg',
+  },
   openGraph: {
-    title: 'دليلك',
-    description: 'دليلك الذكي للمعاملات الحكومية اللبنانية',
+    title: 'دليلك — دليل المواطن اللبناني',
+    description: 'مساعدك الذكي لكل المعاملات الحكومية اللبنانية',
     siteName: 'دليلك',
+    url: 'https://dalilak-frontend.vercel.app',
     locale: 'ar_LB',
     type: 'website',
+    images: [
+      {
+        url: 'https://dalilak-frontend.vercel.app/logo.PNG',
+        width: 512,
+        height: 512,
+        alt: 'دليلك',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'دليلك — دليل المواطن اللبناني',
+    description: 'مساعدك الذكي لكل المعاملات الحكومية اللبنانية',
+    images: ['https://dalilak-frontend.vercel.app/logo.PNG'],
   },
   robots: { index: true, follow: true },
+  alternates: {
+    canonical: 'https://dalilak-frontend.vercel.app',
+  },
 }
 
 // Explicit viewport — userScalable deliberately omitted (WCAG 1.4.4 — Resize Text).
@@ -20,6 +49,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#8B1A1A',
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -39,6 +69,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Cairo', 'Inter', sans-serif" }}>
+        <a href="#main-content" className="skip-link">
+          انتقل إلى المحتوى الرئيسي
+        </a>
         {children}
       </body>
     </html>

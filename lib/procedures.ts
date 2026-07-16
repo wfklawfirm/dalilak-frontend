@@ -1808,13 +1808,13 @@ export function searchForms(query: string): FormItem[] {
 }
 
 export function getComplexityColor(complexity: string): string {
-  if (complexity === 'easy') return '#15803D'
+  if (complexity === 'easy') return '#78350F'
   if (complexity === 'medium') return '#B45309'
   return '#DC2626'
 }
 
 export function getComplexityBg(complexity: string): string {
-  if (complexity === 'easy') return '#F0FDF4'
+  if (complexity === 'easy') return '#FEF9F0'
   if (complexity === 'medium') return '#FFFBEB'
   return '#FEF2F2'
 }

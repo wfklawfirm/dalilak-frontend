@@ -120,7 +120,7 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
           </p>
           {score.blockingIssues.slice(0, 3).map((issue, i) => (
             <p key={i} style={{ fontSize: 11, color: '#8B1A1A', margin: '0 0 2px', display: 'flex', gap: 6, alignItems: 'flex-start', animation: 'tswItem 0.15s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s` }}>
-              <span style={{ display: 'flex', flexShrink: 0 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg></span> {issue}
+              <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg></span> {issue}
             </p>
           ))}
         </div>
@@ -129,4 +129,35 @@ export default function TransactionScoreWidget({ score, isAr, onAction }: Props)
       {/* Recommended action */}
       {score.recommendedNextAction && (
         <div style={{ fontSize: 11.5, color: '#5C4A3A', background: '#FAFAF8', borderRadius: 8, padding: '8px 10px', marginBottom: 12 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 5 }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H
+1M4.22 4.22l-.707.707M1.64 12H3m16.36 0h1.38M4.22 19.78l.707-.707M12 21v-1m6.364-1.636l-.707-.707"/></svg></span>
+            {isAr ? score.recommendedNextAction : score.recommendedNextAction}
+        </div>
+      )}
+
+      {/* Action button */}
+      {onAction && (
+        <button
+          type="button"
+          onClick={onAction}
+          aria-label={isAr ? 'اتخاذ إجراء' : 'Take action'}
+          onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
+          onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+          style={{
+            width: '100%', padding: '10px 16px', borderRadius: 12,
+            background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+            color: '#fff', border: 'none',
+            fontSize: 12.5, fontWeight: 700, cursor: 'pointer',
+            fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+            transition: 'opacity 0.12s, transform 0.12s',
+          }}
+        >
+          {isAr ? 'اتخاذ إجراء' : 'Take Action'}
+        </button>
+      )}
+
+    </div>
+    </>
+  )
+}

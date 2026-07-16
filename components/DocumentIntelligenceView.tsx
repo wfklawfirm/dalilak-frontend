@@ -15,7 +15,7 @@
  * 8. المصادر والثقة (EvidencePanel)
  */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type {
   UniversalDocumentAnalysis,
   ExtractedFact,
@@ -78,7 +78,7 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
         padding: '6px 13px', borderRadius: 20,
         background: `${meta.color}14`, border: `1.5px solid ${meta.color}30`,
       }}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={meta.color} strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={meta.color} strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span style={{ fontSize: 12, fontWeight: 700, color: meta.color }}>
           {isAr ? meta.titleAr : meta.titleEn}
         </span>
@@ -166,6 +166,7 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
             <button
               type="button"
               onClick={() => onStartFlow(p.procedureSlug)}
+              aria-label={isAr ? `ابدأ — ${p.titleAr}` : `Start — ${p.titleEn}`}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.96)' }}
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
@@ -177,9 +178,9 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
               }}
             >
               <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
-                {!isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
+                {!isAr && <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>}
                 {isAr ? 'ابدأ' : 'Start'}
-                {isAr && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
+                {isAr && <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>}
               </span>
             </button>
           )}
@@ -204,7 +205,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
   }
   if (!fields.length && !documents.length) return (
     <p style={{ fontSize: 11.5, color: '#78350F', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {isAr ? 'لا نواقص واضحة تم اكتشافها.' : 'No obvious missing items detected.'}
     </p>
   )
@@ -244,10 +245,10 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
           {documents.map((d, i) => {
             const [bg, fg] = priColor(d.priority)
             const statusIcon: React.ReactNode = d.status === 'missing'
-              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg>
+              ? <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg>
               : d.status === 'unclear'
-              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-              : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              ? <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              : <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             return (
               <div key={i} style={{ padding: '9px 12px', borderRadius: 10, border: `1px solid ${fg}25`, background: bg }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 3 }}>
@@ -274,7 +275,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
 export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr: boolean }) {
   if (!risks.length) return (
     <p style={{ fontSize: 11.5, color: '#78350F', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       {isAr ? 'لم تُكتشف مخاطر واضحة.' : 'No obvious risks detected.'}
     </p>
   )
@@ -290,14 +291,14 @@ export function DocumentRiskPanel({ risks, isAr }: { risks: DocumentRisk[]; isAr
           <div key={i} style={{ padding: '12px 13px', borderRadius: 12, background: bg, border: `1.5px solid ${fg}30` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
               <span style={{ fontSize: 10, fontWeight: 800, color: fg, background: `${fg}20`, borderRadius: 10, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                 {levelLabel}
               </span>
               <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>{r.title}</span>
             </div>
             <p style={{ fontSize: 11, color: '#2D1B0E', margin: '0 0 7px', lineHeight: 1.55 }}>{r.explanation}</p>
             <div style={{ fontSize: 11, color: fg, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={fg} strokeWidth="2.5" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>{r.recommendedAction}
+              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={fg} strokeWidth="2.5" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>{r.recommendedAction}
             </div>
           </div>
         )
@@ -353,7 +354,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
                   </span>
                   {e.verified && (
                     <span style={{ fontSize: 9, fontWeight: 700, color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                       {isAr ? 'موثّق' : 'Verified'}
                     </span>
                   )}
@@ -386,14 +387,14 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
   const secondary = actions.filter(a => a.priority === 'secondary')
 
   const actionIcon = (type: NextAction['actionType']): React.ReactNode => {
-    if (type === 'create_transaction_file') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.17a2 2 0 011.41.59l1.83 1.83A2 2 0 0012.83 8H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
-    if (type === 'generate_checklist') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-    if (type === 'generate_draft') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-    if (type === 'upload_missing_document') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-    if (type === 'start_guided_flow') return <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
-    if (type === 'ask_followup') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-    if (type === 'request_human_review') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-    if (type === 'compare_with_template') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    if (type === 'create_transaction_file') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h3.17a2 2 0 011.41.59l1.83 1.83A2 2 0 0012.83 8H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+    if (type === 'generate_checklist') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+    if (type === 'generate_draft') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+    if (type === 'upload_missing_document') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+    if (type === 'start_guided_flow') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
+    if (type === 'ask_followup') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+    if (type === 'request_human_review') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    if (type === 'compare_with_template') return <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
     return <span>·</span>
   }
 
@@ -442,7 +443,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
           display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.12s, border-color 0.12s',
         }}
       >
-        <span style={{ display: 'flex', flexShrink: 0 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></span>
+        <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></span>
         <span>{isAr ? 'اطلب مراجعة بشرية من مختص' : 'Request human expert review'}</span>
       </button>
 
@@ -451,6 +452,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
         <>
           <button
             type="button"
+            aria-expanded={showSecondary}
             onClick={() => setShowSecondary(s => !s)}
             onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
             onTouchEnd={e => { e.currentTarget.style.color = '#5C4A3A' }}
@@ -462,7 +464,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
             }}
           >
             <span style={{display:'inline-flex',alignItems:'center',gap:4}}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{transition:'transform 0.2s',transform:showSecondary?'rotate(180deg)':'none'}}><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
+              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{transition:'transform 0.2s',transform:showSecondary?'rotate(180deg)':'none'}}><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
               {showSecondary
                 ? (isAr ? 'إخفاء الإجراءات الإضافية' : 'Hide more actions')
                 : (isAr ? `المزيد (${secondary.length})` : `More (${secondary.length})`)}
@@ -483,7 +485,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
                     color: '#2D1B0E', fontSize: 11.5, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 8,
-                    transition: 'background 0.12s, border-color 0.12s',
+                    transition: 'all 0.12s',
                   }}
                 >
                   <span>{actionIcon(a.actionType)}</span>
@@ -509,6 +511,12 @@ export function GenerateDraftModal({
   onClose: () => void
   onSend: (prompt: string) => void
 }) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onClose])
+
   const template = getDraftTemplate(draft.templateSlug)
 
   // Pre-fill from extracted facts
@@ -576,19 +584,23 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
       background: 'rgba(0,0,0,0.5)',
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
     }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div role="dialog" aria-modal="true" style={{
-        width: '100%', maxWidth: 480,
-        background: '#fff', borderRadius: '20px 20px 0 0',
-        padding: '20px 16px 32px',
-        fontFamily: "'Cairo','Inter',sans-serif",
-        direction: isAr ? 'rtl' : 'ltr',
-        maxHeight: '85vh', overflowY: 'auto',
-      }}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={isAr ? draft.titleAr : draft.titleEn}
+        style={{
+          width: '100%', maxWidth: 480,
+          background: '#fff', borderRadius: '20px 20px 0 0',
+          padding: '20px 16px 32px',
+          fontFamily: "'Cairo','Inter',sans-serif",
+          direction: isAr ? 'rtl' : 'ltr',
+          maxHeight: '85vh', overflowY: 'auto',
+        }}>
         {/* Handle */}
         <div style={{ width: 36, height: 4, borderRadius: 2, background: '#EAE4D9', margin: '0 auto 16px' }} />
 
         <div style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 7 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           {isAr ? draft.titleAr : draft.titleEn}
         </div>
         <div style={{ fontSize: 11.5, color: '#5C4A3A', marginBottom: 16 }}>
@@ -596,9 +608,9 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         </div>
 
         {draft.requiresLawyerReview && (
-          <div style={{ padding: '10px 12px', background: '#FFFBEB', borderRadius: 10, border: '1px solid #FDE68A', marginBottom: 14 }}>
+          <div style={{ padding: '10px 12px', background: '#FEF3C7', borderRadius: 10, border: '1px solid #FDE68A', marginBottom: 14 }}>
             <p style={{ fontSize: 11, color: '#B45309', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
               {isAr
                 ? 'يوصى بمراجعة محامٍ قبل استعمال هذه المسودة.'
                 : 'Lawyer review recommended before using this draft.'}
@@ -614,18 +626,21 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
             </div>
             {template.requiredFields.map((f, i) => (
               <div key={i}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#5C4A3A', display: 'block', marginBottom: 4 }}>{f}</label>
+                <label htmlFor={`field-${i}`} style={{ fontSize: 11, fontWeight: 600, color: '#5C4A3A', display: 'block', marginBottom: 4 }}>{f}</label>
                 <input
+                  id={`field-${i}`}
                   type="text"
                   value={fields[f] ?? ''}
                   onChange={e => setFields(prev => ({ ...prev, [f]: e.target.value }))}
                   placeholder={isAr ? `أدخل ${f}` : `Enter ${f}`}
+                  onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
+                  onBlur={e => { e.currentTarget.style.boxShadow = 'none' }}
                   style={{
                     width: '100%', padding: '9px 12px', borderRadius: 10,
                     border: `1.5px solid ${fields[f]?.trim() ? '#FDE68A' : '#FEE2E2'}`,
                     background: fields[f]?.trim() ? '#FFFBEB' : '#FFF',
                     fontSize: 12, color: '#1A1208', fontFamily: 'inherit',
-                    outline: 'none',
+                    outline: 'none', transition: 'box-shadow 0.18s',
                   }}
                 />
               </div>
@@ -658,7 +673,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
             transition: 'opacity 0.12s, transform 0.12s',
           }}
         >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
           </svg>
           {isAr ? 'توليد المسودة' : 'Generate Draft'}
@@ -685,12 +700,12 @@ export function RecommendedDraftsPanel({
     <>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {drafts.map((d, i) => (
-          <button key={i} type="button" onClick={() => setActiveDraft(d)} style={{
+          <button type="button" key={i} onClick={() => setActiveDraft(d)} aria-label={isAr ? d.titleAr : d.titleEn} style={{
             width: '100%', padding: '12px 14px', borderRadius: 12,
             border: '1.5px solid #EAE4D9', background: '#fff',
             cursor: 'pointer', fontFamily: 'inherit',
             display: 'flex', alignItems: 'center', gap: 10,
-            textAlign: isAr ? 'right' : 'left', transition: 'border-color 0.15s, background 0.15s',
+            textAlign: isAr ? 'right' : 'left', transition: 'all 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
@@ -698,18 +713,18 @@ export function RecommendedDraftsPanel({
           onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
           >
             <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? d.titleAr : d.titleEn}</div>
               {d.requiresLawyerReview && (
                 <div style={{ fontSize: 10, color: '#B45309', marginTop: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                  <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                   {isAr ? 'يُنصح بمراجعة محامٍ' : 'Lawyer review recommended'}
                 </div>
               )}
             </div>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4B8A8" strokeWidth="2" style={{ flexShrink: 0, transform: isAr ? 'rotate(180deg)' : 'none' }}>
+            <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4B8A8" strokeWidth="2" style={{ flexShrink: 0, transform: isAr ? 'rotate(180deg)' : 'none' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/>
             </svg>
           </button>
@@ -747,13 +762,13 @@ function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{ ...card }}>
-      <button type="button" style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
+      <button type="button" aria-expanded={open} style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
         onTouchStart={e => { e.currentTarget.style.background = '#FAFAF8' }}
         onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
       >
         <span style={{ display: 'flex', alignItems: 'center', color: '#8B1A1A' }}>{icon}</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', flex: 1 }}>{title}</span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"
           style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
         </svg>
@@ -774,14 +789,12 @@ export default function DocumentIntelligenceView({
   const handleSend = (prompt: string) => { if (onSend) onSend(prompt) }
 
   return (
-    <>
-    <style>{`@keyframes divItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes divSection { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }`}</style>
-    <div style={{ fontFamily: "'Cairo','Inter',sans-serif", direction: isAr ? 'rtl' : 'ltr', animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
+    <div style={{ fontFamily: "'Cairo','Inter',sans-serif", direction: isAr ? 'rtl' : 'ltr' }}>
 
       {/* Document type header */}
       <div style={{ padding: '14px 16px', background: `${meta.color}10`, border: `1.5px solid ${meta.color}30`, borderRadius: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ width: 40, height: 40, borderRadius: 10, background: `${meta.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: meta.color, flexShrink: 0 }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 800, color: '#1A1208' }}>{isAr ? meta.labelAr : meta.labelEn}</div>
@@ -792,7 +805,7 @@ export default function DocumentIntelligenceView({
           </div>
         </div>
         <div style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#8B1A1A' : riskSummary === 'medium' ? '#B45309' : '#78350F', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#FFFBEB', borderRadius: 20, padding: '3px 10px' }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#DC2626' : riskSummary === 'medium' ? '#B45309' : '#78350F', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#FFFBEB', borderRadius: 20, padding: '3px 10px' }}>
           {isAr ? (riskSummary === 'low' ? 'مخاطر منخفضة' : riskSummary === 'medium' ? 'مخاطر متوسطة' : 'مخاطر عالية') : (riskSummary === 'low' ? 'Low Risk' : riskSummary === 'medium' ? 'Medium Risk' : 'High Risk')}
         </span>
       </div>
@@ -801,11 +814,11 @@ export default function DocumentIntelligenceView({
       {analysis.extractedFacts.length > 0 && (
         <CollapsibleSection
           title={isAr ? 'البيانات المستخرجة' : 'Extracted Data'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.extractedFacts.map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #EAE4D9' : 'none', animation: 'divItem 0.16s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 12) * 0.04}s` }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
                 <span style={{ fontSize: 11, color: '#9C8E80', flex: '0 0 120px', paddingTop: 1 }}>{f.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1A1208', flex: 1 }}>{f.value}</span>
               </div>
@@ -818,11 +831,11 @@ export default function DocumentIntelligenceView({
       {analysis.relatedProcedures.length > 0 && (
         <CollapsibleSection
           title={isAr ? 'المعاملات المرتبطة' : 'Related Procedures'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.relatedProcedures.map((p, i) => (
-              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8, animation: 'divItem 0.16s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.05}s` }}>
+              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>{isAr ? p.titleAr : p.titleEn}</div>
                   <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? p.ministry : p.ministry}</div>
@@ -840,16 +853,16 @@ export default function DocumentIntelligenceView({
       {(analysis.missingFields.length > 0 || analysis.missingDocuments.length > 0) && (
         <CollapsibleSection
           title={isAr ? 'النواقص' : 'Missing Requirements'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.missingFields.map((f, i) => (
-              <div key={i} style={{ padding: '7px 10px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 8, fontSize: 12, color: '#854D0E', animation: 'divItem 0.15s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.04}s` }}>
+              <div key={i} style={{ padding: '7px 10px', background: '#FFF7ED', border: '1px solid #FDE68A', borderRadius: 8, fontSize: 12, color: '#854D0E' }}>
                 {isAr ? f.labelAr : f.labelEn}
               </div>
             ))}
             {analysis.missingDocuments.map((d, i) => (
-              <div key={i} style={{ padding: '7px 10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#8B1A1A', animation: 'divItem 0.15s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.04}s` }}>
+              <div key={i} style={{ padding: '7px 10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#991B1B' }}>
                 {isAr ? d.labelAr : d.labelEn}
               </div>
             ))}
@@ -859,4 +872,67 @@ export default function DocumentIntelligenceView({
 
       {/* Risks */}
       {analysis.risks.length > 0 && (
-        <Colla
+        <CollapsibleSection
+          title={isAr ? 'المخاطر المحتملة' : 'Potential Risks'}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6M9 9l6 6"/></svg>}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {analysis.risks.map((r, i) => {
+              const [bg, fg] = riskColors(r.level)
+              return (
+                <div key={i} style={{ padding: '8px 10px', background: bg, border: `1px solid ${fg}30`, borderRadius: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: fg, marginBottom: 3 }}>{isAr ? r.titleAr : r.titleEn}</div>
+                  <div style={{ fontSize: 11, color: '#5C4A3A' }}>{isAr ? r.descriptionAr : r.descriptionEn}</div>
+                </div>
+              )
+            })}
+          </div>
+        </CollapsibleSection>
+      )}
+
+      {/* Recommended drafts */}
+      {analysis.recommendedDrafts.length > 0 && onSend && (
+        <CollapsibleSection
+          title={isAr ? 'النماذج المقترحة' : 'Suggested Templates'}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>}
+        >
+          <RecommendedDraftsPanel
+            drafts={analysis.recommendedDrafts}
+            extractedFacts={analysis.extractedFacts}
+            isAr={isAr}
+            onSend={handleSend}
+          />
+        </CollapsibleSection>
+      )}
+
+      {/* Next actions */}
+      {analysis.nextActions.length > 0 && (
+        <CollapsibleSection
+          title={isAr ? 'الخطوات التالية' : 'Next Steps'}
+          icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>}
+        >
+          <DocumentNextActions
+            actions={analysis.nextActions}
+            isAr={isAr}
+            onAction={handleAction}
+            onRequestHumanReview={handleHumanReview}
+          />
+        </CollapsibleSection>
+      )}
+
+      {/* Evidence & confidence */}
+      <CollapsibleSection
+        title={isAr ? 'المصادر والثقة' : 'Sources & Confidence'}
+        icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>}
+        defaultOpen={false}
+      >
+        <EvidencePanel
+          evidence={analysis.evidence}
+          confidence={analysis.confidence}
+          isAr={isAr}
+        />
+      </CollapsibleSection>
+
+    </div>
+  )
+}

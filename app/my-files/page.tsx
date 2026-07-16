@@ -150,7 +150,7 @@ export default function MyFilesPage() {
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -172,7 +172,7 @@ export default function MyFilesPage() {
               display: 'flex', alignItems: 'center', gap: 6,
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/>
             </svg>
             معاملة جديدة
@@ -180,7 +180,7 @@ export default function MyFilesPage() {
         </div>
       </header>
 
-      <div style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
+      <div id="main-content" aria-live="polite" aria-label="قائمة المعاملات" style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
 
         {/* ── Loading ─────────────────────────────────────────────────────── */}
         {loading ? (
@@ -192,7 +192,7 @@ export default function MyFilesPage() {
         ) : procs.length === 0 ? (
           /* ── Empty state ─────────────────────────────────────────────── */
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>
+            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>لا توجد معاملات بعد</h2>
             <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 24px' }}>ابحث عن معاملتك وابدأ متابعتها</p>
             <Link
@@ -221,6 +221,8 @@ export default function MyFilesPage() {
                     type="button"
                     key={proc.id}
                     onClick={() => setSelected(proc)}
+                    aria-pressed={isActive}
+                    aria-label={proc.title_ar}
                     className="proc-btn"
                     onTouchStart={e => { if (!isActive) { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.background = '#FEF9F9' } }}
                     onTouchEnd={e => { if (!isActive) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' } }}
@@ -253,7 +255,7 @@ export default function MyFilesPage() {
                       <span style={{ fontSize: 10.5, color: '#9C8E80' }}>{proc.completion_pct}% مكتمل</span>
                       {proc.next_step && proc.next_step !== 'مكتمل' && (
                         <span style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>
-                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:2}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {proc.next_step}
+                          <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:2}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {proc.next_step}
                         </span>
                       )}
                     </div>
@@ -272,7 +274,7 @@ export default function MyFilesPage() {
                   className="mf-back-btn"
                   style={{ display: 'none', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px', background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 9, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: '#5C4A3A' }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
                   العودة إلى القائمة
                 </button>
               )}
@@ -282,7 +284,7 @@ export default function MyFilesPage() {
                   padding: '60px 20px', textAlign: 'center', color: '#9C8E80',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320,
                 }}>
-                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
                   <p style={{ fontSize: 13, margin: 0 }}>اختر معاملة من القائمة لعرض تفاصيلها</p>
                 </div>
               ) : (
@@ -328,7 +330,7 @@ export default function MyFilesPage() {
                           onClick={() => setConfirmDelete(selected.id)}
                           style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                           حذف
                         </button>
                       )}
@@ -347,12 +349,12 @@ export default function MyFilesPage() {
                       </div>
                       {selected.next_step && selected.next_step !== 'مكتمل' && (
                         <p style={{ fontSize: 12.5, color: '#8B1A1A', margin: '8px 0 0', fontWeight: 600 }}>
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:3}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> الخطوة التالية: <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
+                          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:3}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> الخطوة التالية: <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
                         </p>
                       )}
                       {selected.completion_pct === 100 && (
                         <p style={{ fontSize: 12.5, color: '#78350F', margin: '8px 0 0', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                           تمت المعاملة بنجاح!
                         </p>
                       )}
@@ -362,14 +364,15 @@ export default function MyFilesPage() {
                   {/* Checklist + docs */}
                   <div style={{ padding: '18px 22px' }}>
                     <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> قائمة الخطوات
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> قائمة الخطوات
                       {saving && <span style={{ fontSize: 11, color: '#9C8E80', fontWeight: 400 }}>جارٍ الحفظ...</span>}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {selected.checklist.map(step => (
+                      {selected.checklist.map((step, si) => (
                         <button
                           type="button"
                           key={step.step}
+                          aria-pressed={step.done}
                           onClick={() => toggleStep(selected, step.step)}
                           className="step-btn"
                           onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.99)'; e.currentTarget.style.background = step.done ? '#FFF3C4' : '#FEF2F2' }}
@@ -379,9 +382,9 @@ export default function MyFilesPage() {
                             padding: '11px 13px', borderRadius: 12,
                             border: step.done ? '1.5px solid #FDE68A' : '1.5px solid #EAE4D9',
                             background: step.done ? '#FFFBEB' : '#FAFAF8',
-                            cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'border-color 0.15s, background 0.15s',
-                            animation: 'mfEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
-                            animationDelay: `${Math.min(step.step - 1, 10) * 0.05}s`,
+                            cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'border-color 0.15s, background 0.15s, box-shadow 0.15s cubic-bezier(0.22,1,0.36,1)',
+                      animation: 'mfEnter 0.24s cubic-bezier(0.22,1,0.36,1) both',
+                      animationDelay: `${Math.min(si, 8) * 0.06}s`,
                           }}
                         >
                           <span style={{
@@ -392,7 +395,7 @@ export default function MyFilesPage() {
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 10, fontWeight: 800, marginTop: 2, flexShrink: 0,
                           }}>
-                            {step.done ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> : step.step}
+                            {step.done ? <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> : step.step}
                           </span>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{
@@ -405,7 +408,7 @@ export default function MyFilesPage() {
                             <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{step.desc_ar}</p>
                             {step.done && step.done_at && (
                               <p style={{ fontSize: 10.5, color: '#78350F', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 {new Date(step.done_at).toLocaleDateString('ar-LB')}
                               </p>
                             )}
@@ -418,7 +421,7 @@ export default function MyFilesPage() {
                     {selected.documents && selected.documents.length > 0 && (
                       <div style={{ marginTop: 22 }}>
                         <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                           المستندات المطلوبة
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -436,4 +439,49 @@ export default function MyFilesPage() {
                                 color: doc.uploaded ? '#fff' : doc.required ? '#8B1A1A' : '#9C8E80',
                               }}>
                                 {doc.uploaded
-                                  ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="
+                                  ? <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                  : <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                }
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <p style={{ fontSize: 12.5, fontWeight: 700, color: doc.uploaded ? '#78350F' : '#1A1208', margin: 0, textDecoration: doc.uploaded ? 'line-through' : 'none' }}>
+                                  {doc.name_ar}
+                                </p>
+                                {doc.required && !doc.uploaded && (
+                                  <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '2px 0 0', fontWeight: 600 }}>مطلوب</p>
+                                )}
+                              </div>
+                              {doc.uploaded && (
+                                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Notes */}
+                    {selected.notes && (
+                      <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
+                        <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                          ملاحظات
+                        </h4>
+                        <p style={{ fontSize: 12, color: '#854D0E', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="bottom-nav-wrapper">
+        <BottomNav isAr={true} activeTab="account" />
+      </div>
+    </div>
+  )
+}
+               

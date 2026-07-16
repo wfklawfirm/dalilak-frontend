@@ -29,10 +29,10 @@ export default function FormDetailClient({ form }: Props) {
   const dir       = isAr ? 'rtl' : 'ltr'
 
   const fileIcon: React.ReactNode = form.fileType === 'pdf'
-    ? <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    ? <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
     : form.fileType === 'word'
-    ? <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-    : <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+    ? <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+    : <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
 
   const relatedProcedures = (form.relatedProcedures ?? [])
     .map(slug => getProcedureBySlug(slug))
@@ -68,7 +68,7 @@ export default function FormDetailClient({ form }: Props) {
             onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
@@ -81,14 +81,14 @@ export default function FormDetailClient({ form }: Props) {
           </div>
           {form.type === 'official' && (
             <span style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 99, padding: '3px 10px', fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
               {isAr ? 'رسمي' : 'Official'}
             </span>
           )}
         </div>
       </header>
 
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div id="main-content" style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
@@ -124,7 +124,7 @@ export default function FormDetailClient({ form }: Props) {
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(139,26,26,0.4)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.35)' }}
                 style={{ background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)', boxShadow: '0 4px 14px rgba(139,26,26,0.35)' }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 {isAr ? 'فتح النموذج' : 'Open Form'}
               </button>
             )}
@@ -134,7 +134,7 @@ export default function FormDetailClient({ form }: Props) {
               onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
               onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
               style={{ background: '#fff', color: BRAND, border: `1.5px solid ${BRAND}`, borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.1s' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
               {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
           </div>
@@ -142,7 +142,7 @@ export default function FormDetailClient({ form }: Props) {
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
           <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
           </h3>
           {(() => {
@@ -177,7 +177,7 @@ export default function FormDetailClient({ form }: Props) {
         {relatedProcedures.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
               {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -189,7 +189,7 @@ export default function FormDetailClient({ form }: Props) {
                   onTouchStart={e => (e.currentTarget.style.background = '#F0EBE0')}
                   onTouchEnd={e => (e.currentTarget.style.background = '#FAFAF8')}
                   style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.15s' }}>
-                  <span style={{ display: 'flex', flexShrink: 0 }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+                  <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                   <div>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#1A1208' }}>{isAr ? p.title_ar : p.title_en}</p>
                     <p style={{ margin: 0, fontSize: 12, color: '#9C8E80' }}>{isAr ? p.category_ar : p.category_en}</p>
@@ -202,7 +202,7 @@ export default function FormDetailClient({ form }: Props) {
 
         <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14, padding: '12px 16px' }}>
           <p style={{ margin: 0, fontSize: 12, color: '#78350F', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2" style={{ flexShrink: 0, marginTop: 1 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             {isAr
               ? 'هذه المعلومات للإرشاد فقط. تأكد دائماً من النموذج الحالي من الجهة الرسمية المختصة قبل الاستخدام.'
               : 'This information is for guidance only. Always confirm the current form with the competent official authority before use.'}

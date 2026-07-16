@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: 'لوحة التحكم | دليلك AI',
+  title: 'لوحة التحكم | دليلك',
 }
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

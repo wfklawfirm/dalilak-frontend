@@ -53,43 +53,43 @@ const MODES: { id: ResponseMode; label_ar: string; label_en: string; hint_ar: st
 
 function ServiceGroupIcon({ slug }: { slug: string }) {
   if (slug === 'expat') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
   )
   if (slug === 'property') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
     </svg>
   )
   if (slug === 'contracts') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
     </svg>
   )
   if (slug === 'civil-records') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
     </svg>
   )
   if (slug === 'business') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
     </svg>
   )
   if (slug === 'industry') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l6-7v7l6-7v7l6-7v11H3V10z"/>
     </svg>
   )
   if (slug === 'labor') return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
     </svg>
   )
   // forms-docs
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
     </svg>
   )
@@ -221,6 +221,10 @@ export default function Home() {
   const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null)
   // Last failed message — shown as retry chip on error
   const [retryMsg, setRetryMsg] = useState<string | null>(null)
+  // Inline error for voice/file (replaces browser alert)
+  const [voiceError, setVoiceError] = useState<string | null>(null)
+  // Session restore — number of messages reloaded from localStorage
+  const [restoredCount, setRestoredCount] = useState(0)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -230,7 +234,7 @@ export default function Home() {
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
 
-  // ── Handle ?q= param from procedures/forms pages ─────────
+  // ── Handle ?q= param + ?draft=true from other pages ─────────
   useEffect(() => {
     if (!authChecked) return
     const params = new URLSearchParams(window.location.search)
@@ -238,6 +242,17 @@ export default function Home() {
     if (q) {
       window.history.replaceState({}, '', '/')
       sendMessage(q)
+      return
+    }
+    // DraftingStudio sends ?draft=true + stores prompt in sessionStorage
+    const isDraft = params.get('draft') === 'true'
+    if (isDraft) {
+      window.history.replaceState({}, '', '/')
+      const draft = sessionStorage.getItem('dalilak_draft_prompt')
+      if (draft) {
+        sessionStorage.removeItem('dalilak_draft_prompt')
+        sendMessage(draft)
+      }
     }
   }, [authChecked])
 
@@ -284,7 +299,7 @@ export default function Home() {
         const clean = msgs
           .filter(m => !m.streaming)
           .slice(-CHAT_HISTORY_MAX)
-        if (clean.length > 0) setMessages(clean)
+        if (clean.length > 0) { setMessages(clean); setRestoredCount(clean.length) }
       }
     } catch {}
   }, [authChecked])
@@ -344,13 +359,14 @@ export default function Home() {
   // ── Voice ─────────────────────────────────────────────────
   const startRecording = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (!SR) { alert('التعرف على الصوت غير مدعوم. استخدم Chrome أو Edge.'); return }
+    if (!SR) { setVoiceError(isAr ? 'التعرف على الصوت غير مدعوم في هذا المتصفح.' : 'Voice input not supported. Use Chrome or Edge.'); return }
     const recognition = new SR()
     recognition.lang = lang === 'ar' ? 'ar-LB' : 'en-US'
     recognition.continuous = false
     recognition.interimResults = true
-    recognition.onresult = (e: any) => {
-      setInput(Array.from(e.results as any[]).map((r: any) => r[0].transcript).join(''))
+    recognition.onresult = (e: Event & { results: SpeechRecognitionResultList }) => {
+      const results = Array.from(e.results)
+      setInput(results.map(r => r[0].transcript).join(''))
     }
     recognition.onerror = () => setRecording(false)
     recognition.onend = () => setRecording(false)
@@ -368,7 +384,7 @@ export default function Home() {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 10 * 1024 * 1024) { alert('الحد الأقصى 10MB.'); return }
+    if (file.size > 10 * 1024 * 1024) { setVoiceError(isAr ? 'حجم الملف يتجاوز الحد الأقصى (10MB).' : 'File exceeds the 10MB limit.'); return }
     const reader = new FileReader()
     reader.onload = (ev) => {
       const result = ev.target?.result as string
@@ -561,14 +577,14 @@ export default function Home() {
               if (Array.isArray(p.sources)) {
                 const seen = new Set<string>()
                 metaSources = p.sources
-                  .map((s: any) => ({
+                  .map((s: { title?: string; ministry?: string; law?: string; snippet?: string; url?: string }) => ({
                     title: s.title || s.ministry || 'مصدر',
                     type: 'official' as const,
                     ministry: s.ministry,
                     score: s.score,
                     snippet: s.snippet,
                   }))
-                  .filter((s: any) => {
+                  .filter((s: { title: string }) => {
                     if (seen.has(s.title)) return false
                     seen.add(s.title)
                     return true
@@ -704,6 +720,8 @@ export default function Home() {
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
 
         /* ── Welcome screen responsive layout ─────────────────────── */
+        .wlc-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .wlc-nav-chip { }
         .wlc-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; transform: translateY(-2px) !important; }
         /* Stagger entrance for service group cards */
@@ -722,6 +740,7 @@ export default function Home() {
         /* Followup chip entrance */
         .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
         @media (min-width: 640px) {
+          .wlc-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
           .wlc-svc-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
         }
       `}</style>
@@ -748,7 +767,7 @@ export default function Home() {
 
 
         {/* ══════════════ MAIN ══════════════ */}
-        <main ref={mainRef} style={{
+        <main id="main-content" ref={mainRef} style={{
           flex: 1, overflowY: 'auto',
           overscrollBehavior: 'contain',
           WebkitOverflowScrolling: 'touch' as any,
@@ -775,7 +794,7 @@ export default function Home() {
                   {/* Greeting */}
                   {currentUser && (
                     <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.58)', margin:'0 0 12px', fontWeight:500, display:'flex', alignItems:'center', gap:5 }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.7 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                      <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.7 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                       {isAr
                         ? <span>مرحباً، <strong style={{ color:'rgba(255,255,255,0.88)', fontWeight:700 }}>{currentUser.full_name || currentUser.username}</strong></span>
                         : <span>Hello, <strong style={{ color:'rgba(255,255,255,0.88)', fontWeight:700 }}>{currentUser.full_name || currentUser.username}</strong></span>}
@@ -801,6 +820,7 @@ export default function Home() {
                         type="button"
                         key={q}
                         className="quick-btn"
+                        aria-label={q}
                         onClick={() => sendMessage(q)}
                         style={{
                           padding:'7px 14px', borderRadius:20,
@@ -819,7 +839,7 @@ export default function Home() {
                         onTouchEnd={e => { e.currentTarget.style.background='rgba(255,255,255,0.09)' }}
                       >
                         <span style={{ display:'inline-flex', alignItems:'center', gap:5 }}>
-                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.55, flexShrink:0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+                          <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.55, flexShrink:0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
                           {q}
                         </span>
                       </button>
@@ -827,7 +847,7 @@ export default function Home() {
                   </div>
 
                   {/* ── Primary action CTA — single, prominent ── */}
-                  <div style={{ marginTop:18 }}>
+                  <div style={{ marginTop:18, animation:'fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.28s' }}>
                     <button
                       type="button"
                       onClick={() => setShowTransactionStarter(true)}
@@ -845,7 +865,7 @@ export default function Home() {
                       onTouchStart={e => { e.currentTarget.style.transform='scale(0.97)' }}
                       onTouchEnd={e => { e.currentTarget.style.transform='scale(1)' }}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/>
                       </svg>
                       {isAr ? 'ابدأ مساراً موجّهاً' : 'Start guided path'}
@@ -857,47 +877,78 @@ export default function Home() {
               {/* ── Content Area ── */}
               <div style={{ maxWidth: 720, margin: '0 auto', padding: '18px 14px 100px' }}>
 
-                {/* ── Stats trust strip — 2×2 premium grid ── */}
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:0, marginBottom:22, border:'1px solid #EAE4D9', borderRadius:14, overflow:'hidden' }}>
+                {/* ── Stats trust strip — 4 premium cards ── */}
+                <div className="wlc-stats-grid" style={{ marginBottom:20 }}>
                   {[
-                    { num: String(ALL_SERVICES.length), lAr:'خدمة موثّقة', lEn:'Documented services' },
-                    { num: TX_ALL.length.toLocaleString('en-US'), lAr:'إجراء حكومي', lEn:'Procedures' },
-                    { num: TX_WITH_FORMS.length.toLocaleString('en-US'), lAr:'نموذج رسمي', lEn:'Official forms' },
-                    { num: String(TX_MINISTRIES.length), lAr:'وزارة وجهة', lEn:'Ministries' },
+                    {
+                      num: String(ALL_SERVICES.length), lAr:'خدمة موثّقة', lEn:'Services',
+                      featured: true,
+                      icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>,
+                    },
+                    {
+                      num: TX_ALL.length.toLocaleString('en-US'), lAr:'إجراء حكومي', lEn:'Procedures',
+                      icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
+                    },
+                    {
+                      num: TX_WITH_FORMS.length.toLocaleString('en-US'), lAr:'نموذج رسمي', lEn:'Official forms',
+                      icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+                    },
+                    {
+                      num: String(TX_MINISTRIES.length), lAr:'وزارة وجهة', lEn:'Ministries',
+                      icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l9-7 9 7M5 21V10m14 11V10M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4"/></svg>,
+                    },
                   ].map((s,i) => (
                     <div key={i} style={{
                       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-                      padding:'13px 8px 15px',
-                      background: i === 0 ? 'linear-gradient(135deg, #FEF2F2, #FDE8E8)' : '#fff',
-                      borderRight: i % 2 === 0 ? '1px solid #EAE4D9' : 'none',
-                      borderBottom: i < 2 ? '1px solid #EAE4D9' : 'none',
+                      padding:'14px 8px 16px',
+                      background: s.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+                      border: s.featured ? '1.5px solid rgba(139,26,26,0.18)' : '1.5px solid #EAE4D9',
+                      borderRadius:12,
+                      boxShadow: s.featured ? '0 2px 10px rgba(139,26,26,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
                       animation: 'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
                       animationDelay: `${0.06 + i * 0.07}s`,
                     }}>
-                      {/* Section icon */}
-                      {i === 0 && (
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.75 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
-                        </svg>
-                      )}
-                      {i === 1 && (
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                        </svg>
-                      )}
-                      {i === 2 && (
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                      )}
-                      {i === 3 && (
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l9-7 9 7M5 21V10m14 11V10M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4"/>
-                        </svg>
-                      )}
-                      <span style={{ fontSize:'clamp(18px,5.5vw,22px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.8px', lineHeight:1 }}>{s.num}</span>
+                      <div style={{ marginBottom:6, opacity: s.featured ? 0.85 : 0.6 }}>{s.icon}</div>
+                      <span style={{ fontSize:'clamp(20px,5.5vw,24px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.9px', lineHeight:1 }}>{s.num}</span>
                       <span style={{ fontSize:10.5, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center', lineHeight:1.3 }}>{isAr ? s.lAr : s.lEn}</span>
                     </div>
+                  ))}
+                </div>
+
+                {/* ── Quick nav chips ── */}
+                <div style={{ display:'flex', gap:8, marginBottom:20, flexWrap:'wrap', animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.24s' }}>
+                  {[
+                    { labelAr:'الإجراءات', labelEn:'Procedures', href:'/procedures',
+                      icon: <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> },
+                    { labelAr:'النماذج', labelEn:'Forms', href:'/forms',
+                      icon: <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+                    { labelAr:'الجهات', labelEn:'Authorities', href:'/authorities',
+                      icon: <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l9-7 9 7M5 21V10m14 11V10M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4"/></svg> },
+                  ].map(chip => (
+                    <button
+                      key={chip.href}
+                      type="button"
+                      className="wlc-nav-chip"
+                      aria-label={isAr ? chip.labelAr : chip.labelEn}
+                      onClick={() => router.push(chip.href)}
+                      style={{
+                        display:'inline-flex', alignItems:'center', gap:6,
+                        padding:'8px 16px', borderRadius:20,
+                        background:'#fff', border:'1.5px solid #EAE4D9',
+                        fontSize:12.5, fontWeight:700, color:'#5C4A3A',
+                        cursor:'pointer', fontFamily:'inherit',
+                        boxShadow:'0 1px 4px rgba(0,0,0,0.05)',
+                        transition:'border-color 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s, transform 0.14s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.color='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 3px 10px rgba(139,26,26,0.1)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.color='#5C4A3A'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.05)'; e.currentTarget.style.transform='translateY(0)' }}
+                      onTouchStart={e => { e.currentTarget.style.background='#FEF2F2'; e.currentTarget.style.color='#8B1A1A'; e.currentTarget.style.transform='scale(0.96)' }}
+                      onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.color='#5C4A3A'; e.currentTarget.style.transform='scale(1)' }}
+                    >
+                      {chip.icon}
+                      {isAr ? chip.labelAr : chip.labelEn}
+                      <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.45 }}><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
+                    </button>
                   ))}
                 </div>
 
@@ -905,8 +956,8 @@ export default function Home() {
                 <div>
                   {/* Section header with left accent */}
                   <div style={{ marginBottom:12, display:'flex', alignItems:'center', gap:9, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.27s' }}>
-                    <div style={{ width:3.5, height:16, borderRadius:2, background:'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink:0 }} />
-                    <span style={{ fontSize:13, fontWeight:800, color:'#1A1208', letterSpacing:'-0.2px' }}>
+                    <div style={{ width:4, height:18, borderRadius:2, background:'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink:0 }} />
+                    <span style={{ fontSize:14, fontWeight:900, color:'#1A1208', letterSpacing:'-0.3px' }}>
                       {isAr ? 'استعرض الخدمات' : 'Browse services'}
                     </span>
                   </div>
@@ -918,32 +969,33 @@ export default function Home() {
                         type="button"
                         key={group.slug}
                         className="wlc-svc-btn"
+                        aria-label={isAr ? group.titleAr : group.titleEn}
                         onClick={() => setActiveServiceGroup(group)}
                         style={{
                           display:'flex', alignItems:'center', gap:10,
-                          padding:'11px 12px', borderRadius:13, cursor:'pointer',
+                          padding:'13px 14px', borderRadius:14, cursor:'pointer',
                           background:'#fff', border:'1.5px solid #EAE4D9',
                           fontFamily:'inherit', textAlign:isAr?'right':'left',
                           transition:'border-color 0.14s, background 0.14s, transform 0.14s, box-shadow 0.14s cubic-bezier(0.22,1,0.36,1)',
-                          boxShadow:'0 1px 4px rgba(0,0,0,0.04)', width:'100%',
+                          boxShadow:'0 1px 5px rgba(0,0,0,0.05)', width:'100%',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 6px 18px rgba(139,26,26,0.11)'; e.currentTarget.style.transform='translateY(-1px)' }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.transform='translateY(0)' }}
                         onTouchStart={e => { e.currentTarget.style.background='rgba(254,242,242,0.9)'; e.currentTarget.style.borderColor='rgba(139,26,26,0.3)'; e.currentTarget.style.transform='scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.transform='scale(1)' }}
                       >
-                        <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:`${group.color}14`, border:`1px solid ${group.color}28`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
+                        <div style={{ width:38, height:38, borderRadius:10, flexShrink:0, background:`${group.color}14`, border:`1px solid ${group.color}28`, display:'flex', alignItems:'center', justifyContent:'center', color:group.color }}>
                           <ServiceGroupIcon slug={group.slug} />
                         </div>
                         <div style={{ minWidth:0, flex:1 }}>
-                          <div style={{ fontSize:12, fontWeight:700, color:'#1A1208', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                          <div style={{ fontSize:12.5, fontWeight:700, color:'#1A1208', lineHeight:1.2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                             {isAr ? group.titleAr : group.titleEn}
                           </div>
                           <div style={{ fontSize:10, color:'#9C8E80', marginTop:2 }}>
                             {group.services.length}{isAr ? ' خدمة' : ' services'}
                           </div>
                         </div>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C4B5A5" strokeWidth="2.5" style={{ flexShrink:0 }}>
+                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4B5A5" strokeWidth="2.5" style={{ flexShrink:0 }}>
                           <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
                         </svg>
                       </button>
@@ -977,13 +1029,43 @@ export default function Home() {
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.color = '#9C8E80' }}
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#8B1A1A' }}
                   onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#9C8E80' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
                   </svg>
                   {isAr ? 'الرئيسية' : 'Home'}
                 </button>
               </div>
+
+              {/* ── Session restore banner ── */}
+              {restoredCount > 0 && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '7px 12px', marginBottom: 8, borderRadius: 10,
+                  background: '#FFFBEB', border: '1px solid #FDE68A',
+                  animation: 'fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both',
+                  direction: isAr ? 'rtl' : 'ltr',
+                }}>
+                  <span style={{ fontSize: 11.5, color: '#78350F', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {isAr
+                      ? `استُعيدت محادثة سابقة (${Math.floor(restoredCount / 2)} سؤال)`
+                      : `Previous session restored (${Math.floor(restoredCount / 2)} questions)`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setRestoredCount(0)}
+                    aria-label={isAr ? 'إخفاء' : 'Dismiss'}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#B45309', padding: 2, display: 'flex', alignItems: 'center' }}
+                  >
+                    <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+              )}
 
               {messages.map((msg, i) => {
                 /* ── Typing indicator: empty streaming assistant message ── */
@@ -1043,6 +1125,7 @@ export default function Home() {
                 type="button"
                 key={i}
                 className="followup-chip"
+                aria-label={q}
                 onClick={() => { setInput(q); sendMessage(q) }}
                 style={{
                   background: '#FFF5F5', border: '1px solid rgba(139,26,26,0.18)',
@@ -1057,9 +1140,29 @@ export default function Home() {
                 onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.6, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> {q}
+                <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.6, flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> {q}
               </button>
             ))}
+          </div>
+        )}
+
+        {/* ── Inline voice/file error — replaces alert() ── */}
+        {voiceError && (
+          <div role="alert" style={{
+            maxWidth: 720, margin: '0 auto 6px', padding: '8px 14px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            background: '#FEF2F2', border: '1.5px solid #FECACA',
+            borderRadius: 10, direction: isAr ? 'rtl' : 'ltr',
+            animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both',
+          }}>
+            <span style={{ fontSize: 12.5, color: '#8B1A1A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/></svg>
+              {voiceError}
+            </span>
+            <button type="button" onClick={() => setVoiceError(null)} aria-label={isAr ? 'إغلاق' : 'Dismiss'}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#B45309', padding: 2, display: 'flex', alignItems: 'center' }}>
+              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
           </div>
         )}
 
@@ -1081,7 +1184,7 @@ export default function Home() {
               onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)' }}
               onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> إعادة المحاولة
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> إعادة المحاولة
             </button>
           </div>
         )}
@@ -1100,8 +1203,8 @@ export default function Home() {
               animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both',
             }}>
               {quotaRemaining <= 3
-                ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                ? <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                : <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               } {quotaRemaining === 0 ? 'استنفذت حصتك اليومية' : `${quotaRemaining} سؤال متبقٍ اليوم`}
             </span>
           </div>
@@ -1124,7 +1227,7 @@ export default function Home() {
                 borderRadius: 10, border: '1px solid rgba(139,26,26,0.2)',
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, flex: 1 }}>
                   {isAr ? 'يتم تحليل: ' : 'Analyzing: '}{activeDocumentName}
                 </span>
@@ -1133,7 +1236,7 @@ export default function Home() {
                   onClick={() => { setActiveDocumentName(null) }}
                   aria-label={isAr ? 'مسح المستند النشط' : 'Clear active document'}
                   style={{ background: 'none', border: 'none', color: '#9C8E80', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
-                ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+                ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
 
@@ -1155,7 +1258,7 @@ export default function Home() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 20, flexShrink: 0,
                   }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
@@ -1173,7 +1276,7 @@ export default function Home() {
                   cursor: 'pointer', color: 'var(--red)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   transition: 'background 0.12s',
-                }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+                }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
 
@@ -1203,7 +1306,7 @@ export default function Home() {
                       width: 3, height: h, backgroundColor: '#8B1A1A', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
                       display: 'inline-block',
-                    }}
+                    }} />
                   ))}
                 </span>
               </div>
@@ -1241,7 +1344,7 @@ export default function Home() {
                   }}
                   onTouchStart={e => !loading && (e.currentTarget.style.background = 'var(--red-light)')}
                   onTouchEnd={e => (e.currentTarget.style.background = 'none')}>
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                   </svg>
@@ -1306,7 +1409,7 @@ export default function Home() {
                   }}
                   onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
                   onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
-                  <svg width="19" height="19" viewBox="0 0 24 24"
+                  <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24"
                     fill={recording ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -1330,13 +1433,13 @@ export default function Home() {
                   onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
                   onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
                   {loading ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none"
                       style={{ animation: 'spin 0.8s linear infinite' }}>
                       <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
                       <path fill="#fff" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                   ) : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   )}

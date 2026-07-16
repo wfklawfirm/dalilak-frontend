@@ -53,7 +53,7 @@ export default function HumanReviewCTA({
         borderRadius: 14, padding: '14px 16px', textAlign: 'center',
       }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
@@ -79,7 +79,7 @@ export default function HumanReviewCTA({
           border: `1.5px solid ${isCritical ? 'transparent' : 'rgba(139,26,26,0.2)'}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke={isCritical ? '#fff' : '#8B1A1A'} strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
           </svg>
@@ -99,6 +99,8 @@ export default function HumanReviewCTA({
       {!open ? (
         <button
           type="button"
+          aria-expanded={open}
+          aria-controls="review-form"
           onClick={() => setOpen(true)}
           style={{
             width: '100%', padding: '10px 14px',
@@ -115,10 +117,11 @@ export default function HumanReviewCTA({
           اطلب مراجعة بشرية
         </button>
       ) : (
-        <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
+        <div id="review-form" style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>نوع المراجعة</label>
+            <label htmlFor="review-type" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>نوع المراجعة</label>
             <select
+              id="review-type"
               aria-label="نوع المراجعة"
               value={type}
               onChange={e => setType(e.target.value)}
@@ -135,8 +138,9 @@ export default function HumanReviewCTA({
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>وصف الحالة</label>
+            <label htmlFor="review-summary" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>وصف الحالة</label>
             <textarea
+              id="review-summary"
               value={summary}
               onChange={e => setSummary(e.target.value)}
               placeholder="اشرح بإيجاز ما تحتاج المساعدة فيه..."
@@ -145,14 +149,17 @@ export default function HumanReviewCTA({
                 width: '100%', fontSize: 13, border: '1.5px solid #EAE4D9',
                 borderRadius: 10, padding: '9px 12px', background: '#FAFAF8',
                 outline: 'none', fontFamily: 'inherit', resize: 'none', color: '#1A1208',
-                lineHeight: 1.5,
+                lineHeight: 1.5, transition: 'border-color 0.18s, box-shadow 0.18s',
               }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = 'none' }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الأولوية</label>
+            <label htmlFor="review-urgency" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الأولوية</label>
             <select
+              id="review-urgency"
               aria-label="الأولوية"
               value={urgency}
               onChange={e => setUrgency(e.target.value)}
@@ -194,4 +201,10 @@ export default function HumanReviewCTA({
               }}
             >
               إلغاء
- 
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

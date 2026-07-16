@@ -40,11 +40,12 @@ export default function ChatMessage({
         <div style={{
           flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 11, fontWeight: 700, color: '#fff',
           background: 'linear-gradient(135deg, #C9982A 0%, #B8860B 100%)',
           boxShadow: '0 2px 6px rgba(201,152,42,0.3)',
         }}>
-          {ar ? 'أنت' : 'You'}
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
         </div>
       ) : (
         <div style={{

@@ -81,44 +81,44 @@ const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }>
 }
 
 function TypeIcon({ type, size = 20 }: { type: string; size?: number }) {
-  const s = { width: size, height: size, flexShrink: 0 as const }
+  const s = { width: size, height: size, flexShrink: 0 as const, 'aria-hidden': true as const }
   if (type === 'ministry') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
     </svg>
   )
   if (type === 'council') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
     </svg>
   )
   if (type === 'court') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
     </svg>
   )
   if (type === 'municipality') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
     </svg>
   )
   if (type === 'union') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
     </svg>
   )
   if (type === 'bank') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
     </svg>
   )
   if (type === 'security') return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
     </svg>
   )
   return (
-    <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
     </svg>
   )
@@ -186,7 +186,7 @@ export default function AuthoritiesPage() {
               borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
               display: 'flex', flexShrink: 0,
             }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -210,27 +210,28 @@ export default function AuthoritiesPage() {
         </div>
       </header>
 
-      <div style={{ maxWidth: 760, margin: '0 auto', padding: '16px 14px 100px' }}>
+      <div id="main-content" style={{ maxWidth: 760, margin: '0 auto', padding: '16px 14px 100px' }}>
 
-        {/* Stats banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #FEF2F2, #FFF7F7)',
-          border: '1px solid rgba(139,26,26,0.12)', borderRadius: 16,
-          padding: '12px 16px', marginBottom: 16,
-          display: 'flex', gap: 0, alignItems: 'stretch',
-        }}>
+        {/* Stats banner — premium individual cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
           {[
-            { value: String(stats.total), label: 'جهة رسمية' },
-            { value: String(stats.ministries), label: 'وزارة' },
-            { value: String(stats.withOnline), label: 'خدمات أونلاين' },
-            { value: String(stats.totalServices), label: 'خدمة موثّقة' },
+            { value: String(stats.total),         label: 'جهة رسمية',     featured: true  },
+            { value: String(stats.ministries),     label: 'وزارة',         featured: false },
+            { value: String(stats.withOnline),     label: 'خدمات أونلاين', featured: false },
+            { value: String(stats.totalServices),  label: 'خدمة موثّقة',   featured: false },
           ].map((s, i) => (
             <div key={s.label} style={{
-              flex: 1, textAlign: 'center', padding: '4px 8px',
-              borderRight: i < 3 ? '1px solid rgba(139,26,26,0.12)' : 'none',
+              padding: '13px 8px 15px', textAlign: 'center',
+              background: s.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+              border: s.featured ? '1.5px solid rgba(139,26,26,0.18)' : '1.5px solid #EAE4D9',
+              borderRadius: 12,
+              boxShadow: s.featured ? '0 2px 10px rgba(139,26,26,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              animation: 'authEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
+              animationDelay: `${0.05 + i * 0.06}s`,
             }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 9.5, color: '#5C4A3A', marginTop: 3, fontWeight: 600 }}>{s.label}</div>
+              <div style={{ fontSize: 'clamp(17px,5vw,21px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 4, fontWeight: 500 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -247,7 +248,7 @@ export default function AuthoritiesPage() {
             position: 'absolute', top: '50%', transform: 'translateY(-50%)',
             right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s',
           }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
             </svg>
           </span>
@@ -273,7 +274,7 @@ export default function AuthoritiesPage() {
               width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+<svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
               </svg>
             </button>
@@ -285,7 +286,7 @@ export default function AuthoritiesPage() {
           {TYPE_FILTERS.map(f => {
             const active = typeFilter === f.key
             return (
-              <button type="button" key={f.key} onClick={() => setTypeFilter(f.key)} className="type-chip"
+              <button type="button" key={f.key} aria-pressed={active} onClick={() => setTypeFilter(f.key)} className="type-chip"
                 onTouchStart={e => {
                   e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
                   e.currentTarget.style.borderColor = active ? '#8B1A1A' : 'rgba(139,26,26,0.3)'
@@ -310,7 +311,7 @@ export default function AuthoritiesPage() {
         </div>
 
         {/* Results count — section header with accent */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+        <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
           <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
           <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
             {filtered.length === ALL_AUTHORITIES.length ? 'الجهات الرسمية' : `${filtered.length} جهة رسمية`}
@@ -320,11 +321,32 @@ export default function AuthoritiesPage() {
 
         {/* Empty state */}
         {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '48px 16px', color: '#9C8E80' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EAE4D9" strokeWidth="1.5" style={{ marginBottom: 12 }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-            </svg>
-            <p style={{ fontSize: 13, margin: 0 }}>لا توجد جهات مطابقة</p>
+          <div role="status" style={{ textAlign: 'center', padding: '48px 16px', color: '#9C8E80' }}>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+              <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <p style={{ fontSize: 13.5, fontWeight: 700, color: '#5C4A3A', margin: '0 0 6px' }}>لا توجد جهات مطابقة</p>
+            <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>جرّب كلمة مختلفة أو اسأل دليلك مباشرة</p>
+            <button type="button"
+              onClick={() => router.push(`/?q=${encodeURIComponent(`ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟`)}`)}
+              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '9px 22px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+                boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+                transition: 'opacity 0.12s, transform 0.12s',
+              }}>
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+              </svg>
+              اسأل دليلك
+            </button>
           </div>
         )}
 
@@ -375,18 +397,18 @@ export default function AuthoritiesPage() {
                       fontSize: 10.5, color: '#5C4A3A', background: '#F5F0EB',
                       borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4,
                     }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                       </svg>
                       {auth.serviceCount} خدمة
                     </span>
                     {auth.online_count > 0 && (
                       <span style={{
-                        fontSize: 10.5, color: '#065F46', background: '#ECFDF5',
+                        fontSize: 10.5, color: '#065F46', background: 'rgba(6,95,70,0.07)',
                         borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4,
-                        border: '1px solid #A7F3D0',
+                        border: '1px solid rgba(6,95,70,0.2)',
                       }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+<svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
                         {auth.online_count} أونلاين
@@ -415,7 +437,7 @@ export default function AuthoritiesPage() {
                         fontSize: 11, color: '#8B1A1A', textDecoration: 'none',
                         display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
                       }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                         </svg>
                         {auth.phone}
@@ -423,7 +445,7 @@ export default function AuthoritiesPage() {
                     )}
                     {auth.working_hours && (
                       <span style={{ fontSize: 11, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/>
                         </svg>
                         {auth.working_hours}
@@ -439,7 +461,7 @@ export default function AuthoritiesPage() {
                       fontSize: 10.5, color: '#8B1A1A', fontWeight: 700, textDecoration: 'none',
                       display: 'inline-flex', alignItems: 'center', gap: 4,
                     }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                       </svg>
                       الموقع الرسمي
@@ -447,7 +469,7 @@ export default function AuthoritiesPage() {
                   ) : (
                     <span style={{ fontSize: 10, color: '#C4B5A5' }}>بلا موقع</span>
                   )}
-                  <button type="button" onClick={() => askAI(auth.name_ar)}
+                  <button type="button" aria-label={`اسأل دليلك عن: ${auth.name_ar}`} onClick={() => askAI(auth.name_ar)}
                     onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
                     style={{
@@ -456,7 +478,7 @@ export default function AuthoritiesPage() {
                     borderRadius: 8, padding: '4px 10px', cursor: 'pointer',
                     fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4,
                   }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+<svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                     اسألني
@@ -469,7 +491,7 @@ export default function AuthoritiesPage() {
 
       </div>
 
-      <BottomNav isAr={true} activeTab="services" />
+      <div className="bottom-nav-wrapper"><BottomNav isAr={true} activeTab="services" /></div>
     </div>
   )
 }

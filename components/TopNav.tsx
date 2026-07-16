@@ -115,13 +115,14 @@ export default function TopNav({
           </button>
 
           {/* ══ DESKTOP NAV LINKS (center-left) ═════════════════════ */}
-          <nav className="tn-nav-links" style={{ display: 'none', alignItems: 'center', gap: 2, flex: 1 }}>
+          <nav className="tn-nav-links" aria-label={isAr ? 'روابط التنقل' : 'Navigation links'} style={{ display: 'none', alignItems: 'center', gap: 2, flex: 1 }}>
             {NAV_LINKS.map(link => {
               const active = pathname === link.href
               return (
                 <button
                   key={link.href}
                   type="button"
+                  aria-current={active ? 'page' : undefined}
                   onClick={() => link.href === '/' && onNewChat ? onNewChat() : router.push(link.href)}
                   className={`tn-link${active ? ' tn-link-active' : ''}`}
                   style={{
@@ -209,7 +210,7 @@ export default function TopNav({
                 background: 'rgba(255,255,255,0.07)',
                 border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.3)' : 'rgba(253,230,138,0.3)'}`,
               }}>
-                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg>{currentUser.days_left}{isAr ? ' يوم' : 'd'}</span>
+                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg>{currentUser.days_left}{isAr ? ' يوم' : 'd'}</span>
               </div>
             )}
 
@@ -228,7 +229,7 @@ export default function TopNav({
                   cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/>
                 </svg>
                 {isAr ? 'ابدأ معاملة' : 'Start'}
@@ -253,7 +254,7 @@ export default function TopNav({
                   cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
                 <span style={{ display: 'none' }} className="tn-desk-only">{isAr ? 'جديد' : 'New'}</span>
@@ -293,7 +294,7 @@ export default function TopNav({
                 color: '#fff', cursor: 'pointer',
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             </button>
@@ -313,7 +314,7 @@ export default function TopNav({
                   color: '#fff', cursor: 'pointer',
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                 </svg>
               </button>

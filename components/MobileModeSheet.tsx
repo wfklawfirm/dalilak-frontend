@@ -38,17 +38,17 @@ const MODES: ModeOption[] = [
 
 function ModeIcon({ id, size = 20 }: { id: ResponseMode; size?: number }) {
   if (id === 'quick') return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
     </svg>
   )
   if (id === 'detailed') return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
     </svg>
   )
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
     </svg>
   )
@@ -67,14 +67,16 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
   if (!isOpen) return null
   return (
     <>
-      <div onClick={onClose} style={{
+      <div onClick={onClose} aria-hidden="true" style={{
         position: 'fixed', inset: 0,
         background: 'rgba(0,0,0,0.35)',
         zIndex: 200,
         backdropFilter: 'blur(1px)',
         animation: 'msFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both',
       }} />
-      <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'} style={{
+      <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'}
+        tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
+        style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         zIndex: 201,
         background: '#fff',
@@ -107,6 +109,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
                 type="button"
                 key={m.id}
                 onClick={() => { onSelect(m.id); onClose() }}
+                aria-pressed={active}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '13px 16px', borderRadius: 14,
@@ -138,7 +141,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
                   </div>
                 </div>
                 {active && (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5" style={{ flexShrink: 0 }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                   </svg>
                 )}
@@ -169,6 +172,7 @@ export function DesktopModeSelector({
         return (
           <button key={m.id} type="button"
             onClick={() => onSelect(m.id)}
+            aria-pressed={active}
             style={{
               display: 'flex', alignItems: 'center', gap: 5,
               padding: '6px 14px', borderRadius: 999, fontSize: 12,
@@ -209,6 +213,9 @@ export default function ModeSelector({
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
+          aria-label={isAr ? 'تغيير وضع الجواب' : 'Change response mode'}
+          aria-haspopup="dialog"
+          aria-expanded={sheetOpen}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '7px 12px', borderRadius: 10,
@@ -226,7 +233,24 @@ export default function ModeSelector({
           <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>
             {isAr ? current.label_ar : current.label_en}
           </span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
-      
+        </button>
+
+        <MobileModeSheet
+          isOpen={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          mode={mode}
+          onSelect={onSelect}
+          isAr={isAr}
+        />
+      </div>
+
+      {/* Desktop: pill row — shown via globals.css .mode-desktop */}
+      <div className="mode-desktop">
+        <DesktopModeSelector mode={mode} onSelect={onSelect} isAr={isAr} />
+      </div>
+    </>
+  )
+}

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: 'تسجيل الدخول | دليلك AI',
+  title: 'تسجيل الدخول | دليلك',
 }
 
 export default function LoginLayout({ children }: { children: ReactNode }) {

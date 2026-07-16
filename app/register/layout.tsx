@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
-  title: 'إنشاء حساب | دليلك AI',
+  title: 'إنشاء حساب | دليلك',
 }
 
 export default function RegisterLayout({ children }: { children: ReactNode }) {

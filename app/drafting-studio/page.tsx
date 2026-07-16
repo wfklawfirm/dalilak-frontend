@@ -33,7 +33,7 @@ export default function DraftingStudioPage() {
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
@@ -54,13 +54,13 @@ export default function DraftingStudioPage() {
         .ds-tag:hover { background: rgba(139,26,26,0.12) !important; border-color: rgba(139,26,26,0.35) !important; }
       `}</style>
 
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
+      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
 
         {/* Intro card */}
         <div style={{ background: '#FEF2F2', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '16px', marginBottom: 18, animation: 'dsIn 0.3s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.05s' }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 7px', display: 'flex', alignItems: 'center', gap: 7 }}>
             <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </span>
             ما هو استوديو الصياغة؟
           </h2>
@@ -76,7 +76,7 @@ export default function DraftingStudioPage() {
 
         {/* Disclaimer banner */}
         <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12, padding: '10px 14px', marginBottom: 20, display: 'flex', gap: 8, alignItems: 'flex-start', animation: 'dsIn 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.38s' }}>
-          <span style={{ display: 'flex', flexShrink: 0, marginTop: 1 }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
+          <span style={{ display: 'flex', flexShrink: 0, marginTop: 1 }}><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
           <p style={{ fontSize: 11.5, color: '#92400E', margin: 0, lineHeight: 1.65 }}>
             هذه المسودات للأغراض التوجيهية فقط وليست وثائق قانونية معتمدة. يُنصح بمراجعة محامٍ قبل استخدامها رسمياً.
           </p>

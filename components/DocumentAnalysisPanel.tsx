@@ -149,10 +149,10 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                 <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{f.value}</span>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                   {f.confidence === 'high'
-                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#B45309"/></svg>
+                    ? <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#B45309"/></svg>
                     : f.confidence === 'medium'
-                    ? <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
-                    : <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>}
+                    ? <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
+                    : <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>}
                 </span>
               </div>
             ))}
@@ -182,7 +182,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             {analysis.key_facts.map((fact, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#2D1B0E' }}>
-                <svg width="5" height="5" viewBox="0 0 10 10" style={{ flexShrink: 0, marginTop: 5 }}><circle cx="5" cy="5" r="3.5" fill="#B8860B"/></svg>
+                <svg aria-hidden="true" width="5" height="5" viewBox="0 0 10 10" style={{ flexShrink: 0, marginTop: 5 }}><circle cx="5" cy="5" r="3.5" fill="#B8860B"/></svg>
                 {fact}
               </div>
             ))}
@@ -299,8 +299,8 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                       background: c.found ? '#B45309' : '#FEF2F2', color: c.found ? '#fff' : '#8B1A1A',
                     }}>
                       {c.found
-                        ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                        : <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
+                        ? <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        : <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
                     </span>
                     <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{c.clause}</span>
                     <span style={{ fontSize: 11, fontWeight: 600, ...(STRENGTH_STYLE[c.strength] || {}) }}>
@@ -340,4 +340,18 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {reviewResult.overall_recommendation && (
             <div style={{ background: 'rgba(107,39,55,0.06)', border: '1.5px solid rgba(107,39,55,0.2)', borderRadius: 14, padding: '14px 16px' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: '#6b2737', margin: '0 0 6px' }}>
-                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن ل
+                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن للمراجعة' : reviewResult.overall_verdict === 'caution' ? 'يحتاج تعديلات' : 'مخاطر عالية'}
+              </p>
+              <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: 0, lineHeight: 1.6 }}>
+                {reviewResult.overall_recommendation}
+              </p>
+            </div>
+          )}
+
+        </div>
+      )}
+
+    </div>
+    </>
+  )
+}
