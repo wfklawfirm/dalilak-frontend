@@ -205,10 +205,13 @@ export default function AdminPage() {
         .adm-tr:hover { background: #FAFAF8 !important; }
         .adm-btn:hover { opacity: 0.82; }
         .adm-gap-row:hover { background: #FAFAF8 !important; }
+        @keyframes admIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes admItem { from { opacity:0; transform:translateY(10px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes admHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)', animation: 'admHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -220,14 +223,14 @@ export default function AdminPage() {
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
+            <button type="button" onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               {loading ? '...' : 'تحديث'}
             </button>
-            <button onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button type="button" onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
               التطبيق
             </button>
-            <button onClick={() => { clearToken(); router.push('/login') }} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button type="button" onClick={() => { clearToken(); router.push('/login') }} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
               خروج
             </button>
           </div>
@@ -242,7 +245,7 @@ export default function AdminPage() {
       <div style={{ padding: '16px 24px 0', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {TABS.map(t => (
-            <button key={t.id}
+            <button type="button" key={t.id}
               onClick={() => {
                 setTab(t.id)
                 if (t.id === 'resets') loadResets()
@@ -252,7 +255,7 @@ export default function AdminPage() {
               }}
               style={{
                 padding: '7px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                fontFamily: 'inherit', border: 'none', transition: 'all 0.15s',
+                fontFamily: 'inherit', border: 'none', transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
                 background: tab === t.id ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
                 color: tab === t.id ? '#fff' : '#5C4A3A',
                 boxShadow: tab === t.id ? '0 2px 8px rgba(139,26,26,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',
@@ -273,7 +276,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 24px 60px' }}>
+      <div key={tab} style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 24px 60px', animation: 'admIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
 
         {/* ── STATS ── */}
         {tab === 'stats' && stats && (
@@ -283,18 +286,18 @@ export default function AdminPage() {
                 { label: 'إجمالي المستخدمين', value: stats.total,           bg: '#fff',                 ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg> },
                 { label: 'مدفوعون',            value: stats.paid,            bg: '#FFFBEB',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> },
                 { label: 'تجريبي نشط',         value: stats.trial_active,    bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
-                { label: 'تجريبي منتهي',       value: stats.trial_expired,   bg: '#FFF7ED',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
-                { label: 'معطّلون',            value: stats.suspended,       bg: '#FEF2F2',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
+                { label: 'تجريبي منتهي',       value: stats.trial_expired,   bg: '#FFFBEB',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> },
+                { label: 'معطّلون',            value: stats.suspended,       bg: '#FEF2F2',              ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><circle cx="12" cy="12" r="9"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> },
                 { label: 'معدل التحويل',       value: stats.conversion_rate, bg: 'rgba(107,39,55,0.06)', ic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b2737" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> },
-              ].map(s => (
-                <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: '16px 18px', border: '1.5px solid #EAE4D9', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+              ].map((s, i) => (
+                <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: '16px 18px', border: '1.5px solid #EAE4D9', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', animation: 'admItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.06}s` }}>
                   <div style={{ marginBottom: 8, display: 'flex' }}>{s.ic}</div>
                   <div style={{ fontSize: 28, fontWeight: 900, color: '#1A1208' }}>{s.value}</div>
                   <div style={{ fontSize: 12, color: '#9C8E80', marginTop: 3 }}>{s.label}</div>
                 </div>
               ))}
             </div>
-            <button onClick={() => { loadStats(); loadUsers() }}
+            <button type="button" onClick={() => { loadStats(); loadUsers() }}
               style={{ marginTop: 14, fontSize: 12, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
             </button>
@@ -308,6 +311,7 @@ export default function AdminPage() {
               <input
                 type="text" value={search}
                 onChange={e => setSearch(e.target.value)}
+                aria-label="ابحث باسم المستخدم أو البريد"
                 placeholder="ابحث باسم المستخدم أو البريد..."
                 style={{ ...INP, maxWidth: 340 }}
               />
@@ -342,13 +346,14 @@ export default function AdminPage() {
                         <td style={{ padding: '10px 14px' }}>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button
+                              type="button"
                               onClick={() => { setEditUser(u); setEditPlan(u.plan); setEditPaidUntil(u.paid_until || '') }}
                               className="adm-btn"
                               style={{ fontSize: 11, background: 'rgba(107,39,55,0.08)', color: '#6b2737', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
                               تعديل
                             </button>
                             {u.active && (
-                              <button onClick={() => handleDeactivate(u.username)}
+                              <button type="button" onClick={() => handleDeactivate(u.username)}
                                 className="adm-btn"
                                 style={{ fontSize: 11, background: '#FEF2F2', color: '#8B1A1A', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
                                 تعطيل
@@ -396,7 +401,7 @@ export default function AdminPage() {
                 ))}
                 <div>
                   <label style={LBL}>الخطة</label>
-                  <select value={newUser.plan} onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))} style={INP}>
+                  <select value={newUser.plan} onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))} aria-label="خطة المستخدم" style={INP}>
                     <option value="trial">تجريبي (3 أيام)</option>
                     <option value="paid">مدفوع</option>
                     <option value="admin">مشرف</option>
@@ -416,7 +421,7 @@ export default function AdminPage() {
             <div style={SECTION}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>رموز استعادة كلمة المرور</h3>
-                <button onClick={loadResets} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
+                <button type="button" onClick={loadResets} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
                 </button>
               </div>
@@ -433,7 +438,7 @@ export default function AdminPage() {
                       </div>
                       <div style={{ textAlign: 'center' }}>
                         <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: 4, color: '#6b2737' }}>{r.token}</div>
-                        <button onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#9C8E80', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>نسخ</button>
+                        <button type="button" onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#9C8E80', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>نسخ</button>
                       </div>
                     </div>
                   ))}
@@ -451,7 +456,7 @@ export default function AdminPage() {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                 تقييمات المستخدمين ({feedback.length})
               </h2>
-              <button onClick={loadFeedback} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
+              <button type="button" onClick={loadFeedback} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
             </div>
             {feedback.length === 0 ? (
               <p style={{ fontSize: 13, color: '#9C8E80', textAlign: 'center', padding: '28px 0' }}>لا توجد تقييمات بعد</p>
@@ -463,7 +468,7 @@ export default function AdminPage() {
                       <span style={{ display: 'inline-flex' }}>
                         {f.rating === 'up'
                           ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path strokeLinecap="round" strokeLinejoin="round" d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
-                          : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
+                          : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
                         }
                       </span>
                       <span style={{ fontSize: 11, color: '#9C8E80' }}>{f.username} · {fmtTs(f.timestamp)}</span>
@@ -486,7 +491,7 @@ export default function AdminPage() {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
                 طلبات التصعيد ({escalations.length})
               </h2>
-              <button onClick={loadEscalations} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
+              <button type="button" onClick={loadEscalations} style={{ fontSize: 11, color: '#6b2737', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
             </div>
             {escalations.length === 0 ? (
               <p style={{ fontSize: 13, color: '#9C8E80', textAlign: 'center', padding: '28px 0' }}>لا توجد طلبات بعد</p>
@@ -521,7 +526,7 @@ export default function AdminPage() {
                   { label: 'الإجمالي',      val: gapStats.total,        bg: '#fff' },
                   { label: 'مفتوحة',        val: gapStats.open,         bg: '#FEF2F2' },
                   { label: 'قيد المراجعة', val: gapStats.in_review,    bg: '#FFFBEB' },
-                  { label: 'أولوية عالية', val: gapStats.high_priority, bg: '#FFF7ED' },
+                  { label: 'أولوية عالية', val: gapStats.high_priority, bg: '#FFFBEB' },
                 ].map(s => (
                   <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: '14px 16px', border: '1.5px solid #EAE4D9', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                     <div style={{ fontSize: 26, fontWeight: 900, color: '#1A1208' }}>{s.val}</div>
@@ -534,12 +539,12 @@ export default function AdminPage() {
             {/* Filter bar */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               {[
-                { k: 'open',      dot: '#DC2626', label: 'مفتوح' },
+                { k: 'open',      dot: '#8B1A1A', label: 'مفتوح' },
                 { k: 'in_review', dot: '#CA8A04', label: 'قيد المراجعة' },
                 { k: 'resolved',  dot: '#B45309', label: 'محلول' },
                 { k: 'ignored',   dot: '#9C8E80', label: 'متجاهَل' },
               ].map(f => (
-                <button key={f.k}
+                <button type="button" key={f.k}
                   onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
                   style={{
                     padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
@@ -572,7 +577,7 @@ export default function AdminPage() {
                         <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                           <span style={{ fontSize: 10, color: '#8B1A1A', background: '#FEF2F2', padding: '1px 7px', borderRadius: 8, fontWeight: 600 }}>{gap.gap_type}</span>
                           {gap.priority === 'high' && (
-                            <span style={{ fontSize: 10, color: '#EA580C', background: '#FFF7ED', padding: '1px 7px', borderRadius: 8, fontWeight: 600 }}>أولوية عالية</span>
+                            <span style={{ fontSize: 10, color: '#B45309', background: '#FFFBEB', padding: '1px 7px', borderRadius: 8, fontWeight: 600 }}>أولوية عالية</span>
                           )}
                           {gap.detected_procedure && (
                             <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', padding: '1px 7px', borderRadius: 8 }}>{gap.detected_procedure}</span>
@@ -582,6 +587,7 @@ export default function AdminPage() {
                       <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                         {(['in_review', 'resolved', 'ignored'] as const).map(s => (
                           <button
+                            type="button"
                             key={s}
                             onClick={() => handleGapUpdate(gap.id, s)}
                             style={{
@@ -618,7 +624,7 @@ export default function AdminPage() {
           <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>تعديل: {editUser.username}</h2>
-              <button onClick={() => setEditUser(null)} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
+              <button type="button" onClick={() => setEditUser(null)} aria-label="إغلاق" style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>
@@ -628,7 +634,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <label style={LBL}>الخطة</label>
-                <select value={editPlan} onChange={e => setEditPlan(e.target.value)} style={INP}>
+                <select value={editPlan} onChange={e => setEditPlan(e.target.value)} aria-label="خطة المستخدم" style={INP}>
                   <option value="trial">تجريبي</option>
                   <option value="paid">مدفوع</option>
                   <option value="admin">مشرف</option>
@@ -640,14 +646,13 @@ export default function AdminPage() {
                   <label style={LBL}>مدفوع حتى (اختياري)</label>
                   <input
                     type="date"
+                    aria-label="مدفوع حتى"
                     value={editPaidUntil}
                     onChange={e => setEditPaidUntil(e.target.value)}
                     style={INP}
-                  />
-                </div>
-              )}
               <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
                 <button
+                  type="button"
                   onClick={handleUpdate}
                   disabled={loading}
                   style={{ flex: 1, padding: '10px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}
@@ -655,6 +660,7 @@ export default function AdminPage() {
                   {loading ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setEditUser(null)}
                   style={{ padding: '10px 18px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
                 >

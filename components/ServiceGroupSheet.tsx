@@ -37,8 +37,8 @@ export default function ServiceGroupSheet({
   const verBadge = (status: ServiceItem['verificationStatus']) => {
     const colors: Record<string, [string, string]> = {
       verified: ['#FFFBEB', '#78350F'],
-      partially_verified: ['#FEF3C7', '#B45309'],
-      needs_review: ['#FEE2E2', '#DC2626'],
+      partially_verified: ['#FFFBEB', '#B45309'],
+      needs_review: ['#FEF2F2', '#8B1A1A'],
       draft: ['#EAE4D9', '#5C4A3A'],
     }
     const [bg, fg] = colors[status] ?? ['#EAE4D9', '#5C4A3A']
@@ -51,17 +51,24 @@ export default function ServiceGroupSheet({
 
   return (
     <>
+      <style>{`
+        @keyframes sgFadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes sgSlideUp { from { transform:translateY(100%); opacity:0.6; } to { transform:translateY(0); opacity:1; } }
+        @keyframes sgItem { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+      `}</style>
+
       {/* Backdrop */}
       <div
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
           zIndex: 200, backdropFilter: 'blur(2px)',
+          animation: 'sgFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both',
         }}
       />
 
       {/* Sheet */}
-      <div style={{
+      <div role="dialog" aria-modal="true" aria-label={isAr ? group.titleAr : group.titleEn} style={{
         position: 'fixed', left: 0, right: 0, bottom: 0,
         zIndex: 201,
         background: '#fff',
@@ -71,6 +78,7 @@ export default function ServiceGroupSheet({
         display: 'flex', flexDirection: 'column',
         fontFamily: "'Cairo','Inter',sans-serif",
         direction: isAr ? 'rtl' : 'ltr',
+        animation: 'sgSlideUp 0.32s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         {/* Drag handle */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4, flexShrink: 0 }}>
@@ -91,7 +99,7 @@ export default function ServiceGroupSheet({
               border: `1.5px solid ${group.color}30`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={group.color} strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span style={{ fontSize: 22, lineHeight: 1 }}>{group.icon}</span>
             </div>
             <div>
               <div style={{ fontSize: 16, fontWeight: 800, color: '#1A1208' }}>
@@ -103,7 +111,9 @@ export default function ServiceGroupSheet({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label={T.close}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
             onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
             style={{
@@ -112,7 +122,6 @@ export default function ServiceGroupSheet({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: '#5C4A3A', fontSize: 16, flexShrink: 0, transition: 'background 0.12s',
             }}
-            aria-label={T.close}
           ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
@@ -120,6 +129,7 @@ export default function ServiceGroupSheet({
         <div style={{ overflowY: 'auto', flex: 1, padding: '10px 16px 24px' }}>
           {group.services.map((item, i) => (
             <button
+              type="button"
               key={item.id}
               onClick={() => onServiceSelect(item)}
               style={{
@@ -130,10 +140,12 @@ export default function ServiceGroupSheet({
                 cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 12,
                 textAlign: isAr ? 'right' : 'left',
-                transition: 'all 0.15s',
+                transition: 'border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s',
+                animation: 'sgItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                animationDelay: `${Math.min(i, 12) * 0.04}s`,
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FAFAF8' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
+              onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = '#8B1A1A'; el.style.background = '#FAFAF8'; el.style.transform = 'translateY(-1px)'; el.style.boxShadow = '0 3px 12px rgba(139,26,26,0.08)' }}
+              onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = '#EAE4D9'; el.style.background = '#fff'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none' }}
               onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
             >
@@ -156,30 +168,4 @@ export default function ServiceGroupSheet({
                   <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
                     {isAr ? item.titleAr : item.titleEn}
                   </span>
-                  {verBadge(item.verificationStatus)}
-                </div>
-                {(isAr ? item.descriptionAr : item.descriptionEn) && (
-                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.4 }}>
-                    {isAr ? item.descriptionAr : item.descriptionEn}
-                  </div>
-                )}
-              </div>
-
-              {/* CTA */}
-              <div style={{
-                padding: '5px 10px', borderRadius: 8,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
-                fontSize: 10.5, fontWeight: 700,
-                whiteSpace: 'nowrap', flexShrink: 0,
-                display: 'flex', alignItems: 'center', gap: 4,
-                boxShadow: '0 2px 6px rgba(139,26,26,0.2)',
-              }}>
-                {actionLabel(item)}
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-    </>
-  )
-}
+                  {verBadge(item.verificat

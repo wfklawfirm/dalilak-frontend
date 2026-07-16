@@ -35,6 +35,7 @@ export default function TopNav({
     <>
       <style>{`
         @keyframes tn-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+        @keyframes tn-drop { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
 
         /* ── Nav link hover ── */
         .tn-link { transition: background 0.14s, color 0.14s; }
@@ -68,6 +69,7 @@ export default function TopNav({
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.35)',
         zIndex: 50,
+        animation: 'tn-drop 0.28s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{
           maxWidth: 960, margin: '0 auto',
@@ -78,7 +80,9 @@ export default function TopNav({
 
           {/* ══ DESKTOP BRAND (left) ══════════════════════════════════ */}
           <button
+            type="button"
             className="tn-desk-brand"
+            aria-label={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
             style={{
               display: 'none',
@@ -117,6 +121,7 @@ export default function TopNav({
               return (
                 <button
                   key={link.href}
+                  type="button"
                   onClick={() => link.href === '/' && onNewChat ? onNewChat() : router.push(link.href)}
                   className={`tn-link${active ? ' tn-link-active' : ''}`}
                   style={{
@@ -135,7 +140,7 @@ export default function TopNav({
                   {active && (
                     <span style={{
                       position: 'absolute', bottom: 0, left: '20%', right: '20%',
-                      height: 2, background: '#fbbf24', borderRadius: 2,
+                      height: 2, background: 'rgba(255,255,255,0.75)', borderRadius: 2,
                     }} />
                   )}
                 </button>
@@ -148,7 +153,9 @@ export default function TopNav({
 
           {/* ══ MOBILE BRAND (center, absolute) ═════════════════════ */}
           <button
+            type="button"
             className="tn-mobile-brand"
+            aria-label={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
             style={{
               display: 'none',
@@ -209,6 +216,7 @@ export default function TopNav({
             {/* Start guide CTA — desktop, welcome screen */}
             {showGuideBtn && (
               <button
+                type="button"
                 onClick={onStartGuide}
                 className="tn-ibtn tn-desk-only"
                 style={{
@@ -230,6 +238,8 @@ export default function TopNav({
             {/* New chat — in conversation */}
             {hasChat && (
               <button
+                type="button"
+                aria-label={isAr ? 'محادثة جديدة' : 'New conversation'}
                 onClick={onNewChat}
                 className="tn-ibtn"
                 onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
@@ -252,6 +262,8 @@ export default function TopNav({
 
             {/* Language toggle */}
             <button
+              type="button"
+              aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
               onClick={onLangToggle}
               className="tn-ibtn tn-lang-btn"
               style={{
@@ -268,8 +280,10 @@ export default function TopNav({
 
             {/* Account — desktop */}
             <button
+              type="button"
               onClick={() => router.push('/my-files')}
               className="tn-ibtn tn-desk-only"
+              aria-label={isAr ? 'حسابي' : 'My account'}
               title={isAr ? 'حسابي' : 'Account'}
               style={{
                 display: 'none', alignItems: 'center', justifyContent: 'center',
@@ -287,9 +301,10 @@ export default function TopNav({
             {/* Admin — desktop */}
             {isAdmin() && (
               <button
+                type="button"
                 onClick={() => router.push('/admin')}
                 className="tn-ibtn tn-desk-only"
-                title={isAr ? 'لوحة الإدارة' : 'Admin'}
+                aria-label={isAr ? 'لوحة الإدارة' : 'Admin panel'}
                 style={{
                   display: 'none', alignItems: 'center', justifyContent: 'center',
                   height: 32, width: 32, borderRadius: 9,
@@ -312,6 +327,7 @@ export default function TopNav({
 
             {/* Hamburger — mobile */}
             <button
+              type="button"
               className="tn-ibtn tn-hamburger"
               onClick={onMenuOpen}
               onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}

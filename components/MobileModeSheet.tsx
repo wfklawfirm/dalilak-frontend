@@ -72,8 +72,9 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         background: 'rgba(0,0,0,0.35)',
         zIndex: 200,
         backdropFilter: 'blur(1px)',
+        animation: 'msFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both',
       }} />
-      <div style={{
+      <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'} style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         zIndex: 201,
         background: '#fff',
@@ -83,7 +84,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         animation: 'sheetUp 0.22s cubic-bezier(0.34,1.1,0.64,1)',
         direction: isAr ? 'rtl' : 'ltr',
       }}>
-        <style>{`@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
+        <style>{`@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } } @keyframes msFadeIn { from { opacity:0; } to { opacity:1; } } @keyframes msItem { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
         {/* Handle */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 4px' }}>
@@ -99,27 +100,30 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
 
         {/* Options */}
         <div style={{ padding: '10px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {MODES.map(m => {
+          {MODES.map((m, i) => {
             const active = mode === m.id
             return (
               <button
+                type="button"
                 key={m.id}
                 onClick={() => { onSelect(m.id); onClose() }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '13px 16px', borderRadius: 14,
                   border: `1.5px solid ${active ? '#8B1A1A' : '#EAE4D9'}`,
-                  background: active ? '#FEF2F2' : '#fff',
+                  background: active ? 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)' : '#fff',
                   cursor: 'pointer', fontFamily: 'inherit',
                   textAlign: isAr ? 'right' : 'left',
-                  transition: 'all 0.15s',
+                  transition: 'border-color 0.15s, background 0.15s',
+                  animation: 'msItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay: `${i * 0.06}s`,
                 }}
                 onTouchStart={e => { if (!active) e.currentTarget.style.background = '#FAFAF8' }}
                 onTouchEnd={e => { if (!active) e.currentTarget.style.background = '#fff' }}
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                  background: active ? 'rgba(139,26,26,0.1)' : '#EAE4D9',
+                  background: active ? 'linear-gradient(135deg, rgba(139,26,26,0.14), rgba(107,39,55,0.08))' : '#EAE4D9',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: active ? '#8B1A1A' : '#5C4A3A',
                 }}>
@@ -172,7 +176,7 @@ export function DesktopModeSelector({
               background: active ? '#fff' : 'transparent',
               color: active ? '#8B1A1A' : '#9C8E80',
               boxShadow: active ? '0 1px 6px rgba(139,26,26,0.18)' : 'none',
-              fontFamily: 'inherit', transition: 'all 0.18s ease',
+              fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
               whiteSpace: 'nowrap',
             }}
           >
@@ -225,21 +229,4 @@ export default function ModeSelector({
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
-        </button>
-
-        <MobileModeSheet
-          isOpen={sheetOpen}
-          onClose={() => setSheetOpen(false)}
-          mode={mode}
-          onSelect={onSelect}
-          isAr={isAr}
-        />
-      </div>
-
-      {/* Desktop: pill row — shown via globals.css .mode-desktop */}
-      <div className="mode-desktop">
-        <DesktopModeSelector mode={mode} onSelect={onSelect} isAr={isAr} />
-      </div>
-    </>
-  )
-}
+      

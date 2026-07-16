@@ -30,7 +30,7 @@ const DOC_TYPE_AR: Record<string, string> = {
 const CONF_STYLE: Record<string, React.CSSProperties> = {
   high:    { color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A' },
   medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
-  low:     { color: '#ea580c', background: '#FFF7ED', border: '1px solid #FED7AA' },
+  low:     { color: '#B45309', background: '#FFFBEB', border: '1px solid #FDE68A' },
   unknown: { color: '#5C4A3A', background: '#EAE4D9', border: '1px solid #D5CEC4' },
 }
 
@@ -39,14 +39,14 @@ const CONF_AR: Record<string, string> = {
 }
 
 const WARN_CSS: Record<string, React.CSSProperties> = {
-  critical: { background: '#FEF2F2', border: '1px solid rgba(239,68,68,0.3)', color: '#991B1B' },
-  warning:  { background: '#FFF7ED', border: '1px solid rgba(234,88,12,0.3)', color: '#9A3412' },
+  critical: { background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.3)', color: '#8B1A1A' },
+  warning:  { background: '#FFFBEB', border: '1px solid rgba(184,134,11,0.3)', color: '#92400E' },
   info:     { background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', color: '#8B1A1A' },
 }
 
 const RISK_CLAUSE_STYLE: Record<string, React.CSSProperties> = {
-  critical: { color: '#991B1B', background: '#FEF2F2' },
-  high:     { color: '#9A3412', background: '#FFF7ED' },
+  critical: { color: '#8B1A1A', background: '#FEF2F2' },
+  high:     { color: '#92400E', background: '#FFFBEB' },
   medium:   { color: '#B8860B', background: '#FFFBEB' },
   low:      { color: '#5C4A3A', background: '#EAE4D9' },
 }
@@ -59,7 +59,7 @@ const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
   strong:     { color: '#78350F' },
   acceptable: { color: '#8B1A1A' },
   weak:       { color: '#B8860B' },
-  missing:    { color: '#991B1B' },
+  missing:    { color: '#8B1A1A' },
   unclear:    { color: '#5C4A3A' },
 }
 
@@ -87,7 +87,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
   const confLevel = analysis.confidence?.level || 'unknown'
 
   return (
-    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: "'Cairo','Inter',sans-serif" }}>
+    <>
+    <style>{`@keyframes dapItem { from { opacity:0; transform:translateY(7px); } to { opacity:1; transform:translateY(0); } }`}</style>
+    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: "'Cairo','Inter',sans-serif", animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
@@ -126,7 +128,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {analysis.warnings?.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {analysis.warnings.map((w, i) => (
-            <div key={i} style={{ borderRadius: 12, padding: '10px 14px', fontSize: 13, ...(WARN_CSS[w.level] || WARN_CSS.info) }}>
+            <div key={i} style={{ borderRadius: 12, padding: '10px 14px', fontSize: 13, ...(WARN_CSS[w.level] || WARN_CSS.info), animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 6) * 0.07}s` }}>
               <span style={{ fontWeight: 700, marginLeft: 4 }}>
                 {w.level === 'critical' ? 'تحذير حرج:' : w.level === 'warning' ? 'تنبيه:' : 'معلومة:'}
               </span>
@@ -164,7 +166,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           <p style={LABEL_S}>الأطراف</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {analysis.parties.map((p, i) => (
-              <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 10, padding: '6px 12px' }}>
+              <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 10, padding: '6px 12px', animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
                 <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{p.role}</p>
                 <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: 0 }}>{p.name || '—'}</p>
               </div>
@@ -203,6 +205,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {analysis.suggested_next_actions.map((a, i) => (
               <button
+                type="button"
                 key={i}
                 onClick={a.action_type === 'request_human_review' ? onRequestReview : undefined}
                 onTouchStart={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.16)'; e.currentTarget.style.transform = 'scale(0.97)' }}
@@ -212,7 +215,8 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                 style={{
                   fontSize: 13, background: 'rgba(107,39,55,0.08)', color: '#6b2737',
                   border: '1px solid rgba(107,39,55,0.2)', padding: '6px 12px', borderRadius: 10,
-                  cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.14s',
+                  cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.14s, border-color 0.14s',
+                  animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s`,
                 }}
               >
                 {a.label || actionLabel(a.action_type)}
@@ -292,7 +296,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                     <span style={{
                       flexShrink: 0, width: 16, height: 16, borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: c.found ? '#B45309' : '#FEF2F2', color: c.found ? '#fff' : '#DC2626',
+                      background: c.found ? '#B45309' : '#FEF2F2', color: c.found ? '#fff' : '#8B1A1A',
                     }}>
                       {c.found
                         ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -314,7 +318,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
               <p style={LABEL_S}>بنود ناقصة أو ضعيفة ({reviewResult.missing_or_weak_clauses.length})</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {reviewResult.missing_or_weak_clauses.map((c, i) => (
-                  <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8, animation: 'dapItem 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                       <p style={{ fontWeight: 700, fontSize: 13, color: '#1A1208', margin: 0 }}>{c.clause}</p>
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, whiteSpace: 'nowrap', ...(RISK_CLAUSE_STYLE[c.risk_level] || {}) }}>
@@ -336,33 +340,4 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {reviewResult.overall_recommendation && (
             <div style={{ background: 'rgba(107,39,55,0.06)', border: '1.5px solid rgba(107,39,55,0.2)', borderRadius: 14, padding: '14px 16px' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: '#6b2737', margin: '0 0 6px' }}>
-                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن للتوقيع' : reviewResult.overall_verdict === 'risky' ? 'العقد يحتاج مراجعة' : 'التوصية الشاملة'}
-              </p>
-              <p style={{ fontSize: 12.5, color: '#3D2A1E', margin: 0, lineHeight: 1.6 }}>
-                {reviewResult.overall_recommendation}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Request review button */}
-      {onRequestReview && (
-        <button
-          onClick={onRequestReview}
-          style={{
-            width: '100%', padding: '11px 16px', borderRadius: 12,
-            background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
-            border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
-            cursor: 'pointer', fontFamily: 'inherit',
-            boxShadow: '0 4px 14px rgba(107,39,55,0.3)',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
-        >
-          اطلب مراجعة قانونية
-        </button>
-      )}
-    </div>
-  )
-}
+                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن ل

@@ -43,17 +43,17 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'المتطلبات':            { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
   'الشروط':               { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
   'required documents':   { bg: '#FEF2F2', border: '#FECACA', icon: SvgDocs,     labelColor: '#8B1A1A' },
-  'الخطوات':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
-  'الإجراءات':            { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
-  'المراحل':              { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
-  'steps':                { bg: '#FFF7ED', border: '#FED7AA', icon: SvgSteps,    labelColor: '#C2410C' },
+  'الخطوات':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgSteps,    labelColor: '#B45309' },
+  'الإجراءات':            { bg: '#FFFBEB', border: '#FDE68A', icon: SvgSteps,    labelColor: '#B45309' },
+  'المراحل':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgSteps,    labelColor: '#B45309' },
+  'steps':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgSteps,    labelColor: '#B45309' },
   'الجهة المختصة':        { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
   'الجهة':                { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
   'الجهات':               { bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
   'responsible authority':{ bg: '#EAE4D9', border: '#C8BFB4', icon: SvgBuilding, labelColor: '#5C4A3A' },
-  'النموذج المتوفر':      { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
-  'النماذج':              { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
-  'forms':                { bg: '#FEFCE8', border: '#FEF08A', icon: SvgForm,     labelColor: '#854D0E' },
+  'النموذج المتوفر':      { bg: '#FFFBEB', border: '#FDE68A', icon: SvgForm,     labelColor: '#854D0E' },
+  'النماذج':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgForm,     labelColor: '#854D0E' },
+  'forms':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgForm,     labelColor: '#854D0E' },
   'الرسوم':               { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
   'التكاليف':             { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
   'الأتعاب':              { bg: '#FFFBEB', border: '#FDE68A', icon: SvgFee,      labelColor: '#854D0E' },
@@ -64,12 +64,12 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'الخطوة التالية':       { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
   'التوصية':              { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
   'next step':            { bg: '#FEF2F2', border: '#FECACA', icon: SvgArrow,    labelColor: '#8B1A1A' },
-  'تنبيه مهم':            { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'تنبيه':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'ملاحظة مهمة':          { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'ملاحظة':               { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'تحذير':                { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
-  'important note':       { bg: '#FFF7ED', border: '#FDBA74', icon: SvgWarn,     labelColor: '#C2410C' },
+  'تنبيه مهم':            { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
+  'تنبيه':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
+  'ملاحظة مهمة':          { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
+  'ملاحظة':               { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
+  'تحذير':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
+  'important note':       { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
   'الأساس القانوني':      { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
   'النص القانوني':        { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
   'المرجع القانوني':      { bg: '#FEF2F2', border: 'rgba(139,26,26,0.15)', icon: SvgScales,   labelColor: '#8B1A1A' },
@@ -100,7 +100,7 @@ function CiteBadge({ n, active, onClick }: { n: number; active: boolean; onClick
         fontSize: 9, fontWeight: 800, cursor: 'pointer',
         border: `1px solid ${active ? '#8B1A1A' : '#FECACA'}`,
         marginInline: 2, verticalAlign: 'super', lineHeight: 1,
-        transition: 'all 0.15s', flexShrink: 0,
+        transition: 'background 0.12s, color 0.12s, border-color 0.12s', flexShrink: 0,
         userSelect: 'none',
       }}
     >
@@ -188,7 +188,7 @@ function parseSections(text: string): Section[] {
     }
   }
   if (current.header !== null || current.lines.some(l => l.trim())) sections.push(current)
-  return sections.length > 1 ? sections : []
+  return sections.some(s => s.header !== null) ? sections : []
 }
 
 // ── Markdown fallback renderer ────────────────────────────────
@@ -312,7 +312,7 @@ export function AgentSectionCard({
   return (
     <div style={{ background: style.bg, border: `1.5px solid ${style.border}`, borderRadius: 14, padding: '12px 14px', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10, paddingBottom: 8, borderBottom: `1px solid ${style.border}` }}>
-        <span style={{ display: 'flex', alignItems: 'center' }}>{style.icon}</span>
+        <span style={{ display: 'flex', alignItems: 'center', color: style.labelColor }}>{style.icon}</span>
         <span style={{ fontSize: 12.5, fontWeight: 800, color: style.labelColor }}>{header}</span>
       </div>
       <div style={{ fontSize: 13, lineHeight: 1.8, color: '#1A1208' }}>
@@ -327,7 +327,7 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
   const map = {
     official:      { label: 'مصدر رسمي', color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' },
     internal:      { label: 'قاعدة البيانات', color: '#8B1A1A', bg: '#FEF2F2', border: 'rgba(139,26,26,0.2)' },
-    user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFF7ED', border: '#FED7AA' },
+    user_uploaded: { label: 'مستند المستخدم', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
     unknown:       { label: 'غير محدد', color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' },
   }
   const s = map[type || 'unknown']
@@ -341,7 +341,7 @@ function SourceTypeBadge({ type }: { type?: AgentSource['type'] }) {
 // ── Score color helper ────────────────────────────────────────
 function scoreStyle(score: number) {
   if (score >= 0.75) return { color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' }
-  if (score >= 0.50) return { color: '#92400E', bg: '#FFF7ED', border: '#FED7AA' }
+  if (score >= 0.50) return { color: '#92400E', bg: '#FFFBEB', border: '#FDE68A' }
   return { color: '#5C4A3A', bg: '#EAE4D9', border: '#D5CEC4' }
 }
 
@@ -365,7 +365,7 @@ export function TrustBadge({
     low:     isAr ? 'منخفضة'    : 'Low',
     unknown: isAr ? 'غير محددة' : 'Unknown',
   }
-  const confColor = { high: '#78350F', medium: '#B45309', low: '#DC2626', unknown: '#5C4A3A' }
+  const confColor = { high: '#78350F', medium: '#B45309', low: '#8B1A1A', unknown: '#5C4A3A' }
 
   useEffect(() => {
     if (activeCitation != null) setExpanded(true)
@@ -426,7 +426,7 @@ export function TrustBadge({
                   padding: '5px 7px', borderRadius: 8,
                   background: isActive ? '#FEF2F2' : 'transparent',
                   border: `1px solid ${isActive ? '#FECACA' : 'transparent'}`,
-                  transition: 'all 0.2s',
+                  transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), border-color 0.18s',
                 }}
               >
                 <span style={{
@@ -435,7 +435,7 @@ export function TrustBadge({
                   color: isActive ? '#fff' : '#5C4A3A',
                   fontSize: 10, fontWeight: 800,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'all 0.2s',
+                  transition: 'background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s',
                 }}>
                   {citNum}
                 </span>
@@ -556,13 +556,13 @@ export function ResponseActions({
   const hasDocs = Boolean(extractDocsList(content))
 
   const btn = (onClick: () => void, icon: ReactNode, label: string, active?: boolean, activeColor?: string, activeBg?: string, activeBorder?: string) => (
-    <button onClick={onClick}
+    <button type="button" onClick={onClick}
       onTouchStart={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#F5F0EA'; e.currentTarget.style.transform = 'scale(0.95)' }}
       onTouchEnd={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
       style={{
       display: 'flex', alignItems: 'center', gap: 4,
       padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
-      fontSize: 10.5, fontFamily: 'inherit', transition: 'all 0.15s',
+      fontSize: 10.5, fontFamily: 'inherit', transition: 'background 0.12s, color 0.12s, border-color 0.12s',
       border: `1px solid ${active ? (activeBorder || 'rgba(139,26,26,0.3)') : '#EAE4D9'}`,
       background: active ? (activeBg || '#FEF2F2') : '#fff',
       color: active ? (activeColor || '#8B1A1A') : '#5C4A3A',
@@ -611,9 +611,21 @@ export function ResponseActions({
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/>
         </svg>,
         isAr ? 'غير مفيد' : 'Not helpful',
-        feedback === 'down', '#dc2626', '#FEF2F2', '#ef4444',
+        feedback === 'down', '#8B1A1A', '#FEF2F2', 'rgba(139,26,26,0.3)',
       )}
     </div>
+  )
+}
+
+// ── Streaming cursor ─────────────────────────────────────────
+function StreamingCursor() {
+  return (
+    <span style={{
+      display: 'inline-block', width: 2, height: '1em',
+      background: '#8B1A1A', borderRadius: 1,
+      verticalAlign: 'text-bottom', marginInlineStart: 2,
+      animation: 'streaming-blink 0.9s step-end infinite',
+    }} />
   )
 }
 
@@ -621,6 +633,7 @@ export function ResponseActions({
 interface AgentResponseRendererProps {
   content: string
   isAr: boolean
+  streaming?: boolean
   sources?: AgentSource[]
   confidence?: ConfidenceLevel
   lastReviewed?: string
@@ -632,6 +645,7 @@ interface AgentResponseRendererProps {
 export default function AgentResponseRenderer({
   content,
   isAr,
+  streaming = false,
   sources,
   confidence,
   lastReviewed,
@@ -646,7 +660,7 @@ export default function AgentResponseRenderer({
   }
 
   const sections = parseSections(content)
-  const isStructured = sections.length > 1
+  const isStructured = sections.length > 0
 
   return (
     <div style={{
@@ -654,6 +668,7 @@ export default function AgentResponseRenderer({
       fontSize: 13, color: '#1A1208', lineHeight: 1.8,
       direction: isAr ? 'rtl' : 'ltr',
     }}>
+      <style>{`@keyframes streaming-blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
       {isStructured ? (
         <div>
           {sections.map((sec, i) => {
@@ -672,51 +687,7 @@ export default function AgentResponseRenderer({
             }
             const style = getSectionStyle(sec.header)
             return (
-              <AgentSectionCard
-                key={i}
-                header={sec.header}
-                lines={sec.lines}
-                style={style}
-                onCitation={handleCitation}
-                activeCitation={activeCitation}
-              />
-            )
-          })}
-        </div>
-      ) : (
-        <MarkdownFallbackRenderer
-          lines={content.split('\n')}
-          onCitation={handleCitation}
-          activeCitation={activeCitation}
-        />
-      )}
-
-      <TrustBadge
-        isAr={isAr}
-        sources={sources}
-        confidence={confidence}
-        lastReviewed={lastReviewed}
-        activeCitation={activeCitation}
-        defaultExpanded={defaultExpandSources}
-      />
-
-      <ResponseActions
-        content={content}
-        isAr={isAr}
-        onFollowUp={onFollowUp}
-        question={question}
-        confidence={confidence}
-      />
-
-      <p style={{
-        fontSize: 10, color: '#C4B5A5', marginTop: 10,
-        paddingTop: 8, borderTop: '1px solid #EAE4D9',
-        textAlign: isAr ? 'right' : 'left',
-      }}>
-        {isAr
-          ? 'دليلك: معلومات إرشادية لا تُغني عن المختص القانوني.'
-          : 'Dalilak: Informational only — does not replace legal counsel.'}
-      </p>
-    </div>
-  )
-}
+              <div key={i} style={{ animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
+                <AgentSectionCard
+                  header={sec.header}
+                

@@ -11,6 +11,7 @@ export default function FAQPage() {
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [searchFocused, setSearchFocused] = useState(false)
   const isAr = lang === 'ar'
 
   const filtered = useMemo(() => {
@@ -33,6 +34,13 @@ export default function FAQPage() {
     if (cat === 'مراجع قانونية') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
     if (cat === 'جدول الرسوم') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     if (cat === 'حقوق الأجانب في لبنان') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    if (cat === 'السجل المدني والأحوال الشخصية') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c0 3-3 4-3 4h6s-3-1-3-4"/></svg>
+    if (cat === 'الضمان الاجتماعي والتأمينات') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    if (cat === 'الجمارك والاستيراد') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+    if (cat === 'الضرائب والمالية العامة') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+    if (cat === 'الصحة والترخيص المهني') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+    if (cat === 'الأشغال العامة والنقل') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+    if (cat === 'التوثيق والشهر العقاري') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
     return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
   }
 
@@ -45,13 +53,15 @@ export default function FAQPage() {
         .faq-card:hover { border-color: #8B1A1A !important; }
         .faq-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .faq-chip-row::-webkit-scrollbar { display: none; }
+        @keyframes faqHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes faqEnter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 400px) { .faq-stats { grid-template-columns: repeat(3, 1fr) !important; gap: 6px !important; } }
       `}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'faqHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')}
+          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -66,7 +76,7 @@ export default function FAQPage() {
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>{isAr ? `${SERVICE_FAQ.length} سؤال · أرقام طوارئ · قانون العمل` : `${SERVICE_FAQ.length} questions · emergency numbers · labor law`}</p>
             </div>
           </div>
-          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
+          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -90,37 +100,47 @@ export default function FAQPage() {
         </div>
 
         {/* Search */}
-        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: '1.5px solid #EAE4D9', borderRadius: 14, background: '#fff', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
-          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: '#B0A090', pointerEvents: 'none', display: 'flex' }}>
+        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, background: '#fff', transition: 'border-color 0.18s, box-shadow 0.18s', boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : 'none' }}>
+          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s' }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
           </span>
-          <input type="text" placeholder="ابحث... (طوارئ، بناء، عمل، أجانب...)"
+          <input type="text" aria-label="ابحث في الأسئلة الشائعة" placeholder="ابحث... (طوارئ، بناء، عمل، أجانب...)"
             value={search} onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
           />
-          {search && <button onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+          {search && <button type="button" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Category filters */}
         <div className="faq-chip-row" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, marginBottom: 14 }}>
-          <button onClick={() => setCatFilter('all')} style={{
-            padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
-            fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
-            borderColor: catFilter === 'all' ? '#8B1A1A' : '#EAE4D9',
-            background: catFilter === 'all' ? '#FEF2F2' : '#fff',
-            color: catFilter === 'all' ? '#8B1A1A' : '#5C4A3A',
+          <button type="button" onClick={() => setCatFilter('all')}
+            onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.opacity = '0.85' }}
+            onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.opacity = '1' }}
+            style={{
+              padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
+              fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+              transition: 'transform 0.12s, opacity 0.12s',
+              borderColor: catFilter === 'all' ? '#8B1A1A' : '#EAE4D9',
+              background: catFilter === 'all' ? '#FEF2F2' : '#fff',
+              color: catFilter === 'all' ? '#8B1A1A' : '#5C4A3A',
           }}>
             {isAr ? `الكل (${SERVICE_FAQ.length})` : `All (${SERVICE_FAQ.length})`}
           </button>
           {FAQ_CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setCatFilter(cat)} style={{
-              padding: '4px 10px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
-              fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              borderColor: catFilter === cat ? '#8B1A1A' : '#EAE4D9',
-              background: catFilter === cat ? '#FEF2F2' : '#fff',
-              color: catFilter === cat ? '#8B1A1A' : '#5C4A3A',
-            }}>
+            <button type="button" key={cat} onClick={() => setCatFilter(cat)}
+              onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.opacity = '0.85' }}
+              onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.opacity = '1' }}
+              style={{
+                padding: '4px 10px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
+                fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                transition: 'transform 0.12s, opacity 0.12s',
+                borderColor: catFilter === cat ? '#8B1A1A' : '#EAE4D9',
+                background: catFilter === cat ? '#FEF2F2' : '#fff',
+                color: catFilter === cat ? '#8B1A1A' : '#5C4A3A',
+              }}>
               <FaqCatIcon cat={cat} size={11} />
               {cat.length > 20 ? cat.slice(0, 20) + '…' : cat}
             </button>
@@ -128,10 +148,22 @@ export default function FAQPage() {
         </div>
 
         {/* Results count */}
-        <p style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 10px' }}>
-          {filtered.length} {isAr ? 'سؤال' : 'questions'}
-          {catFilter !== 'all' && ` · ${catFilter}`}
-        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
+            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+              {filtered.length === SERVICE_FAQ.length
+                ? (isAr ? 'الأسئلة الشائعة' : 'FAQ')
+                : `${filtered.length} ${isAr ? 'سؤال' : 'questions'}`}
+            </span>
+          </div>
+          {catFilter !== 'all' && (
+            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— {catFilter}</span>
+          )}
+          {search && (
+            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>
+          )}
+        </div>
 
         {/* FAQ Accordion */}
         {filtered.length === 0 ? (
@@ -158,7 +190,7 @@ export default function FAQPage() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {filtered.map((item: FAQItem) => {
+            {filtered.map((item: FAQItem, idx) => {
               const isOpen = expanded === item.id
               return (
                 <div key={item.id} className="faq-card" style={{
@@ -166,7 +198,9 @@ export default function FAQPage() {
                   border: `1.5px solid ${isOpen ? '#8B1A1A' : '#EAE4D9'}`,
                   borderRadius: 14, overflow: 'hidden',
                   boxShadow: isOpen ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
-                  transition: 'all 0.18s',
+                  transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                  animation: 'faqEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay: `${Math.min(idx, 14) * 0.03}s`,
                 }}>
                   {/* Question row */}
                   <button
@@ -183,7 +217,7 @@ export default function FAQPage() {
                       width: 34, height: 34, borderRadius: 10, flexShrink: 0,
                       background: isOpen ? 'rgba(139,26,26,0.1)' : '#EAE4D9',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: isOpen ? '#8B1A1A' : '#5C4A3A', transition: 'all 0.15s',
+                      color: isOpen ? '#8B1A1A' : '#5C4A3A', transition: 'background 0.15s, color 0.15s',
                     }}>
                       <FaqCatIcon cat={item.category} size={16} />
                     </div>

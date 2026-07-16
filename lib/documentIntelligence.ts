@@ -209,7 +209,7 @@ export const DOC_CATEGORY_META: DocCategoryMeta[] = [
   { category: 'notarial',        titleAr: 'وثيقة كتابة عدل',      titleEn: 'Notarial Document',   icon: '⚖️', color: '#B8860B', subtypes: ['وكالة عامة','وكالة خاصة','وكالة بيع','إقرار','تعهد','توكيل','وكالة من الخارج'] },
   { category: 'company',         titleAr: 'مستند شركة',            titleEn: 'Company Document',    icon: '🏢', color: '#9D174D', subtypes: ['سجل تجاري','عقد تأسيس','نظام داخلي','تسجيل ضريبي','قرار مجلس إدارة','شهادة تسجيل'] },
   { category: 'tax',             titleAr: 'مستند ضريبي',           titleEn: 'Tax Document',        icon: '💰', color: '#5F3A2E', subtypes: ['براءة ذمة ضريبية','ضريبة عقارية','ضريبة دخل','ضريبة قيمة مضافة','اعتراض ضريبي'] },
-  { category: 'judicial',        titleAr: 'مستند قضائي',           titleEn: 'Judicial Document',   icon: '🔨', color: '#B91C1C', subtypes: ['إنذار قضائي','لائحة دعوى','حكم','أمر تنفيذ','إعلام','تبليغ','وثيقة تسوية'] },
+  { category: 'judicial',        titleAr: 'مستند قضائي',           titleEn: 'Judicial Document',   icon: '🔨', color: '#8B1A1A', subtypes: ['إنذار قضائي','لائحة دعوى','حكم','أمر تنفيذ','إعلام','تبليغ','وثيقة تسوية'] },
   { category: 'administrative',  titleAr: 'مستند إداري',           titleEn: 'Administrative',      icon: '📋', color: '#2D1B0E', subtypes: ['طلب وزارة','طلب بلدية','رخصة','شكوى','اعتراض','رسالة رسمية','قرار إداري'] },
   { category: 'expat_consular',  titleAr: 'مستند مغترب/قنصلي',    titleEn: 'Expat / Consular',   icon: '✈️', color: '#8B1A1A', subtypes: ['وكالة من الخارج','تصديق','تسجيل واقعة','ترجمة معتمدة','وثيقة سفارة'] },
   { category: 'unknown',         titleAr: 'غير محدد',              titleEn: 'Unknown',             icon: '❓', color: '#5C4A3A', subtypes: [] },
@@ -336,9 +336,9 @@ export function summarizeRiskLevel(risks: DocumentRisk[]): 'low' | 'medium' | 'h
 /** Risk level → badge colors */
 export function riskColors(level: string): [string, string] {
   const map: Record<string, [string, string]> = {
-    critical: ['#FEE2E2', '#B91C1C'],
-    high:     ['#FEE2E2', '#DC2626'],
-    medium:   ['#FEF3C7', '#B45309'],
+    critical: ['#FEF2F2', '#8B1A1A'],
+    high:     ['#FEF2F2', '#8B1A1A'],
+    medium:   ['#FFFBEB', '#B45309'],
     low:      ['#FFFBEB', '#78350F'],
     unknown:  ['#EAE4D9', '#5C4A3A'],
   }

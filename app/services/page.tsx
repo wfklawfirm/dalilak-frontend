@@ -46,6 +46,8 @@ function ServiceSheet({ service, onClose, onAsk }: {
               </p>
             </div>
             <button
+              type="button"
+              aria-label="إغلاق"
               onClick={onClose}
               style={{
                 background: '#EAE4D9', border: 'none', borderRadius: 10, width: 32, height: 32,
@@ -147,7 +149,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                       {label || 'تحميل النموذج'}
                     </a>
                   ) : (
-                    <span key={i} style={{ fontSize: 12, color: '#854D0E', background: '#FFFBEB', borderRadius: 8, padding: '6px 10px', border: '1px solid #FEF3C7' }}>{form}</span>
+                    <span key={i} style={{ fontSize: 12, color: '#854D0E', background: '#FFFBEB', borderRadius: 8, padding: '6px 10px', border: '1px solid #FDE68A' }}>{form}</span>
                   )
                 })}
               </div>
@@ -195,6 +197,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         {/* Footer */}
         <div style={{ padding: '12px 20px 28px', borderTop: '1px solid #EAE4D9', display: 'flex', gap: 10 }}>
           <button
+            type="button"
             onClick={() => onAsk(service.chatPrompt_ar || service.name_ar)}
             onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
             onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -212,6 +215,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             اسأل دليلك
           </button>
           <button
+            type="button"
             onClick={onClose}
             onTouchStart={e => { e.currentTarget.style.background = '#EAE4D9' }}
             onTouchEnd={e => { e.currentTarget.style.background = '#FAFAF8' }}
@@ -234,6 +238,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
 export default function ServicesPage() {
   const router = useRouter()
   const [search, setSearch] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
 
@@ -282,10 +287,11 @@ export default function ServicesPage() {
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
         .svc-card { transition: border-color 0.14s, box-shadow 0.14s, transform 0.14s; }
         .svc-card:hover { border-color: rgba(139,26,26,0.4) !important; box-shadow: 0 4px 18px rgba(139,26,26,0.13) !important; transform: translateY(-2px); }
-        .cat-chip { transition: all 0.14s; }
+        .cat-chip { transition: border-color 0.14s, color 0.14s, background 0.14s; }
         .cat-chip:hover { border-color: #8B1A1A !important; color: #8B1A1A !important; background: #FEF7F7 !important; }
+        @keyframes svc-header-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .svc-animate { animation: svc-fade 0.2s ease forwards; }
+        .svc-animate { animation: svc-fade 0.2s cubic-bezier(0.22,1,0.36,1) forwards; }
         .cat-chips-row::-webkit-scrollbar { display: none; }
         .cat-chips-row { -ms-overflow-style: none; scrollbar-width: none; }
         @media (max-width: 599px) {
@@ -304,9 +310,12 @@ export default function ServicesPage() {
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
         padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
+        animation: 'svc-header-in 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
+            type="button"
+            aria-label="الرئيسية"
             onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -350,10 +359,10 @@ export default function ServicesPage() {
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
       <div style={{ background: '#FAFAF8', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
-        <div style={{ position: 'relative', background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+        <div style={{ position: 'relative', background: '#fff', border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
           <span style={{
             position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-            color: '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none',
+            color: searchFocused ? '#8B1A1A' : '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none', transition: 'color 0.18s',
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
@@ -361,9 +370,12 @@ export default function ServicesPage() {
           </span>
           <input
             type="text"
+            aria-label="ابحث في الخدمات"
             placeholder="ابحث: جواز سفر، تسجيل شركة، ترخيص بناء..."
             value={search}
             onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             style={{
               width: '100%', padding: '12px 44px 12px 42px', borderRadius: 14,
               fontSize: 13.5, border: 'none', outline: 'none',
@@ -373,6 +385,8 @@ export default function ServicesPage() {
           />
           {search && (
             <button
+              type="button"
+              aria-label="مسح البحث"
               onClick={() => setSearch('')}
               style={{
                 position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
@@ -400,6 +414,7 @@ export default function ServicesPage() {
           >
             {/* All / reset chip */}
             <button
+              type="button"
               onClick={() => setSelectedCat(null)}
               className="cat-chip"
               onTouchStart={e => {
@@ -428,6 +443,7 @@ export default function ServicesPage() {
               const cnt = categoryCounts[cat.slug] || 0
               return (
                 <button
+                  type="button"
                   key={cat.slug}
                   onClick={() => setSelectedCat(active ? null : cat.slug)}
                   className="cat-chip"
@@ -461,153 +477,14 @@ export default function ServicesPage() {
 
         {/* ── Results meta bar ────────────────────────────────────────────── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: '#9C8E80', fontWeight: 500 }}>
-            {filtered.length === ALL_SERVICES.length
-              ? `${ALL_SERVICES.length} خدمة حكومية`
-              : `${filtered.length} خدمة`}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
+            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+              {filtered.length === ALL_SERVICES.length
+                ? 'جميع الخدمات'
+                : `${filtered.length} خدمة`}
+            </span>
+          </div>
           {activeCatLabel && (
             <>
-              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
-              <button
-                onClick={() => setSelectedCat(null)}
-                style={{
-                  fontSize: 11, color: '#8B1A1A', fontWeight: 700,
-                  background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)',
-                  borderRadius: 20, padding: '2px 10px', cursor: 'pointer',
-                  fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
-                }}
-              >
-                {activeCatLabel}
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
-                </svg>
-              </button>
-            </>
-          )}
-          {search && (
-            <>
-              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
-              <span style={{ fontSize: 11, color: '#9C8E80' }}>نتائج لـ "{search}"</span>
-            </>
-          )}
-        </div>
-
-        {/* ── Grid ────────────────────────────────────────────────────────── */}
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.4">
-                <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
-              </svg>
-            </div>
-            <p style={{ color: '#9C8E80', fontSize: 14, margin: '0 0 16px' }}>
-              لم يُعثر على نتائج — جرّب مصطلحاً آخر
-            </p>
-            <button
-              onClick={() => { setSearch(''); setSelectedCat(null) }}
-              style={{
-                padding: '10px 24px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                color: '#fff', border: 'none', borderRadius: 12,
-                fontFamily: 'inherit', fontSize: 13, fontWeight: 700,
-                cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
-              }}
-            >
-              عرض كل الخدمات
-            </button>
-          </div>
-        ) : (
-          <div
-            className="svc-grid svc-animate"
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
-          >
-            {filtered.map(service => (
-              <button
-                key={service.id}
-                onClick={() => setSelectedService(service)}
-                className="svc-card"
-                style={{
-                  display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,
-                  padding: '14px', border: '1.5px solid #EAE4D9',
-                  textAlign: 'right', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                  fontFamily: 'inherit', cursor: 'pointer', width: '100%',
-                  transition: 'all 0.14s', position: 'relative', overflow: 'hidden',
-                }}
-                onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)'; e.currentTarget.style.transform = 'scale(0.98)' }}
-                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.transform = 'scale(1)' }}
-              >
-                {/* Top row: icon badge + chevron */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <div style={{
-                    width: 38, height: 38, borderRadius: 11,
-                    background: 'linear-gradient(135deg, #FEF2F2, #FCE8E8)',
-                    border: '1px solid rgba(139,26,26,0.12)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}>
-                    <span className="svc-icon" style={{ fontSize: 20, lineHeight: 1 }}>{service.icon}</span>
-                  </div>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="2" style={{ flexShrink: 0, marginTop: 3 }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-                  </svg>
-                </div>
-
-                {/* Name */}
-                <h3 style={{
-                  fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', lineHeight: 1.4,
-                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                  flex: 1,
-                }}>
-                  {service.name_ar}
-                </h3>
-
-                {/* Authority */}
-                <p style={{
-                  fontSize: 10.5, color: '#8B1A1A', margin: '0 0 10px', fontWeight: 700,
-                  display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                }}>
-                  {service.authority_ar}
-                </p>
-
-                {/* Meta row */}
-                <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  {service.fees && (
-                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                      {service.fees.length > 18 ? service.fees.slice(0, 18) + '…' : service.fees}
-                    </span>
-                  )}
-                  {service.processing_time && (
-                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                      {service.processing_time}
-                    </span>
-                  )}
-                  {service.online_available && (
-                    <span style={{ fontSize: 10, color: '#065F46', background: '#ECFDF5', borderRadius: 20, padding: '2px 8px', border: '1px solid #A7F3D0', fontWeight: 600 }}>
-                      أونلاين
-                    </span>
-                  )}
-                  {service.required_documents && service.required_documents.length > 0 && (
-                    <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
-                      {service.required_documents.length} وثيقة
-                    </span>
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── Service Detail Sheet ─────────────────────────────────────────────── */}
-      {selectedService && (
-        <ServiceSheet
-          service={selectedService}
-          onClose={() => setSelectedService(null)}
-          onAsk={handleAsk}
-        />
-      )}
-
-      <BottomNav isAr={true} activeTab="services" />
-    </div>
-  )
-}
+              <span style={{ color: '#D4C5B0', fontSize: 12 }}

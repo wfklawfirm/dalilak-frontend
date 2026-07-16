@@ -98,8 +98,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)' }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', fontFamily: "'Cairo','Inter',sans-serif", boxShadow: '0 -8px 40px rgba(0,0,0,0.18)' }} dir={isAr ? 'rtl' : 'ltr'}>
+    <>
+    <style>{`@keyframes emFadeIn { from { opacity:0; } to { opacity:1; } } @keyframes emSlideUp { from { transform:translateY(100%); opacity:0.6; } to { transform:translateY(0); opacity:1; } } @keyframes emItem { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)', animation: 'emFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div role="dialog" aria-modal="true" aria-label={isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'} style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', fontFamily: "'Cairo','Inter',sans-serif", boxShadow: '0 -8px 40px rgba(0,0,0,0.18)', animation: 'emSlideUp 0.32s cubic-bezier(0.22,1,0.36,1) both' }} dir={isAr ? 'rtl' : 'ltr'}>
         {/* Drag handle */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
@@ -109,7 +111,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}
           </h2>
-          <button onClick={onClose}
+          <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
             onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
             style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
@@ -128,7 +130,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             <p style={{ fontSize: 12, color: '#5C4A3A', margin: '0 0 20px' }}>
               {isAr ? 'سيتواصل معك أحد المختصين خلال 24 ساعة عمل.' : 'A specialist will contact you within 24 business hours.'}
             </p>
-            <button onClick={onClose} style={{ padding: '10px 32px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
+            <button type="button" onClick={onClose} style={{ padding: '10px 32px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
               {isAr ? 'إغلاق' : 'Close'}
             </button>
           </div>
@@ -136,8 +138,8 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
           <>
             {/* Request type */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
-              {REQUEST_TYPES.map(t => (
-                <button key={t.id} onClick={() => setRequestType(t.id)} style={{ padding: '10px 8px', border: '1.5px solid', borderColor: requestType === t.id ? '#8B1A1A' : '#EAE4D9', background: requestType === t.id ? '#FEF2F2' : '#FAFAF8', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: requestType === t.id ? '#8B1A1A' : '#4A4035', cursor: 'pointer', textAlign: 'center' }}>
+              {REQUEST_TYPES.map((t, i) => (
+                <button key={t.id} type="button" onClick={() => setRequestType(t.id)} style={{ padding: '10px 8px', border: '1.5px solid', borderColor: requestType === t.id ? '#8B1A1A' : '#EAE4D9', background: requestType === t.id ? '#FEF2F2' : '#FAFAF8', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: requestType === t.id ? '#8B1A1A' : '#4A4035', cursor: 'pointer', textAlign: 'center', animation: 'emItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s` }}>
                   <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'center' }}><ReqTypeIcon id={t.id} /></div>
                   {isAr ? t.ar : t.en}
                 </button>
@@ -164,7 +166,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             {/* Contact preference */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
               {CONTACT_PREFS.map(p => (
-                <button key={p.id} onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#8B1A1A' : '#EAE4D9', background: contactPref === p.id ? '#FEF2F2' : '#fff', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: contactPref === p.id ? '#8B1A1A' : '#5C4A3A', textAlign: 'center' }}>
+                <button key={p.id} type="button" onClick={() => setContactPref(p.id)} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#8B1A1A' : '#EAE4D9', background: contactPref === p.id ? '#FEF2F2' : '#fff', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: contactPref === p.id ? '#8B1A1A' : '#5C4A3A', textAlign: 'center' }}>
                   {isAr ? p.ar : p.en}
                 </button>
               ))}
@@ -182,36 +184,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
               onChange={e => { setContact(e.target.value); setError('') }}
               style={{
                 width: '100%', boxSizing: 'border-box',
-                padding: '10px 12px', border: `1.5px solid ${error ? '#DC2626' : '#EAE4D9'}`,
+                padding: '10px 12px', border: `1.5px solid ${error ? '#8B1A1A' : '#EAE4D9'}`,
                 borderRadius: 12, fontSize: 13, fontFamily: 'inherit',
                 color: '#1A1208', outline: 'none', marginBottom: 6,
                 background: '#FAFAF8', direction: 'ltr',
               }}
             />
-            {error && (
-              <p style={{ fontSize: 11.5, color: '#DC2626', margin: '0 0 8px' }}>{error}</p>
-            )}
-
-            {/* Submit */}
-            <button
-              onClick={handleSubmit}
-              disabled={loading || !contact.trim()}
-              style={{
-                width: '100%', padding: '12px',
-                background: loading || !contact.trim()
-                  ? '#D4C5B0'
-                  : 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
-                color: '#fff', border: 'none', borderRadius: 14,
-                fontSize: 14, fontWeight: 700, cursor: !contact.trim() ? 'not-allowed' : 'pointer',
-                fontFamily: 'inherit', boxShadow: !contact.trim() ? 'none' : '0 4px 14px rgba(139,26,26,0.3)',
-              }}
-            >
-              {loading ? (isAr ? 'جارٍ الإرسال...' : 'Sending...') : (isAr ? 'إرسال الطلب' : 'Send Request')}
-            </button>
-          </>
-        )}
-        </div>
-      </div>
-    </div>
-  )
-}
+         

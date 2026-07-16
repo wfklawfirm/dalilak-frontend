@@ -69,6 +69,7 @@ export default function HumanReviewCTA({
       border: `1.5px solid ${isCritical ? 'rgba(139,26,26,0.3)' : 'rgba(139,26,26,0.15)'}`,
       borderRadius: 14, padding: '14px 16px',
       fontFamily: "'Cairo','Inter',sans-serif",
+      animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both',
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
@@ -97,6 +98,7 @@ export default function HumanReviewCTA({
 
       {!open ? (
         <button
+          type="button"
           onClick={() => setOpen(true)}
           style={{
             width: '100%', padding: '10px 14px',
@@ -113,10 +115,11 @@ export default function HumanReviewCTA({
           اطلب مراجعة بشرية
         </button>
       ) : (
-        <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>نوع المراجعة</label>
             <select
+              aria-label="نوع المراجعة"
               value={type}
               onChange={e => setType(e.target.value)}
               style={{
@@ -150,6 +153,7 @@ export default function HumanReviewCTA({
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الأولوية</label>
             <select
+              aria-label="الأولوية"
               value={urgency}
               onChange={e => setUrgency(e.target.value)}
               style={{
@@ -166,6 +170,7 @@ export default function HumanReviewCTA({
 
           <div style={{ display: 'flex', gap: 8 }}>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={!summary.trim()}
               style={{
@@ -179,6 +184,7 @@ export default function HumanReviewCTA({
               إرسال الطلب
             </button>
             <button
+              type="button"
               onClick={() => setOpen(false)}
               style={{
                 padding: '10px 16px',
@@ -188,10 +194,4 @@ export default function HumanReviewCTA({
               }}
             >
               إلغاء
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
+ 

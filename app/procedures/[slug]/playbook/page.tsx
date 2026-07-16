@@ -46,6 +46,7 @@ export default function PlaybookPage() {
 
   const langToggle = (
     <button
+      type="button"
       onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
       style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}
     >
@@ -176,8 +177,8 @@ export default function PlaybookPage() {
             <SectionCard
               title={isAr ? 'المخاطر والتنبيهات' : 'Risks & Warnings'}
               icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
-              bg="#FFF7ED"
-              border="#FED7AA"
+              bg="#FFFBEB"
+              border="#FDE68A"
               collapsible={true}
               defaultOpen={true}
             >
@@ -243,6 +244,7 @@ export default function PlaybookPage() {
             </p>
           </div>
           <button
+            type="button"
             onClick={() => {
               const q = isAr
                 ? `اشرح لي إجراء: ${proc?.title ?? slug}`
@@ -268,6 +270,7 @@ export default function PlaybookPage() {
         {/* Back to procedure */}
         <div style={{ textAlign: 'center', marginTop: 6 }}>
           <button
+            type="button"
             onClick={() => router.push(`/procedures/${slug}`)}
             style={{ background: 'none', border: 'none', color: '#9C8E80', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5 }}
           >

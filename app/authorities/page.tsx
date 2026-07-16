@@ -74,8 +74,8 @@ const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }>
   council:      { color: '#8B1A1A', bg: '#FEF2F2', border: '#FECACA' },
   municipality: { color: '#5C4A3A', bg: '#F5F0EB', border: '#D5CEC4' },
   court:        { color: '#713F12', bg: '#FEF9EE', border: '#FDE68A' },
-  union:        { color: '#92400E', bg: '#FFF7ED', border: '#FED7AA' },
-  bank:         { color: '#B45309', bg: '#FEF3C7', border: '#FCD34D' },
+  union:        { color: '#92400E', bg: '#FFFBEB', border: '#FDE68A' },
+  bank:         { color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
   security:     { color: '#44403C', bg: '#F5F5F4', border: '#D4D0CA' },
   other:        { color: '#5C4A3A', bg: '#FAFAF8', border: '#EAE4D9' },
 }
@@ -128,6 +128,7 @@ export default function AuthoritiesPage() {
   const router = useRouter()
   const [typeFilter, setTypeFilter] = useState('all')
   const [search, setSearch] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const filtered = useMemo(() => {
     let list = ALL_AUTHORITIES
@@ -163,6 +164,8 @@ export default function AuthoritiesPage() {
         .type-chip:hover { opacity: 0.85; }
         .type-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .type-chip-row::-webkit-scrollbar { display: none; }
+        @keyframes authHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes authEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 480px) { .auth-grid { grid-template-columns: 1fr !important; } }
         @media (min-width: 481px) and (max-width: 720px) { .auth-grid { grid-template-columns: repeat(2, 1fr) !important; } }
       `}</style>
@@ -172,9 +175,10 @@ export default function AuthoritiesPage() {
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
+        animation: 'authHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')}
+          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{
@@ -232,14 +236,16 @@ export default function AuthoritiesPage() {
         </div>
 
         {/* Search */}
-        <div style={{
+        <div className="search-wrap" style={{
           position: 'relative', marginBottom: 12,
-          background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14,
-          boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
+          background: '#fff', borderRadius: 14,
+          border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`,
+          boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.04)',
+          transition: 'border-color 0.18s, box-shadow 0.18s',
         }}>
           <span style={{
             position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-            right: 14, color: '#B0A090', pointerEvents: 'none', display: 'flex',
+            right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s',
           }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
@@ -247,9 +253,12 @@ export default function AuthoritiesPage() {
           </span>
           <input
             type="text"
+            aria-label="ابحث عن جهة رسمية"
             placeholder="ابحث عن جهة رسمية..."
             value={search}
             onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             style={{
               width: '100%', padding: '11px 42px 11px 14px',
               border: 'none', borderRadius: 14, fontSize: 13.5,
@@ -258,7 +267,7 @@ export default function AuthoritiesPage() {
             }}
           />
           {search && (
-            <button onClick={() => setSearch('')} style={{
+            <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{
               position: 'absolute', top: '50%', transform: 'translateY(-50%)',
               left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%',
               width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A',
@@ -276,7 +285,7 @@ export default function AuthoritiesPage() {
           {TYPE_FILTERS.map(f => {
             const active = typeFilter === f.key
             return (
-              <button key={f.key} onClick={() => setTypeFilter(f.key)} className="type-chip"
+              <button type="button" key={f.key} onClick={() => setTypeFilter(f.key)} className="type-chip"
                 onTouchStart={e => {
                   e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
                   e.currentTarget.style.borderColor = active ? '#8B1A1A' : 'rgba(139,26,26,0.3)'
@@ -292,7 +301,7 @@ export default function AuthoritiesPage() {
                 borderColor: active ? '#8B1A1A' : '#EAE4D9',
                 background: active ? '#FEF2F2' : '#fff',
                 color: active ? '#8B1A1A' : '#5C4A3A',
-                transition: 'all 0.15s',
+                transition: 'border-color 0.15s, background 0.15s, color 0.15s',
               }}>
                 {f.labelAr}
               </button>
@@ -300,11 +309,14 @@ export default function AuthoritiesPage() {
           })}
         </div>
 
-        {/* Results count */}
-        <p style={{ fontSize: 11.5, color: '#9C8E80', margin: '0 0 12px' }}>
-          {filtered.length} جهة رسمية
-          {search && <span style={{ color: '#8B1A1A', fontWeight: 600 }}> — &quot;{search}&quot;</span>}
-        </p>
+        {/* Results count — section header with accent */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+          <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
+          <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+            {filtered.length === ALL_AUTHORITIES.length ? 'الجهات الرسمية' : `${filtered.length} جهة رسمية`}
+          </span>
+          {search && <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>}
+        </div>
 
         {/* Empty state */}
         {filtered.length === 0 && (
@@ -318,7 +330,7 @@ export default function AuthoritiesPage() {
 
         {/* Authority cards grid */}
         <div className="auth-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 12 }}>
-          {filtered.map(auth => {
+          {filtered.map((auth, idx) => {
             const colors = TYPE_COLORS[auth.type] || TYPE_COLORS.other
             const typeLabel = TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || 'أخرى'
             return (
@@ -329,6 +341,8 @@ export default function AuthoritiesPage() {
                 background: '#fff', border: '1.5px solid #EAE4D9',
                 borderRadius: 18, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 display: 'flex', flexDirection: 'column', gap: 0,
+                animation: 'authEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                animationDelay: `${Math.min(idx, 16) * 0.035}s`,
               }}>
                 {/* Icon + name */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
@@ -433,7 +447,7 @@ export default function AuthoritiesPage() {
                   ) : (
                     <span style={{ fontSize: 10, color: '#C4B5A5' }}>بلا موقع</span>
                   )}
-                  <button onClick={() => askAI(auth.name_ar)}
+                  <button type="button" onClick={() => askAI(auth.name_ar)}
                     onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
                     style={{

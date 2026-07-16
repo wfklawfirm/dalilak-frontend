@@ -123,10 +123,10 @@ export default function ContentGovernancePage() {
 
   return (
     <div dir="rtl" style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
-      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } } @keyframes cgItem { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes cgDetailIn { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } } @keyframes cgModalFade { from { opacity:0; } to { opacity:1; } } @keyframes cgModalIn { from { opacity:0; transform:scale(0.94) translateY(14px); } to { opacity:1; transform:scale(1) translateY(0); } } @keyframes cgAuditItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes cntHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)', animation: 'cntHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/admin" style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '5px 10px', color: 'rgba(255,255,255,0.85)', fontSize: 12, textDecoration: 'none' }}>
@@ -137,6 +137,7 @@ export default function ContentGovernancePage() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button
+              type="button"
               onClick={() => { setShowAudit(!showAudit); if (!showAudit) loadAudit() }}
               style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, padding: '7px 14px', color: '#fff', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}
             >
@@ -144,6 +145,7 @@ export default function ContentGovernancePage() {
               سجل التغييرات
             </button>
             <button
+              type="button"
               onClick={() => setShowCreate(true)}
               style={{ background: 'rgba(255,255,255,0.18)', border: '1.5px solid rgba(255,255,255,0.35)', borderRadius: 9, padding: '7px 16px', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
             >
@@ -157,15 +159,17 @@ export default function ContentGovernancePage() {
 
         {/* Pipeline overview */}
         <div className="pipeline-grid" style={{ marginBottom: 20 }}>
-          {Object.entries(STATUS_CONFIG).map(([status, cfg]) => (
+          {Object.entries(STATUS_CONFIG).map(([status, cfg], i) => (
             <button
+              type="button"
               key={status}
               onClick={() => setFilterStatus(filterStatus === status ? 'all' : status)}
               style={{
                 padding: '14px 10px', borderRadius: 14, border: filterStatus === status ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
                 background: filterStatus === status ? '#FEF7F7' : '#fff',
                 boxShadow: filterStatus === status ? '0 2px 12px rgba(139,26,26,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
-                textAlign: 'center', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+                textAlign: 'center', cursor: 'pointer', fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                animation: 'cgItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.06}s`,
               }}
             >
               <div style={{ display: 'inline-block', fontSize: 11, padding: '2px 10px', borderRadius: 99, fontWeight: 700, marginBottom: 6, ...cfg.style }}>
@@ -192,8 +196,9 @@ export default function ContentGovernancePage() {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {filteredItems.map(item => (
+                {filteredItems.map((item, i) => (
                   <button
+                    type="button"
                     key={item.id}
                     onClick={() => setSelected(selected?.id === item.id ? null : item)}
                     className="cnt-item"
@@ -202,7 +207,8 @@ export default function ContentGovernancePage() {
                       border: selected?.id === item.id ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
                       background: selected?.id === item.id ? '#FEF7F7' : '#fff',
                       boxShadow: selected?.id === item.id ? '0 2px 10px rgba(139,26,26,0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
-                      cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+                      cursor: 'pointer', fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s, box-shadow 0.15s cubic-bezier(0.22,1,0.36,1)',
+                      animation: 'cgItem 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 15) * 0.04}s`,
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -229,14 +235,14 @@ export default function ContentGovernancePage() {
 
           {/* Detail panel */}
           {selected && (
-            <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', height: 'fit-content', position: 'sticky', top: 76 }}>
+            <div key={selected.id} style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', height: 'fit-content', position: 'sticky', top: 76, animation: 'cgDetailIn 0.28s cubic-bezier(0.22,1,0.36,1) both' }}>
               {/* Detail header */}
               <div style={{ padding: '16px 20px', borderBottom: '1px solid #EAE4D9' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                   <span style={{ fontSize: 12, padding: '3px 12px', borderRadius: 99, fontWeight: 700, ...STATUS_CONFIG[selected.status]?.style }}>
                     {STATUS_CONFIG[selected.status]?.label}
                   </span>
-                  <button onClick={() => setSelected(null)} style={{ width: 26, height: 26, borderRadius: '50%', background: '#EAE4D9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
+                  <button type="button" onClick={() => setSelected(null)} aria-label="إغلاق" style={{ width: 26, height: 26, borderRadius: '50%', background: '#EAE4D9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -276,6 +282,7 @@ export default function ContentGovernancePage() {
                       const t = TRANSITION_CONFIG[target] || { label: target, bg: '#EAE4D9', color: '#5C4A3A' }
                       return (
                         <button
+                          type="button"
                           key={target}
                           onClick={() => transition(selected, target)}
                           disabled={transitioning}
@@ -321,7 +328,7 @@ export default function ContentGovernancePage() {
           <div style={{ marginTop: 20, background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', overflow: 'hidden' }}>
             <div style={{ padding: '14px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#1A1208' }}>سجل التغييرات</h3>
-              <button onClick={() => setShowAudit(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80' }}>
+              <button type="button" onClick={() => setShowAudit(false)} aria-label="إغلاق" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>
@@ -331,7 +338,7 @@ export default function ContentGovernancePage() {
               ) : (
                 <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {auditLog.map((entry, i) => (
-                    <div key={i} style={{ fontSize: 12, padding: '10px 14px', borderRadius: 12, border: '1px solid #EAE4D9', background: '#FAFAF8' }}>
+                    <div key={i} style={{ fontSize: 12, padding: '10px 14px', borderRadius: 12, border: '1px solid #EAE4D9', background: '#FAFAF8', animation: 'cgAuditItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 20) * 0.03}s` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <span style={{ fontWeight: 700, color: '#6b2737' }}>{entry.action}</span>
                         <span style={{ color: '#9C8E80', fontSize: 11 }}>{new Date(entry.ts).toLocaleString('ar-LB')}</span>
@@ -356,11 +363,11 @@ export default function ContentGovernancePage() {
 
         {/* Create modal */}
         {showCreate && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-            <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, animation: 'cgModalFade 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: 0 }}>إنشاء محتوى جديد</h2>
-                <button onClick={() => setShowCreate(false)} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A' }}>
+                <button type="button" onClick={() => setShowCreate(false)} aria-label="إغلاق" style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
               </div>
@@ -377,6 +384,7 @@ export default function ContentGovernancePage() {
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>النوع</label>
                   <select
+                    aria-label="نوع المحتوى"
                     value={newItem.content_type}
                     onChange={e => setNewItem(p => ({ ...p, content_type: e.target.value }))}
                     style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#1A1208', background: '#FAFAF8' }}
@@ -389,27 +397,4 @@ export default function ContentGovernancePage() {
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }}>المحتوى</label>
-                  <textarea
-                    value={newItem.body_ar}
-                    onChange={e => setNewItem(p => ({ ...p, body_ar: e.target.value }))}
-                    rows={5}
-                    placeholder="اكتب المحتوى هنا..."
-                    style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', color: '#1A1208', background: '#FAFAF8', boxSizing: 'border-box' as const }}
-                  />
-                </div>
-                <button
-                  onClick={createItem}
-                  disabled={creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()}
-                  style={{ padding: '11px', borderRadius: 12, background: 'linear-gradient(135deg, #6b2737, #8B1A1A)', border: 'none', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: creating ? 0.7 : 1 }}
-                >
-                  {creating ? 'جارٍ الإنشاء...' : 'إنشاء'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
+                  <label style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBotto

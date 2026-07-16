@@ -115,6 +115,7 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
           background: 'rgba(0,0,0,0.4)',
           zIndex: 300,
           backdropFilter: 'blur(2px)',
+          animation: 'mmFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both',
         }}
       />
 
@@ -136,6 +137,8 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
         <style>{`
           @keyframes drawerInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
           @keyframes drawerInLeft  { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+          @keyframes mmFadeIn { from { opacity:0; } to { opacity:1; } }
+          @keyframes mmItem { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
         `}</style>
 
         {/* Header */}
@@ -177,7 +180,9 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
             </div>
             {/* Close */}
             <button
+              type="button"
               onClick={onClose}
+              aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
               onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.26)' }}
               onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)' }}
               style={{
@@ -206,7 +211,7 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-                {currentUser?.username || 'مستخدم'}
+                {currentUser?.full_name || currentUser?.username || 'مستخدم'}
               </div>
               {currentUser?.plan && (
                 <span style={{
@@ -228,6 +233,7 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
           {NAV_ITEMS.map((item, i) => (
             <button
               key={i}
+              type="button"
               onClick={() => handleNav(item.route)}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: 14,
@@ -236,6 +242,8 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
                 textAlign: isAr ? 'right' : 'left',
                 color: '#1A1208', fontSize: 14, fontWeight: 500,
                 transition: 'background 0.12s',
+                animation: 'mmItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                animationDelay: `${0.15 + i * 0.04}s`,
               }}
               onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'none' }}
@@ -252,6 +260,7 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
 
           {/* Language toggle */}
           <button
+            type="button"
             onClick={() => { onLangToggle(); onClose() }}
             style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 14,
@@ -287,37 +296,4 @@ export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, 
               </svg>
               {isAr ? 'تواصل معنا' : 'Contact Us'}
             </p>
-            <a href="tel:+9613460608" style={{ display: 'block', fontSize: 12, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600, marginBottom: 5, direction: 'ltr', unicodeBidi: 'isolate' }}>
-              +961 3 460 608
-            </a>
-            <a href="mailto:wissam@aijur.ai" style={{ display: 'block', fontSize: 12, color: '#6B2737', textDecoration: 'none', fontWeight: 500 }}>
-              wissam@aijur.ai
-            </a>
-          </div>
-        </div>
-
-        {/* Logout */}
-        <div style={{ padding: '12px 16px 24px', borderTop: '1px solid #EAE4D9' }}>
-          <button
-            onClick={handleLogout}
-            onTouchStart={e => { e.currentTarget.style.background = '#FEE2E2' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
-            style={{
-              width: '100%', padding: '12px', borderRadius: 12,
-              background: '#FEF2F2', border: '1.5px solid #FECACA',
-              color: '#dc2626', fontSize: 13, fontWeight: 700,
-              cursor: 'pointer', fontFamily: 'inherit',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'background 0.12s',
-            }}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-            </svg>
-            {isAr ? 'تسجيل الخروج' : 'Logout'}
-          </button>
-        </div>
-      </div>
-    </>
-  )
-}
+            <a href="tel:+9613460608" style={{ display:

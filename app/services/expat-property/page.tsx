@@ -134,16 +134,20 @@ export default function ExpatPropertyPackPage() {
         ::-webkit-scrollbar-thumb { background: #D5CEC4; border-radius: 3px; }
         .svc-card:hover { border-color: #8B1A1A !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(139,26,26,0.10) !important; }
         .bottom-nav-padding { padding-bottom: 68px; }
+        @keyframes expHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       <header style={{
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         padding: '14px 16px 18px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 2px 16px rgba(80,10,10,0.3)',
+        animation: 'expHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <button
+              type="button"
+              aria-label="الخدمات"
               onClick={() => router.push('/services')}
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
@@ -162,6 +166,7 @@ export default function ExpatPropertyPackPage() {
               </div>
             </div>
             <button
+              type="button"
               onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
@@ -178,6 +183,7 @@ export default function ExpatPropertyPackPage() {
           <div style={{ display: 'flex', gap: 6 }}>
             {PACK_SECTIONS.map(s => (
               <button
+                type="button"
                 key={s.id}
                 onClick={() => setActiveSection(s.id)}
                 onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
@@ -189,7 +195,7 @@ export default function ExpatPropertyPackPage() {
                   background: activeSection === s.id ? 'rgba(255,255,255,0.18)' : 'transparent',
                   color: activeSection === s.id ? '#fff' : 'rgba(255,255,255,0.68)',
                   fontSize: 11, fontWeight: 700, fontFamily: 'inherit',
-                  transition: 'all 0.15s',
+                  transition: 'border-color 0.15s, background 0.15s, color 0.15s',
                   display: 'flex', alignItems: 'center', gap: 5,
                 }}
               >
@@ -222,7 +228,7 @@ export default function ExpatPropertyPackPage() {
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 10, padding: '7px 10px', background: '#FFF7ED', borderRadius: 9, border: '1px solid #FED7AA' }}>
+          <div style={{ marginTop: 10, padding: '7px 10px', background: '#FFFBEB', borderRadius: 9, border: '1px solid #FDE68A' }}>
             <p style={{ fontSize: 10, color: '#92400E', margin: 0, lineHeight: 1.5 }}>
               {isAr
                 ? 'هذا المسار للإرشاد فقط وليس استشارة قانونية رسمية. تأكد من المتطلبات الحالية من الجهة المختصة.'
@@ -253,6 +259,7 @@ export default function ExpatPropertyPackPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           {currentSection.items.map(item => (
             <button
+              type="button"
               key={item.id}
               className="svc-card"
               onClick={() => handleService(item)}
@@ -263,8 +270,8 @@ export default function ExpatPropertyPackPage() {
                 padding: '13px 14px', cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 12,
                 textAlign: isAr ? 'right' : 'left',
-                transition: 'all 0.15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                width: '100%',
+                transition: 'border-color 0.15s, background 0.15s, box-shadow 0.15s cubic-bezier(0.22,1,0.36,1)',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)', width: '100%',
               }}
             >
               <div style={{
@@ -304,6 +311,7 @@ export default function ExpatPropertyPackPage() {
 
         <div style={{ marginTop: 20, textAlign: 'center' }}>
           <button
+            type="button"
             onClick={() => router.push('/services')}
             onTouchStart={e => (e.currentTarget.style.opacity = '0.5')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}

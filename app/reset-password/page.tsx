@@ -46,6 +46,7 @@ function ResetForm() {
           يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.
         </p>
         <button
+          type="button"
           onClick={() => router.push('/login')}
           className="auth-btn"
         >
@@ -68,7 +69,7 @@ function ResetForm() {
         <div style={{
           marginBottom: 14, padding: '10px 14px',
           background: '#FEF2F2', border: '1.5px solid #FECACA',
-          borderRadius: 12, color: '#991B1B', fontSize: 13, textAlign: 'center',
+          borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center',
         }}>
           {error}
         </div>
@@ -160,6 +161,8 @@ export default function ResetPasswordPage() {
     }}>
       <style>{`
         * { box-sizing: border-box; }
+        @keyframes authLogoIn { from { opacity:0; transform:translateY(-14px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes authCardIn { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         .auth-input {
           width: 100%; padding: 12px 16px;
           border: 1.5px solid #EAE4D9; border-radius: 14px;
@@ -180,7 +183,7 @@ export default function ResetPasswordPage() {
           font-size: 15px; font-weight: 700; cursor: pointer;
           font-family: inherit;
           box-shadow: 0 4px 16px rgba(139,26,26,0.35);
-          transition: transform 0.15s, box-shadow 0.15s;
+          transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1);
         }
         .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.4); }
         .auth-btn:active:not(:disabled) { transform: scale(0.98); }
@@ -188,7 +191,7 @@ export default function ResetPasswordPage() {
       `}</style>
 
       {/* Logo */}
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+      <div style={{ textAlign: 'center', marginBottom: 20, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{
           width: 72, height: 72, borderRadius: 20,
           background: 'rgba(255,255,255,0.15)',
@@ -209,6 +212,7 @@ export default function ResetPasswordPage() {
         background: '#fff', borderRadius: 24,
         padding: '24px 22px',
         boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
         <Suspense fallback={<div style={{ textAlign: 'center', padding: 24, color: '#9C8E80', fontSize: 13 }}>جاري التحميل...</div>}>
           <ResetForm />

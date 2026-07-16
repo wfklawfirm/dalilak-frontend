@@ -81,16 +81,20 @@ export default function ProcedurePage() {
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-thumb { background:#EAE4D9; border-radius:4px; }
         .start-btn:hover:not(:disabled) { background: #6b2737 !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.35) !important; }
-        .start-btn { transition: all 0.15s ease; }
+        .start-btn { transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1), background 0.15s; }
+        @keyframes pgHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       <header style={{
         background:'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow:'0 4px 24px rgba(80,10,10,0.3)',
         padding:'13px 16px', position:'sticky', top:0, zIndex:50,
+        animation:'pgHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth:820, margin:'0 auto', display:'flex', alignItems:'center', gap:10 }}>
           <button
+            type="button"
+            aria-label="الإجراءات"
             onClick={() => router.push('/procedures')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -178,6 +182,7 @@ export default function ProcedurePage() {
             </div>
           ) : (
             <button
+              type="button"
               onClick={startProcedure}
               disabled={starting}
               className="start-btn"
@@ -185,7 +190,7 @@ export default function ProcedurePage() {
               onTouchEnd={e => { e.currentTarget.style.opacity = starting ? '0.8' : '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 width:'100%', padding:'15px',
-                background: starting ? '#C53030' : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: starting ? '#6b2737' : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                 color:'#fff', border:'none', borderRadius:14,
                 cursor: starting ? 'not-allowed' : 'pointer',
                 fontWeight:800, fontSize:15,
@@ -295,6 +300,7 @@ export default function ProcedurePage() {
               )}
             </div>
             <button
+              type="button"
               onClick={() => router.push(`/procedures/${procedure.slug}/playbook`)}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}

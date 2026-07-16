@@ -78,18 +78,20 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
 
   return (
     <>
+      <style>{`@keyframes tsFadeIn { from { opacity:0; } to { opacity:1; } } @keyframes tsModalIn { from { opacity:0; transform:translate(-50%, calc(-50% + 18px)) scale(0.95); } to { opacity:1; transform:translate(-50%, -50%) scale(1); } } @keyframes tsIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes tsItem { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
       {/* Backdrop */}
       <div
         onClick={onClose}
-        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300, backdropFilter: 'blur(3px)' }}
+        style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300, backdropFilter: 'blur(3px)', animation: 'tsFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }}
       />
 
       {/* Modal */}
-      <div style={{
+      <div role="dialog" aria-modal="true" aria-label={isAr ? 'بدء معاملة' : 'Start a Transaction'} style={{
         position: 'fixed',
         left: '50%', top: '50%',
         transform: 'translate(-50%, -50%)',
         zIndex: 301,
+        animation: 'tsModalIn 0.35s cubic-bezier(0.22,1,0.36,1) both',
         background: '#fff',
         borderRadius: 22,
         boxShadow: '0 24px 80px rgba(0,0,0,0.22)',
@@ -116,7 +118,9 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label={isAr ? 'إغلاق' : 'Close'}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.28)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
             style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}
@@ -129,13 +133,14 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
+        <div key={step} style={{ flex: 1, overflowY: 'auto', padding: '16px', animation: 'tsIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
 
           {/* Step 1 — User type */}
           {step === 1 && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {USER_TYPES.map(ut => (
+              {USER_TYPES.map((ut, i) => (
                 <button
+                  type="button"
                   key={ut.id}
                   onClick={() => { setUserType(ut.id); setStep(2) }}
                   style={{
@@ -144,7 +149,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                     border: `1.5px solid ${userType === ut.id ? '#8B1A1A' : '#EAE4D9'}`,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                    transition: 'all 0.15s',
+                    transition: 'border-color 0.15s, background 0.15s',
+                    animation: 'tsItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
                   onMouseLeave={e => { if (userType !== ut.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
@@ -161,8 +167,9 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
           {/* Step 2 — Transaction type */}
           {step === 2 && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {TX_TYPES.map(tt => (
+              {TX_TYPES.map((tt, i) => (
                 <button
+                  type="button"
                   key={tt.id}
                   onClick={() => { setTxType(tt.id); setStep(3) }}
                   style={{
@@ -171,7 +178,8 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                     border: `1.5px solid ${txType === tt.id ? '#8B1A1A' : '#EAE4D9'}`,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                    transition: 'all 0.15s',
+                    transition: 'border-color 0.15s, background 0.15s',
+                    animation: 'tsItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
                   onMouseLeave={e => { if (txType !== tt.id) { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' } }}
@@ -188,8 +196,9 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
           {/* Step 3 — Goal */}
           {step === 3 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {GOALS.map(g => (
+              {GOALS.map((g, i) => (
                 <button
+                  type="button"
                   key={g.id}
                   onClick={() => handleGoalSelect(g.id)}
                   style={{
@@ -198,47 +207,4 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
                     border: '1.5px solid #EAE4D9',
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 12,
-                    textAlign: isAr ? 'right' : 'left',
-                    transition: 'all 0.15s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8' }}
-                  onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
-                  onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#FAFAF8'; e.currentTarget.style.transform = 'scale(1)' }}
-                >
-                  <span style={{ flexShrink: 0, display: 'flex' }}>{g.icon}</span>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? g.ar : g.en}</div>
-                    <div style={{ fontSize: 10.5, color: '#5C4A3A' }}>{isAr ? g.desc_ar : g.desc_en}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        {step > 1 && (
-          <div style={{ padding: '10px 16px 14px', borderTop: '1px solid #EAE4D9', flexShrink: 0 }}>
-            <button
-              onClick={() => setStep(s => (s - 1) as Step)}
-              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
-              onTouchEnd={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.borderColor = '#EAE4D9' }}
-              style={{
-                background: 'none', border: '1.5px solid #EAE4D9',
-                borderRadius: 10, padding: '8px 18px',
-                fontSize: 12, fontWeight: 600, color: '#5C4A3A',
-                cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.12s',
-              }}
-            >
-              <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                {isAr ? 'رجوع' : 'Back'}
-              </span>
-            </button>
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
+             

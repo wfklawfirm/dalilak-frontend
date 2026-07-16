@@ -23,6 +23,10 @@ const MINISTRY_CHIPS = [
   { slug: 'agriculture',      ar: 'الزراعة',           en: 'Agriculture' },
   { slug: 'social',           ar: 'الشؤون الاجتماعية', en: 'Social Affairs' },
   { slug: 'tourism',          ar: 'السياحة',           en: 'Tourism' },
+  { slug: 'education',        ar: 'التربية',           en: 'Education' },
+  { slug: 'justice',          ar: 'العدل',             en: 'Justice' },
+  { slug: 'finance',          ar: 'المالية',           en: 'Finance' },
+  { slug: 'public-works',     ar: 'الأشغال العامة',    en: 'Public Works' },
 ]
 
 // Map guided procedure categorySlug → ministry filter slug
@@ -55,6 +59,10 @@ function MinistryIcon({ slug, size = 18 }: { slug: string; size?: number }) {
   if (slug === 'agriculture') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   if (slug === 'social') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
   if (slug === 'tourism') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  if (slug === 'education') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+  if (slug === 'justice') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+  if (slug === 'finance') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  if (slug === 'public-works') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
   return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
 }
 
@@ -62,6 +70,7 @@ export default function ProceduresPage() {
   const router = useRouter()
   const [lang, setLang] = useState<'ar' | 'en'>('ar')
   const [search, setSearch] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [ministryFilter, setMinistryFilter] = useState('all')
   const isAr = lang === 'ar'
@@ -104,9 +113,10 @@ export default function ProceduresPage() {
         .proc-card:hover { border-color: rgba(139,26,26,0.4) !important; box-shadow: 0 2px 12px rgba(139,26,26,0.08) !important; }
         .proc-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .proc-chip-row::-webkit-scrollbar { display: none; }
-        .proc-chip { transition: all 0.14s; }
+        .proc-chip { transition: border-color 0.14s, background 0.14s; }
         .proc-chip:hover { border-color: #8B1A1A !important; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes procEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
       {/* Header */}
@@ -114,9 +124,10 @@ export default function ProceduresPage() {
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
+        animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => router.push('/')}
+          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -135,7 +146,7 @@ export default function ProceduresPage() {
               </p>
             </div>
           </div>
-          <button onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
+          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -151,11 +162,27 @@ export default function ProceduresPage() {
             { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
           ].map((stat, idx) => (
             <div key={stat.value} style={{
-              flex: 1, padding: '12px 8px', textAlign: 'center',
+              flex: 1, padding: '12px 8px 14px', textAlign: 'center',
               borderRight: idx < 2 ? '1px solid #EAE4D9' : 'none',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             }}>
+              {idx === 0 && (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom: 5, opacity: 0.75 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+              )}
+              {idx === 1 && (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B0A498" strokeWidth="1.8" style={{ marginBottom: 5, opacity: 0.75 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              )}
+              {idx === 2 && (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B0A498" strokeWidth="1.8" style={{ marginBottom: 5, opacity: 0.75 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+              )}
               <div style={{ fontSize: 'clamp(16px,5vw,19px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 3 }}>{stat.label}</div>
+              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 3, lineHeight: 1.3 }}>{stat.label}</div>
             </div>
           ))}
         </div>
@@ -167,6 +194,7 @@ export default function ProceduresPage() {
               const active = ministryFilter === chip.slug
               return (
                 <button
+                  type="button"
                   key={chip.slug}
                   className="proc-chip"
                   onClick={() => { setMinistryFilter(chip.slug); setExpandedProc(null) }}
@@ -196,17 +224,20 @@ export default function ProceduresPage() {
         </div>
 
         {/* Search */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '10px 14px', marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, padding: '10px 14px', marginBottom: 10, boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={searchFocused ? '#8B1A1A' : '#9C8E80'} strokeWidth="2" style={{ flexShrink: 0, transition: 'stroke 0.18s' }}><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            aria-label={isAr ? 'ابحث في الإجراءات' : 'Search procedures'}
             placeholder={isAr ? `ابحث في ${PROCEDURES_TOTAL} إجراء...` : `Search ${PROCEDURES_TOTAL} procedures...`}
             dir="rtl"
             style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
           />
           {search && (
-            <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}>
+            <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', display: 'flex', alignItems: 'center' }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           )}
@@ -214,13 +245,22 @@ export default function ProceduresPage() {
 
         {/* Count + active filter badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, color: '#9C8E80' }}>
-            {totalResults} {isAr ? `إجراء${search ? ` لـ "${search}"` : ''}` : `procedures${search ? ` for "${search}"` : ''}`}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
+            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+              {totalResults === PROCEDURES_TOTAL
+                ? (isAr ? 'جميع الإجراءات' : 'All Procedures')
+                : `${totalResults} ${isAr ? 'إجراء' : 'procedures'}`}
+            </span>
+          </div>
+          {search && (
+            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>
+          )}
           {ministryFilter !== 'all' && (
             <>
               <span style={{ color: '#D4C5B0', fontSize: 11 }}>·</span>
               <button
+                type="button"
                 onClick={() => setMinistryFilter('all')}
                 style={{
                   fontSize: 10.5, color: '#8B1A1A', fontWeight: 700,
@@ -247,7 +287,7 @@ export default function ProceduresPage() {
             <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
               {isAr ? 'لم نجد إجراءات مطابقة' : 'No matching procedures'}
             </p>
-            <button onClick={() => handleAsk(search)} style={{
+            <button type="button" onClick={() => handleAsk(search)} style={{
               padding: '10px 20px', borderRadius: 12,
               background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
               border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
@@ -260,7 +300,7 @@ export default function ProceduresPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
 
             {/* Guided procedures */}
-            {filteredGuided.map(proc => {
+            {filteredGuided.map((proc, idx) => {
               const isExpanded = expandedProc === proc.slug
               return (
                 <div key={proc.slug} className="proc-card" style={{
@@ -268,9 +308,12 @@ export default function ProceduresPage() {
                   border: `1.5px solid ${isExpanded ? '#8B1A1A' : '#EAE4D9'}`,
                   borderRadius: 14, overflow: 'hidden',
                   boxShadow: isExpanded ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
-                  transition: 'all 0.18s',
+                  transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                  animation: 'procEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay: `${Math.min(idx, 12) * 0.04}s`,
                 }}>
                   <button
+                    type="button"
                     onClick={() => setExpandedProc(isExpanded ? null : proc.slug)}
                     style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                     onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
@@ -303,7 +346,7 @@ export default function ProceduresPage() {
                   </button>
 
                   {isExpanded && (
-                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s ease' }}>
+                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
                       <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.75, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #EAE4D9' }}>
                         {isAr ? proc.description_ar : proc.description_en}
                       </p>
@@ -354,7 +397,7 @@ export default function ProceduresPage() {
                           })}
                         </div>
                       )}
-                      <button onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)}
+                      <button type="button" onClick={() => handleAsk(isAr ? proc.chatPrompt_ar : proc.chatPrompt_en)}
                         onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                         style={{
@@ -387,13 +430,17 @@ export default function ProceduresPage() {
             )}
 
             {/* Enriched procedures */}
-            {filteredEnriched.map((proc: EnrichedProcedure) => (
+            {filteredEnriched.map((proc: EnrichedProcedure, idx) => (
               <div key={proc.code} className="proc-card" style={{
                 background: '#fff', border: `1.5px solid ${expandedProc === proc.code ? '#8B1A1A' : '#EAE4D9'}`,
-                borderRadius: 14, overflow: 'hidden', transition: 'all 0.18s',
+                borderRadius: 14, overflow: 'hidden',
                 boxShadow: expandedProc === proc.code ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
+                transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                animation: 'procEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                animationDelay: `${Math.min(filteredGuided.length + idx, 16) * 0.04}s`,
               }}>
                 <button
+                  type="button"
                   onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
                   style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
@@ -411,7 +458,7 @@ export default function ProceduresPage() {
                       </span>
                       {proc.requiredDocuments.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.requiredDocuments.length} وثيقة</span>}
                       {proc.steps.length > 0 && <span style={{ fontSize: 9.5, background: '#FEF2F2', color: '#8B1A1A', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{proc.steps.length} خطوة</span>}
-                      {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>نموذج</span>}
+                      {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>نموذج</span>}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8B1A1A' : '#1A1208', lineHeight: 1.4 }}>{proc.title}</div>
                     <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, marginTop: 2 }}>{proc.ministry}</div>
@@ -427,7 +474,7 @@ export default function ProceduresPage() {
                 </button>
 
                 {expandedProc === proc.code && (
-                  <div style={{ padding: '0 14px 18px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s ease' }}>
+                  <div style={{ padding: '0 14px 18px', borderTop: '1px solid #EAE4D9', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
 
                     {/* Description */}
                     {proc.description && (
@@ -440,158 +487,7 @@ export default function ProceduresPage() {
                     {(proc.processingTime || proc.whereToApply) && (
                       <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
                         {proc.processingTime && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '6px 12px', flex: '1 1 auto', minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 9, padding: '6px 12px', flex: '1 1 auto', minWidth: 0 }}>
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             <div style={{ minWidth: 0 }}>
-                              <div style={{ fontSize: 9, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em' }}>مدة الإنجاز</div>
-                              <div style={{ fontSize: 11, color: '#78350F', fontWeight: 600, lineHeight: 1.3 }}>{proc.processingTime}</div>
-                            </div>
-                          </div>
-                        )}
-                        {proc.whereToApply && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 9, padding: '6px 12px', flex: '1 1 auto', minWidth: 0 }}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <div style={{ minWidth: 0 }}>
-                              <div style={{ fontSize: 9, fontWeight: 700, color: '#8B1A1A', textTransform: 'uppercase', letterSpacing: '0.04em' }}>مكان التقديم</div>
-                              <div style={{ fontSize: 11, color: '#5C1A1A', fontWeight: 600, lineHeight: 1.3 }}>{proc.whereToApply}</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Required documents */}
-                    {proc.requiredDocuments.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 7, display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                          الوثائق المطلوبة
-                          <span style={{ fontWeight: 600, color: '#9C8E80', fontSize: 10 }}>({proc.requiredDocuments.length})</span>
-                        </div>
-                        <div style={{ borderRadius: 9, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
-                          {proc.requiredDocuments.map((d, i) => (
-                            <div key={i} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '7px 12px', background: i % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: i < proc.requiredDocuments.length - 1 ? '1px solid #EAE4D9' : 'none', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                              <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 5 }}>
-                                <svg width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg>
-                              </span>
-                              <span style={{ lineHeight: 1.5 }}>{d}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Steps */}
-                    {proc.steps.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-                          خطوات الإجراء
-                          <span style={{ fontWeight: 600, color: '#9C8E80', fontSize: 10 }}>({proc.steps.length} خطوات)</span>
-                        </div>
-                        {proc.steps.map((s, i) => {
-                          const isLast = i === proc.steps.length - 1
-                          return (
-                            <div key={i} style={{ display: 'flex', gap: 10, paddingBottom: isLast ? 0 : 10, alignItems: 'stretch' }}>
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 4px rgba(139,26,26,0.25)' }}>{i + 1}</span>
-                                {!isLast && <div style={{ width: 1.5, flex: 1, background: 'rgba(139,26,26,0.15)', marginTop: 3, borderRadius: 1 }} />}
-                              </div>
-                              <div style={{ paddingTop: 3, paddingBottom: isLast ? 0 : 4 }}>
-                                <span style={{ fontSize: 12, color: '#2D1B0E', lineHeight: 1.65 }}>{s}</span>
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )}
-
-                    {/* Fees */}
-                    {proc.fees && (
-                      <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '9px 12px', marginBottom: 12 }}>
-                        <div style={{ fontSize: 9, fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                          الرسوم والتكاليف
-                        </div>
-                        <span style={{ fontSize: 11.5, color: '#78350F', lineHeight: 1.6 }}>{proc.fees.length > 200 ? proc.fees.slice(0, 200) + '…' : proc.fees}</span>
-                      </div>
-                    )}
-
-                    {/* PDF download links */}
-                    {proc.pdfUrls && proc.pdfUrls.length > 0 && (
-                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                        {proc.pdfUrls.map((url, pi) => (
-                          <a key={pi} href={url} target="_blank" rel="noopener noreferrer"
-                            style={{
-                              display: 'inline-flex', alignItems: 'center', gap: 5,
-                              padding: '7px 14px', borderRadius: 9,
-                              background: '#fff', border: '1.5px solid #EAE4D9',
-                              color: '#5C4A3A', fontSize: 11, fontWeight: 700,
-                              textDecoration: 'none',
-                            }}
-                          >
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            {isAr ? `تنزيل النموذج${proc.pdfUrls.length > 1 ? ` ${pi + 1}` : ''}` : `Download Form${proc.pdfUrls.length > 1 ? ` ${pi + 1}` : ''}`}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* CTA */}
-                    <button onClick={() => handleAsk(proc.title)}
-                      onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
-                      onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
-                      style={{
-                        width: '100%', padding: '11px 18px', borderRadius: 11,
-                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                        border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: 'inherit',
-                        transition: 'opacity 0.12s, transform 0.12s',
-                        boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                      }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                      {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask about this procedure'}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Link to full services directory */}
-        <div style={{ marginTop: 28, borderTop: '1px solid #EAE4D9', paddingTop: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14, padding: '14px 16px', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', marginBottom: 3 }}>
-                {isAr ? 'دليل الخدمات الحكومية' : 'Government Services Directory'}
-              </div>
-              <div style={{ fontSize: 11, color: '#9C8E80' }}>
-                {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
-              </div>
-            </div>
-            <button
-              onClick={() => router.push('/services')}
-              style={{
-                padding: '9px 16px', borderRadius: 10,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
-                border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6,
-                boxShadow: '0 2px 8px rgba(139,26,26,0.25)', whiteSpace: 'nowrap',
-              }}
-            >
-              {isAr ? 'استعرض الكل' : 'Browse all'}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <BottomNav isAr={lang === 'ar'} activeTab="procedures" />
-    </div>
-  )
-}
+                              <div style={{ fontSize: 9, fontWeight: 700, color: '#92400E', 

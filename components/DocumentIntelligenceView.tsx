@@ -58,6 +58,7 @@ const sectionHeader = (expanded: boolean): React.CSSProperties => ({
 const sectionBody: React.CSSProperties = {
   borderTop: '1px solid #EAE4D9',
   padding: '14px 16px',
+  animation: 'divSection 0.2s cubic-bezier(0.22,1,0.36,1) both',
 }
 
 // ── DocumentTypeBadge ──────────────────────────────────────────────────────────
@@ -163,6 +164,7 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
           </div>
           {onStartFlow && (
             <button
+              type="button"
               onClick={() => onStartFlow(p.procedureSlug)}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.96)' }}
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -195,9 +197,9 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
   isAr: boolean
 }) {
   const priColor = (p: string): [string, string] => {
-    if (p === 'critical') return ['#FEE2E2', '#B91C1C']
-    if (p === 'high')     return ['#FEE2E2', '#DC2626']
-    if (p === 'medium')   return ['#FEF3C7', '#B45309']
+    if (p === 'critical') return ['#FEF2F2', '#8B1A1A']
+    if (p === 'high')     return ['#FEF2F2', '#8B1A1A']
+    if (p === 'medium')   return ['#FFFBEB', '#B45309']
     return ['#EAE4D9', '#5C4A3A']
   }
   if (!fields.length && !documents.length) return (
@@ -242,7 +244,7 @@ export function MissingRequirementsPanel({ fields, documents, isAr }: {
           {documents.map((d, i) => {
             const [bg, fg] = priColor(d.priority)
             const statusIcon: React.ReactNode = d.status === 'missing'
-              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg>
+              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M15 9l-6 6M9 9l6 6"/></svg>
               : d.status === 'unclear'
               ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
               : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5C4A3A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -402,6 +404,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
         {primary.map((a, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => a.actionType === 'request_human_review' ? onRequestHumanReview() : onAction(a)}
             onTouchStart={e => { if (i < 2) { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' } else { e.currentTarget.style.background = '#D5CEC4' } }}
             onTouchEnd={e => { if (i < 2) { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' } else { e.currentTarget.style.background = '#EAE4D9' } }}
@@ -428,6 +431,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
 
       {/* Human review always visible */}
       <button
+        type="button"
         onClick={onRequestHumanReview}
         onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.25)' }}
         onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
@@ -435,7 +439,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
           marginTop: 10, width: '100%', padding: '10px 16px', borderRadius: 12,
           border: '1.5px solid #EAE4D9', background: '#fff', color: '#2D1B0E',
           fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-          display: 'flex', alignItems: 'center', gap: 8, transition: 'all 0.12s',
+          display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.12s, border-color 0.12s',
         }}
       >
         <span style={{ display: 'flex', flexShrink: 0 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></span>
@@ -446,6 +450,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
       {secondary.length > 0 && (
         <>
           <button
+            type="button"
             onClick={() => setShowSecondary(s => !s)}
             onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
             onTouchEnd={e => { e.currentTarget.style.color = '#5C4A3A' }}
@@ -467,6 +472,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
               {secondary.map((a, i) => (
                 <button
+                  type="button"
                   key={i}
                   onClick={() => a.actionType === 'request_human_review' ? onRequestHumanReview() : onAction(a)}
                   onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.25)'; e.currentTarget.style.transform = 'scale(0.97)' }}
@@ -477,7 +483,7 @@ export function DocumentNextActions({ actions, isAr, onAction, onRequestHumanRev
                     color: '#2D1B0E', fontSize: 11.5, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     display: 'flex', alignItems: 'center', gap: 8,
-                    transition: 'all 0.12s',
+                    transition: 'background 0.12s, border-color 0.12s',
                   }}
                 >
                   <span>{actionIcon(a.actionType)}</span>
@@ -570,7 +576,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
       background: 'rgba(0,0,0,0.5)',
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
     }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{
+      <div role="dialog" aria-modal="true" style={{
         width: '100%', maxWidth: 480,
         background: '#fff', borderRadius: '20px 20px 0 0',
         padding: '20px 16px 32px',
@@ -590,7 +596,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         </div>
 
         {draft.requiresLawyerReview && (
-          <div style={{ padding: '10px 12px', background: '#FEF3C7', borderRadius: 10, border: '1px solid #FDE68A', marginBottom: 14 }}>
+          <div style={{ padding: '10px 12px', background: '#FFFBEB', borderRadius: 10, border: '1px solid #FDE68A', marginBottom: 14 }}>
             <p style={{ fontSize: 11, color: '#B45309', margin: 0, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
               {isAr
@@ -638,6 +644,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         )}
 
         <button
+          type="button"
           onClick={handleGenerate}
           onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
           onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -678,12 +685,12 @@ export function RecommendedDraftsPanel({
     <>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {drafts.map((d, i) => (
-          <button key={i} onClick={() => setActiveDraft(d)} style={{
+          <button key={i} type="button" onClick={() => setActiveDraft(d)} style={{
             width: '100%', padding: '12px 14px', borderRadius: 12,
             border: '1.5px solid #EAE4D9', background: '#fff',
             cursor: 'pointer', fontFamily: 'inherit',
             display: 'flex', alignItems: 'center', gap: 10,
-            textAlign: isAr ? 'right' : 'left', transition: 'all 0.15s',
+            textAlign: isAr ? 'right' : 'left', transition: 'border-color 0.15s, background 0.15s',
           }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
@@ -740,7 +747,7 @@ function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{ ...card }}>
-      <button style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
+      <button type="button" style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
         onTouchStart={e => { e.currentTarget.style.background = '#FAFAF8' }}
         onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
       >
@@ -767,7 +774,9 @@ export default function DocumentIntelligenceView({
   const handleSend = (prompt: string) => { if (onSend) onSend(prompt) }
 
   return (
-    <div style={{ fontFamily: "'Cairo','Inter',sans-serif", direction: isAr ? 'rtl' : 'ltr' }}>
+    <>
+    <style>{`@keyframes divItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes divSection { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }`}</style>
+    <div style={{ fontFamily: "'Cairo','Inter',sans-serif", direction: isAr ? 'rtl' : 'ltr', animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
 
       {/* Document type header */}
       <div style={{ padding: '14px 16px', background: `${meta.color}10`, border: `1.5px solid ${meta.color}30`, borderRadius: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -783,7 +792,7 @@ export default function DocumentIntelligenceView({
           </div>
         </div>
         <div style={{ marginRight: 'auto', marginLeft: 'auto' }} />
-        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#DC2626' : riskSummary === 'medium' ? '#B45309' : '#78350F', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#FFFBEB', borderRadius: 20, padding: '3px 10px' }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: riskSummary === 'high' || riskSummary === 'critical' ? '#8B1A1A' : riskSummary === 'medium' ? '#B45309' : '#78350F', background: riskSummary === 'high' || riskSummary === 'critical' ? '#FEF2F2' : riskSummary === 'medium' ? '#FFFBEB' : '#FFFBEB', borderRadius: 20, padding: '3px 10px' }}>
           {isAr ? (riskSummary === 'low' ? 'مخاطر منخفضة' : riskSummary === 'medium' ? 'مخاطر متوسطة' : 'مخاطر عالية') : (riskSummary === 'low' ? 'Low Risk' : riskSummary === 'medium' ? 'Medium Risk' : 'High Risk')}
         </span>
       </div>
@@ -796,7 +805,7 @@ export default function DocumentIntelligenceView({
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.extractedFacts.map((f, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #EAE4D9' : 'none', animation: 'divItem 0.16s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 12) * 0.04}s` }}>
                 <span style={{ fontSize: 11, color: '#9C8E80', flex: '0 0 120px', paddingTop: 1 }}>{f.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#1A1208', flex: 1 }}>{f.value}</span>
               </div>
@@ -813,7 +822,7 @@ export default function DocumentIntelligenceView({
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.relatedProcedures.map((p, i) => (
-              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8, animation: 'divItem 0.16s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.05}s` }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>{isAr ? p.titleAr : p.titleEn}</div>
                   <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? p.ministry : p.ministry}</div>
@@ -835,12 +844,12 @@ export default function DocumentIntelligenceView({
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.missingFields.map((f, i) => (
-              <div key={i} style={{ padding: '7px 10px', background: '#FFF7ED', border: '1px solid #FDE68A', borderRadius: 8, fontSize: 12, color: '#854D0E' }}>
+              <div key={i} style={{ padding: '7px 10px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 8, fontSize: 12, color: '#854D0E', animation: 'divItem 0.15s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.04}s` }}>
                 {isAr ? f.labelAr : f.labelEn}
               </div>
             ))}
             {analysis.missingDocuments.map((d, i) => (
-              <div key={i} style={{ padding: '7px 10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#991B1B' }}>
+              <div key={i} style={{ padding: '7px 10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#8B1A1A', animation: 'divItem 0.15s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.04}s` }}>
                 {isAr ? d.labelAr : d.labelEn}
               </div>
             ))}
@@ -850,67 +859,4 @@ export default function DocumentIntelligenceView({
 
       {/* Risks */}
       {analysis.risks.length > 0 && (
-        <CollapsibleSection
-          title={isAr ? 'المخاطر المحتملة' : 'Potential Risks'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6M9 9l6 6"/></svg>}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {analysis.risks.map((r, i) => {
-              const [bg, fg] = riskColors(r.level)
-              return (
-                <div key={i} style={{ padding: '8px 10px', background: bg, border: `1px solid ${fg}30`, borderRadius: 8 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: fg, marginBottom: 3 }}>{isAr ? r.titleAr : r.titleEn}</div>
-                  <div style={{ fontSize: 11, color: '#5C4A3A' }}>{isAr ? r.descriptionAr : r.descriptionEn}</div>
-                </div>
-              )
-            })}
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Recommended drafts */}
-      {analysis.recommendedDrafts.length > 0 && onSend && (
-        <CollapsibleSection
-          title={isAr ? 'النماذج المقترحة' : 'Suggested Templates'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>}
-        >
-          <RecommendedDraftsPanel
-            drafts={analysis.recommendedDrafts}
-            extractedFacts={analysis.extractedFacts}
-            isAr={isAr}
-            onSend={handleSend}
-          />
-        </CollapsibleSection>
-      )}
-
-      {/* Next actions */}
-      {analysis.nextActions.length > 0 && (
-        <CollapsibleSection
-          title={isAr ? 'الخطوات التالية' : 'Next Steps'}
-          icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>}
-        >
-          <DocumentNextActions
-            actions={analysis.nextActions}
-            isAr={isAr}
-            onAction={handleAction}
-            onRequestHumanReview={handleHumanReview}
-          />
-        </CollapsibleSection>
-      )}
-
-      {/* Evidence & confidence */}
-      <CollapsibleSection
-        title={isAr ? 'المصادر والثقة' : 'Sources & Confidence'}
-        icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>}
-        defaultOpen={false}
-      >
-        <EvidencePanel
-          evidence={analysis.evidence}
-          confidence={analysis.confidence}
-          isAr={isAr}
-        />
-      </CollapsibleSection>
-
-    </div>
-  )
-}
+        <Colla

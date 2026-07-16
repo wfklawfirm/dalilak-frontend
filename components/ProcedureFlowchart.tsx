@@ -16,11 +16,11 @@ const NODE_COLORS: Record<NodeType, string> = {
   document: '#2D1B0E',
   action: '#8B1A1A',
   authority: '#B8860B',
-  risk: '#c2592e',
+  risk: '#8B1A1A',
   draft: '#6B4226',
   human_review: '#9B4444',
   completion: '#B45309',
-  warning: '#DC2626',
+  warning: '#8B1A1A',
 }
 
 const NODE_ICONS: Record<NodeType, React.ReactNode> = {
@@ -53,7 +53,7 @@ const STATUS_COLORS: Record<NonNullable<NodeStatus>, string> = {
   not_started: '#9C8E80',
   current: '#B8860B',
   completed: '#B45309',
-  blocked: '#DC2626',
+  blocked: '#8B1A1A',
   needs_review: '#CA8A04',
 }
 
@@ -85,6 +85,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
           0%, 100% { box-shadow: 0 0 0 0 rgba(184,134,11,0.4); }
           50% { box-shadow: 0 0 0 6px rgba(184,134,11,0); }
         }
+        @keyframes pfcNode { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       {/* Progress bar */}
@@ -106,7 +107,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
 
       {/* Duration badge */}
       {!compact && flowchart.estimatedDurationAr && (
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#FEF9E7', border: '1px solid #FEF08A', borderRadius: 20, padding: '4px 12px', marginBottom: 16, fontSize: 11.5, color: '#B8860B', fontWeight: 700 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 20, padding: '4px 12px', marginBottom: 16, fontSize: 11.5, color: '#B8860B', fontWeight: 700 }}>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg>
           {isAr ? flowchart.estimatedDurationAr : flowchart.estimatedDurationEn}
         </div>
@@ -133,7 +134,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                 border: `1.5px solid ${isCurrent ? '#B8860B' : '#EAE4D9'}`,
                 borderRadius: 14,
                 padding: compact ? '10px 12px' : '14px 16px',
-                animation: isCurrent ? 'pulse-border 2s infinite' : 'none',
+                animation: isCurrent ? `pulse-border 2s infinite, pfcNode 0.22s cubic-bezier(0.22,1,0.36,1) ${Math.min(idx, 10) * 0.06}s both` : `pfcNode 0.22s cubic-bezier(0.22,1,0.36,1) ${Math.min(idx, 10) * 0.06}s both`,
                 position: 'relative',
               }}>
                 {/* Circle icon */}

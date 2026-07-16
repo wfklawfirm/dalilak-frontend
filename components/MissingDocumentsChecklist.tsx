@@ -19,7 +19,7 @@ interface Props {
 
 const PRIORITY_STYLE: Record<string, React.CSSProperties> = {
   critical: { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.25)' },
-  high:     { background: '#FFF7ED', color: '#ea580c', border: '1px solid #FED7AA' },
+  high:     { background: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A' },
   medium:   { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
   low:      { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
 }
@@ -58,7 +58,9 @@ export default function MissingDocumentsChecklist({
   const pct = total > 0 ? Math.round((uploaded / total) * 100) : 0
 
   return (
-    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif" }}>
+    <>
+    <style>{`@keyframes mdcFade { from { opacity:0; } to { opacity:1; } }`}</style>
+    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif", animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
       {/* Summary row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <p style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', margin: 0 }}>
@@ -88,6 +90,7 @@ export default function MissingDocumentsChecklist({
                 padding: '10px 14px',
                 background: isUploaded ? 'rgba(255,251,235,0.4)' : '#fff',
                 borderBottom: i < allDocs.length - 1 ? '1px solid #EAE4D9' : 'none',
+                animation: 'mdcFade 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 15) * 0.04}s`,
               }}
             >
               {/* Status icon */}
@@ -133,21 +136,9 @@ export default function MissingDocumentsChecklist({
               {/* Upload button */}
               {!isUploaded && onUpload && (
                 <button
+                  type="button"
                   onClick={() => onUpload(doc.title)}
                   style={{
                     flexShrink: 0, fontSize: 10.5, padding: '4px 10px',
                     background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
                     color: '#fff', border: 'none', borderRadius: 8,
-                    cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700,
-                  }}
-                >
-                  رفع
-                </button>
-              )}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}

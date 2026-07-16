@@ -16,15 +16,20 @@ interface PageHeaderProps {
 
 export function PageHeader({ icon: _icon, titleAr, titleEn, subtitleAr, subtitleEn, isAr, onBack, rightSlot }: PageHeaderProps) {
   return (
+    <>
+    <style>{`@keyframes uiHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
     <header style={{
       background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
       padding: '13px 16px',
       position: 'sticky', top: 0, zIndex: 50,
       boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
+      animation: 'uiHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
     }}>
       <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
         {onBack && (
           <button
+            type="button"
+            aria-label={isAr ? 'رجوع' : 'Back'}
             onClick={onBack}
             style={{
               background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
@@ -60,6 +65,7 @@ export function PageHeader({ icon: _icon, titleAr, titleEn, subtitleAr, subtitle
         {rightSlot && <div style={{ flexShrink: 0 }}>{rightSlot}</div>}
       </div>
     </header>
+    </>
   )
 }
 
@@ -87,8 +93,11 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
           padding: '12px 16px',
           cursor: collapsible ? 'pointer' : 'default',
           borderBottom: open ? `1px solid ${border}` : 'none',
+          transition: 'background 0.12s',
         }}
         onClick={() => { if (collapsible) setOpen(o => !o) }}
+        onTouchStart={collapsible ? (e => { e.currentTarget.style.background = '#F5F0EA' }) : undefined}
+        onTouchEnd={collapsible ? (e => { e.currentTarget.style.background = '' }) : undefined}
       >
         <h3 style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
           {icon && <span>{icon}</span>}
@@ -144,7 +153,7 @@ export function ConfidenceBadge({ level, isAr = true }: ConfidenceBadgeProps) {
   const map = {
     high: { ar: 'ثقة عالية', en: 'High Confidence', color: '#78350F', bg: '#FFFBEB' },
     medium: { ar: 'ثقة متوسطة', en: 'Medium Confidence', color: '#B8860B', bg: '#FFFBEB' },
-    low: { ar: 'ثقة منخفضة', en: 'Low Confidence', color: '#DC2626', bg: '#FEF2F2' },
+    low: { ar: 'ثقة منخفضة', en: 'Low Confidence', color: '#8B1A1A', bg: '#FEF2F2' },
   }
   const info = map[level]
   return (
@@ -164,8 +173,8 @@ export function RiskBadge({ level, isAr = true }: RiskBadgeProps) {
   const map = {
     low:      { ar: 'خطر منخفض', en: 'Low Risk',      color: '#78350F', bg: '#FFFBEB' },
     medium:   { ar: 'خطر متوسط', en: 'Medium Risk',    color: '#B8860B', bg: '#FFFBEB' },
-    high:     { ar: 'خطر عالٍ',  en: 'High Risk',      color: '#ea580c', bg: '#FFF7ED' },
-    critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#DC2626', bg: '#FEF2F2' },
+    high:     { ar: 'خطر عالٍ',  en: 'High Risk',      color: '#B45309', bg: '#FFFBEB' },
+    critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#8B1A1A', bg: '#FEF2F2' },
   }
   const info = map[level]
   return (
@@ -204,6 +213,7 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
       )}
       {action && actionLabel && (
         <button
+          type="button"
           onClick={action}
           style={{
             padding: '9px 20px', borderRadius: 12,

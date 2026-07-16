@@ -52,14 +52,18 @@ export default function FormDetailClient({ form }: Props) {
 
   return (
     <div dir={dir} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: isAr ? "'Cairo',sans-serif" : "'Inter',sans-serif" }}>
+      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 3px; } @keyframes fdcHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       <header style={{
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
         padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50,
+        animation: 'fdcHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
+            type="button"
+            aria-label="رجوع"
             onClick={() => router.back()}
             onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
@@ -113,17 +117,19 @@ export default function FormDetailClient({ form }: Props) {
           <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {form.url && (
               <button
+                type="button"
                 onClick={handleDownload}
                 onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.97)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(139,26,26,0.2)' }}
                 onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.35)' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(139,26,26,0.4)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.35)' }}
-                style={{ background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.15s', boxShadow: '0 4px 14px rgba(139,26,26,0.35)' }}>
+                style={{ background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)', color: '#fff', border: 'none', borderRadius: 12, padding: '10px 18px', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)', boxShadow: '0 4px 14px rgba(139,26,26,0.35)' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 {isAr ? 'فتح النموذج' : 'Open Form'}
               </button>
             )}
             <button
+              type="button"
               onClick={handleAskAI}
               onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
               onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
@@ -177,6 +183,7 @@ export default function FormDetailClient({ form }: Props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {relatedProcedures.map(p => p && (
                 <button
+                  type="button"
                   key={p.slug}
                   onClick={() => router.push(`/procedures/${p.slug}`)}
                   onTouchStart={e => (e.currentTarget.style.background = '#F0EBE0')}

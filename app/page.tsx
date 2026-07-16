@@ -114,10 +114,22 @@ const QUESTION_POOL_AR = [
   'كيف أحصل على إجازة عمل لموظف أجنبي؟',
   'كيف أحسب تعويض نهاية الخدمة في لبنان؟',
   'كيف أحصل على ترخيص إنشاء منشأة صناعية؟',
+  'كيف أستورد سيارة إلى لبنان وما هي الرسوم؟',
+  'كيف أقدم الإقرار الضريبي على الدخل في لبنان؟',
+  'كيف أحصل على ترخيص صيدلية في لبنان؟',
+  'كيف أستخرج وكالة قانونية من الكاتب العدل؟',
+  'ما إجراءات تغيير الاسم في السجل المدني؟',
+  'كيف أحصل على تعويض الأمومة من الضمان الاجتماعي؟',
 ]
 
 const QUESTION_POOL_EN = [
   'How do I get a Lebanese passport?',
+  'How do I import a car to Lebanon and what are the customs fees?',
+  'How do I file an income tax return in Lebanon?',
+  'How do I get a pharmacy license in Lebanon?',
+  'How do I get a power of attorney from a notary in Lebanon?',
+  'What are the procedures for changing a name in the civil registry?',
+  'How do I claim maternity benefits from social security?',
   'How do I register a new car in Lebanon?',
   'How do I get a birth certificate?',
   'How do I register a company in Lebanon?',
@@ -651,7 +663,7 @@ export default function Home() {
           --red-dark: #6b2737;
           --red-light: #FEF2F2;
           --gold: #B8860B;
-          --gold-light: #FDF8E8;
+          --gold-light: #FFFBEB;
           --bg: #FAFAF8;
           --card: #FFFFFF;
           --border: #EAE4D9;
@@ -678,24 +690,37 @@ export default function Home() {
           from { opacity: 0; transform: translateY(-8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .msg-in { animation: fadeUp 0.25s ease; }
-        .quick-btn { animation: slideQ 0.3s ease; }
-        .wlc-hero-band { animation: heroIn 0.35s ease; }
+        .msg-in { animation: fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both; }
+        .quick-btn { animation: slideQ 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+        .wlc-hero-band { animation: heroIn 0.35s cubic-bezier(0.22,1,0.36,1) both; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
         /* quick-btn hover is handled via inline onMouseEnter/Leave */
-        .mode-btn { transition: all 0.18s ease; }
+        .mode-btn { transition: background 0.15s, color 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1); }
         .mode-btn:hover { background: rgba(255,255,255,0.22) !important; }
-        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; }
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
 
         /* ── Welcome screen responsive layout ─────────────────────── */
         .wlc-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; }
-
+        .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; transform: translateY(-2px) !important; }
+        /* Stagger entrance for service group cards */
+        .wlc-svc-grid > :nth-child(1) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.30s; }
+        .wlc-svc-grid > :nth-child(2) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.36s; }
+        .wlc-svc-grid > :nth-child(3) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.42s; }
+        .wlc-svc-grid > :nth-child(4) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.47s; }
+        .wlc-svc-grid > :nth-child(5) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.52s; }
+        .wlc-svc-grid > :nth-child(6) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.56s; }
+        .wlc-svc-grid > :nth-child(7) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.60s; }
+        .wlc-svc-grid > :nth-child(8) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.64s; }
+        /* Quick-q pill hover lift */
+        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(255,255,255,0.3) !important; }
+        /* Input focused: subtle scale */
+        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; transform: scale(1.004); }
+        /* Followup chip entrance */
+        .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
         @media (min-width: 640px) {
           .wlc-svc-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
         }
@@ -743,22 +768,27 @@ export default function Home() {
                 <div style={{ position:'absolute', top:-90, right:-90, width:260, height:260, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.07)', pointerEvents:'none' }} />
                 <div style={{ position:'absolute', top:-50, right:-50, width:160, height:160, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.05)', pointerEvents:'none' }} />
                 <div style={{ position:'absolute', bottom:-60, left:-40, width:180, height:180, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.04)', pointerEvents:'none' }} />
+                {/* Subtle dot-grid texture */}
+                <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)', backgroundSize:'22px 22px', pointerEvents:'none' }} />
 
                 <div style={{ maxWidth: 720, margin: '0 auto', position: 'relative' }}>
                   {/* Greeting */}
                   {currentUser && (
-                    <p style={{ fontSize:11, color:'rgba(255,255,255,0.48)', margin:'0 0 10px', fontWeight:500 }}>
+                    <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.58)', margin:'0 0 12px', fontWeight:500, display:'flex', alignItems:'center', gap:5 }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.7 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                       {isAr
-                        ? `مرحباً، ${currentUser.name || currentUser.email?.split('@')[0]}`
-                        : `Hello, ${currentUser.name || currentUser.email?.split('@')[0]}`}
+                        ? <span>مرحباً، <strong style={{ color:'rgba(255,255,255,0.88)', fontWeight:700 }}>{currentUser.full_name || currentUser.username}</strong></span>
+                        : <span>Hello, <strong style={{ color:'rgba(255,255,255,0.88)', fontWeight:700 }}>{currentUser.full_name || currentUser.username}</strong></span>}
                     </p>
                   )}
 
                   {/* Headline */}
-                  <h1 style={{ fontSize:'clamp(20px,5.8vw,28px)', fontWeight:900, color:'#fff', margin:'0 0 8px', lineHeight:1.15, letterSpacing:'-0.5px' }}>
+                  <h1 style={{ fontSize:'clamp(20px,5.8vw,29px)', fontWeight:900, color:'#fff', margin:'0 0 6px', lineHeight:1.18, letterSpacing:'-0.6px', textShadow:'0 1px 3px rgba(0,0,0,0.18)' }}>
                     {isAr ? 'ما المعاملة التي تريد إنجازها؟' : 'What can we help you with today?'}
                   </h1>
-                  <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.5)', margin:'0 0 22px', lineHeight:1.5 }}>
+                  {/* Accent line */}
+                  <div style={{ width:40, height:2.5, background:'linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.08))', borderRadius:2, margin:'0 0 10px' }} />
+                  <p style={{ fontSize:11.5, color:'rgba(255,255,255,0.55)', margin:'0 0 22px', lineHeight:1.5 }}>
                     {isAr
                       ? 'معاملات حكومية · وثائق رسمية · إجراءات قانونية'
                       : 'Government procedures · Official documents · Legal guidance'}
@@ -768,7 +798,8 @@ export default function Home() {
                   <div style={{ display:'flex', gap:7, flexWrap:'wrap' }}>
                     {visibleQ.map((q, i) => (
                       <button
-                        key={i}
+                        type="button"
+                        key={q}
                         className="quick-btn"
                         onClick={() => sendMessage(q)}
                         style={{
@@ -777,15 +808,20 @@ export default function Home() {
                           border:'1px solid rgba(255,255,255,0.15)',
                           color:'rgba(255,255,255,0.82)', fontSize:11.5,
                           cursor:'pointer', fontFamily:'inherit',
-                          fontWeight:500, transition:'all 0.15s',
+                          fontWeight:500, transition:'background 0.15s, border-color 0.15s, color 0.15s',
                           textAlign: isAr ? 'right' : 'left',
+                          animationDelay: `${i * 0.09}s`,
+                          animationFillMode: 'both',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.18)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.3)'; e.currentTarget.style.color='#fff' }}
                         onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.09)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.15)'; e.currentTarget.style.color='rgba(255,255,255,0.82)' }}
                         onTouchStart={e => { e.currentTarget.style.background='rgba(255,255,255,0.22)' }}
                         onTouchEnd={e => { e.currentTarget.style.background='rgba(255,255,255,0.09)' }}
                       >
-                        {q}
+                        <span style={{ display:'inline-flex', alignItems:'center', gap:5 }}>
+                          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ opacity:0.55, flexShrink:0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+                          {q}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -793,6 +829,7 @@ export default function Home() {
                   {/* ── Primary action CTA — single, prominent ── */}
                   <div style={{ marginTop:18 }}>
                     <button
+                      type="button"
                       onClick={() => setShowTransactionStarter(true)}
                       style={{
                         display:'inline-flex', alignItems:'center', gap:8,
@@ -801,7 +838,7 @@ export default function Home() {
                         fontSize:13.5, fontWeight:700, color:'#8B1A1A',
                         cursor:'pointer', fontFamily:'inherit', letterSpacing:'-0.2px',
                         boxShadow:'0 4px 18px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.35)',
-                        transition:'all 0.14s',
+                        transition:'transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1), background 0.12s',
                       }}
                       onMouseEnter={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 6px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.35)' }}
                       onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.97)'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 18px rgba(0,0,0,0.22), 0 0 0 1px rgba(255,255,255,0.35)' }}
@@ -829,22 +866,46 @@ export default function Home() {
                     { num: String(TX_MINISTRIES.length), lAr:'وزارة وجهة', lEn:'Ministries' },
                   ].map((s,i) => (
                     <div key={i} style={{
-                      display:'flex', flexDirection:'column', alignItems:'center',
-                      padding:'14px 8px 16px',
+                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+                      padding:'13px 8px 15px',
                       background: i === 0 ? 'linear-gradient(135deg, #FEF2F2, #FDE8E8)' : '#fff',
                       borderRight: i % 2 === 0 ? '1px solid #EAE4D9' : 'none',
                       borderBottom: i < 2 ? '1px solid #EAE4D9' : 'none',
+                      animation: 'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
+                      animationDelay: `${0.06 + i * 0.07}s`,
                     }}>
+                      {/* Section icon */}
+                      {i === 0 && (
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.75 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+                        </svg>
+                      )}
+                      {i === 1 && (
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                      )}
+                      {i === 2 && (
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                      )}
+                      {i === 3 && (
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8" style={{ marginBottom:5, opacity:0.65 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 10l9-7 9 7M5 21V10m14 11V10M9 21v-4a2 2 0 012-2h2a2 2 0 012 2v4"/>
+                        </svg>
+                      )}
                       <span style={{ fontSize:'clamp(18px,5.5vw,22px)', fontWeight:900, color:'#8B1A1A', letterSpacing:'-0.8px', lineHeight:1 }}>{s.num}</span>
-                      <span style={{ fontSize:10, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center' }}>{isAr ? s.lAr : s.lEn}</span>
+                      <span style={{ fontSize:10.5, color:'#9C8E80', fontWeight:500, marginTop:4, textAlign:'center', lineHeight:1.3 }}>{isAr ? s.lAr : s.lEn}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* ── Services section ── */}
                 <div>
-                  {/* Section header */}
-                  <div style={{ marginBottom:12 }}>
+                  {/* Section header with left accent */}
+                  <div style={{ marginBottom:12, display:'flex', alignItems:'center', gap:9, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.27s' }}>
+                    <div style={{ width:3.5, height:16, borderRadius:2, background:'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink:0 }} />
                     <span style={{ fontSize:13, fontWeight:800, color:'#1A1208', letterSpacing:'-0.2px' }}>
                       {isAr ? 'استعرض الخدمات' : 'Browse services'}
                     </span>
@@ -854,6 +915,7 @@ export default function Home() {
                   <div className="wlc-svc-grid" style={{ marginBottom:0 }}>
                     {SERVICE_GROUPS.map(group => (
                       <button
+                        type="button"
                         key={group.slug}
                         className="wlc-svc-btn"
                         onClick={() => setActiveServiceGroup(group)}
@@ -862,11 +924,11 @@ export default function Home() {
                           padding:'11px 12px', borderRadius:13, cursor:'pointer',
                           background:'#fff', border:'1.5px solid #EAE4D9',
                           fontFamily:'inherit', textAlign:isAr?'right':'left',
-                          transition:'all 0.14s', boxShadow:'0 1px 4px rgba(0,0,0,0.04)',
-                          width:'100%',
+                          transition:'border-color 0.14s, background 0.14s, transform 0.14s, box-shadow 0.14s cubic-bezier(0.22,1,0.36,1)',
+                          boxShadow:'0 1px 4px rgba(0,0,0,0.04)', width:'100%',
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 4px 14px rgba(139,26,26,0.09)' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)' }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor='#8B1A1A'; e.currentTarget.style.background='#FEF7F7'; e.currentTarget.style.boxShadow='0 6px 18px rgba(139,26,26,0.11)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'; e.currentTarget.style.transform='translateY(0)' }}
                         onTouchStart={e => { e.currentTarget.style.background='rgba(254,242,242,0.9)'; e.currentTarget.style.borderColor='rgba(139,26,26,0.3)'; e.currentTarget.style.transform='scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.borderColor='#EAE4D9'; e.currentTarget.style.transform='scale(1)' }}
                       >
@@ -895,10 +957,12 @@ export default function Home() {
           ) : (
 
             /* ── Chat Messages ── */
-            <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
+            <div aria-live="polite" aria-label={isAr ? 'محادثة المساعد القانوني' : 'Legal assistant conversation'} style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
               {/* Home button — visible on mobile inside chat */}
               <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
                 <button
+                  type="button"
+                  aria-label={isAr ? 'العودة للصفحة الرئيسية' : 'Return to home'}
                   onClick={() => { setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
@@ -907,7 +971,7 @@ export default function Home() {
                     fontSize: 12, color: '#9C8E80', fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
-                    transition: 'all 0.15s',
+                    transition: 'border-color 0.15s, color 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.color = '#9C8E80' }}
@@ -976,14 +1040,17 @@ export default function Home() {
           }}>
             {followupQuestions.map((q, i) => (
               <button
+                type="button"
                 key={i}
+                className="followup-chip"
                 onClick={() => { setInput(q); sendMessage(q) }}
                 style={{
                   background: '#FFF5F5', border: '1px solid rgba(139,26,26,0.18)',
                   borderRadius: 20, padding: '6px 14px', fontSize: 12.5,
                   color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
-                  lineHeight: 1.4, textAlign: 'right', transition: 'all 0.15s',
+                  lineHeight: 1.4, textAlign: 'right', transition: 'background 0.15s, transform 0.15s',
                   display: 'flex', alignItems: 'center', gap: 5,
+                  animationDelay: `${i * 0.07}s`,
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FFF5F5' }}
@@ -1000,12 +1067,14 @@ export default function Home() {
         {retryMsg && !loading && (
           <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
             <button
+              type="button"
               onClick={() => sendMessage(retryMsg!)}
               style={{
                 background: '#fff5f5', border: '1px solid rgba(139,26,26,0.25)',
                 borderRadius: 20, padding: '6px 16px', fontSize: 12.5,
                 color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 4,
+                animation: 'slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both',
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2' }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5' }}
@@ -1024,10 +1093,11 @@ export default function Home() {
             direction: 'rtl', textAlign: 'right',
           }}>
             <span style={{
-              display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#b91c1c' : '#92400e',
+              display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#8B1A1A' : '#92400e',
               background: quotaRemaining <= 3 ? '#fef2f2' : '#fffbeb',
               border: `1px solid ${quotaRemaining <= 3 ? '#fecaca' : '#fde68a'}`,
               borderRadius: 20, padding: '2px 10px', fontFamily: 'inherit',
+              animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both',
             }}>
               {quotaRemaining <= 3
                 ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -1052,15 +1122,17 @@ export default function Home() {
                 marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8,
                 padding: '6px 10px', background: '#FEF2F2',
                 borderRadius: 10, border: '1px solid rgba(139,26,26,0.2)',
+                animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, flex: 1 }}>
                   {isAr ? 'يتم تحليل: ' : 'Analyzing: '}{activeDocumentName}
                 </span>
                 <button
+                  type="button"
                   onClick={() => { setActiveDocumentName(null) }}
+                  aria-label={isAr ? 'مسح المستند النشط' : 'Clear active document'}
                   style={{ background: 'none', border: 'none', color: '#9C8E80', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
-                  title={isAr ? 'مسح' : 'Clear'}
                 ><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
@@ -1071,9 +1143,10 @@ export default function Home() {
                 marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 12px', backgroundColor: 'var(--red-light)',
                 borderRadius: 12, border: '1.5px solid rgba(139,26,26,0.15)',
+                animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 {attachedFile.preview ? (
-                  <img src={attachedFile.preview} alt="preview"
+                  <img src={attachedFile.preview} alt="preview" loading="lazy"
                     style={{ width: 42, height: 42, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
                   <div style={{
@@ -1094,11 +1167,12 @@ export default function Home() {
                     {isAr ? 'جاهز للتحليل' : 'Ready to analyze'}
                   </div>
                 </div>
-                <button onClick={() => setAttachedFile(null)} style={{
+                <button type="button" onClick={() => setAttachedFile(null)} aria-label={isAr ? 'حذف الملف' : 'Remove file'} style={{
                   width: 24, height: 24, borderRadius: '50%',
                   backgroundColor: 'rgba(139,26,26,0.1)', border: 'none',
                   cursor: 'pointer', color: 'var(--red)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  transition: 'background 0.12s',
                 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
@@ -1114,22 +1188,22 @@ export default function Home() {
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[8, 14, 10, 16, 11, 14, 9].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: '#8B1A1A', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 12, color: '#dc2626', fontWeight: 600 }}>
+                <span style={{ fontSize: 12, color: '#8B1A1A', fontWeight: 600 }}>
                   {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
                 </span>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#ef4444', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: '#8B1A1A', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
                       display: 'inline-block',
-                    }} />
+                    }}
                   ))}
                 </span>
               </div>
@@ -1149,7 +1223,7 @@ export default function Home() {
                   border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
                   borderRadius: 20, padding: '6px 8px',
                   boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
-                  transition: 'all 0.2s ease',
+                  transition: 'border-color 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
                 }}>
 
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
@@ -1157,12 +1231,13 @@ export default function Home() {
                 {/* Attach */}
                 <button type="button" onClick={() => fileInputRef.current?.click()} disabled={loading}
                   className="icon-btn"
+                  aria-label={isAr ? 'إرفاق ملف أو صورة' : 'Attach file or image'}
                   title={isAr ? 'إرفاق ملف أو صورة' : 'Attach file or image'}
                   style={{
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12,
                     border: 'none', background: 'none', cursor: loading ? 'default' : 'pointer',
                     color: 'var(--text-3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    opacity: loading ? 0.4 : 1, transition: 'all 0.15s',
+                    opacity: loading ? 0.4 : 1, transition: 'opacity 0.15s, background 0.15s',
                   }}
                   onTouchStart={e => !loading && (e.currentTarget.style.background = 'var(--red-light)')}
                   onTouchEnd={e => (e.currentTarget.style.background = 'none')}>
@@ -1172,7 +1247,7 @@ export default function Home() {
                   </svg>
                 </button>
                 <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt"
-                  style={{ display: 'none' }} onChange={handleFileChange} />
+                  aria-label="رفع ملف" style={{ display: 'none' }} onChange={handleFileChange} />
 
                 {/* Textarea */}
                 <textarea
@@ -1182,6 +1257,7 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
+                  aria-label={isAr ? 'اكتب سؤالك القانوني' : 'Type your legal question'}
                   placeholder={
                     recording
                       ? (isAr ? 'جاري الاستماع...' : 'Listening...')
@@ -1215,17 +1291,18 @@ export default function Home() {
 
                 {/* Mic */}
                 <button type="button" onClick={recording ? stopRecording : startRecording} disabled={loading}
+                  aria-label={recording ? (isAr ? 'إيقاف التسجيل' : 'Stop recording') : (isAr ? 'تسجيل صوتي' : 'Voice input')}
                   className={recording ? '' : 'icon-btn'}
                   style={{
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
                     cursor: loading ? 'default' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: recording
-                      ? 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
+                      ? 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)'
                       : 'none',
                     color: recording ? '#fff' : 'var(--text-3)',
-                    boxShadow: recording ? '0 2px 8px rgba(239,68,68,0.4)' : 'none',
-                    opacity: loading ? 0.4 : 1, transition: 'all 0.2s',
+                    boxShadow: recording ? '0 2px 8px rgba(139,26,26,0.35)' : 'none',
+                    opacity: loading ? 0.4 : 1, transition: 'background 0.15s, box-shadow 0.15s, opacity 0.15s',
                   }}
                   onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
                   onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
@@ -1238,6 +1315,7 @@ export default function Home() {
 
                 {/* Send */}
                 <button type="submit" disabled={!canSend}
+                  aria-label={isAr ? 'إرسال' : 'Send'}
                   className="send-btn"
                   style={{
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
@@ -1247,7 +1325,7 @@ export default function Home() {
                       : 'var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     boxShadow: canSend ? '0 3px 10px rgba(139,26,26,0.35)' : 'none',
-                    transition: 'all 0.2s ease',
+                    transition: 'background 0.15s, box-shadow 0.15s',
                   }}
                   onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
                   onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
@@ -1355,4 +1433,3 @@ export default function Home() {
     </>
   )
 }
-                                                                                           

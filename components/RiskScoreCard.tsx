@@ -24,7 +24,7 @@ const LEVEL_CONFIG: Record<string, {
 }> = {
   low:      { label: 'منخفض',    bg: '#FFFBEB', text: '#78350F', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
   medium:   { label: 'متوسط',    bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
-  high:     { label: 'عالٍ',     bg: '#FFF7ED', text: '#ea580c', border: '#FED7AA', barColor: '#ea580c', iconBg: '#ea580c' },
+  high:     { label: 'عالٍ',     bg: '#FFFBEB', text: '#B45309', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
   critical: { label: 'حرج',      bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
   unknown:  { label: 'غير محدد', bg: '#EAE4D9', text: '#5C4A3A', border: '#D5CEC4', barColor: '#9C8E80', iconBg: '#9C8E80' },
 }
@@ -32,7 +32,7 @@ const LEVEL_CONFIG: Record<string, {
 const ACTION_COLORS: Record<string, string> = {
   continue:      '#78350F',
   verify:        '#B8860B',
-  lawyer_review: '#ea580c',
+  lawyer_review: '#B45309',
   admin_review:  '#8B1A1A',
   human_support: '#8B1A1A',
 }
@@ -60,6 +60,8 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
     : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
 
   return (
+    <>
+    <style>{`@keyframes rscIn { from { opacity:0; transform:translateY(10px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes rscItem { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }`}</style>
     <div
       dir="rtl"
       style={{
@@ -71,6 +73,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
         flexDirection: 'column',
         gap: 12,
         fontFamily: "'Cairo','Inter',sans-serif",
+        animation: 'rscIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}
     >
       {/* Header */}
@@ -103,14 +106,14 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
             height: '100%',
             width: `${Math.min(100, score)}%`,
             background: level === 'critical'
-              ? 'linear-gradient(90deg, #B91C1C, #DC2626)'
+              ? 'linear-gradient(90deg, #6b2737, #8B1A1A)'
               : level === 'high'
-              ? 'linear-gradient(90deg, #C2410C, #EA580C)'
+              ? 'linear-gradient(90deg, #92400E, #B45309)'
               : level === 'medium'
               ? 'linear-gradient(90deg, #B8860B, #CA8A04)'
               : 'linear-gradient(90deg, #78350F, #B45309)',
             boxShadow: level === 'critical'
-              ? '0 0 6px rgba(220,38,38,0.35)'
+              ? '0 0 6px rgba(139,26,26,0.35)'
               : level === 'high'
               ? '0 0 6px rgba(234,88,12,0.35)'
               : '0 0 6px rgba(184,134,11,0.3)',
@@ -128,6 +131,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
               fontSize: 10.5, padding: '2px 9px', borderRadius: 20,
               border: `1px solid ${cfg.border}`, color: cfg.text,
               background: 'rgba(255,255,255,0.7)',
+              animation: 'rscItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s`,
             }}>
               {r}
             </span>
@@ -138,27 +142,8 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
       {/* Action button */}
       {action && ACTION_LABELS[action] && (
         <button
+          type="button"
           onClick={onRequestReview}
           style={{
             width: '100%', padding: '10px 16px', borderRadius: 12,
-            border: 'none', cursor: 'pointer',
-            background: `linear-gradient(135deg, ${ACTION_COLORS[action] || '#8B1A1A'} 0%, ${action === 'admin_review' || action === 'human_support' ? '#6b2737' : ACTION_COLORS[action]} 100%)`,
-            color: '#fff', fontSize: 13, fontWeight: 700,
-            fontFamily: 'inherit',
-            boxShadow: `0 3px 10px ${ACTION_COLORS[action] || '#8B1A1A'}40`,
-            transition: 'transform 0.15s, box-shadow 0.15s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
-        >
-          {ACTION_LABELS[action]}
-        </button>
-      )}
-
-      {/* Disclaimer */}
-      <p style={{ fontSize: 10.5, color: '#9C8E80', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
-        تقييم أولي — لا يُعدّ استشارة قانونية
-      </p>
-    </div>
-  )
-}
+            

@@ -115,7 +115,7 @@ export default function MyFilesPage() {
   const pctColor = (pct: number) => pct === 100 ? '#78350F' : '#8B1A1A'
   const barColor  = (pct: number) => pct === 100
     ? 'linear-gradient(90deg, #78350F, #B45309)'
-    : 'linear-gradient(90deg, #8B1A1A, #C53030)'
+    : 'linear-gradient(90deg, #6b2737, #8B1A1A)'
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
@@ -126,6 +126,8 @@ export default function MyFilesPage() {
         .proc-btn:hover { border-color: #8B1A1A !important; }
         .step-btn:hover { background: #FEF9F9 !important; }
         @keyframes mf-spin { to { transform: rotate(360deg) } }
+        @keyframes mfHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes mfEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 767px) {
           .mf-main-grid { grid-template-columns: 1fr !important; }
           .mf-back-btn { display: flex !important; }
@@ -137,9 +139,12 @@ export default function MyFilesPage() {
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
         padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50,
+        animation: 'mfHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
+            type="button"
+            aria-label="الرئيسية"
             onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -209,10 +214,11 @@ export default function MyFilesPage() {
 
             {/* List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {procs.map(proc => {
+              {procs.map((proc, idx) => {
                 const isActive = selected?.id === proc.id
                 return (
                   <button
+                    type="button"
                     key={proc.id}
                     onClick={() => setSelected(proc)}
                     className="proc-btn"
@@ -223,7 +229,9 @@ export default function MyFilesPage() {
                       border: isActive ? '2px solid #8B1A1A' : '1.5px solid #EAE4D9',
                       background: isActive ? '#FEF7F7' : '#fff',
                       boxShadow: isActive ? '0 2px 10px rgba(139,26,26,0.13)' : '0 1px 3px rgba(0,0,0,0.04)',
-                      cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'all 0.15s',
+                      cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'border-color 0.15s, background 0.15s, box-shadow 0.15s cubic-bezier(0.22,1,0.36,1)',
+                      animation: 'mfEnter 0.24s cubic-bezier(0.22,1,0.36,1) both',
+                      animationDelay: `${Math.min(idx, 8) * 0.06}s`,
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -259,6 +267,7 @@ export default function MyFilesPage() {
               {/* Mobile back button */}
               {selected && (
                 <button
+                  type="button"
                   onClick={() => setSelected(null)}
                   className="mf-back-btn"
                   style={{ display: 'none', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px', background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 9, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: '#5C4A3A' }}
@@ -277,7 +286,7 @@ export default function MyFilesPage() {
                   <p style={{ fontSize: 13, margin: 0 }}>اختر معاملة من القائمة لعرض تفاصيلها</p>
                 </div>
               ) : (
-                <div style={{ background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                <div key={selected.id} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', overflow: 'hidden', animation: 'mfEnter 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
 
                   {/* Panel header */}
                   <div style={{ padding: '20px 22px 18px', borderBottom: '1px solid #EAE4D9', background: '#FAFAF8' }}>
@@ -299,12 +308,14 @@ export default function MyFilesPage() {
                         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                           <span style={{ fontSize: 11, color: '#9C8E80' }}>تأكيد الحذف؟</span>
                           <button
+                            type="button"
                             onClick={() => deleteProc(selected.id)}
-                            style={{ background: '#FEF2F2', border: '1px solid #FECACA', cursor: 'pointer', color: '#B91C1C', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700 }}
+                            style={{ background: '#FEF2F2', border: '1px solid #FECACA', cursor: 'pointer', color: '#8B1A1A', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700 }}
                           >
                             نعم
                           </button>
                           <button
+                            type="button"
                             onClick={() => setConfirmDelete(null)}
                             style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#5C4A3A', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit' }}
                           >
@@ -313,6 +324,7 @@ export default function MyFilesPage() {
                         </div>
                       ) : (
                         <button
+                          type="button"
                           onClick={() => setConfirmDelete(selected.id)}
                           style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
                         >
@@ -356,6 +368,7 @@ export default function MyFilesPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {selected.checklist.map(step => (
                         <button
+                          type="button"
                           key={step.step}
                           onClick={() => toggleStep(selected, step.step)}
                           className="step-btn"
@@ -366,7 +379,9 @@ export default function MyFilesPage() {
                             padding: '11px 13px', borderRadius: 12,
                             border: step.done ? '1.5px solid #FDE68A' : '1.5px solid #EAE4D9',
                             background: step.done ? '#FFFBEB' : '#FAFAF8',
-                            cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'all 0.15s',
+                            cursor: 'pointer', fontFamily: "'Cairo','Inter',sans-serif", transition: 'border-color 0.15s, background 0.15s',
+                            animation: 'mfEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
+                            animationDelay: `${Math.min(step.step - 1, 10) * 0.05}s`,
                           }}
                         >
                           <span style={{
@@ -421,49 +436,4 @@ export default function MyFilesPage() {
                                 color: doc.uploaded ? '#fff' : doc.required ? '#8B1A1A' : '#9C8E80',
                               }}>
                                 {doc.uploaded
-                                  ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                  : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                }
-                              </div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <p style={{ fontSize: 12.5, fontWeight: 700, color: doc.uploaded ? '#78350F' : '#1A1208', margin: 0, textDecoration: doc.uploaded ? 'line-through' : 'none' }}>
-                                  {doc.name_ar}
-                                </p>
-                                {doc.required && !doc.uploaded && (
-                                  <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '2px 0 0', fontWeight: 600 }}>مطلوب</p>
-                                )}
-                              </div>
-                              {doc.uploaded && (
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Notes */}
-                    {selected.notes && (
-                      <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
-                        <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                          ملاحظات
-                        </h4>
-                        <p style={{ fontSize: 12, color: '#854D0E', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="bottom-nav-wrapper">
-        <BottomNav isAr={true} activeTab="account" />
-      </div>
-    </div>
-  )
-}
-               
+                                  ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="

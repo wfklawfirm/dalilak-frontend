@@ -81,7 +81,9 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
   }
 
   return (
-    <nav style={{
+    <>
+    <style>{`@keyframes slideUp { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:translateY(0); } }`}</style>
+    <nav aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'} style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
       background: 'rgba(255,255,255,0.97)',
       backdropFilter: 'blur(20px)',
@@ -92,13 +94,16 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       zIndex: 100,
       minHeight: 56,
+      animation: 'slideUp 0.3s cubic-bezier(0.22,1,0.36,1) both',
     }}>
       {TABS.map(tab => {
         const active = activeTab === tab.id
         return (
           <button
             key={tab.id}
+            type="button"
             onClick={() => handleTab(tab.id)}
+            aria-current={active ? 'page' : undefined}
             onTouchStart={e => {
               e.currentTarget.style.background = active ? 'rgba(139,26,26,0.06)' : 'rgba(0,0,0,0.04)'
               e.currentTarget.style.transform = 'scale(0.95)'
@@ -126,7 +131,7 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
             <span style={{
               color: active ? '#8B1A1A' : '#B0A498',
               opacity: 1,
-              transition: 'all 0.18s',
+              transition: 'color 0.18s, transform 0.18s cubic-bezier(0.22,1,0.36,1)',
               transform: active ? 'scale(1.05)' : 'scale(1)',
             }}>
               {tab.icon}
@@ -138,5 +143,6 @@ export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onCha
         )
       })}
     </nav>
+    </>
   )
 }

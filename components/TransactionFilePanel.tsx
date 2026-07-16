@@ -41,7 +41,7 @@ const RISK_LABEL: Record<RiskLevel, string> = {
 const RISK_DOT_COLOR: Record<RiskLevel, string> = {
   low:     '#B45309',
   medium:  '#B8860B',
-  high:    '#ea580c',
+  high:    '#B45309',
   critical:'#8B1A1A',
   unknown: '#9C8E80',
 }
@@ -70,10 +70,13 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
   const progressPct = requiredCount > 0 ? Math.min(100, Math.round((uploadedCount / requiredCount) * 100)) : 0
 
   return (
+    <>
+    <style>{`@keyframes tfpIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes tfpItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }`}</style>
     <div dir="rtl" style={{
       background: '#fff', borderRadius: 20, boxShadow: '0 8px 40px rgba(0,0,0,0.14)',
       overflow: 'hidden', maxHeight: '90vh', display: 'flex', flexDirection: 'column',
       fontFamily: "'Cairo','Inter',sans-serif",
+      animation: 'tfpIn 0.32s cubic-bezier(0.22,1,0.36,1) both',
     }}>
       {/* Header */}
       <div style={{
@@ -97,6 +100,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         </div>
         {onClose && (
           <button
+            type="button"
             onClick={onClose}
             aria-label="إغلاق"
             style={{
@@ -192,7 +196,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
                 const visibleCount = Math.min(tx.steps.length, 4)
                 const isLast = i === visibleCount - 1
                 return (
-                  <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'stretch', paddingBottom: isLast ? 0 : 10 }}>
+                  <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'stretch', paddingBottom: isLast ? 0 : 10, animation: 'tfpItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.07}s` }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                       <span style={{
                         width: 24, height: 24, borderRadius: '50%',
@@ -258,17 +262,8 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         )}
       </div>
     </div>
+    </>
   )
 }
 
-function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; valueColor?: string }) {
-  return (
-    <div style={{
-      background: '#FAFAF8', border: '1px solid #EAE4D9',
-      borderRadius: 12, padding: '10px 12px', textAlign: 'center',
-    }}>
-      <p style={{ fontSize: 20, fontWeight: 800, color: valueColor, margin: '0 0 2px', fontFamily: "'Cairo','Inter',sans-serif" }}>{value}</p>
-      <p style={{ fontSize: 10, color: '#9C8E80', margin: 0 }}>{label}</p>
-    </div>
-  )
-}
+function StatCard({ label, value, valueColor = '#1A1208' }: { label: string; value: number; val
