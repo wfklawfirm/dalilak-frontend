@@ -29,7 +29,7 @@ echo === Staged files ===
 git status --short
 
 REM 5. Commit
-git commit -m "feat: full ministry-by-ministry gap-fill audit - fixed 21 previously-broken empty entries (real estate, forestry, fees, procedures, refugee affairs); added 16 new services across new categories regie/elections/ngos plus consumer protection, price control, PPA e-procurement, ISF complaint, private security licensing, firearms license (with 2025 freeze caveat), disability card, ESSN/Aman, NACC anti-corruption, NGO registration, voter registry + expat voting; env/energy services added; dawlati live-link migration for 24 matching archive entries; total 367 services across 58 categories, esbuild+UTF8 verified clean"
+git commit -m "fix: comprehensive link audit across all services and forms - fixed 15 dead .gov.lb domains in allServices.ts (interior/mof/isa/moc/moyslebanon/pressorder/refugees/regie/southcouncil/conseilideal/cadastre/mfa) with verified live replacements (moim/finance/insurancecommission/tra/minijes/pressorderlebanon/ministryofdisplaced/regie.com.lb/councilforsouth/statecouncil), fixed 2 malformed concatenated-URL fields, fixed mislabeled water-ministry link; fixed 3 dead domains + 1 dead PDF attachment in curated FORMS_DATA (procedures.ts); added 1 verified missing form link (MBK9-08) to allTransactions.ts; discovered and documented data-integrity issue in the 794-link Wayback forms corpus (folder-level spot check found ~4%% real-capture rate in one folder) - full re-verification blocked by Internet Archive rate-limiting, follow-up needed; total 367 services across 58 categories, all esbuild+UTF8 verified clean"
 
 REM 6. Push to trigger Vercel rebuild
 echo.

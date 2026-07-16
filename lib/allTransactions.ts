@@ -121,6 +121,7 @@ const _M:[string,string,string,string][]=[ // [ar, en, slug, icon]
 ]
 
 const _P:{[k:number]:string}={
+326:'https://web.archive.org/web/2019id_/http://www.dawlati.gov.lb/documents/10180/475468/MBK9-08.pdf',
 26:'https://web.archive.org/web/2019id_/http://www.dawlati.gov.lb/documents/10180/476260/CNSS5-01.pdf',
 27:'https://web.archive.org/web/2019id_/http://www.dawlati.gov.lb/documents/10180/476260/CNSS5-02.pdf',
 42:'https://web.archive.org/web/2019id_/http://www.dawlati.gov.lb/documents/10180/476260/CNSS4-02.pdf',
@@ -1244,7 +1245,7 @@ const _R:[string,number,0|1][]=[
 ['MBK8-15 - E-Services Detail',0,0],
 ['MBK9-02 - E-Services Detail',0,0],
 ['MBK9-06 - E-Services Detail',0,0],
-['MBK9-08 - E-Services Detail',0,0],
+['MBK9-08 - E-Services Detail',0,1],
 ['MNB1-16 - E-Services Detail',0,0],
 ['MNB23-22 - E-Services Detail',0,0],
 ['MNB23-23 - E-Services Detail',0,0],
