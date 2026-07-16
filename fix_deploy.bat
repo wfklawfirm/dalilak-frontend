@@ -29,7 +29,7 @@ echo === Staged files ===
 git status --short
 
 REM 5. Commit
-git commit -m "ux: sprint55 s2 — procedures+authorities+faq+services stats strips→premium cards; services page stats strip added+per-card staggered animations; DraftingStudio stage2 header icon→styled 40px container; GuidedFlow intent icon containers→gradient 38px; register/forgot/reset pages CLEAN"
+git commit -m "feat: add 101 comprehensive Ministry of Finance services (income tax, VAT, built-property tax, indirect taxes/stamp duty, improvement tax, inheritance duty, tax objections x3, pension dept x10, customs x10, land registry x2, cross-cutting x6) + new pensions category; sprint55 s2 stats strips->premium cards"
 
 REM 6. Push to trigger Vercel rebuild
 echo.
