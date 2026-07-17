@@ -13,6 +13,7 @@ import { sanitizeInput } from '@/lib/sanitize'
 import TransactionStarter, { type StarterResult } from '@/components/TransactionStarter'
 import ServiceGroupSheet from '@/components/ServiceGroupSheet'
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
+import { useLanguage } from '@/lib/LanguageContext'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 import { ALL_SERVICES } from '@/lib/allServices'
 
@@ -197,7 +198,7 @@ function shufflePick<T>(arr: T[], n: number): T[] {
 
 export default function Home() {
   const router = useRouter()
-  const [lang, setLang] = useState<Lang>('ar')
+  const { lang, isAr, toggleLang } = useLanguage()
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authChecked, setAuthChecked] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -653,7 +654,6 @@ export default function Home() {
   }
 
   const canSend = Boolean((input.trim() || attachedFile) && !loading)
-  const isAr = lang === 'ar'
   const MAX_INPUT = 4000
   const showCharCount = input.length > 3000
 
@@ -758,7 +758,7 @@ export default function Home() {
           isAr={isAr}
           currentUser={currentUser}
           messages={messages}
-          onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+          onLangToggle={toggleLang}
           onNewChat={() => { setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
           onMenuOpen={() => setMobileMenuOpen(true)}
           onStartGuide={() => setShowGuide(true)}

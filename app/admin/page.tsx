@@ -8,6 +8,7 @@ import {
   adminGetStats, adminGetResets,
   adminGetContentGaps, adminUpdateContentGap,
 } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface UserRow {
   username: string; email: string; full_name: string; phone: string
@@ -54,6 +55,7 @@ const INP: React.CSSProperties = {
 const LBL: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: '#1A1208', display: 'block', marginBottom: 5 }
 
 export default function AdminPage() {
+  const { isAr } = useLanguage()
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('stats')
   const [stats, setStats] = useState<Stats | null>(null)
@@ -183,13 +185,13 @@ export default function AdminPage() {
 
   const me = getUser()
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'stats',       label: 'الإحصائيات' },
-    { id: 'users',       label: 'المستخدمون' },
-    { id: 'create',      label: '+ جديد' },
-    { id: 'resets',      label: 'الاستعادة' },
-    { id: 'feedback',    label: 'التقييمات' },
-    { id: 'escalations', label: 'التصعيد' },
-    { id: 'gaps',        label: 'الثغرات' },
+    { id: 'stats',       label: isAr ? 'الإحصائيات' : 'Stats' },
+    { id: 'users',       label: isAr ? 'المستخدمون' : 'Users' },
+    { id: 'create',      label: isAr ? '+ جديد' : '+ New' },
+    { id: 'resets',      label: isAr ? 'الاستعادة' : 'Resets' },
+    { id: 'feedback',    label: isAr ? 'التقييمات' : 'Feedback' },
+    { id: 'escalations', label: isAr ? 'التصعيد' : 'Escalations' },
+    { id: 'gaps',        label: isAr ? 'الثغرات' : 'Gaps' },
   ]
 
   const SECTION: React.CSSProperties = {
@@ -198,7 +200,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div dir="rtl" style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
+    <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
@@ -218,20 +220,20 @@ export default function AdminPage() {
               <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
             </div>
             <div>
-              <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#fff' }}>لوحة التحكم — دليلك</h1>
-              <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>مرحباً، {me?.full_name || me?.username}</p>
+              <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#fff' }}>{isAr ? 'لوحة التحكم — دليلك' : 'Admin Panel — Dalilak'}</h1>
+              <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>{isAr ? 'مرحباً،' : 'Welcome,'} {me?.full_name || me?.username}</p>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <button type="button" aria-label='تحديث البيانات' onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
+            <button type="button" aria-label={isAr ? 'تحديث البيانات' : 'Refresh data'} onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              {loading ? '...' : 'تحديث'}
+              {loading ? '...' : (isAr ? 'تحديث' : 'Refresh')}
             </button>
             <button type="button" onClick={() => router.push('/')} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
-              التطبيق
+              {isAr ? 'التطبيق' : 'App'}
             </button>
             <button type="button" onClick={() => { clearToken(); router.push('/login') }} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit' }}>
-              خروج
+              {isAr ? 'خروج' : 'Logout'}
             </button>
           </div>
         </div>
@@ -272,7 +274,7 @@ export default function AdminPage() {
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
           }}>
             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            إدارة المحتوى
+            {isAr ? 'إدارة المحتوى' : 'Content management'}
           </Link>
         </div>
       </div>
@@ -312,8 +314,8 @@ export default function AdminPage() {
               <input
                 type="text" value={search}
                 onChange={e => setSearch(e.target.value)}
-                aria-label="ابحث باسم المستخدم أو البريد"
-                placeholder="ابحث باسم المستخدم أو البريد..."
+                aria-label={isAr ? 'ابحث باسم المستخدم أو البريد' : 'Search by username or email'}
+                placeholder={isAr ? 'ابحث باسم المستخدم أو البريد...' : 'Search by username or email...'}
                 style={{ ...INP, maxWidth: 340 }}
               />
             </div>
@@ -322,7 +324,7 @@ export default function AdminPage() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
                     <tr style={{ background: '#FAFAF8', borderBottom: '1px solid #EAE4D9' }}>
-                      {['المستخدم', 'البريد', 'الخطة', 'الأيام', 'آخر دخول', 'إجراءات'].map(h => (
+                      {(isAr ? ['المستخدم', 'البريد', 'الخطة', 'الأيام', 'آخر دخول', 'إجراءات'] : ['User', 'Email', 'Plan', 'Days', 'Last login', 'Actions']).map(h => (
                         <th key={h} style={{ padding: '10px 14px', textAlign: 'right', color: '#9C8E80', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
@@ -341,7 +343,7 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td style={{ padding: '10px 14px', color: '#5C4A3A', fontSize: 13 }}>
-                          {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? `${u.days_left} يوم` : '—'}
+                          {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? (isAr ? `${u.days_left} يوم` : `${u.days_left} days`) : '—'}
                         </td>
                         <td style={{ padding: '10px 14px', color: '#9C8E80', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
                         <td style={{ padding: '10px 14px' }}>
@@ -351,13 +353,13 @@ export default function AdminPage() {
                               onClick={() => { setEditUser(u); setEditPlan(u.plan); setEditPaidUntil(u.paid_until || '') }}
                               className="adm-btn"
                               style={{ fontSize: 11, background: 'rgba(107,39,55,0.08)', color: '#6b2737', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
-                              تعديل
+                              {isAr ? 'تعديل' : 'Edit'}
                             </button>
                             {u.active && (
                               <button type="button" onClick={() => handleDeactivate(u.username)}
                                 className="adm-btn"
                                 style={{ fontSize: 11, background: '#FEF2F2', color: '#8B1A1A', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
-                                تعطيل
+                                {isAr ? 'تعطيل' : 'Deactivate'}
                               </button>
                             )}
                           </div>
@@ -367,7 +369,7 @@ export default function AdminPage() {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>لا يوجد مستخدمون</div>
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#9C8E80', fontSize: 13 }}>{isAr ? 'لا يوجد مستخدمون' : 'No users found'}</div>
                 )}
               </div>
             </div>
@@ -378,7 +380,7 @@ export default function AdminPage() {
         {tab === 'create' && (
           <div style={{ maxWidth: 440 }}>
             <div style={SECTION}>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 18px' }}>إنشاء مستخدم جديد</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 18px' }}>{isAr ? 'إنشاء مستخدم جديد' : 'Create new user'}</h3>
               <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
                   { k: 'full_name', label: 'الاسم الكامل',      type: 'text',     placeholder: 'أحمد علي' },
@@ -410,7 +412,7 @@ export default function AdminPage() {
                   </select>
                 </div>
                 <button type="submit" disabled={loading} style={{ padding: '11px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}>
-                  {loading ? 'جارٍ الإنشاء...' : 'إنشاء المستخدم'}
+                  {loading ? (isAr ? 'جارٍ الإنشاء...' : 'Creating...') : (isAr ? 'إنشاء المستخدم' : 'Create user')}
                 </button>
               </form>
             </div>
@@ -627,8 +629,8 @@ export default function AdminPage() {
           onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }}>
           <div role="dialog" aria-modal="true" aria-label={`تعديل: ${editUser.username}`} onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>تعديل: {editUser.username}</h2>
-              <button type="button" onClick={() => setEditUser(null)} aria-label="إغلاق" style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>{isAr ? 'تعديل' : 'Edit'}: {editUser.username}</h2>
+              <button type="button" onClick={() => setEditUser(null)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
                 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>
@@ -665,14 +667,14 @@ export default function AdminPage() {
                   disabled={loading}
                   style={{ flex: 1, padding: '10px 0', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}
                 >
-                  {loading ? 'جارٍ الحفظ...' : 'حفظ التغييرات'}
+                  {loading ? (isAr ? 'جارٍ الحفظ...' : 'Saving...') : (isAr ? 'حفظ التغييرات' : 'Save changes')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditUser(null)}
                   style={{ padding: '10px 18px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 12, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
                 >
-                  إلغاء
+                  {isAr ? 'إلغاء' : 'Cancel'}
                 </button>
               </div>
             </div>

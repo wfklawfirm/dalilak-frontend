@@ -3,13 +3,15 @@
 import React, { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { clearToken, type User } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface MobileMenuProps {
   isOpen: boolean
   onClose: () => void
-  isAr: boolean
-  lang: 'ar' | 'en'
-  onLangToggle: () => void
+  // اختياريان الآن — يُقرآن من LanguageContext المشترك إن لم يُمرّرا صراحةً
+  isAr?: boolean
+  lang?: 'ar' | 'en'
+  onLangToggle?: () => void
   onHome: () => void
   currentUser: User | null
 }
@@ -89,9 +91,13 @@ const NAV_ITEMS = [
   },
 ]
 
-export default function MobileMenu({ isOpen, onClose, isAr, lang, onLangToggle, onHome, currentUser }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, isAr: isArProp, lang: langProp, onLangToggle: onLangToggleProp, onHome, currentUser }: MobileMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const { isAr: ctxIsAr, lang: ctxLang, toggleLang } = useLanguage()
+  const isAr = isArProp ?? ctxIsAr
+  const lang = langProp ?? ctxLang
+  const onLangToggle = onLangToggleProp ?? toggleLang
 
   const handleNav = (route: string) => {
     if (route === 'home') { onHome(); onClose(); return }

@@ -3,12 +3,16 @@
 import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { isAdmin, type User } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface TopNavProps {
-  isAr: boolean
+  // isAr و onLangToggle أصبحا اختياريين — إن لم يُمرَّرا، يقرأ المكوّن اللغة
+  // المشتركة مباشرة من LanguageContext (حتى لا تُضطر كل صفحة لتمرير حالة لغة
+  // محلية خاصة بها، وهو ما كان يسبب رجوع اللغة للعربية عند تغيير الصفحة).
+  isAr?: boolean
   currentUser: User | null
   messages?: unknown[]
-  onLangToggle: () => void
+  onLangToggle?: () => void
   onNewChat?: () => void
   onMenuOpen?: () => void
   onStartGuide?: () => void
@@ -24,12 +28,15 @@ const NAV_LINKS = [
 ]
 
 export default function TopNav({
-  isAr, currentUser, messages = [], onLangToggle,
+  isAr: isArProp, currentUser, messages = [], onLangToggle: onLangToggleProp,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
 }: TopNavProps) {
   const router  = useRouter()
   const pathname = usePathname()
   const hasChat  = messages.length > 0
+  const { isAr: ctxIsAr, toggleLang } = useLanguage()
+  const isAr = isArProp ?? ctxIsAr
+  const onLangToggle = onLangToggleProp ?? toggleLang
 
   return (
     <>

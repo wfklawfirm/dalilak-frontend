@@ -3,9 +3,11 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { apiLogin, setToken, setUser } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { isAr } = useLanguage()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
@@ -22,14 +24,14 @@ export default function LoginPage() {
       setUser(data.user)
       router.push('/')
     } catch (err) {
-      setError((err instanceof Error ? err.message : 'خطأ في تسجيل الدخول'))
+      setError((err instanceof Error ? err.message : (isAr ? 'خطأ في تسجيل الدخول' : 'Login error')))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div id="main-content" style={{
+    <div id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -84,7 +86,7 @@ export default function LoginPage() {
           دليلك
         </h1>
         <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>
-          دليل المواطن اللبناني الذكي
+          {isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}
         </p>
       </div>
 
@@ -97,7 +99,7 @@ export default function LoginPage() {
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
         <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 20px', textAlign: 'center' }}>
-          تسجيل الدخول
+          {isAr ? 'تسجيل الدخول' : 'Login'}
         </h2>
 
         {error && (
@@ -113,7 +115,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
             <label htmlFor="login-username" style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#5C4A3A', marginBottom: 6 }}>
-              اسم المستخدم أو البريد الإلكتروني
+              {isAr ? 'اسم المستخدم أو البريد الإلكتروني' : 'Username or email'}
             </label>
             <input
               id="login-username"
@@ -123,7 +125,7 @@ export default function LoginPage() {
               value={username}
               onChange={e => setUsername(e.target.value)}
               className="auth-input"
-              placeholder="اسم المستخدم أو البريد"
+              placeholder={isAr ? 'اسم المستخدم أو البريد' : 'Username or email'}
               required
               autoFocus
               autoComplete="username"
@@ -133,7 +135,7 @@ export default function LoginPage() {
 
           <div>
             <label htmlFor="login-password" style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#5C4A3A', marginBottom: 6 }}>
-              كلمة المرور
+              {isAr ? 'كلمة المرور' : 'Password'}
             </label>
             <div style={{ position: 'relative' }}>
               <input
@@ -148,7 +150,7 @@ export default function LoginPage() {
                 style={{ direction: 'ltr', textAlign: 'left', paddingLeft: 44 }}
               />
               <button type="button" tabIndex={-1}
-                aria-label={showPass ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                aria-label={showPass ? (isAr ? 'إخفاء كلمة المرور' : 'Hide password') : (isAr ? 'إظهار كلمة المرور' : 'Show password')}
                 onClick={() => setShowPass(s => !s)}
                 style={{
                   position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
@@ -165,26 +167,26 @@ export default function LoginPage() {
 
           <div style={{ textAlign: 'right' }}>
             <Link href="/forgot-password" style={{ fontSize: 12.5, color: '#8B1A1A', textDecoration: 'none', fontWeight: 600 }}>
-              نسيت كلمة المرور؟
+              {isAr ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
             </Link>
           </div>
 
           <button type="submit" disabled={loading} className="auth-btn">
-            {loading ? 'جاري الدخول...' : 'دخول'}
+            {loading ? (isAr ? 'جاري الدخول...' : 'Logging in...') : (isAr ? 'دخول' : 'Login')}
           </button>
         </form>
 
         <div style={{ marginTop: 20, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
-          ليس لديك حساب؟{' '}
+          {isAr ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
           <Link href="/register" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
-            سجّل الآن — مجاناً لـ 3 أيام
+            {isAr ? 'سجّل الآن — مجاناً لـ 3 أيام' : 'Register now — free for 3 days'}
           </Link>
         </div>
       </div>
 
       {/* Footer note */}
       <p style={{ marginTop: 20, fontSize: 11, color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
-        دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
+        {isAr ? 'دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak — guidance information, not a substitute for a legal professional'}
       </p>
     </div>
   )

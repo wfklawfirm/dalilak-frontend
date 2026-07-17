@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SERVICE_GROUPS, type ServiceItem } from '@/lib/serviceGroups'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const EXPAT_ITEMS = SERVICE_GROUPS.find(g => g.slug === 'expat')?.services ?? []
 const PROPERTY_ITEMS = SERVICE_GROUPS.find(g => g.slug === 'property')?.services ?? []
@@ -98,9 +99,8 @@ function ServiceIcon({ action }: { action: string }) {
 
 export default function ExpatPropertyPackPage() {
   const router = useRouter()
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const { isAr, toggleLang } = useLanguage()
   const [activeSection, setActiveSection] = useState<string>('expat')
-  const isAr = lang === 'ar'
   const dir = isAr ? 'rtl' : 'ltr'
 
   const handleService = (item: ServiceItem) => {
@@ -167,7 +167,7 @@ export default function ExpatPropertyPackPage() {
             </div>
             <button
               type="button"
-              onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+              onClick={toggleLang}
               aria-label="تغيير اللغة"
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}

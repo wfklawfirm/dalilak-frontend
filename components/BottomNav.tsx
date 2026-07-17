@@ -2,9 +2,12 @@
 
 import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface BottomNavProps {
-  isAr: boolean
+  // اختياري الآن — القيمة الافتراضية تُقرأ من LanguageContext المشترك إن لم
+  // يُمرَّر isAr صراحةً (بعض الصفحات القديمة كانت تُمرّر isAr={true} ثابتة).
+  isAr?: boolean
   activeTab?: string
   onHomeClick?: () => void
   onChatClick?: () => void
@@ -64,8 +67,10 @@ const TABS = [
   },
 ] as const
 
-export default function BottomNav({ isAr, activeTab = 'home', onHomeClick, onChatClick }: BottomNavProps) {
+export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeClick, onChatClick }: BottomNavProps) {
   const router = useRouter()
+  const { isAr: ctxIsAr } = useLanguage()
+  const isAr = isArProp ?? ctxIsAr
 
   const handleTab = (id: string) => {
     if (id === 'home' && onHomeClick) { onHomeClick(); return }

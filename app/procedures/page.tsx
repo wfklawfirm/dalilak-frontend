@@ -7,6 +7,7 @@ import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
 import BottomNav from '@/components/BottomNav'
 import { TX_MINISTRIES } from '@/lib/allTransactions'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -68,12 +69,11 @@ function MinistryIcon({ slug, size = 18 }: { slug: string; size?: number }) {
 
 export default function ProceduresPage() {
   const router = useRouter()
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [ministryFilter, setMinistryFilter] = useState('all')
-  const isAr = lang === 'ar'
 
   const filteredGuided = useMemo(() => {
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
@@ -146,7 +146,7 @@ export default function ProceduresPage() {
               </p>
             </div>
           </div>
-          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
+          <button type="button" onClick={toggleLang} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -637,7 +637,7 @@ export default function ProceduresPage() {
 
       </div>
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={lang === 'ar'} activeTab="procedures" /></div>
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
     </div>
   )
 }

@@ -6,17 +6,17 @@ import BottomNav from '@/components/BottomNav'
 import { searchForms } from '@/lib/procedures'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES, filterTxAll, filterTxForms, type TxItem } from '@/lib/allTransactions'
 import type { FormItem } from '@/lib/types'
+import { useLanguage } from '@/lib/LanguageContext'
 
 type ViewTab = 'curated' | 'all-tx' | 'forms-tx'
 
 export default function FormsPage() {
   const router = useRouter()
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [ministryFilter, setMinistryFilter] = useState('all')
   const [viewTab, setViewTab] = useState<ViewTab>('forms-tx')
   const [searchFocused, setSearchFocused] = useState(false)
-  const isAr = lang === 'ar'
 
   const allForms = useMemo(() => searchForms(''), [])
 
@@ -85,7 +85,7 @@ export default function FormsPage() {
               </p>
             </div>
           </div>
-          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
+          <button type="button" onClick={toggleLang} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -360,7 +360,7 @@ export default function FormsPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={lang === 'ar'} activeTab="procedures" />
+        <BottomNav isAr={isAr} activeTab="procedures" />
       </div>
     </div>
   )

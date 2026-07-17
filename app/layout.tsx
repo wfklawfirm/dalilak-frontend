@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
+import { LanguageProvider } from '@/lib/LanguageContext'
+import GlobalLangSwitch from '@/components/GlobalLangSwitch'
 
 export const metadata: Metadata = {
   title: 'دليلك — دليل المواطن اللبناني للمعاملات الحكومية',
@@ -69,10 +71,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Cairo', 'Inter', sans-serif" }}>
-        <a href="#main-content" className="skip-link">
-          انتقل إلى المحتوى الرئيسي
-        </a>
-        {children}
+        <LanguageProvider>
+          <a href="#main-content" className="skip-link">
+            انتقل إلى المحتوى الرئيسي / Skip to main content
+          </a>
+          {children}
+          <GlobalLangSwitch />
+        </LanguageProvider>
       </body>
     </html>
   )

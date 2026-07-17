@@ -1,14 +1,14 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import DraftingStudio from '@/components/DraftingStudio'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function DraftingStudioPage() {
   const router = useRouter()
-  const [lang] = useState<'ar' | 'en'>('ar')
-  const isAr = lang === 'ar'
+  const { isAr } = useLanguage()
 
   const handleSend = (prompt: string) => {
     if (typeof window !== 'undefined') {

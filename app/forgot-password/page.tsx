@@ -2,8 +2,10 @@
 import { useState, FormEvent } from 'react'
 import Link from 'next/link'
 import { apiForgotPassword } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function ForgotPasswordPage() {
+  const { isAr } = useLanguage()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -17,14 +19,14 @@ export default function ForgotPasswordPage() {
       await apiForgotPassword(email.trim())
       setSent(true)
     } catch (err) {
-      setError((err instanceof Error ? err.message : 'خطأ — حاول مرة أخرى'))
+      setError((err instanceof Error ? err.message : (isAr ? 'خطأ — حاول مرة أخرى' : 'Error — please try again')))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div id="main-content" style={{
+    <div id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -79,7 +81,7 @@ export default function ForgotPasswordPage() {
           دليلك
         </h1>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
-          دليل المواطن اللبناني الذكي
+          {isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}
         </p>
       </div>
 
@@ -98,12 +100,12 @@ export default function ForgotPasswordPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
             </div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 10px' }}>تم إرسال الطلب</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 10px' }}>{isAr ? 'تم إرسال الطلب' : 'Request sent'}</h2>
             <p style={{ fontSize: 13, color: '#5C4A3A', lineHeight: 1.6, margin: '0 0 8px' }}>
-              إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.
+              {isAr ? 'إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.' : 'If your email is registered, our support team will contact you within 24 hours with your recovery code.'}
             </p>
             <p style={{ fontSize: 11.5, color: '#9C8E80', margin: '0 0 20px' }}>
-              يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.
+              {isAr ? 'يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.' : 'You can also contact us directly via WhatsApp or email.'}
             </p>
             <Link
               href="/login"
@@ -115,16 +117,16 @@ export default function ForgotPasswordPage() {
                 boxShadow: '0 4px 16px rgba(139,26,26,0.35)',
               }}
             >
-              العودة لتسجيل الدخول
+              {isAr ? 'العودة لتسجيل الدخول' : 'Back to login'}
             </Link>
           </div>
         ) : (
           <>
             <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 6px', textAlign: 'center' }}>
-              استعادة كلمة المرور
+              {isAr ? 'استعادة كلمة المرور' : 'Recover password'}
             </h2>
             <p style={{ fontSize: 12.5, color: '#9C8E80', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
-              أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة
+              {isAr ? 'أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة' : 'Enter your email and we will send you a recovery code'}
             </p>
 
             {error && (
@@ -140,7 +142,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
                 <label htmlFor="fp-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-                  البريد الإلكتروني <span style={{ color: '#8B1A1A' }}>*</span>
+                  {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8B1A1A' }}>*</span>
                 </label>
                 <input
                   id="fp-email"
@@ -157,22 +159,22 @@ export default function ForgotPasswordPage() {
                 />
               </div>
               <button type="submit" disabled={loading} className="auth-btn">
-                {loading ? 'جاري الإرسال...' : 'إرسال رمز الاستعادة'}
+                {loading ? (isAr ? 'جاري الإرسال...' : 'Sending...') : (isAr ? 'إرسال رمز الاستعادة' : 'Send recovery code')}
               </button>
             </form>
 
             <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
               <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
-                العودة لتسجيل الدخول
+                {isAr ? 'العودة لتسجيل الدخول' : 'Back to login'}
               </Link>
             </div>
           </>
         )}
 
         <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: '#9C8E80' }}>
-          لديك رمز الاستعادة بالفعل؟{' '}
+          {isAr ? 'لديك رمز الاستعادة بالفعل؟' : 'Already have a recovery code?'}{' '}
           <Link href="/reset-password" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
-            أدخله هنا
+            {isAr ? 'أدخله هنا' : 'Enter it here'}
           </Link>
         </div>
       </div>
@@ -180,7 +182,7 @@ export default function ForgotPasswordPage() {
       <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
         <span style={{ display:'inline-flex', alignItems:'center', gap:4, justifyContent:'center' }}>
           <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
-          خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
+          {isAr ? 'خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak service — guidance information, not a substitute for a legal professional'}
         </span>
       </p>
     </div>

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -31,6 +32,7 @@ interface MyProc {
 
 export default function MyFilesPage() {
   const router = useRouter()
+  const { isAr } = useLanguage()
   const [procs, setProcs] = useState<MyProc[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<MyProc | null>(null)
@@ -118,7 +120,7 @@ export default function MyFilesPage() {
     : 'linear-gradient(90deg, #6b2737, #8B1A1A)'
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
@@ -150,7 +152,7 @@ export default function MyFilesPage() {
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}
           >
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -159,8 +161,8 @@ export default function MyFilesPage() {
               <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>ملفاتي</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>متابعة معاملاتك الحكومية</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>{isAr ? 'ملفاتي' : 'My Files'}</div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>{isAr ? 'متابعة معاملاتك الحكومية' : 'Track your government procedures'}</div>
             </div>
           </div>
           <Link
@@ -175,7 +177,7 @@ export default function MyFilesPage() {
             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14"/>
             </svg>
-            معاملة جديدة
+            {isAr ? 'معاملة جديدة' : 'New Procedure'}
           </Link>
         </div>
       </header>
@@ -186,15 +188,15 @@ export default function MyFilesPage() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <div style={{ width: 36, height: 36, border: '3px solid #EAE4D9', borderTopColor: '#8B1A1A', borderRadius: '50%', margin: '0 auto 14px', animation: 'mf-spin 0.8s linear infinite' }} />
-            <p style={{ fontSize: 13, color: '#9C8E80', margin: 0 }}>جارٍ التحميل...</p>
+            <p style={{ fontSize: 13, color: '#9C8E80', margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
           </div>
 
         ) : procs.length === 0 ? (
           /* ── Empty state ─────────────────────────────────────────────── */
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>لا توجد معاملات بعد</h2>
-            <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 24px' }}>ابحث عن معاملتك وابدأ متابعتها</p>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>{isAr ? 'لا توجد معاملات بعد' : 'No procedures yet'}</h2>
+            <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 24px' }}>{isAr ? 'ابحث عن معاملتك وابدأ متابعتها' : 'Find your procedure and start tracking it'}</p>
             <Link
               href="/services"
               style={{
@@ -204,7 +206,7 @@ export default function MyFilesPage() {
                 boxShadow: '0 4px 16px rgba(139,26,26,0.3)',
               }}
             >
-              استعرض المعاملات
+              {isAr ? 'استعرض المعاملات' : 'Browse Procedures'}
             </Link>
           </div>
 
@@ -275,7 +277,7 @@ export default function MyFilesPage() {
                   style={{ display: 'none', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px', background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 9, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: '#5C4A3A' }}
                 >
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
-                  العودة إلى القائمة
+                  {isAr ? 'العودة إلى القائمة' : 'Back to list'}
                 </button>
               )}
               {!selected ? (
@@ -285,7 +287,7 @@ export default function MyFilesPage() {
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320,
                 }}>
                   <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
-                  <p style={{ fontSize: 13, margin: 0 }}>اختر معاملة من القائمة لعرض تفاصيلها</p>
+                  <p style={{ fontSize: 13, margin: 0 }}>{isAr ? 'اختر معاملة من القائمة لعرض تفاصيلها' : 'Select a procedure from the list to view its details'}</p>
                 </div>
               ) : (
                 <div key={selected.id} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', overflow: 'hidden', animation: 'mfEnter 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
@@ -393,7 +395,7 @@ export default function MyFilesPage() {
                             background: step.done ? '#B45309' : 'transparent',
                             color: step.done ? '#fff' : '#9C8E80',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 10, fontWeight: 800, marginTop: 2, flexShrink: 0,
+                            fontSize: 10, fontWeight: 800, marginTop: 2,
                           }}>
                             {step.done ? <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> : step.step}
                           </span>
@@ -479,9 +481,8 @@ export default function MyFilesPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={true} activeTab="account" />
+        <BottomNav isAr={isAr} activeTab="account" />
       </div>
     </div>
   )
 }
-               

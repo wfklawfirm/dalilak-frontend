@@ -1,19 +1,19 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import { FLOWCHARTS } from '@/lib/flowchartData'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PageHeader, SectionCard, EmptyState } from '@/components/ui'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function PlaybookPage() {
   const params = useParams()
   const router = useRouter()
   const slug = typeof params?.slug === 'string' ? params.slug : ''
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
-  const isAr = lang === 'ar'
+  const { isAr, toggleLang } = useLanguage()
 
   // Find procedure - EnrichedProcedure uses 'code' field as identifier
   const proc = ENRICHED_PROCEDURES.find(p => p.code === slug || p.code.includes(slug.replace(/-/g, '')))
@@ -47,7 +47,7 @@ export default function PlaybookPage() {
   const langToggle = (
     <button
       type="button"
-      onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+      onClick={toggleLang}
       aria-label="تغيير اللغة"
       style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}
     >

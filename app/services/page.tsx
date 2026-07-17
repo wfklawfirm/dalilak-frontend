@@ -3,6 +3,7 @@ import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
+import { useLanguage } from '@/lib/LanguageContext'
 import type { ServiceItem } from '@/lib/allServices'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
@@ -247,6 +248,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
 
 export default function ServicesPage() {
   const router = useRouter()
+  const { isAr } = useLanguage()
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
@@ -290,7 +292,7 @@ export default function ServicesPage() {
     : null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; height: 3px; }
@@ -336,7 +338,7 @@ export default function ServicesPage() {
               display: 'flex', flexShrink: 0,
             }}
           >
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -349,9 +351,9 @@ export default function ServicesPage() {
               <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>الخدمات الحكومية</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>
-                {ALL_SERVICES.length} خدمة · {SERVICE_CATEGORIES.length} فئة
+                {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
               </div>
             </div>
           </div>
@@ -362,7 +364,7 @@ export default function ServicesPage() {
               background: 'rgba(255,255,255,0.15)', borderRadius: 20,
               padding: '3px 10px', flexShrink: 0, border: '1px solid rgba(255,255,255,0.2)',
             }}>
-              <span aria-live="polite" aria-atomic="true">{filtered.length} نتيجة</span>
+              <span aria-live="polite" aria-atomic="true">{filtered.length} {isAr ? 'نتيجة' : 'results'}</span>
             </span>
           )}
         </div>
@@ -381,8 +383,8 @@ export default function ServicesPage() {
           </span>
           <input
             type="text"
-            aria-label="ابحث في الخدمات"
-            placeholder="ابحث: جواز سفر، تسجيل شركة، ترخيص بناء..."
+            aria-label={isAr ? 'ابحث في الخدمات' : 'Search services'}
+            placeholder={isAr ? 'ابحث: جواز سفر، تسجيل شركة، ترخيص بناء...' : 'Search: passport, company registration, building permit...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchFocused(true)}
@@ -420,9 +422,9 @@ export default function ServicesPage() {
         {/* ── Stats strip — premium individual cards ─────────────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
           {[
-            { value: String(ALL_SERVICES.length), label: 'خدمة حكومية', featured: true },
-            { value: String(SERVICE_CATEGORIES.length), label: 'فئة خدمية', featured: false },
-            { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: 'خدمة أونلاين', featured: false },
+            { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services', featured: true },
+            { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories', featured: false },
+            { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services', featured: false },
           ].map((stat, i) => (
             <div key={stat.label} style={{
               padding: '14px 8px 16px', textAlign: 'center',
@@ -470,7 +472,7 @@ export default function ServicesPage() {
                 whiteSpace: 'nowrap', flexShrink: 0,
               }}
             >
-              الكل ({ALL_SERVICES.length})
+              {isAr ? `الكل (${ALL_SERVICES.length})` : `All (${ALL_SERVICES.length})`}
             </button>
 
             {sortedCategories.map(cat => {
@@ -515,8 +517,8 @@ export default function ServicesPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 12, color: '#9C8E80', fontWeight: 500 }}>
             {filtered.length === ALL_SERVICES.length
-              ? `${ALL_SERVICES.length} خدمة حكومية`
-              : `${filtered.length} خدمة`}
+              ? (isAr ? `${ALL_SERVICES.length} خدمة حكومية` : `${ALL_SERVICES.length} services`)
+              : (isAr ? `${filtered.length} خدمة` : `${filtered.length} services`)}
           </span>
           {activeCatLabel && (
             <>
@@ -542,7 +544,7 @@ export default function ServicesPage() {
           {search && (
             <>
               <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
-              <span style={{ fontSize: 11, color: '#9C8E80' }}>نتائج لـ "{search}"</span>
+              <span style={{ fontSize: 11, color: '#9C8E80' }}>{isAr ? `نتائج لـ "${search}"` : `Results for "${search}"`}</span>
             </>
           )}
         </div>
@@ -556,10 +558,10 @@ export default function ServicesPage() {
               </svg>
             </div>
             <p style={{ color: '#5C4A3A', fontSize: 14, fontWeight: 600, margin: '0 0 5px' }}>
-              لا توجد نتائج مطابقة
+              {isAr ? 'لا توجد نتائج مطابقة' : 'No matching results'}
             </p>
             <p style={{ color: '#9C8E80', fontSize: 12.5, margin: '0 0 18px' }}>
-              جرّب مصطلحاً مختلفاً أو اسأل دليلك مباشرةً
+              {isAr ? 'جرّب مصطلحاً مختلفاً أو اسأل دليلك مباشرةً' : 'Try a different term or ask Dalilak directly'}
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
@@ -577,7 +579,7 @@ export default function ServicesPage() {
                 }}
               >
                 <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                اسأل دليلك
+                {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
               </button>
               <button
                 type="button"
@@ -591,7 +593,7 @@ export default function ServicesPage() {
                   cursor: 'pointer', transition: 'background 0.12s',
                 }}
               >
-                عرض كل الخدمات
+                {isAr ? 'عرض كل الخدمات' : 'Show all services'}
               </button>
             </div>
           </div>
@@ -690,7 +692,7 @@ export default function ServicesPage() {
         />
       )}
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={true} activeTab="services" /></div>
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
     </div>
   )
 }

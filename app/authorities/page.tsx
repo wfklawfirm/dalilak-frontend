@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
+import { useLanguage } from '@/lib/LanguageContext'
 
 // ── Derive unique authorities from local services data ─────────────────────
 interface DerivedAuthority {
@@ -126,6 +127,7 @@ function TypeIcon({ type, size = 20 }: { type: string; size?: number }) {
 
 export default function AuthoritiesPage() {
   const router = useRouter()
+  const { isAr } = useLanguage()
   const [typeFilter, setTypeFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
@@ -154,7 +156,7 @@ export default function AuthoritiesPage() {
     router.push(`/?q=${encodeURIComponent(`ما هي خدمات ${name} وكيف أتواصل معها؟`)}`)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
@@ -186,7 +188,7 @@ export default function AuthoritiesPage() {
               borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
               display: 'flex', flexShrink: 0,
             }}>
-<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: 'scaleX(-1)', display: 'block' }}>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
@@ -200,10 +202,12 @@ export default function AuthoritiesPage() {
             </div>
             <div>
               <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
-                دليل الجهات الرسمية
+                {isAr ? 'دليل الجهات الرسمية' : 'Official Authorities Directory'}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 10, margin: 0 }}>
-                {stats.total} جهة · {stats.totalServices} خدمة · {stats.ministries} وزارة
+                {isAr
+                  ? `${stats.total} جهة · ${stats.totalServices} خدمة · ${stats.ministries} وزارة`
+                  : `${stats.total} authorities · ${stats.totalServices} services · ${stats.ministries} ministries`}
               </p>
             </div>
           </div>
@@ -215,10 +219,10 @@ export default function AuthoritiesPage() {
         {/* Stats banner — premium individual cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
           {[
-            { value: String(stats.total),         label: 'جهة رسمية',     featured: true  },
-            { value: String(stats.ministries),     label: 'وزارة',         featured: false },
-            { value: String(stats.withOnline),     label: 'خدمات أونلاين', featured: false },
-            { value: String(stats.totalServices),  label: 'خدمة موثّقة',   featured: false },
+            { value: String(stats.total),         label: isAr ? 'جهة رسمية' : 'Authorities',     featured: true  },
+            { value: String(stats.ministries),     label: isAr ? 'وزارة' : 'Ministries',         featured: false },
+            { value: String(stats.withOnline),     label: isAr ? 'خدمات أونلاين' : 'Online services', featured: false },
+            { value: String(stats.totalServices),  label: isAr ? 'خدمة موثّقة' : 'Verified services',   featured: false },
           ].map((s, i) => (
             <div key={s.label} style={{
               padding: '13px 8px 15px', textAlign: 'center',
@@ -254,8 +258,8 @@ export default function AuthoritiesPage() {
           </span>
           <input
             type="text"
-            aria-label="ابحث عن جهة رسمية"
-            placeholder="ابحث عن جهة رسمية..."
+            aria-label={isAr ? 'ابحث عن جهة رسمية' : 'Search official authorities'}
+            placeholder={isAr ? 'ابحث عن جهة رسمية...' : 'Search official authorities...'}
             value={search}
             onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchFocused(true)}
@@ -314,7 +318,9 @@ export default function AuthoritiesPage() {
         <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
           <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
           <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
-            {filtered.length === ALL_AUTHORITIES.length ? 'الجهات الرسمية' : `${filtered.length} جهة رسمية`}
+            {filtered.length === ALL_AUTHORITIES.length
+              ? (isAr ? 'الجهات الرسمية' : 'Official Authorities')
+              : (isAr ? `${filtered.length} جهة رسمية` : `${filtered.length} authorities`)}
           </span>
           {search && <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>}
         </div>
@@ -327,8 +333,8 @@ export default function AuthoritiesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
               </svg>
             </div>
-            <p style={{ fontSize: 13.5, fontWeight: 700, color: '#5C4A3A', margin: '0 0 6px' }}>لا توجد جهات مطابقة</p>
-            <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>جرّب كلمة مختلفة أو اسأل دليلك مباشرة</p>
+            <p style={{ fontSize: 13.5, fontWeight: 700, color: '#5C4A3A', margin: '0 0 6px' }}>{isAr ? 'لا توجد جهات مطابقة' : 'No matching authorities'}</p>
+            <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
             <button type="button"
               onClick={() => router.push(`/?q=${encodeURIComponent(`ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟`)}`)}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
@@ -345,7 +351,7 @@ export default function AuthoritiesPage() {
               <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
               </svg>
-              اسأل دليلك
+              {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
             </button>
           </div>
         )}
@@ -464,10 +470,10 @@ export default function AuthoritiesPage() {
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                       </svg>
-                      الموقع الرسمي
+                      {isAr ? 'الموقع الرسمي' : 'Official website'}
                     </a>
                   ) : (
-                    <span style={{ fontSize: 10, color: '#C4B5A5' }}>بلا موقع</span>
+                    <span style={{ fontSize: 10, color: '#C4B5A5' }}>{isAr ? 'بلا موقع' : 'No website'}</span>
                   )}
                   <button type="button" aria-label={`اسأل دليلك عن: ${auth.name_ar}`} onClick={() => askAI(auth.name_ar)}
                     onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
@@ -481,7 +487,7 @@ export default function AuthoritiesPage() {
 <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
-                    اسألني
+                    {isAr ? 'اسألني' : 'Ask'}
                   </button>
                 </div>
               </div>
@@ -491,7 +497,7 @@ export default function AuthoritiesPage() {
 
       </div>
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={true} activeTab="services" /></div>
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
     </div>
   )
 }

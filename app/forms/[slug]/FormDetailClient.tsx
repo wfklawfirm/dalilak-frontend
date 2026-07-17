@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import type { FormItem } from '@/lib/types'
 import { getProcedureBySlug } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface Props {
   form: FormItem
@@ -15,12 +15,7 @@ const BRAND = '#8B1A1A'
 
 export default function FormDetailClient({ form }: Props) {
   const router = useRouter()
-  const [isAr, setIsAr] = useState(true)
-
-  useEffect(() => {
-    const lang = typeof window !== 'undefined' ? localStorage.getItem('dalilak_lang') : null
-    setIsAr(lang !== 'en')
-  }, [])
+  const { isAr } = useLanguage()
 
   const title    = isAr ? form.title_ar    : form.title_en
   const authority = isAr ? form.authority_ar : form.authority_en
@@ -212,7 +207,7 @@ export default function FormDetailClient({ form }: Props) {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={true} activeTab="procedures" onHomeClick={() => router.push('/')} />
+        <BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} />
       </div>
     </div>
   )

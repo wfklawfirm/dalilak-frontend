@@ -3,9 +3,11 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { apiRegister, setToken, setUser } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { isAr } = useLanguage()
   const [form, setForm] = useState({
     full_name: '', username: '', email: '', phone: '', password: '', confirm: ''
   })
@@ -20,8 +22,8 @@ export default function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
-    if (form.password !== form.confirm) { setError('كلمتا المرور غير متطابقتين'); return }
-    if (form.password.length < 6) { setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return }
+    if (form.password !== form.confirm) { setError(isAr ? 'كلمتا المرور غير متطابقتين' : 'Passwords do not match'); return }
+    if (form.password.length < 6) { setError(isAr ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters'); return }
     setLoading(true)
     try {
       const data = await apiRegister({
@@ -35,14 +37,14 @@ export default function RegisterPage() {
       setUser(data.user)
       router.push('/')
     } catch (err) {
-      setError((err instanceof Error ? err.message : 'خطأ في التسجيل'))
+      setError((err instanceof Error ? err.message : (isAr ? 'خطأ في التسجيل' : 'Registration error')))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div id="main-content" style={{
+    <div id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -97,7 +99,7 @@ export default function RegisterPage() {
           دليلك
         </h1>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
-          دليل المواطن اللبناني الذكي
+          {isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}
         </p>
       </div>
 
@@ -110,7 +112,7 @@ export default function RegisterPage() {
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
         <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', textAlign: 'center' }}>
-          إنشاء حساب جديد
+          {isAr ? 'إنشاء حساب جديد' : 'Create a new account'}
         </h2>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <span style={{
@@ -118,7 +120,7 @@ export default function RegisterPage() {
             background: '#FFFBEB', color: '#78350F',
             border: '1px solid #FDE68A', borderRadius: 20, padding: '3px 12px',
           }}>
-            مجاني لمدة 3 أيام
+            {isAr ? 'مجاني لمدة 3 أيام' : 'Free for 3 days'}
           </span>
         </div>
 
@@ -135,14 +137,14 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
           <div>
-            <label htmlFor="reg-fullname" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الاسم الكامل</label>
+            <label htmlFor="reg-fullname" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'الاسم الكامل' : 'Full name'}</label>
             <input id="reg-fullname" type="text" aria-invalid={!!error} aria-describedby={error ? "reg-error" : undefined} value={form.full_name} onChange={e => update('full_name', e.target.value)}
-              className="auth-input" placeholder="أحمد علي" dir="auto" />
+              className="auth-input" placeholder={isAr ? 'أحمد علي' : 'John Doe'} dir="auto" />
           </div>
 
           <div>
             <label htmlFor="reg-username" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              اسم المستخدم <span style={{ color: '#8B1A1A' }}>*</span>
+              {isAr ? 'اسم المستخدم' : 'Username'} <span style={{ color: '#8B1A1A' }}>*</span>
             </label>
             <input id="reg-username" type="text" value={form.username}
               onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
@@ -152,7 +154,7 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="reg-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              البريد الإلكتروني <span style={{ color: '#8B1A1A' }}>*</span>
+              {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8B1A1A' }}>*</span>
             </label>
             <input id="reg-email" type="email" value={form.email} onChange={e => update('email', e.target.value)}
               className="auth-input" placeholder="you@example.com" required
@@ -160,7 +162,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="reg-phone" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>رقم الهاتف</label>
+            <label htmlFor="reg-phone" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'رقم الهاتف' : 'Phone number'}</label>
             <input id="reg-phone" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
               className="auth-input" placeholder="+961 xx xxx xxx"
               dir="ltr" style={{ textAlign: 'left' }} />
@@ -168,7 +170,7 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="reg-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              كلمة المرور <span style={{ color: '#8B1A1A' }}>*</span>
+              {isAr ? 'كلمة المرور' : 'Password'} <span style={{ color: '#8B1A1A' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
               <input id="reg-password" type={showPass ? 'text' : 'password'} value={form.password}
@@ -176,7 +178,7 @@ export default function RegisterPage() {
                 className="auth-input" placeholder="min. 6 characters" required minLength={6}
                 autoComplete="new-password" style={{ direction: 'ltr', textAlign: 'left', paddingLeft: 44 }} />
               <button type="button" tabIndex={-1}
-                aria-label={showPass ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                aria-label={showPass ? (isAr ? 'إخفاء كلمة المرور' : 'Hide password') : (isAr ? 'إظهار كلمة المرور' : 'Show password')}
                 onClick={() => setShowPass(s => !s)}
                 style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex', alignItems: 'center' }}>
                 {showPass
@@ -190,7 +192,7 @@ export default function RegisterPage() {
           {/* Confirm password */}
           <div>
             <label htmlFor="reg-confirm" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              تأكيد كلمة المرور <span style={{ color: '#8B1A1A' }}>*</span>
+              {isAr ? 'تأكيد كلمة المرور' : 'Confirm password'} <span style={{ color: '#8B1A1A' }}>*</span>
             </label>
             <input
               id="reg-confirm"
@@ -198,7 +200,7 @@ export default function RegisterPage() {
               value={form.confirm}
               onChange={e => update('confirm', e.target.value)}
               className="auth-input"
-              placeholder="أعد كتابة كلمة المرور"
+              placeholder={isAr ? 'أعد كتابة كلمة المرور' : 'Re-enter password'}
               required
               autoComplete="new-password"
               style={{ direction: 'ltr', textAlign: 'left' }}
@@ -207,14 +209,14 @@ export default function RegisterPage() {
 
           {/* Submit */}
           <button type="submit" disabled={loading} className="auth-btn" style={{ marginTop: 4 }}>
-            {loading ? 'جارٍ التسجيل...' : 'إنشاء حساب'}
+            {loading ? (isAr ? 'جارٍ التسجيل...' : 'Registering...') : (isAr ? 'إنشاء حساب' : 'Create account')}
           </button>
         </form>
 
         <div style={{ marginTop: 16, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
-          لديك حساب بالفعل؟{' '}
+          {isAr ? 'لديك حساب بالفعل؟' : 'Already have an account?'}{' '}
           <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
-            سجّل الدخول
+            {isAr ? 'سجّل الدخول' : 'Log in'}
           </Link>
         </div>
       </div>
@@ -222,7 +224,7 @@ export default function RegisterPage() {
       <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, justifyContent: 'center' }}>
           <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
-          خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني
+          {isAr ? 'خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak service — guidance information, not a substitute for a legal professional'}
         </span>
       </p>
     </div>

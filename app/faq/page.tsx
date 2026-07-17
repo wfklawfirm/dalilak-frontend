@@ -4,15 +4,15 @@ import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function FAQPage() {
   const router = useRouter()
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
   const [searchFocused, setSearchFocused] = useState(false)
-  const isAr = lang === 'ar'
 
   const filtered = useMemo(() => {
     let items = searchFAQ(search)
@@ -76,7 +76,7 @@ export default function FAQPage() {
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>{isAr ? `${SERVICE_FAQ.length} سؤال · أرقام طوارئ · قانون العمل` : `${SERVICE_FAQ.length} questions · emergency numbers · labor law`}</p>
             </div>
           </div>
-          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
+          <button type="button" onClick={toggleLang} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
@@ -353,7 +353,7 @@ export default function FAQPage() {
       </div>
 
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={lang === 'ar'} activeTab="services" />
+        <BottomNav isAr={isAr} activeTab="services" />
       </div>
     </div>
   )

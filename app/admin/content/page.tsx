@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken, isAdmin } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -45,6 +46,7 @@ interface AuditEntry {
 }
 
 export default function ContentGovernancePage() {
+  const { isAr } = useLanguage()
   const router = useRouter()
   const [items, setItems] = useState<ContentItem[]>([])
   const [auditLog, setAuditLog] = useState<AuditEntry[]>([])
@@ -79,7 +81,7 @@ export default function ContentGovernancePage() {
       const res = await fetch(url, { headers: authHeaders() })
       const data = await res.json()
       setItems(data.items || [])
-    } catch (err) { setLoadError(err instanceof Error ? err.message : 'تعذّر تحميل المحتوى') }
+    } catch (err) { setLoadError(err instanceof Error ? err.message : (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content')) }
     finally { setLoading(false) }
   }
 
@@ -123,7 +125,7 @@ export default function ContentGovernancePage() {
   const statusCounts = items.reduce((acc, i) => { acc[i.status] = (acc[i.status] || 0) + 1; return acc }, {} as Record<string, number>)
 
   return (
-    <div dir="rtl" style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
+    <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } } @keyframes cgItem { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes cgDetailIn { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } } @keyframes cgModalFade { from { opacity:0; } to { opacity:1; } } @keyframes cgModalIn { from { opacity:0; transform:scale(0.94) translateY(14px); } to { opacity:1; transform:scale(1) translateY(0); } } @keyframes cgAuditItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes cntHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       {/* Header */}
@@ -132,27 +134,27 @@ export default function ContentGovernancePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Link href="/admin" style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '5px 10px', color: 'rgba(255,255,255,0.85)', fontSize: 12, textDecoration: 'none' }}>
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
-              لوحة التحكم
+              {isAr ? 'لوحة التحكم' : 'Admin panel'}
             </Link>
-            <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0 }}>إدارة المحتوى</h1>
+            <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0 }}>{isAr ? 'إدارة المحتوى' : 'Content management'}</h1>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button
               type="button"
               onClick={() => { setShowAudit(!showAudit); if (!showAudit) loadAudit() }}
               aria-expanded={showAudit}
-              aria-label='سجل التغييرات'
+              aria-label={isAr ? 'سجل التغييرات' : 'Change log'}
               style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, padding: '7px 14px', color: '#fff', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit' }}
             >
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-              سجل التغييرات
+              {isAr ? 'سجل التغييرات' : 'Change log'}
             </button>
             <button
               type="button"
               onClick={() => setShowCreate(true)}
               style={{ background: 'rgba(255,255,255,0.18)', border: '1.5px solid rgba(255,255,255,0.35)', borderRadius: 9, padding: '7px 16px', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
             >
-              + إنشاء محتوى جديد
+              {isAr ? '+ إنشاء محتوى جديد' : '+ Create new content'}
             </button>
           </div>
         </div>
@@ -190,19 +192,19 @@ export default function ContentGovernancePage() {
           {/* List */}
           <div>
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '48px 0', color: '#9C8E80', fontSize: 13 }}>جارٍ التحميل...</div>
+              <div style={{ textAlign: 'center', padding: '48px 0', color: '#9C8E80', fontSize: 13 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</div>
             ) : loadError ? (
               <div style={{ background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                 <span style={{ fontSize: 13, color: '#8B1A1A', fontWeight: 600, flex: 1 }}>{loadError}</span>
-                <button type="button" onClick={loadItems} style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', background: 'none', border: '1px solid rgba(139,26,26,0.3)', borderRadius: 8, padding: '3px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>إعادة المحاولة</button>
+                <button type="button" onClick={loadItems} style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', background: 'none', border: '1px solid rgba(139,26,26,0.3)', borderRadius: 8, padding: '3px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>{isAr ? 'إعادة المحاولة' : 'Retry'}</button>
               </div>
             ) : filteredItems.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '48px 20px', background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9' }}>
                 <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
                   <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </div>
-                <p style={{ color: '#9C8E80', fontSize: 13, margin: 0 }}>لا يوجد محتوى {filterStatus !== 'all' ? `في حالة "${STATUS_CONFIG[filterStatus]?.label}"` : 'بعد'}</p>
+                <p style={{ color: '#9C8E80', fontSize: 13, margin: 0 }}>{isAr ? `لا يوجد محتوى ${filterStatus !== 'all' ? `في حالة "${STATUS_CONFIG[filterStatus]?.label}"` : 'بعد'}` : `No content ${filterStatus !== 'all' ? `in status "${STATUS_CONFIG[filterStatus]?.label}"` : 'yet'}`}</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -342,14 +344,14 @@ export default function ContentGovernancePage() {
         {showAudit && (
           <div style={{ marginTop: 20, background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', overflow: 'hidden' }}>
             <div style={{ padding: '14px 20px', borderBottom: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#1A1208' }}>سجل التغييرات</h3>
-              <button type="button" onClick={() => setShowAudit(false)} aria-label="إغلاق" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80' }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#1A1208' }}>{isAr ? 'سجل التغييرات' : 'Change log'}</h3>
+              <button type="button" onClick={() => setShowAudit(false)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80' }}>
                 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>
             <div style={{ maxHeight: 400, overflowY: 'auto' }}>
               {auditLog.length === 0 ? (
-                <p style={{ padding: '24px', textAlign: 'center', color: '#9C8E80', fontSize: 13 }}>لا توجد سجلات بعد</p>
+                <p style={{ padding: '24px', textAlign: 'center', color: '#9C8E80', fontSize: 13 }}>{isAr ? 'لا توجد سجلات بعد' : 'No records yet'}</p>
               ) : (
                 <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {auditLog.map((entry, i) => (
@@ -379,10 +381,10 @@ export default function ContentGovernancePage() {
         {/* Create modal */}
         {showCreate && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, animation: 'cgModalFade 0.2s cubic-bezier(0.22,1,0.36,1) both' }} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }}>
-            <div role="dialog" aria-modal="true" aria-label="إنشاء محتوى جديد" onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div role="dialog" aria-modal="true" aria-label={isAr ? 'إنشاء محتوى جديد' : 'Create new content'} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: 0 }}>إنشاء محتوى جديد</h2>
-                <button type="button" onClick={() => setShowCreate(false)} aria-label="إغلاق" style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
+                <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1A1208', margin: 0 }}>{isAr ? 'إنشاء محتوى جديد' : 'Create new content'}</h2>
+                <button type="button" onClick={() => setShowCreate(false)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', transition: 'background 0.12s' }}>
                   <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
               </div>
@@ -436,7 +438,7 @@ export default function ContentGovernancePage() {
                   disabled={creating || !newItem.title_ar.trim() || !newItem.body_ar.trim()}
                   style={{ padding: '11px', borderRadius: 12, background: 'linear-gradient(135deg, #6b2737, #8B1A1A)', border: 'none', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: creating ? 0.7 : 1 }}
                 >
-                  {creating ? 'جارٍ الإنشاء...' : 'إنشاء'}
+                  {creating ? (isAr ? 'جارٍ الإنشاء...' : 'Creating...') : (isAr ? 'إنشاء' : 'Create')}
                 </button>
               </div>
             </div>

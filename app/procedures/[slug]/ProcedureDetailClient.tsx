@@ -1,16 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { getProcedureBySlug, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function ProcedureDetailClient() {
   const router = useRouter()
   const params = useParams()
   const slug = typeof params?.slug === 'string' ? params.slug : ''
-  const [lang, setLang] = useState<'ar' | 'en'>('ar')
-  const isAr = lang === 'ar'
+  const { isAr, toggleLang } = useLanguage()
 
   const proc = getProcedureBySlug(slug)
 
@@ -44,7 +44,7 @@ export default function ProcedureDetailClient() {
             {isAr ? 'الدليل' : 'Directory'}
           </button>
           <span style={{ color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center' }}><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></span>
-          <button type="button" onClick={() => setLang(l => l === 'ar' ? 'en' : 'ar')} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}>
+          <button type="button" onClick={toggleLang} aria-label="تغيير اللغة" style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}>
             {isAr ? 'EN' : 'AR'}
           </button>
         </div>
