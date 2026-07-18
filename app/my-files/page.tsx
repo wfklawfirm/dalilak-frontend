@@ -40,6 +40,7 @@ export default function MyFilesPage() {
   const [actionError, setActionError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [notesDraft, setNotesDraft] = useState('')
+  const [loadError, setLoadError] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
 
   // مزامنة مسودة الملاحظات مع الملف المختار — تُحدَّث عند تبديل الملف أو بعد كل حفظ ناجح
@@ -56,118 +57,102 @@ export default function MyFilesPage() {
     }
   }, [selected])
 
-  useEffect(() => {
+  const loadProcs = () => {
     const token = getToken()
     if (!token) { router.push('/login'); return }
-
+    setLoading(true)
+    setLoadError(false)
     fetch(`${API_URL}/my-procedures`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('load failed')
+        return r.json()
+      })
       .then(data => {
         setProcs(data.procedures || [])
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => { setLoadError(true); setLoading(false) })
+  }
+
+  useEffect(() => {
+    loadProcs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
-  const toggleStep = async (proc: MyProc, stepNum: number) => {
+  // نقطة مشتركة لكل تحديثات الملف (checklist/documents/notes/status) — تتحقق من
+  // res.ok قبل الوثوق بأي استجابة، فلا تُفسد الحالة المعروضة بجسم خطأ (مثلاً عند
+  // انتهاء صلاحية الجلسة يعيد الباك-إند 401 بـ {"detail": "..."} وليس ملفاً حقيقياً)
+  const updateProc = async (proc: MyProc, body: Record<string, unknown>): Promise<MyProc | null> => {
     const token = getToken()
-    if (!token) return
-
-    const doneSteps = proc.checklist
-      .filter(s => s.done)
-      .map(s => s.step)
-
-    const newDone = doneSteps.includes(stepNum)
-      ? doneSteps.filter(s => s !== stepNum)
-      : [...doneSteps, stepNum]
-
+    if (!token) { router.push('/login'); return null }
     setSaving(true)
+    setActionError(null)
     try {
       const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ completed_steps: newDone }),
+        body: JSON.stringify(body),
       })
+      if (!res.ok) {
+        setActionError(isAr ? 'تعذّر حفظ التغيير — حاول مجدداً' : 'Could not save the change — try again')
+        return null
+      }
       const updated: MyProc = await res.json()
       setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
       setSelected(updated)
+      return updated
+    } catch {
+      setActionError(isAr ? 'تعذّر الاتصال بالخادم' : 'Could not reach the server')
+      return null
     } finally {
       setSaving(false)
     }
   }
 
-  const toggleDoc = async (proc: MyProc, docName: string) => {
-    const token = getToken()
-    if (!token) return
+  const toggleStep = (proc: MyProc, stepNum: number) => {
+    const doneSteps = proc.checklist.filter(s => s.done).map(s => s.step)
+    const newDone = doneSteps.includes(stepNum)
+      ? doneSteps.filter(s => s !== stepNum)
+      : [...doneSteps, stepNum]
+    return updateProc(proc, { completed_steps: newDone })
+  }
 
+  const toggleDoc = (proc: MyProc, docName: string) => {
     const uploadedDocs = proc.documents.filter(d => d.uploaded).map(d => d.name_ar)
     const newUploaded = uploadedDocs.includes(docName)
       ? uploadedDocs.filter(d => d !== docName)
       : [...uploadedDocs, docName]
-
-    setSaving(true)
-    try {
-      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ uploaded_documents: newUploaded }),
-      })
-      const updated: MyProc = await res.json()
-      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
-      setSelected(updated)
-    } finally {
-      setSaving(false)
-    }
+    return updateProc(proc, { uploaded_documents: newUploaded })
   }
 
-  const saveNotes = async (proc: MyProc, notes: string) => {
-    const token = getToken()
-    if (!token) return
-    setSaving(true)
-    try {
-      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ notes }),
-      })
-      const updated: MyProc = await res.json()
-      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
-      setSelected(updated)
-    } finally {
-      setSaving(false)
-    }
-  }
+  const saveNotes = (proc: MyProc, notes: string) => updateProc(proc, { notes })
 
-  const updateStatus = async (proc: MyProc, status: string) => {
-    const token = getToken()
-    if (!token) return
-    setSaving(true)
-    try {
-      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ status }),
-      })
-      const updated: MyProc = await res.json()
-      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
-      setSelected(updated)
-    } finally {
-      setSaving(false)
-    }
-  }
+  const updateStatus = (proc: MyProc, status: string) => updateProc(proc, { status })
 
   const deleteProc = async (procId: string) => {
     const token = getToken()
-    if (!token) return
-    await fetch(`${API_URL}/my-procedures/${procId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setProcs(ps => ps.filter(p => p.id !== procId))
-    if (selected?.id === procId) setSelected(null)
-    setConfirmDelete(null)
+    if (!token) { router.push('/login'); return }
+    setSaving(true)
+    setActionError(null)
+    try {
+      const res = await fetch(`${API_URL}/my-procedures/${procId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) {
+        setActionError(isAr ? 'تعذّر حذف الملف — حاول مجدداً' : 'Could not delete — try again')
+        return
+      }
+      setProcs(ps => ps.filter(p => p.id !== procId))
+      if (selected?.id === procId) setSelected(null)
+    } catch {
+      setActionError(isAr ? 'تعذّر الاتصال بالخادم' : 'Could not reach the server')
+    } finally {
+      setSaving(false)
+      setConfirmDelete(null)
+    }
   }
 
   const statusStyle = (s: string): React.CSSProperties => {
@@ -250,11 +235,48 @@ export default function MyFilesPage() {
 
       <div id="main-content" aria-live="polite" aria-label="قائمة المعاملات" style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
 
+        {/* ── Action error banner (save/delete/status failures) ─────────────── */}
+        {actionError && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+            background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.25)', borderRadius: 12,
+            padding: '9px 14px', marginBottom: 14, fontSize: 12.5, color: '#8B1A1A',
+          }}>
+            <span>{actionError}</span>
+            <button
+              type="button"
+              onClick={() => setActionError(null)}
+              aria-label={isAr ? 'إغلاق' : 'Dismiss'}
+              style={{ background: 'none', border: 'none', color: '#8B1A1A', cursor: 'pointer', padding: 2, display: 'flex' }}
+            >
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        )}
+
         {/* ── Loading ─────────────────────────────────────────────────────── */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <div style={{ width: 36, height: 36, border: '3px solid #EAE4D9', borderTopColor: '#8B1A1A', borderRadius: '50%', margin: '0 auto 14px', animation: 'mf-spin 0.8s linear infinite' }} />
             <p style={{ fontSize: 13, color: '#9C8E80', margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
+          </div>
+
+        ) : loadError ? (
+          /* ── Load error state ────────────────────────────────────────── */
+          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 8px' }}>{isAr ? 'تعذّر تحميل ملفاتك' : 'Could not load your files'}</h2>
+            <p style={{ color: '#9C8E80', fontSize: 13, margin: '0 0 20px' }}>{isAr ? 'تحقق من اتصالك بالإنترنت وحاول مجدداً' : 'Check your connection and try again'}</p>
+            <button
+              type="button"
+              onClick={loadProcs}
+              style={{
+                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none',
+                padding: '11px 28px', borderRadius: 14, fontWeight: 700, fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {isAr ? 'إعادة المحاولة' : 'Retry'}
+            </button>
           </div>
 
         ) : procs.length === 0 ? (
