@@ -126,7 +126,7 @@ export default function ContentGovernancePage() {
 
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
-      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } } @keyframes cgItem { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes cgDetailIn { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } } @keyframes cgModalFade { from { opacity:0; } to { opacity:1; } } @keyframes cgModalIn { from { opacity:0; transform:scale(0.94) translateY(14px); } to { opacity:1; transform:scale(1) translateY(0); } } @keyframes cgAuditItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes cntHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
+      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; } .cnt-item:hover { border-color: #C9A090 !important; } .cnt-btn:hover { opacity: 0.88; } .pipeline-tile:hover { border-color: #C9A090 !important; box-shadow: 0 2px 10px rgba(139,26,26,0.08) !important; } .pipeline-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; } @media (max-width: 640px) { .pipeline-grid { grid-template-columns: repeat(3,1fr); } } .content-main { display: grid; gap: 16px; } @media (max-width: 900px) { .content-main { grid-template-columns: 1fr !important; } } @keyframes cgItem { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } } @keyframes cgDetailIn { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } } @keyframes cgModalFade { from { opacity:0; } to { opacity:1; } } @keyframes cgModalIn { from { opacity:0; transform:scale(0.94) translateY(14px); } to { opacity:1; transform:scale(1) translateY(0); } } @keyframes cgAuditItem { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } } @keyframes cntHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)', animation: 'cntHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
@@ -136,6 +136,9 @@ export default function ContentGovernancePage() {
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
               {isAr ? 'لوحة التحكم' : 'Admin panel'}
             </Link>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+            </div>
             <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0 }}>{isAr ? 'إدارة المحتوى' : 'Content management'}</h1>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -168,6 +171,7 @@ export default function ContentGovernancePage() {
             <button
               type="button"
               key={status}
+              className="pipeline-tile"
               onClick={() => setFilterStatus(filterStatus === status ? 'all' : status)}
               aria-pressed={filterStatus === status}
               style={{

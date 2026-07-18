@@ -126,7 +126,6 @@ export default function MyFilesPage() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }
         .proc-btn:hover { border-color: #8B1A1A !important; }
-        .step-btn:hover { background: #FEF9F9 !important; }
         @keyframes mf-spin { to { transform: rotate(360deg) } }
         @keyframes mfHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes mfEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -379,6 +378,8 @@ export default function MyFilesPage() {
                           className="step-btn"
                           onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.99)'; e.currentTarget.style.background = step.done ? '#FFF3C4' : '#FEF2F2' }}
                           onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = step.done ? '#FFFBEB' : '#FAFAF8' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = step.done ? '#FFF3C4' : '#FEF2F2' }}
+                          onMouseLeave={e => { e.currentTarget.style.background = step.done ? '#FFFBEB' : '#FAFAF8' }}
                           style={{
                             width: '100%', textAlign: 'right', display: 'flex', alignItems: 'flex-start', gap: 12,
                             padding: '11px 13px', borderRadius: 12,

@@ -207,6 +207,8 @@ export default function AdminPage() {
         .adm-tr:hover { background: #FAFAF8 !important; }
         .adm-btn:hover { opacity: 0.82; }
         .adm-gap-row:hover { background: #FAFAF8 !important; }
+        .adm-tab:hover { opacity: 0.85; }
+        .adm-filter-chip:hover { border-color: #8B1A1A !important; }
         @keyframes admIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes admItem { from { opacity:0; transform:translateY(10px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         @keyframes admHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
@@ -249,6 +251,7 @@ export default function AdminPage() {
           {TABS.map(t => (
             <button type="button" key={t.id}
               aria-pressed={tab === t.id}
+              className="adm-tab"
               onClick={() => {
                 setTab(t.id)
                 if (t.id === 'resets') loadResets()
@@ -550,6 +553,7 @@ export default function AdminPage() {
               ].map(f => (
                 <button type="button" key={f.k}
                   aria-pressed={gapFilter === f.k}
+                  className="adm-filter-chip"
                   onClick={() => { setGapFilter(f.k); loadContentGaps(f.k) }}
                   style={{
                     padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',

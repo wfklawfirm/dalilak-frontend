@@ -563,6 +563,8 @@ export function ResponseActions({
     <button type="button" aria-label={label} aria-pressed={active !== undefined ? active : undefined} onClick={onClick}
       onTouchStart={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#F5F0EA'; e.currentTarget.style.transform = 'scale(0.95)' }}
       onTouchEnd={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+      onMouseEnter={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#F5F0EA'; e.currentTarget.style.borderColor = active ? (activeBorder || 'rgba(139,26,26,0.3)') : '#D8CFC2' }}
+      onMouseLeave={e => { e.currentTarget.style.background = active ? (activeBg || '#FEF2F2') : '#fff'; e.currentTarget.style.borderColor = active ? (activeBorder || 'rgba(139,26,26,0.3)') : '#EAE4D9' }}
       style={{
       display: 'flex', alignItems: 'center', gap: 4,
       padding: '4px 10px', borderRadius: 20, cursor: 'pointer',
