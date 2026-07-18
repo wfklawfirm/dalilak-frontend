@@ -37,6 +37,7 @@ export default function MyFilesPage() {
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<MyProc | null>(null)
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [notesDraft, setNotesDraft] = useState('')
   const detailRef = useRef<HTMLDivElement>(null)
@@ -130,6 +131,24 @@ export default function MyFilesPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ notes }),
+      })
+      const updated: MyProc = await res.json()
+      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
+      setSelected(updated)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const updateStatus = async (proc: MyProc, status: string) => {
+    const token = getToken()
+    if (!token) return
+    setSaving(true)
+    try {
+      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
       })
       const updated: MyProc = await res.json()
       setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
@@ -374,14 +393,35 @@ export default function MyFilesPage() {
                           </button>
                         </div>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => setConfirmDelete(selected.id)}
-                          style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}
-                        >
-                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                          حذف
-                        </button>
+                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                          {selected.status === 'cancelled' ? (
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(selected, 'active')}
+                              style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#5C4A3A', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                            >
+                              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M4 9a9 9 0 1013.5-7.5"/></svg>
+                              استئناف
+                            </button>
+                          ) : selected.status !== 'completed' && (
+                            <button
+                              type="button"
+                              onClick={() => updateStatus(selected, 'cancelled')}
+                              style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                            >
+                              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6"/></svg>
+                              إلغاء
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDelete(selected.id)}
+                            style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                          >
+                            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            حذف
+                          </button>
+                        </div>
                       )}
                     </div>
 
