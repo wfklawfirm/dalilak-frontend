@@ -205,8 +205,8 @@ export default function ResetPasswordPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 12px', backdropFilter: 'blur(8px)',
         }}>
-          <img src="/logo.PNG" alt="دليلك"
-            style={{ width: 50, height: 50, objectFit: 'contain', mixBlendMode: 'multiply' }} />
+          <img src="/logo-icon.png" alt="دليلك"
+            style={{ width: 50, height: 50, objectFit: 'contain' }} />
         </div>
         <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>دليلك</h1>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>{isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}</p>

@@ -106,7 +106,7 @@ export default function TopNav({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               overflow: 'hidden',
             }}>
-              <img src="/logo.PNG" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
+              <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
               <div style={{
@@ -180,7 +180,7 @@ export default function TopNav({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               overflow: 'hidden',
             }}>
-              <img src="/logo.PNG" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
             <div style={{
               fontSize: 17, fontWeight: 900, color: '#fff',

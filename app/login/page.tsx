@@ -79,8 +79,8 @@ export default function LoginPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 14px', backdropFilter: 'blur(8px)',
         }}>
-          <img src="/logo.PNG" alt="دليلك"
-            style={{ width: 56, height: 56, objectFit: 'contain', mixBlendMode: 'multiply' }} />
+          <img src="/logo-icon.png" alt="دليلك"
+            style={{ width: 56, height: 56, objectFit: 'contain' }} />
         </div>
         <h1 style={{ fontSize: 24, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>
           دليلك

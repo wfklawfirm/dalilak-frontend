@@ -56,7 +56,7 @@ export default function ChatMessage({
           boxShadow: '0 2px 8px rgba(139,26,26,0.15)',
           overflow: 'hidden',
         }}>
-          <img src="/logo.PNG" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+          <img src="/logo-icon.png" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain' }} />
         </div>
       )}
 

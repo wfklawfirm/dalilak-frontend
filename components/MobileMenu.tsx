@@ -188,7 +188,7 @@ export default function MobileMenu({ isOpen, onClose, isAr: isArProp, lang: lang
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden', flexShrink: 0,
               }}>
-                <img src="/logo.PNG" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
+                <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.3px' }}>دليلك</div>
