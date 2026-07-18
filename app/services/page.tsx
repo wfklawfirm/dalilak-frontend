@@ -7,6 +7,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
 import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
+import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
 import type { ServiceItem } from '@/lib/allServices'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
@@ -159,13 +160,16 @@ function ServiceSheet({ service, onClose, onAsk }: {
               {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
             </h3>
             {svcFlowchart ? (
-              <ProcedureFlowchartComponent
-                flowchart={svcFlowchart}
-                isAr={isAr}
-                compact
-                completedNodeIds={svcProgress.completedNodes}
-                onToggleNode={svcProgress.toggleNode}
-              />
+              <>
+                <ProcedureFlowchartComponent
+                  flowchart={svcFlowchart}
+                  isAr={isAr}
+                  compact
+                  completedNodeIds={svcProgress.completedNodes}
+                  onToggleNode={svcProgress.toggleNode}
+                />
+                <SaveToMyFilesButton slug={flowchartSource.slug} titleAr={service.name_ar} flowchart={svcFlowchart} isAr={isAr} compact />
+              </>
             ) : (
               <button
                 type="button"

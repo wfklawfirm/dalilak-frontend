@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
+import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
 import { FLOWCHARTS } from '@/lib/flowchartData'
 import { useFlowchart } from '@/lib/useFlowchart'
 import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
@@ -135,6 +136,7 @@ export default function PlaybookPage() {
                   </button>
                 </div>
               )}
+              <SaveToMyFilesButton slug={slug} titleAr={proc?.title || activeFlowchart.titleAr} flowchart={activeFlowchart} isAr={isAr} />
             </SectionCard>
           </>
         ) : (

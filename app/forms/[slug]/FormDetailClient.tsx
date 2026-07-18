@@ -9,6 +9,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
 import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
+import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
 
 interface Props {
   form: FormItem
@@ -188,13 +189,16 @@ export default function FormDetailClient({ form }: Props) {
             {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
           </h3>
           {formFlowchart ? (
-            <ProcedureFlowchartComponent
-              flowchart={formFlowchart}
-              isAr={isAr}
-              compact
-              completedNodeIds={formProgress.completedNodes}
-              onToggleNode={formProgress.toggleNode}
-            />
+            <>
+              <ProcedureFlowchartComponent
+                flowchart={formFlowchart}
+                isAr={isAr}
+                compact
+                completedNodeIds={formProgress.completedNodes}
+                onToggleNode={formProgress.toggleNode}
+              />
+              <SaveToMyFilesButton slug={flowchartSource.slug} titleAr={form.title_ar} flowchart={formFlowchart} isAr={isAr} compact />
+            </>
           ) : (
             <button
               type="button"

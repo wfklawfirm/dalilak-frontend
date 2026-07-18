@@ -370,3 +370,23 @@ export async function generateFlowchart(data: {
   if (!res.ok) throw new Error(json.detail || 'تعذّر توليد خارطة الإجراء')
   return json
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  My Files — Case Workspace (يتطلب تسجيل الدخول)
+// ═══════════════════════════════════════════════════════════════
+
+export async function startTrackingProcedure(data: {
+  procedure_id: string
+  title_ar: string
+  checklist?: Array<{ step: number; title_ar: string; desc_ar?: string }>
+  documents?: Array<{ name_ar: string; required?: boolean }>
+}) {
+  const res = await fetch(`${API}/my-procedures`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'تعذّر حفظ المعاملة في ملفاتي')
+  return json
+}
