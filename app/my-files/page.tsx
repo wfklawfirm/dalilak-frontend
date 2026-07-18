@@ -38,7 +38,13 @@ export default function MyFilesPage() {
   const [selected, setSelected] = useState<MyProc | null>(null)
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [notesDraft, setNotesDraft] = useState('')
   const detailRef = useRef<HTMLDivElement>(null)
+
+  // مزامنة مسودة الملاحظات مع الملف المختار — تُحدَّث عند تبديل الملف أو بعد كل حفظ ناجح
+  useEffect(() => {
+    setNotesDraft(selected?.notes || '')
+  }, [selected?.id, selected?.notes])
 
   // Auto-scroll to detail panel on mobile when item selected
   useEffect(() => {
@@ -82,6 +88,48 @@ export default function MyFilesPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ completed_steps: newDone }),
+      })
+      const updated: MyProc = await res.json()
+      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
+      setSelected(updated)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const toggleDoc = async (proc: MyProc, docName: string) => {
+    const token = getToken()
+    if (!token) return
+
+    const uploadedDocs = proc.documents.filter(d => d.uploaded).map(d => d.name_ar)
+    const newUploaded = uploadedDocs.includes(docName)
+      ? uploadedDocs.filter(d => d !== docName)
+      : [...uploadedDocs, docName]
+
+    setSaving(true)
+    try {
+      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ uploaded_documents: newUploaded }),
+      })
+      const updated: MyProc = await res.json()
+      setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
+      setSelected(updated)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const saveNotes = async (proc: MyProc, notes: string) => {
+    const token = getToken()
+    if (!token) return
+    setSaving(true)
+    try {
+      const res = await fetch(`${API_URL}/my-procedures/${proc.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ notes }),
       })
       const updated: MyProc = await res.json()
       setProcs(ps => ps.map(p => p.id === proc.id ? updated : p))
@@ -429,12 +477,19 @@ export default function MyFilesPage() {
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           {selected.documents.map((doc, i) => (
-                            <div key={i} style={{
-                              display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',
-                              borderRadius: 10, border: '1.5px solid',
-                              borderColor: doc.uploaded ? '#FDE68A' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
-                              background: doc.uploaded ? '#FFFBEB' : doc.required ? '#FEF7F7' : '#FAFAF8',
-                            }}>
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => toggleDoc(selected, doc.name_ar)}
+                              aria-pressed={doc.uploaded}
+                              aria-label={`${doc.uploaded ? 'إلغاء تعليم' : 'تعليم'} ${doc.name_ar} كجاهز`}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', width: '100%',
+                                borderRadius: 10, border: '1.5px solid', cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
+                                borderColor: doc.uploaded ? '#FDE68A' : doc.required ? 'rgba(139,26,26,0.2)' : '#EAE4D9',
+                                background: doc.uploaded ? '#FFFBEB' : doc.required ? '#FEF7F7' : '#FAFAF8',
+                              }}
+                            >
                               <div style={{
                                 width: 28, height: 28, borderRadius: 8, flexShrink: 0,
                                 background: doc.uploaded ? '#B45309' : doc.required ? '#FEF2F2' : '#EAE4D9',
@@ -457,22 +512,31 @@ export default function MyFilesPage() {
                               {doc.uploaded && (
                                 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                               )}
-                            </div>
+                            </button>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Notes */}
-                    {selected.notes && (
-                      <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
-                        <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 5px', display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                          ملاحظات
-                        </h4>
-                        <p style={{ fontSize: 12, color: '#854D0E', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
-                      </div>
-                    )}
+                    {/* Notes — قابلة للتحرير مباشرة، تُحفظ عند فقدان التركيز إن تغيّرت */}
+                    <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
+                      <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        ملاحظات
+                      </h4>
+                      <textarea
+                        value={notesDraft}
+                        onChange={e => setNotesDraft(e.target.value)}
+                        onBlur={() => { if (notesDraft !== (selected.notes || '')) saveNotes(selected, notesDraft) }}
+                        placeholder="أضف ملاحظة حول هذه المعاملة (مثال: رقم مرجعي، موعد، اسم الموظف)..."
+                        rows={3}
+                        style={{
+                          width: '100%', border: '1px solid #FDE68A', borderRadius: 8, padding: '8px 10px',
+                          fontSize: 12, color: '#854D0E', lineHeight: 1.6, fontFamily: 'inherit', resize: 'vertical',
+                          background: '#fff', boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               )}
