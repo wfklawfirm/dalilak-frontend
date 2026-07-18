@@ -5,6 +5,13 @@ export type RiskLevel = 'low' | 'medium' | 'high' | 'critical'
 export type VerificationStatus = 'verified' | 'partially_verified' | 'draft' | 'outdated'
 export type ReadinessStatus = 'ready_for_review' | 'partially_ready' | 'not_ready'
 
+export type NodeConfidence = 'low' | 'medium' | 'high'
+
+export interface FlowchartSourceRef {
+  title: string
+  website?: string | null
+}
+
 export interface ProcedureFlowNode {
   id: string
   type: NodeType
@@ -18,6 +25,10 @@ export interface ProcedureFlowNode {
   relatedAuthority?: string
   estimatedDuration?: string
   tips?: string[]
+  // أدلة الأصل (فقط للخرائط المولّدة بالذكاء الاصطناعي — lib/useFlowchart.ts):
+  // المصادر الحقيقية المسترجعة من قاعدة المعرفة التي استند إليها توليد هذه الخطوة، ودرجة الثقة بها
+  sourceRefs?: FlowchartSourceRef[] | null
+  confidence?: NodeConfidence | null
 }
 
 export interface ProcedureFlowEdge {
@@ -40,6 +51,11 @@ export interface ProcedureFlowchart {
   estimatedDurationEn?: string
   nodes: ProcedureFlowNode[]
   edges: ProcedureFlowEdge[]
+  // موجودة فقط في الخرائط المولّدة بالذكاء الاصطناعي (POST /flowchart/generate):
+  // هل تم العثور على مصادر حقيقية في قاعدة المعرفة عند التوليد؟ إن كانت false، فالخارطة
+  // اعتمدت فقط على المعطيات العامة المُرسلة من الواجهة دون أدلة مسترجعة — يجب عرض تنبيه للمستخدم.
+  groundedInSources?: boolean
+  generatedBy?: 'ai' | string
 }
 
 // TransactionCompletionScore types

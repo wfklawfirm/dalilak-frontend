@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import { FLOWCHARTS } from '@/lib/flowchartData'
 import { useFlowchart } from '@/lib/useFlowchart'
+import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PageHeader, SectionCard, EmptyState } from '@/components/ui'
 import BottomNav from '@/components/BottomNav'
@@ -36,6 +37,9 @@ export default function PlaybookPage() {
 
   // خارطة مُوثّقة يدوياً لهذا الـ slug إن وُجدت (أعلى جودة)، وإلا الخارطة المولّدة بالذكاء الاصطناعي
   const activeFlowchart = FLOWCHARTS[slug] || aiFlowchart
+
+  // حفظ واستكمال التقدم — أي خطوات أنجزها المستخدم وأي مستندات جهّزها، محفوظة محلياً حسب الـ slug
+  const progress = useFlowchartProgress(slug)
 
   const langToggle = (
     <button
@@ -117,7 +121,20 @@ export default function PlaybookPage() {
               <ProcedureFlowchartComponent
                 flowchart={activeFlowchart}
                 isAr={isAr}
+                completedNodeIds={progress.completedNodes}
+                onToggleNode={progress.toggleNode}
               />
+              {progress.completedNodes.length > 0 && (
+                <div style={{ textAlign: isAr ? 'left' : 'right', marginTop: 10 }}>
+                  <button
+                    type="button"
+                    onClick={progress.reset}
+                    style={{ background: 'none', border: 'none', color: '#9C8E80', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
+                  >
+                    {isAr ? 'إعادة ضبط التقدم' : 'Reset progress'}
+                  </button>
+                </div>
+              )}
             </SectionCard>
           </>
         ) : (
@@ -159,12 +176,29 @@ export default function PlaybookPage() {
             defaultOpen={true}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {(isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)).map((doc, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ color: '#8B1A1A', flexShrink: 0, display: 'inline-flex' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                  <span style={{ fontSize: 13, color: '#1A1208' }}>{doc}</span>
-                </div>
-              ))}
+              {(isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)).map((doc, i) => {
+                const checked = progress.isDocChecked(doc)
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => progress.toggleDoc(doc)}
+                    aria-pressed={checked}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 8, background: checked ? '#F5FBF8' : 'transparent',
+                      border: 'none', borderRadius: 8, padding: '4px 6px', cursor: 'pointer', textAlign: isAr ? 'right' : 'left', width: '100%', fontFamily: 'inherit',
+                    }}
+                  >
+                    <span style={{
+                      width: 16, height: 16, borderRadius: 5, flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      border: `1.5px solid ${checked ? '#065F46' : 'rgba(139,26,26,0.4)'}`, background: checked ? '#065F46' : 'transparent',
+                    }}>
+                      {checked && <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>}
+                    </span>
+                    <span style={{ fontSize: 13, color: checked ? '#065F46' : '#1A1208', textDecoration: checked ? 'line-through' : 'none' }}>{doc}</span>
+                  </button>
+                )
+              })}
             </div>
           </SectionCard>
         )}
