@@ -5,6 +5,7 @@ import BottomNav from '@/components/BottomNav'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
+import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import type { ServiceItem } from '@/lib/allServices'
 
@@ -39,6 +40,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
     descriptionAr: displayDescription,
   }), [service.slug, service.name_ar, service.name_en, displayCategory, displayAuthority, displayFees, displayProcessingTime, displayRequiredDocuments, displayDescription])
   const { flowchart: svcFlowchart, loading: fcLoading, error: fcError, generate: generateFc } = useFlowchart(flowchartSource, false)
+  const svcProgress = useFlowchartProgress(flowchartSource.slug)
 
   return (
     <div
@@ -157,7 +159,13 @@ function ServiceSheet({ service, onClose, onAsk }: {
               {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
             </h3>
             {svcFlowchart ? (
-              <ProcedureFlowchartComponent flowchart={svcFlowchart} isAr={isAr} compact />
+              <ProcedureFlowchartComponent
+                flowchart={svcFlowchart}
+                isAr={isAr}
+                compact
+                completedNodeIds={svcProgress.completedNodes}
+                onToggleNode={svcProgress.toggleNode}
+              />
             ) : (
               <button
                 type="button"

@@ -7,6 +7,7 @@ import { getProcedureBySlug } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
+import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 
 interface Props {
@@ -43,6 +44,7 @@ export default function FormDetailClient({ form }: Props) {
     authority: isAr ? (form.authority_ar || form.ministry_ar) : (form.authority_en || form.ministry_en),
   }), [form, isAr])
   const { flowchart: formFlowchart, loading: fcLoading, error: fcError, generate: generateFc } = useFlowchart(flowchartSource, false)
+  const formProgress = useFlowchartProgress(flowchartSource.slug)
 
   const handleDownload = () => {
     if (form.url) window.open(form.url, '_blank', 'noopener,noreferrer')
@@ -186,7 +188,13 @@ export default function FormDetailClient({ form }: Props) {
             {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
           </h3>
           {formFlowchart ? (
-            <ProcedureFlowchartComponent flowchart={formFlowchart} isAr={isAr} compact />
+            <ProcedureFlowchartComponent
+              flowchart={formFlowchart}
+              isAr={isAr}
+              compact
+              completedNodeIds={formProgress.completedNodes}
+              onToggleNode={formProgress.toggleNode}
+            />
           ) : (
             <button
               type="button"
