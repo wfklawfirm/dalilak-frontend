@@ -13,8 +13,17 @@ function ServiceSheet({ service, onClose, onAsk }: {
   onClose: () => void
   onAsk: (q: string) => void
 }) {
+  const { isAr } = useLanguage()
   const closeRef = useRef<HTMLButtonElement>(null)
   useEffect(() => { closeRef.current?.focus() }, [])
+  const displayName = isAr ? service.name_ar : (service.name_en || service.name_ar)
+  const displayAuthority = isAr ? service.authority_ar : (service.authority_en || service.authority_ar)
+  const displayCategory = isAr ? service.category : (service.category_en || service.category)
+  const displayFees = isAr ? service.fees : (service.fees_en || service.fees)
+  const displayProcessingTime = isAr ? service.processing_time : (service.processing_time_en || service.processing_time)
+  const displayDescription = isAr ? service.description : (service.description_en || service.description)
+  const displayRequiredDocuments = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
+  const displayImportantNotes = isAr ? service.important_notes : (service.important_notes_en || service.important_notes)
   return (
     <div
       role="presentation"
@@ -25,7 +34,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={service.name_ar}
+        aria-label={displayName}
         onKeyDown={e => { if (e.key === 'Escape') onClose() }}
         style={{
         background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 720,
@@ -49,10 +58,10 @@ function ServiceSheet({ service, onClose, onAsk }: {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#1A1208', lineHeight: 1.35 }}>
-                {service.name_ar}
+                {displayName}
               </h2>
               <p style={{ margin: '4px 0 0', fontSize: 11, color: '#8B1A1A', fontWeight: 600, lineHeight: 1.3 }}>
-                {service.authority_ar}
+                {displayAuthority}
               </p>
             </div>
             <button
@@ -75,16 +84,16 @@ function ServiceSheet({ service, onClose, onAsk }: {
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
             <span style={{ fontSize: 10.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '3px 10px', border: '1px solid rgba(139,26,26,0.15)', fontWeight: 600 }}>
-              {service.category}
+              {displayCategory}
             </span>
-            {service.fees && (
+            {displayFees && (
               <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                {service.fees}
+                {displayFees}
               </span>
             )}
-            {service.processing_time && (
+            {displayProcessingTime && (
               <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                {service.processing_time}
+                {displayProcessingTime}
               </span>
             )}
             {service.online_available && (
@@ -97,14 +106,14 @@ function ServiceSheet({ service, onClose, onAsk }: {
 
         {/* Body */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
-          {service.description && (
+          {displayDescription && (
             <p style={{ margin: '0 0 16px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.75 }}>
-              {service.description}
+              {displayDescription}
             </p>
           )}
 
           {/* Required documents */}
-          {service.required_documents && service.required_documents.length > 0 && (
+          {displayRequiredDocuments && displayRequiredDocuments.length > 0 && (
             <div style={{ marginBottom: 16 }}>
               <h3 style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FEF2F2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -113,7 +122,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 المستندات المطلوبة
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {service.required_documents.map((doc, i) => (
+                {displayRequiredDocuments.map((doc, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#FAFAF8', borderRadius: 9, border: '1px solid #EAE4D9' }}>
                     <svg aria-hidden="true" width="8" height="8" viewBox="0 0 10 10" style={{ flexShrink: 0 }}><circle cx="5" cy="5" r="4.5" fill="#8B1A1A"/></svg>
                     <span style={{ fontSize: 12, color: '#1A1208', lineHeight: 1.4 }}>{doc}</span>
@@ -124,7 +133,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
           )}
 
           {/* Important notes */}
-          {service.important_notes && (
+          {displayImportantNotes && (
             <div style={{
               display: 'flex', alignItems: 'flex-start', gap: 8,
               background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10,
@@ -134,7 +143,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
               </svg>
               <p style={{ margin: 0, fontSize: 11.5, color: '#78350F', lineHeight: 1.6 }}>
-                {service.important_notes}
+                {displayImportantNotes}
               </p>
             </div>
           )}
@@ -606,7 +615,7 @@ export default function ServicesPage() {
               <button
                 type="button"
                 key={service.id}
-                aria-label={service.name_ar}
+                aria-label={isAr ? service.name_ar : (service.name_en || service.name_ar)}
                 onClick={() => setSelectedService(service)}
                 className="svc-card"
                 style={{
@@ -643,7 +652,7 @@ export default function ServicesPage() {
                   display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                   flex: 1,
                 }}>
-                  {service.name_ar}
+                  {isAr ? service.name_ar : (service.name_en || service.name_ar)}
                 </h3>
 
                 {/* Authority */}
@@ -651,31 +660,40 @@ export default function ServicesPage() {
                   fontSize: 10.5, color: '#8B1A1A', margin: '0 0 10px', fontWeight: 700,
                   display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                 }}>
-                  {service.authority_ar}
+                  {isAr ? service.authority_ar : (service.authority_en || service.authority_ar)}
                 </p>
 
                 {/* Meta row */}
                 <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  {service.fees && (
-                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                      {service.fees.length > 18 ? service.fees.slice(0, 18) + '…' : service.fees}
-                    </span>
-                  )}
-                  {service.processing_time && (
-                    <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
-                      {service.processing_time}
-                    </span>
-                  )}
+                  {(() => {
+                    const cardFees = isAr ? service.fees : (service.fees_en || service.fees)
+                    return cardFees && (
+                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                        {cardFees.length > 18 ? cardFees.slice(0, 18) + '…' : cardFees}
+                      </span>
+                    )
+                  })()}
+                  {(() => {
+                    const cardProcessingTime = isAr ? service.processing_time : (service.processing_time_en || service.processing_time)
+                    return cardProcessingTime && (
+                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                        {cardProcessingTime}
+                      </span>
+                    )
+                  })()}
                   {service.online_available && (
                     <span style={{ fontSize: 10, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '2px 8px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
                       أونلاين
                     </span>
                   )}
-                  {service.required_documents && service.required_documents.length > 0 && (
-                    <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
-                      {service.required_documents.length} وثيقة
-                    </span>
-                  )}
+                  {(() => {
+                    const cardDocs = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
+                    return cardDocs && cardDocs.length > 0 && (
+                      <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
+                        {cardDocs.length} وثيقة
+                      </span>
+                    )
+                  })()}
                 </div>
               </button>
             ))}

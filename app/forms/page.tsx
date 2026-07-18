@@ -209,19 +209,19 @@ export default function FormsPage() {
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{tx.title}</div>
-                    <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600 }}>{tx.ministry}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', lineHeight: 1.4 }}>{isAr ? tx.title : (tx.titleEn || tx.title)}</div>
+                    <div style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600 }}>{isAr ? tx.ministry : (tx.ministryEn || tx.ministry)}</div>
                   </div>
                   <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                     {tx.hasForm && tx.pdfUrl ? (
                       <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', borderRadius: 8, fontSize: 10, fontWeight: 700, textDecoration: 'none' }}>PDF</a>
                     ) : (
-                      <span style={{ padding: '5px 9px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 8, fontSize: 10 }}>بلا نموذج</span>
+                      <span style={{ padding: '5px 9px', background: '#EAE4D9', color: '#5C4A3A', borderRadius: 8, fontSize: 10 }}>{isAr ? 'بلا نموذج' : 'No form'}</span>
                     )}
-                    <button type="button" onClick={() => askAI(`ما هي متطلبات وخطوات معاملة: ${tx.title}؟`)}
+                    <button type="button" onClick={() => askAI(isAr ? `ما هي متطلبات وخطوات معاملة: ${tx.title}؟` : `What are the requirements and steps for: ${tx.titleEn || tx.title}?`)}
                       onTouchStart={e => { e.currentTarget.style.opacity = '0.75' }}
                       onTouchEnd={e => { e.currentTarget.style.opacity = '1' }}
-                      style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s' }}>اسأل</button>
+                      style={{ padding: '5px 9px', background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 10, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s' }}>{isAr ? 'اسأل' : 'Ask'}</button>
                   </div>
                 </div>
               ))}
@@ -256,25 +256,25 @@ export default function FormsPage() {
                       <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', lineHeight: 1.4, marginBottom: 2 }}>{tx.title}</div>
-                      <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginBottom: 6 }}>{tx.ministry}</div>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208', lineHeight: 1.4, marginBottom: 2 }}>{isAr ? tx.title : (tx.titleEn || tx.title)}</div>
+                      <div style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, marginBottom: 6 }}>{isAr ? tx.ministry : (tx.ministryEn || tx.ministry)}</div>
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A', fontWeight: 600 }}>نموذج متاح</span>
+                        <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A', fontWeight: 600 }}>{isAr ? 'نموذج متاح' : 'Form available'}</span>
                         {tx.fee && <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>{tx.fee}</span>}
                         {tx.duration && <span style={{ fontSize: 9.5, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(139,26,26,0.2)' }}>{tx.duration}</span>}
                       </div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, marginTop: 10, paddingTop: 8, borderTop: '1px solid #EAE4D9' }}>
-                    <button type="button" onClick={() => askAI(`ما هي متطلبات وإجراءات معاملة: ${tx.title}؟`)}
+                    <button type="button" onClick={() => askAI(isAr ? `ما هي متطلبات وإجراءات معاملة: ${tx.title}؟` : `What are the requirements and procedures for: ${tx.titleEn || tx.title}?`)}
                       onTouchStart={e => { e.currentTarget.style.opacity = '0.8'; e.currentTarget.style.transform = 'scale(0.97)' }}
                       onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                       style={{ flex: 1, padding: '7px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', boxShadow: '0 1px 4px rgba(139,26,26,0.2)', transition: 'opacity 0.12s, transform 0.12s' }}>
-                      اسأل دليلك
+                      {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
                     </button>
                     {tx.pdfUrl && (
                       <a href={tx.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, padding: '7px', background: '#fff', color: '#8B1A1A', border: '1.5px solid rgba(139,26,26,0.2)', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        تحميل النموذج
+                        {isAr ? 'تحميل النموذج' : 'Download form'}
                       </a>
                     )}
                     {!tx.pdfUrl && (

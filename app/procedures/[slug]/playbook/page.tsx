@@ -61,7 +61,7 @@ export default function PlaybookPage() {
 
       <PageHeader
         titleAr={`دليل التنفيذ${proc ? `: ${proc.title}` : ''}`}
-        titleEn={`Playbook${proc ? `: ${proc.title}` : ''}`}
+        titleEn={`Playbook${proc ? `: ${proc.title_en || proc.title}` : ''}`}
         subtitleAr="خطوات تفصيلية لإتمام المعاملة"
         subtitleEn="Step-by-step guide to complete the procedure"
         isAr={isAr}
@@ -128,7 +128,7 @@ export default function PlaybookPage() {
             defaultOpen={true}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {proc.requiredDocuments.map((doc, i) => (
+              {(isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)).map((doc, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ color: '#8B1A1A', flexShrink: 0, display: 'inline-flex' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                   <span style={{ fontSize: 13, color: '#1A1208' }}>{doc}</span>
@@ -249,7 +249,7 @@ export default function PlaybookPage() {
             onClick={() => {
               const q = isAr
                 ? `اشرح لي إجراء: ${proc?.title ?? slug}`
-                : `Explain this procedure: ${proc?.title ?? slug}`
+                : `Explain this procedure: ${(proc?.title_en || proc?.title) ?? slug}`
               router.push(`/?q=${encodeURIComponent(q)}`)
             }}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.26)' }}

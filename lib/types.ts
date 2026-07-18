@@ -102,6 +102,7 @@ export interface ProcedureFee {
   label_ar: string
   label_en: string
   amount?: string
+  amount_en?: string
   notes_ar?: string
   notes_en?: string
 }

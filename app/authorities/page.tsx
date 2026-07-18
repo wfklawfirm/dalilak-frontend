@@ -9,9 +9,11 @@ import { useLanguage } from '@/lib/LanguageContext'
 // ── Derive unique authorities from local services data ─────────────────────
 interface DerivedAuthority {
   name_ar: string
+  name_en: string
   type: string
   serviceCount: number
   categories: string[]
+  categories_en: string[]
   website?: string
   phone?: string
   working_hours?: string
@@ -36,9 +38,11 @@ function deriveAuthorities(): DerivedAuthority[] {
 
       map.set(key, {
         name_ar: key,
+        name_en: svc.authority_en || key,
         type,
         serviceCount: 0,
         categories: [],
+        categories_en: [],
         website: svc.website || undefined,
         phone: svc.phone || undefined,
         working_hours: svc.working_hours || undefined,
@@ -48,7 +52,10 @@ function deriveAuthorities(): DerivedAuthority[] {
     const entry = map.get(key)!
     entry.serviceCount++
     if (svc.online_available) entry.online_count++
-    if (!entry.categories.includes(svc.category)) entry.categories.push(svc.category)
+    if (!entry.categories.includes(svc.category)) {
+      entry.categories.push(svc.category)
+      entry.categories_en.push(svc.category_en || svc.category)
+    }
     if (!entry.website && svc.website) entry.website = svc.website
     if (!entry.phone && svc.phone) entry.phone = svc.phone
     if (!entry.working_hours && svc.working_hours) entry.working_hours = svc.working_hours
@@ -384,7 +391,7 @@ export default function AuthoritiesPage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: '#1A1208', lineHeight: 1.35 }}>
-                      {auth.name_ar}
+                      {isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}
                     </p>
                     <span style={{
                       fontSize: 10, fontWeight: 700, color: colors.color,
@@ -423,7 +430,7 @@ export default function AuthoritiesPage() {
                   </div>
                   {/* Category tags — show first 2 */}
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {auth.categories.slice(0, 2).map(cat => (
+                    {(isAr ? auth.categories : (auth.categories_en.length ? auth.categories_en : auth.categories)).slice(0, 2).map(cat => (
                       <span key={cat} style={{
                         fontSize: 9.5, color: '#7C6050', background: '#F5F0EB',
                         borderRadius: 6, padding: '2px 6px',
@@ -475,7 +482,7 @@ export default function AuthoritiesPage() {
                   ) : (
                     <span style={{ fontSize: 10, color: '#C4B5A5' }}>{isAr ? 'بلا موقع' : 'No website'}</span>
                   )}
-                  <button type="button" aria-label={`اسأل دليلك عن: ${auth.name_ar}`} onClick={() => askAI(auth.name_ar)}
+                  <button type="button" aria-label={`اسأل دليلك عن: ${isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}`} onClick={() => askAI(auth.name_ar)}
                     onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
                     style={{

@@ -16,10 +16,11 @@ interface GuidedFlowProps {
 // ── Build procedure list from ALL_SERVICES (no duplicates) ────────────────────
 const ALL_PROCEDURES = ALL_SERVICES.map(s => ({
   ar: s.name_ar,
-  en: s.name_ar,
+  en: s.name_en || s.name_ar,
   slug: s.slug,
   categorySlug: s.categorySlug,
   category: s.category,
+  category_en: s.category_en,
   authority: s.authority_ar,
 }))
 
@@ -146,7 +147,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
   // ── Legacy intent ─────────────────────────────────────────────────────────────
   const handleLegacyIntent = (intent: typeof INTENTS[0]) => {
     if (!selectedProc) return
-    const proc = selectedProc.ar
+    const proc = isAr ? selectedProc.ar : (selectedProc.en || selectedProc.ar)
     const contextDetails = Object.values(answers).length > 0
       ? (isAr ? ` (التفاصيل: ${Object.values(answers).join('، ')})` : ` (Details: ${Object.values(answers).join(', ')})`)
       : ''
@@ -356,10 +357,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                         <span style={{ display: 'flex', flexShrink: 0, color: '#8B1A1A', marginTop: 1 }}>
                           <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         </span>
-                        <span style={{ fontSize: 11.5, fontWeight: 600, color: '#1A1208', lineHeight: 1.35 }}>{p.ar}</span>
+                        <span style={{ fontSize: 11.5, fontWeight: 600, color: '#1A1208', lineHeight: 1.35 }}>{isAr ? p.ar : (p.en || p.ar)}</span>
                       </div>
                       {search.trim() && p.category && (
-                        <span style={{ fontSize: 9.5, color: '#9C8E80', paddingRight: 20 }}>{p.category}</span>
+                        <span style={{ fontSize: 9.5, color: '#9C8E80', paddingRight: 20 }}>{isAr ? p.category : (p.category_en || p.category)}</span>
                       )}
                     </button>
                   ))}
@@ -375,7 +376,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
               {selectedProc && (
                 <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  {selectedProc.ar}
+                  {isAr ? selectedProc.ar : (selectedProc.en || selectedProc.ar)}
                 </div>
               )}
 
@@ -449,7 +450,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
               {selectedProc && (
                 <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  {selectedProc.ar}
+                  {isAr ? selectedProc.ar : (selectedProc.en || selectedProc.ar)}
                 </div>
               )}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 9 }}>

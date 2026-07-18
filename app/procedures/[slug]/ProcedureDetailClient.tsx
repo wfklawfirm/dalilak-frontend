@@ -191,7 +191,7 @@ export default function ProcedureDetailClient() {
               {proc.fees.map((fee, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12.5, color: '#1A1208', fontWeight: 500 }}>{isAr ? fee.label_ar : fee.label_en}</span>
-                  <span style={{ fontSize: 13, color: '#B45309', fontWeight: 700 }}>{fee.amount}</span>
+                  <span style={{ fontSize: 13, color: '#B45309', fontWeight: 700 }}>{isAr ? fee.amount : (fee.amount_en || fee.amount)}</span>
                 </div>
               ))}
             </div>
