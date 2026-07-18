@@ -4,10 +4,14 @@ cd /d "%~dp0"
 echo === Dalilak Frontend — Sprint 36-42: audit + SEO + a11y + RTL + brand + gradient ===
 echo.
 
-REM 1. Remove stale git lock
+REM 1. Remove stale git locks (from a previous crashed/killed git process)
 if exist ".git\index.lock" (
     echo Removing stale .git\index.lock...
     del /f /q ".git\index.lock"
+)
+if exist ".git\HEAD.lock" (
+    echo Removing stale .git\HEAD.lock...
+    del /f /q ".git\HEAD.lock"
 )
 
 REM 2. Remove all stray zero-byte files accidentally created in previous sessions
