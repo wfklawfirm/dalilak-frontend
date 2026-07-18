@@ -1,11 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import type { FormItem } from '@/lib/types'
 import { getProcedureBySlug } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFlowchart } from '@/lib/useFlowchart'
+import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 
 interface Props {
   form: FormItem
@@ -32,6 +34,15 @@ export default function FormDetailClient({ form }: Props) {
   const relatedProcedures = (form.relatedProcedures ?? [])
     .map(slug => getProcedureBySlug(slug))
     .filter(Boolean)
+
+  const flowchartSource = useMemo(() => ({
+    slug: `form-${form.slug}`,
+    titleAr: form.title_ar,
+    titleEn: form.title_en,
+    category: isAr ? form.category_ar : form.category_en,
+    authority: isAr ? (form.authority_ar || form.ministry_ar) : (form.authority_en || form.ministry_en),
+  }), [form, isAr])
+  const { flowchart: formFlowchart, loading: fcLoading, error: fcError, generate: generateFc } = useFlowchart(flowchartSource, false)
 
   const handleDownload = () => {
     if (form.url) window.open(form.url, '_blank', 'noopener,noreferrer')
@@ -167,6 +178,49 @@ export default function FormDetailClient({ form }: Props) {
               </div>
             )
           })()}
+        </div>
+
+        <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #EAE4D9', padding: 20 }}>
+          <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700, color: '#1A1208', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+            {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
+          </h3>
+          {formFlowchart ? (
+            <ProcedureFlowchartComponent flowchart={formFlowchart} isAr={isAr} compact />
+          ) : (
+            <button
+              type="button"
+              onClick={generateFc}
+              disabled={fcLoading}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : '#FEF2F2',
+                border: '1.5px dashed rgba(139,26,26,0.3)', color: '#8B1A1A', fontSize: 12.5, fontWeight: 700,
+                cursor: fcLoading ? 'default' : 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              {fcLoading ? (
+                <>
+                  <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(139,26,26,0.25)', borderTopColor: '#8B1A1A', animation: 'fdcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
+                  {isAr ? 'جارٍ توليد الخارطة بالذكاء الاصطناعي...' : 'Generating AI map...'}
+                </>
+              ) : (
+                <>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                  {isAr ? 'توليد خارطة الإجراء بالذكاء الاصطناعي' : 'Generate AI procedure map'}
+                </>
+              )}
+            </button>
+          )}
+          {fcError && (
+            <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '6px 0 0' }}>
+              {isAr ? 'تعذّر التوليد — ' : 'Generation failed — '}
+              <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: '#8B1A1A', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
+                {isAr ? 'إعادة المحاولة' : 'Retry'}
+              </button>
+            </p>
+          )}
+          <style>{`@keyframes fdcFcSpin { to { transform: rotate(360deg); } }`}</style>
         </div>
 
         {relatedProcedures.length > 0 && (

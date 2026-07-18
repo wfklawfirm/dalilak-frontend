@@ -344,3 +344,29 @@ export async function deleteDocument(docId: string) {
   if (!res.ok) throw new Error(json.detail || 'خطأ في حذف الوثيقة')
   return json
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  AI Flowchart Generation
+// ═══════════════════════════════════════════════════════════════
+
+export async function generateFlowchart(data: {
+  slug: string
+  titleAr: string
+  titleEn?: string
+  category?: string
+  authority?: string
+  fees?: string
+  processingTime?: string
+  requiredDocuments?: string[]
+  descriptionAr?: string
+  knownSteps?: string[]
+}) {
+  const res = await fetch(`${API}/flowchart/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.detail || 'تعذّر توليد خارطة الإجراء')
+  return json
+}

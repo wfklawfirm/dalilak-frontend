@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFlowchart } from '@/lib/useFlowchart'
+import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import type { ServiceItem } from '@/lib/allServices'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
@@ -24,6 +26,20 @@ function ServiceSheet({ service, onClose, onAsk }: {
   const displayDescription = isAr ? service.description : (service.description_en || service.description)
   const displayRequiredDocuments = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
   const displayImportantNotes = isAr ? service.important_notes : (service.important_notes_en || service.important_notes)
+
+  const flowchartSource = useMemo(() => ({
+    slug: `service-${service.slug}`,
+    titleAr: service.name_ar,
+    titleEn: service.name_en,
+    category: displayCategory,
+    authority: displayAuthority,
+    fees: displayFees,
+    processingTime: displayProcessingTime,
+    requiredDocuments: displayRequiredDocuments,
+    descriptionAr: displayDescription,
+  }), [service.slug, service.name_ar, service.name_en, displayCategory, displayAuthority, displayFees, displayProcessingTime, displayRequiredDocuments, displayDescription])
+  const { flowchart: svcFlowchart, loading: fcLoading, error: fcError, generate: generateFc } = useFlowchart(flowchartSource, false)
+
   return (
     <div
       role="presentation"
@@ -131,6 +147,52 @@ function ServiceSheet({ service, onClose, onAsk }: {
               </div>
             </div>
           )}
+
+          {/* AI Flowchart */}
+          <div style={{ marginBottom: 16 }}>
+            <h3 style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FEF2F2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+              </span>
+              {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
+            </h3>
+            {svcFlowchart ? (
+              <ProcedureFlowchartComponent flowchart={svcFlowchart} isAr={isAr} compact />
+            ) : (
+              <button
+                type="button"
+                onClick={generateFc}
+                disabled={fcLoading}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : '#FEF2F2',
+                  border: '1.5px dashed rgba(139,26,26,0.3)', color: '#8B1A1A', fontSize: 12.5, fontWeight: 700,
+                  cursor: fcLoading ? 'default' : 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                {fcLoading ? (
+                  <>
+                    <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(139,26,26,0.25)', borderTopColor: '#8B1A1A', animation: 'svcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
+                    {isAr ? 'جارٍ توليد الخارطة بالذكاء الاصطناعي...' : 'Generating AI map...'}
+                  </>
+                ) : (
+                  <>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    {isAr ? 'توليد خارطة الإجراء بالذكاء الاصطناعي' : 'Generate AI procedure map'}
+                  </>
+                )}
+              </button>
+            )}
+            {fcError && (
+              <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '6px 0 0' }}>
+                {isAr ? 'تعذّر التوليد — ' : 'Generation failed — '}
+                <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: '#8B1A1A', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
+                  {isAr ? 'إعادة المحاولة' : 'Retry'}
+                </button>
+              </p>
+            )}
+            <style>{`@keyframes svcFcSpin { to { transform: rotate(360deg); } }`}</style>
+          </div>
 
           {/* Important notes */}
           {displayImportantNotes && (

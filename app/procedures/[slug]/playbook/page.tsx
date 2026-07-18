@@ -1,9 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import { FLOWCHARTS } from '@/lib/flowchartData'
+import { useFlowchart } from '@/lib/useFlowchart'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PageHeader, SectionCard, EmptyState } from '@/components/ui'
 import BottomNav from '@/components/BottomNav'
@@ -17,32 +18,24 @@ export default function PlaybookPage() {
 
   // Find procedure - EnrichedProcedure uses 'code' field as identifier
   const proc = ENRICHED_PROCEDURES.find(p => p.code === slug || p.code.includes(slug.replace(/-/g, '')))
-  // Find flowchart or use generic
-  const flowchart = FLOWCHARTS[slug] || Object.values(FLOWCHARTS)[0]
 
-  const genericFlowchart = {
-    procedureSlug: slug,
-    titleAr: 'إجراء',
-    titleEn: 'Procedure',
-    country: 'lebanon',
-    version: '1.0',
-    verificationStatus: 'draft' as const,
-    nodes: [
-      { id: 'start', type: 'start' as const, titleAr: 'بداية الإجراء', titleEn: 'Start', status: 'current' as const },
-      { id: 'docs', type: 'document' as const, titleAr: 'تجهيز المستندات', titleEn: 'Prepare Documents', status: 'not_started' as const },
-      { id: 'authority', type: 'authority' as const, titleAr: 'مراجعة الجهة المختصة', titleEn: 'Visit Authority', status: 'not_started' as const },
-      { id: 'submit', type: 'action' as const, titleAr: 'تقديم الطلب', titleEn: 'Submit Request', status: 'not_started' as const },
-      { id: 'completion', type: 'completion' as const, titleAr: 'اكتمال المعاملة', titleEn: 'Complete', status: 'not_started' as const },
-    ],
-    edges: [
-      { id: 'e1', from: 'start', to: 'docs' },
-      { id: 'e2', from: 'docs', to: 'authority' },
-      { id: 'e3', from: 'authority', to: 'submit' },
-      { id: 'e4', from: 'submit', to: 'completion' },
-    ],
-  }
+  // مصدر بيانات توليد الخارطة بالذكاء الاصطناعي — يُستخدم فقط إذا لم توجد خارطة مُوثّقة يدوياً لهذا الـ slug
+  const flowchartSource = useMemo(() => ({
+    slug,
+    titleAr: proc?.title || 'إجراء',
+    titleEn: proc?.title_en || proc?.title,
+    authority: proc?.ministry,
+    fees: proc?.fees,
+    processingTime: proc?.processingTime,
+    requiredDocuments: proc?.requiredDocuments,
+    descriptionAr: proc?.description,
+    knownSteps: proc?.steps,
+  }), [slug, proc])
 
-  const activeFlowchart = FLOWCHARTS[slug] || genericFlowchart
+  const { flowchart: aiFlowchart, loading: fcLoading, error: fcError, isAiGenerated, generate: retryFlowchart } = useFlowchart(flowchartSource, true)
+
+  // خارطة مُوثّقة يدوياً لهذا الـ slug إن وُجدت (أعلى جودة)، وإلا الخارطة المولّدة بالذكاء الاصطناعي
+  const activeFlowchart = FLOWCHARTS[slug] || aiFlowchart
 
   const langToggle = (
     <button
@@ -71,51 +64,89 @@ export default function PlaybookPage() {
 
       <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 120px' }}>
 
-        {/* Overview */}
-        <SectionCard
-          title={isAr ? 'نظرة عامة' : 'Overview'}
-          icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>}
-          bg="#FEF2F2"
-          border="rgba(139,26,26,0.15)"
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {activeFlowchart.estimatedDurationAr && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{isAr ? 'المدة التقديرية:' : 'Est. Duration:'}</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
-                  {isAr ? activeFlowchart.estimatedDurationAr : activeFlowchart.estimatedDurationEn}
-                </span>
+        {activeFlowchart ? (
+          <>
+            {/* Overview */}
+            <SectionCard
+              title={isAr ? 'نظرة عامة' : 'Overview'}
+              icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>}
+              bg="#FEF2F2"
+              border="rgba(139,26,26,0.15)"
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {activeFlowchart.estimatedDurationAr && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{isAr ? 'المدة التقديرية:' : 'Est. Duration:'}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
+                      {isAr ? activeFlowchart.estimatedDurationAr : activeFlowchart.estimatedDurationEn}
+                    </span>
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>{isAr ? 'عدد الخطوات:' : 'Steps:'}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{activeFlowchart.nodes.length}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>{isAr ? 'الدولة:' : 'Country:'}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? 'لبنان' : 'Lebanon'}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 13, color: "#5C4A3A", display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{isAr ? 'حالة التحقق:' : 'Verification:'}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: activeFlowchart.verificationStatus === 'verified' ? '#78350F' : '#B8860B', background: activeFlowchart.verificationStatus === 'verified' ? '#FFFBEB' : '#FFFBEB', borderRadius: 8, padding: '2px 8px' }}>
+                    {activeFlowchart.verificationStatus === 'verified' ? (isAr ? 'موثّق' : 'Verified') : activeFlowchart.verificationStatus === 'partially_verified' ? (isAr ? 'موثّق جزئياً' : 'Partially Verified') : (isAr ? 'مسودة بالذكاء الاصطناعي' : 'AI Draft')}
+                  </span>
+                </div>
+                {isAiGenerated && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, padding: '6px 10px', marginTop: 2 }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    <span style={{ fontSize: 10.5, color: '#B8860B', fontWeight: 700 }}>
+                      {isAr ? 'خارطة مولّدة تلقائياً بالذكاء الاصطناعي — راجعها قبل الاعتماد الكامل' : 'AI-generated map — review before relying on it fully'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </SectionCard>
+
+            {/* Flowchart */}
+            <SectionCard
+              title={isAr ? 'خارطة الإجراء' : 'Procedure Map'}
+              icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>}
+              bg="#fff"
+              border="#EAE4D9"
+            >
+              <ProcedureFlowchartComponent
+                flowchart={activeFlowchart}
+                isAr={isAr}
+              />
+            </SectionCard>
+          </>
+        ) : (
+          <SectionCard
+            title={isAr ? 'خارطة الإجراء' : 'Procedure Map'}
+            icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>}
+            bg="#fff"
+            border="#EAE4D9"
+          >
+            {fcError ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '16px 8px', textAlign: 'center' }}>
+                <p style={{ fontSize: 12.5, color: '#8B1A1A', margin: 0 }}>{isAr ? 'تعذّر توليد خارطة الإجراء بالذكاء الاصطناعي.' : 'Could not generate the AI procedure map.'}</p>
+                <button
+                  type="button"
+                  onClick={retryFlowchart}
+                  style={{ background: '#8B1A1A', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 18px', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                >
+                  {isAr ? 'إعادة المحاولة' : 'Retry'}
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '20px 8px' }}>
+                <div style={{ width: 26, height: 26, borderRadius: '50%', border: '2.5px solid #EAE4D9', borderTopColor: '#8B1A1A', animation: 'pfcSpin 0.8s linear infinite' }} />
+                <style>{`@keyframes pfcSpin { to { transform: rotate(360deg); } }`}</style>
+                <p style={{ fontSize: 12, color: '#9C8E80', margin: 0 }}>{isAr ? 'جارٍ توليد خارطة الإجراء بالذكاء الاصطناعي...' : 'Generating AI procedure map...'}</p>
               </div>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>{isAr ? 'عدد الخطوات:' : 'Steps:'}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{activeFlowchart.nodes.length}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>{isAr ? 'الدولة:' : 'Country:'}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>{isAr ? 'لبنان' : 'Lebanon'}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 13, color: "#5C4A3A", display: 'flex', alignItems: 'center', gap: 4 }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{isAr ? 'حالة التحقق:' : 'Verification:'}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: activeFlowchart.verificationStatus === 'verified' ? '#78350F' : '#B8860B', background: activeFlowchart.verificationStatus === 'verified' ? '#FFFBEB' : '#FFFBEB', borderRadius: 8, padding: '2px 8px' }}>
-                {activeFlowchart.verificationStatus === 'verified' ? (isAr ? 'موثّق' : 'Verified') : activeFlowchart.verificationStatus === 'partially_verified' ? (isAr ? 'موثّق جزئياً' : 'Partially Verified') : (isAr ? 'مسودة' : 'Draft')}
-              </span>
-            </div>
-          </div>
-        </SectionCard>
-
-        {/* Flowchart */}
-        <SectionCard
-          title={isAr ? 'خارطة الإجراء' : 'Procedure Map'}
-          icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>}
-          bg="#fff"
-          border="#EAE4D9"
-        >
-          <ProcedureFlowchartComponent
-            flowchart={activeFlowchart}
-            isAr={isAr}
-          />
-        </SectionCard>
+          </SectionCard>
+        )}
 
         {/* Required documents from proc */}
         {proc && proc.requiredDocuments && proc.requiredDocuments.length > 0 && (
@@ -140,6 +171,7 @@ export default function PlaybookPage() {
 
         {/* Flowchart nodes with docs (from flowchart data) */}
         {(() => {
+          if (!activeFlowchart) return null
           const docsNodes = activeFlowchart.nodes.filter(n => n.requiredDocuments && n.requiredDocuments.length > 0)
           if (docsNodes.length === 0) return null
           return (
@@ -172,6 +204,7 @@ export default function PlaybookPage() {
 
         {/* Risks section */}
         {(() => {
+          if (!activeFlowchart) return null
           const riskNodes = activeFlowchart.nodes.filter(n => n.type === 'risk' || n.riskLevel === 'high' || n.riskLevel === 'critical')
           if (riskNodes.length === 0) return null
           return (
