@@ -121,12 +121,10 @@ const NAV_ITEMS = [
   },
 ]
 
-export default function MobileMenu({ isOpen, onClose, isAr: isArProp, lang: langProp, onLangToggle: onLangToggleProp, onHome, currentUser }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggleProp, onHome, currentUser }: MobileMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { isAr: ctxIsAr, lang: ctxLang, toggleLang } = useLanguage()
-  const isAr = isArProp ?? ctxIsAr
-  const lang = langProp ?? ctxLang
+  const { isAr, lang, toggleLang } = useLanguage()
   const onLangToggle = onLangToggleProp ?? toggleLang
 
   const handleNav = (route: string) => {

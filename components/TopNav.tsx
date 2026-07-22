@@ -28,14 +28,13 @@ const NAV_LINKS = [
 ]
 
 export default function TopNav({
-  isAr: isArProp, currentUser, messages = [], onLangToggle: onLangToggleProp,
+  currentUser, messages = [], onLangToggle: onLangToggleProp,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
 }: TopNavProps) {
   const router  = useRouter()
   const pathname = usePathname()
   const hasChat  = messages.length > 0
-  const { isAr: ctxIsAr, toggleLang } = useLanguage()
-  const isAr = isArProp ?? ctxIsAr
+  const { isAr, toggleLang } = useLanguage()
   const onLangToggle = onLangToggleProp ?? toggleLang
 
   return (
