@@ -188,7 +188,9 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
     if (onSend) onSend(previewPrompt)
   }
 
-  const stageLabels = ['اختر النموذج', 'أدخل البيانات', 'معاينة']
+  const stageLabels = isAr
+    ? ['اختر النموذج', 'أدخل البيانات', 'معاينة']
+    : ['Choose Template', 'Enter Data', 'Preview']
 
   return (
     <div style={{ fontFamily: "'Cairo','Inter',sans-serif", maxWidth: 640, margin: '0 auto' }} dir={isAr ? 'rtl' : 'ltr'}>

@@ -164,7 +164,9 @@ export default function MyFilesPage() {
     return map[s] || { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' }
   }
 
-  const statusLabel = (s: string) => ({ active: 'جارية', completed: 'مكتملة', cancelled: 'ملغاة' }[s] || s)
+  const statusLabel = (s: string) => isAr
+    ? ({ active: 'جارية', completed: 'مكتملة', cancelled: 'ملغاة' }[s] || s)
+    : ({ active: 'Active', completed: 'Completed', cancelled: 'Cancelled' }[s] || s)
 
   const pctColor = (pct: number) => pct === 100 ? '#78350F' : '#8B1A1A'
   const barColor  = (pct: number) => pct === 100
@@ -197,7 +199,7 @@ export default function MyFilesPage() {
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
-            aria-label="الرئيسية"
+            aria-label={isAr ? 'الرئيسية' : 'Home'}
             onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -233,7 +235,7 @@ export default function MyFilesPage() {
         </div>
       </header>
 
-      <div id="main-content" aria-live="polite" aria-label="قائمة المعاملات" style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
+      <div id="main-content" aria-live="polite" aria-label={isAr ? 'قائمة المعاملات' : 'Procedures list'} style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
 
         {/* ── Action error banner (save/delete/status failures) ─────────────── */}
         {actionError && (
@@ -331,7 +333,7 @@ export default function MyFilesPage() {
                         {statusLabel(proc.status)}
                       </span>
                       <span style={{ fontSize: 10, color: '#9C8E80' }}>
-                        {new Date(proc.updated_at).toLocaleDateString('ar-LB')}
+                        {new Date(proc.updated_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                     <h3 style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 10px', lineHeight: 1.4, textAlign: 'right' }}>
@@ -342,8 +344,8 @@ export default function MyFilesPage() {
                       <div style={{ width: `${proc.completion_pct}%`, background: barColor(proc.completion_pct), height: 5, borderRadius: 99, transition: 'width 0.4s ease' }} />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 10.5, color: '#9C8E80' }}>{proc.completion_pct}% مكتمل</span>
-                      {proc.next_step && proc.next_step !== 'مكتمل' && (
+                      <span style={{ fontSize: 10.5, color: '#9C8E80' }}>{proc.completion_pct}% {isAr ? 'مكتمل' : 'complete'}</span>
+                      {proc.next_step && proc.completion_pct < 100 && (
                         <span style={{ fontSize: 10, color: '#8B1A1A', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>
                           <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:2}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {proc.next_step}
                         </span>
@@ -392,26 +394,26 @@ export default function MyFilesPage() {
                             {statusLabel(selected.status)}
                           </span>
                           <span style={{ fontSize: 11, color: '#9C8E80' }}>
-                            بدأت: {new Date(selected.created_at).toLocaleDateString('ar-LB')}
+                            {isAr ? 'بدأت:' : 'Started:'} {new Date(selected.created_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </span>
                         </div>
                       </div>
                       {confirmDelete === selected.id ? (
                         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#9C8E80' }}>تأكيد الحذف؟</span>
+                          <span style={{ fontSize: 11, color: '#9C8E80' }}>{isAr ? 'تأكيد الحذف؟' : 'Confirm delete?'}</span>
                           <button
                             type="button"
                             onClick={() => deleteProc(selected.id)}
                             style={{ background: '#FEF2F2', border: '1px solid #FECACA', cursor: 'pointer', color: '#8B1A1A', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700 }}
                           >
-                            نعم
+                            {isAr ? 'نعم' : 'Yes'}
                           </button>
                           <button
                             type="button"
                             onClick={() => setConfirmDelete(null)}
                             style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#5C4A3A', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit' }}
                           >
-                            لا
+                            {isAr ? 'لا' : 'No'}
                           </button>
                         </div>
                       ) : (
@@ -423,7 +425,7 @@ export default function MyFilesPage() {
                               style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#5C4A3A', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
                             >
                               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M4 9a9 9 0 1013.5-7.5"/></svg>
-                              استئناف
+                              {isAr ? 'استئناف' : 'Resume'}
                             </button>
                           ) : selected.status !== 'completed' && (
                             <button
@@ -432,7 +434,7 @@ export default function MyFilesPage() {
                               style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
                             >
                               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6"/></svg>
-                              إلغاء
+                              {isAr ? 'إلغاء' : 'Cancel'}
                             </button>
                           )}
                           <button
@@ -441,7 +443,7 @@ export default function MyFilesPage() {
                             style={{ background: 'none', border: '1px solid #EAE4D9', cursor: 'pointer', color: '#9C8E80', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
                           >
                             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            حذف
+                            {isAr ? 'حذف' : 'Delete'}
                           </button>
                         </div>
                       )}
@@ -450,7 +452,7 @@ export default function MyFilesPage() {
                     {/* Big progress */}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                        <span style={{ fontSize: 13, color: '#5C4A3A' }}>التقدم الكلي</span>
+                        <span style={{ fontSize: 13, color: '#5C4A3A' }}>{isAr ? 'التقدم الكلي' : 'Overall Progress'}</span>
                         <span style={{ fontSize: 24, fontWeight: 900, color: pctColor(selected.completion_pct) }}>
                           {selected.completion_pct}%
                         </span>
@@ -458,15 +460,15 @@ export default function MyFilesPage() {
                       <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 10 }}>
                         <div style={{ width: `${selected.completion_pct}%`, background: barColor(selected.completion_pct), height: 10, borderRadius: 99, transition: 'width 0.4s ease' }} />
                       </div>
-                      {selected.next_step && selected.next_step !== 'مكتمل' && (
+                      {selected.next_step && selected.completion_pct < 100 && (
                         <p style={{ fontSize: 12.5, color: '#8B1A1A', margin: '8px 0 0', fontWeight: 600 }}>
-                          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:3}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> الخطوة التالية: <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
+                          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:3}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {isAr ? 'الخطوة التالية:' : 'Next step:'} <span style={{ fontWeight: 800 }}>{selected.next_step}</span>
                         </p>
                       )}
                       {selected.completion_pct === 100 && (
                         <p style={{ fontSize: 12.5, color: '#78350F', margin: '8px 0 0', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
                           <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                          تمت المعاملة بنجاح!
+                          {isAr ? 'تمت المعاملة بنجاح!' : 'Procedure completed successfully!'}
                         </p>
                       )}
                     </div>
@@ -475,8 +477,8 @@ export default function MyFilesPage() {
                   {/* Checklist + docs */}
                   <div style={{ padding: '18px 22px' }}>
                     <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> قائمة الخطوات
-                      {saving && <span style={{ fontSize: 11, color: '#9C8E80', fontWeight: 400 }}>جارٍ الحفظ...</span>}
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> {isAr ? 'قائمة الخطوات' : 'Steps Checklist'}
+                      {saving && <span style={{ fontSize: 11, color: '#9C8E80', fontWeight: 400 }}>{isAr ? 'جارٍ الحفظ...' : 'Saving...'}</span>}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {selected.checklist.map((step, si) => (
@@ -522,7 +524,7 @@ export default function MyFilesPage() {
                             {step.done && step.done_at && (
                               <p style={{ fontSize: 10.5, color: '#78350F', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: 3 }}>
                                 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#78350F" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                {new Date(step.done_at).toLocaleDateString('ar-LB')}
+                                {new Date(step.done_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                               </p>
                             )}
                           </div>
@@ -535,7 +537,7 @@ export default function MyFilesPage() {
                       <div style={{ marginTop: 22 }}>
                         <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#1A1208', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
                           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                          المستندات المطلوبة
+                          {isAr ? 'المستندات المطلوبة' : 'Required Documents'}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           {selected.documents.map((doc, i) => (
@@ -544,7 +546,7 @@ export default function MyFilesPage() {
                               type="button"
                               onClick={() => toggleDoc(selected, doc.name_ar)}
                               aria-pressed={doc.uploaded}
-                              aria-label={`${doc.uploaded ? 'إلغاء تعليم' : 'تعليم'} ${doc.name_ar} كجاهز`}
+                              aria-label={isAr ? `${doc.uploaded ? 'إلغاء تعليم' : 'تعليم'} ${doc.name_ar} كجاهز` : `${doc.uploaded ? 'Unmark' : 'Mark'} ${doc.name_ar} as ready`}
                               style={{
                                 display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', width: '100%',
                                 borderRadius: 10, border: '1.5px solid', cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
@@ -568,7 +570,7 @@ export default function MyFilesPage() {
                                   {doc.name_ar}
                                 </p>
                                 {doc.required && !doc.uploaded && (
-                                  <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '2px 0 0', fontWeight: 600 }}>مطلوب</p>
+                                  <p style={{ fontSize: 10.5, color: '#8B1A1A', margin: '2px 0 0', fontWeight: 600 }}>{isAr ? 'مطلوب' : 'Required'}</p>
                                 )}
                               </div>
                               {doc.uploaded && (
@@ -584,13 +586,13 @@ export default function MyFilesPage() {
                     <div style={{ marginTop: 16, padding: '12px 14px', background: '#FFFBEB', borderRadius: 12, border: '1px solid #FEF08A' }}>
                       <h4 style={{ fontSize: 12, fontWeight: 700, color: '#854D0E', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: 5 }}>
                         <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        ملاحظات
+                        {isAr ? 'ملاحظات' : 'Notes'}
                       </h4>
                       <textarea
                         value={notesDraft}
                         onChange={e => setNotesDraft(e.target.value)}
                         onBlur={() => { if (notesDraft !== (selected.notes || '')) saveNotes(selected, notesDraft) }}
-                        placeholder="أضف ملاحظة حول هذه المعاملة (مثال: رقم مرجعي، موعد، اسم الموظف)..."
+                        placeholder={isAr ? 'أضف ملاحظة حول هذه المعاملة (مثال: رقم مرجعي، موعد، اسم الموظف)...' : 'Add a note about this procedure (e.g., reference number, appointment, staff name)...'}
                         rows={3}
                         style={{
                           width: '100%', border: '1px solid #FDE68A', borderRadius: 8, padding: '8px 10px',

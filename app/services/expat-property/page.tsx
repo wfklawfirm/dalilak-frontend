@@ -168,7 +168,7 @@ export default function ExpatPropertyPackPage() {
             <button
               type="button"
               onClick={toggleLang}
-              aria-label="تغيير اللغة"
+              aria-label={isAr ? 'تغيير اللغة' : 'Switch language'}
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
               style={{

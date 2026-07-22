@@ -29,7 +29,7 @@ export default function DraftingStudioPage() {
         animation: 'dsHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
+          <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -40,8 +40,8 @@ export default function DraftingStudioPage() {
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
-              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>استوديو الصياغة</h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>أنشئ مسودات قانونية أولية</p>
+              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>{isAr ? 'استوديو الصياغة' : 'Drafting Studio'}</h1>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>{isAr ? 'أنشئ مسودات قانونية أولية' : 'Create initial legal drafts'}</p>
             </div>
           </div>
         </div>
@@ -62,13 +62,18 @@ export default function DraftingStudioPage() {
             <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </span>
-            ما هو استوديو الصياغة؟
+            {isAr ? 'ما هو استوديو الصياغة؟' : 'What is the Drafting Studio?'}
           </h2>
           <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: '0 0 12px', lineHeight: 1.65 }}>
-            استوديو الصياغة يساعدك على إنشاء مسودات أولية للوثائق القانونية اللبنانية. اختر نوع الوثيقة، أدخل البيانات، وسيولّد دليلك مسودة منسقة.
+            {isAr
+              ? 'استوديو الصياغة يساعدك على إنشاء مسودات أولية للوثائق القانونية اللبنانية. اختر نوع الوثيقة، أدخل البيانات، وسيولّد دليلك مسودة منسقة.'
+              : 'The Drafting Studio helps you create initial drafts of Lebanese legal documents. Choose a document type, enter your data, and Dalilak will generate a formatted draft.'}
           </p>
           <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
-            {['إنذارات الإخلاء', 'عقود التمديد', 'رسائل الاعتراض', 'الوكالات القانونية', 'الطلبات الإدارية'].map((tag, i) => (
+            {(isAr
+              ? ['إنذارات الإخلاء', 'عقود التمديد', 'رسائل الاعتراض', 'الوكالات القانونية', 'الطلبات الإدارية']
+              : ['Eviction Notices', 'Contract Extensions', 'Objection Letters', 'Powers of Attorney', 'Administrative Requests']
+            ).map((tag, i) => (
               <span key={tag} className="ds-tag" style={{ fontSize: 10.5, color: '#8B1A1A', background: 'rgba(139,26,26,0.07)', border: '1px solid rgba(139,26,26,0.18)', borderRadius: 20, padding: '3px 11px', fontWeight: 700, animation: 'dsIn 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${0.12 + i * 0.05}s` }}>{tag}</span>
             ))}
           </div>
@@ -78,7 +83,9 @@ export default function DraftingStudioPage() {
         <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12, padding: '10px 14px', marginBottom: 20, display: 'flex', gap: 8, alignItems: 'flex-start', animation: 'dsIn 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.38s' }}>
           <span style={{ display: 'flex', flexShrink: 0, marginTop: 1 }}><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>
           <p style={{ fontSize: 11.5, color: '#92400E', margin: 0, lineHeight: 1.65 }}>
-            هذه المسودات للأغراض التوجيهية فقط وليست وثائق قانونية معتمدة. يُنصح بمراجعة محامٍ قبل استخدامها رسمياً.
+            {isAr
+              ? 'هذه المسودات للأغراض التوجيهية فقط وليست وثائق قانونية معتمدة. يُنصح بمراجعة محامٍ قبل استخدامها رسمياً.'
+              : 'These drafts are for guidance purposes only and are not certified legal documents. Consult a lawyer before using them officially.'}
           </p>
         </div>
 

@@ -260,7 +260,7 @@ export default function MobileMenu({ isOpen, onClose, isAr: isArProp, lang: lang
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-                {currentUser?.full_name || currentUser?.username || 'مستخدم'}
+                {currentUser?.full_name || currentUser?.username || (isAr ? 'مستخدم' : 'User')}
               </div>
               {currentUser?.plan && (
                 <span style={{

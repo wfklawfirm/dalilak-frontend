@@ -1,8 +1,18 @@
+'use client'
+import { useEffect, useState } from 'react'
+
 export default function Loading() {
+  const [isAr, setIsAr] = useState(true)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('dalilak_lang') === 'en') setIsAr(false)
+    } catch {}
+  }, [])
+
   return (
     <div
       role="status"
-      aria-label="جارٍ التحميل"
+      aria-label={isAr ? 'جارٍ التحميل' : 'Loading'}
       style={{
         minHeight: '100vh',
         background: '#FAFAF8',

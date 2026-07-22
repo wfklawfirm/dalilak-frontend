@@ -86,7 +86,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             <button
               ref={closeRef}
               type="button"
-              aria-label="إغلاق"
+              aria-label={isAr ? 'إغلاق' : 'Close'}
               onClick={onClose}
               style={{
                 background: '#EAE4D9', border: 'none', borderRadius: 10, width: 32, height: 32,
@@ -117,7 +117,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             )}
             {service.online_available && (
               <span style={{ fontSize: 10.5, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '3px 10px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
-                متاح أونلاين
+                {isAr ? 'متاح أونلاين' : 'Available Online'}
               </span>
             )}
           </div>
@@ -138,7 +138,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FEF2F2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </span>
-                المستندات المطلوبة
+                {isAr ? 'المستندات المطلوبة' : 'Required Documents'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {displayRequiredDocuments.map((doc, i) => (
@@ -229,7 +229,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FFFBEB', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </span>
-                النماذج المطلوبة
+                {isAr ? 'النماذج المطلوبة' : 'Required Forms'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.forms_needed.map((form, i) => {
@@ -240,7 +240,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer"
                       style={{ fontSize: 12, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 8, padding: '7px 10px', border: '1px solid rgba(139,26,26,0.15)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
                       <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                      {label || 'تحميل النموذج'}
+                      {label || (isAr ? 'تحميل النموذج' : 'Download Form')}
                     </a>
                   ) : (
                     <span key={i} style={{ fontSize: 12, color: '#854D0E', background: '#FFFBEB', borderRadius: 8, padding: '6px 10px', border: '1px solid #FDE68A' }}>{form}</span>
@@ -253,7 +253,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
           {/* Contact info */}
           {(service.phone || service.website || service.working_hours) && (
             <div style={{ background: '#F8F4F0', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
-              <h3 style={{ fontSize: 11, fontWeight: 800, color: '#5C4A3A', margin: '0 0 8px' }}>معلومات التواصل</h3>
+              <h3 style={{ fontSize: 11, fontWeight: 800, color: '#5C4A3A', margin: '0 0 8px' }}>{isAr ? 'معلومات التواصل' : 'Contact Information'}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.phone && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#2D1B0E' }}>
@@ -276,7 +276,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                     <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
-                    الموقع الرسمي
+                    {isAr ? 'الموقع الرسمي' : 'Official Website'}
                   </a>
                 )}
               </div>
@@ -284,7 +284,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
           )}
 
           <p style={{ fontSize: 10, color: '#9C8E80', margin: 0, lineHeight: 1.5, padding: '10px 14px', background: '#FAFAF8', borderRadius: 8 }}>
-            المعلومات للإرشاد العام — تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.
+            {isAr ? 'المعلومات للإرشاد العام — تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.' : 'This information is for general guidance — always verify with official sources before submitting any request.'}
           </p>
         </div>
 
@@ -306,7 +306,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
-            اسأل دليلك
+            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
           </button>
           <button
             type="button"
@@ -319,7 +319,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
               fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
             }}
           >
-            إغلاق
+            {isAr ? 'إغلاق' : 'Close'}
           </button>
         </div>
       </div>
@@ -411,7 +411,7 @@ export default function ServicesPage() {
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
-            aria-label="الرجوع"
+            aria-label={isAr ? 'الرجوع' : 'Go back'}
             onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
@@ -482,7 +482,7 @@ export default function ServicesPage() {
           {search && (
             <button
               type="button"
-              aria-label="مسح البحث"
+              aria-label={isAr ? 'مسح البحث' : 'Clear search'}
               onClick={() => setSearch('')}
               style={{
                 position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
@@ -608,7 +608,7 @@ export default function ServicesPage() {
               <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
               <button
                 type="button"
-                aria-label={`إزالة فلتر الفئة: ${activeCatLabel}`}
+                aria-label={isAr ? `إزالة فلتر الفئة: ${activeCatLabel}` : `Remove category filter: ${activeCatLabel}`}
                 onClick={() => setSelectedCat(null)}
                 style={{
                   fontSize: 11, color: '#8B1A1A', fontWeight: 700,
@@ -757,7 +757,7 @@ export default function ServicesPage() {
                   })()}
                   {service.online_available && (
                     <span style={{ fontSize: 10, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '2px 8px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
-                      أونلاين
+                      {isAr ? 'أونلاين' : 'Online'}
                     </span>
                   )}
                   {(() => {

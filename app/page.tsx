@@ -585,7 +585,7 @@ export default function Home() {
                 const seen = new Set<string>()
                 metaSources = p.sources
                   .map((s: { title?: string; ministry?: string; law?: string; snippet?: string; url?: string }) => ({
-                    title: s.title || s.ministry || 'مصدر',
+                    title: s.title || s.ministry || (isAr ? 'مصدر' : 'Source'),
                     type: 'official' as const,
                     ministry: s.ministry,
                     score: s.score,
@@ -1358,7 +1358,7 @@ export default function Home() {
                   </svg>
                 </button>
                 <input ref={fileInputRef} type="file" accept="image/*,.pdf,.doc,.docx,.txt"
-                  aria-label="رفع ملف" style={{ display: 'none' }} onChange={handleFileChange} />
+                  aria-label={isAr ? 'رفع ملف' : 'Upload file'} style={{ display: 'none' }} onChange={handleFileChange} />
 
                 {/* Textarea */}
                 <textarea
