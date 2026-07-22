@@ -105,7 +105,7 @@ export default function ProceduresPage() {
   const totalResults = filteredGuided.length + filteredEnriched.length
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
@@ -224,7 +224,7 @@ export default function ProceduresPage() {
             onBlur={() => setSearchFocused(false)}
             aria-label={isAr ? 'ابحث في الإجراءات' : 'Search procedures'}
             placeholder={isAr ? `ابحث في ${PROCEDURES_TOTAL} إجراء...` : `Search ${PROCEDURES_TOTAL} procedures...`}
-            dir="rtl"
+            dir={isAr ? 'rtl' : 'ltr'}
             style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
           />
           {search && (

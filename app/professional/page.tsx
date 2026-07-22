@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getToken, getUser, authHeaders, type User } from '@/lib/auth'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend.onrender.com'
 
@@ -167,7 +168,7 @@ function IntakeLinkCreator({ isAr }: { isAr: boolean }) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function ProfessionalWorkspacePage() {
   const router   = useRouter()
-  const [isAr, setIsAr]             = useState(true)
+  const { isAr, toggleLang } = useLanguage()
   const [activeSection, setSection] = useState('overview')
   const [user, setUser]             = useState<User | null>(null)
   const [authChecked, setChecked]   = useState(false)
@@ -203,7 +204,7 @@ export default function ProfessionalWorkspacePage() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setIsAr(!isAr)} style={{
+              <button onClick={toggleLang} style={{
                 padding: '6px 12px', background: 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8,
                 color: '#fff', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit',

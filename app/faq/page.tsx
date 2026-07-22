@@ -45,7 +45,7 @@ export default function FAQPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir="rtl">
+    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
@@ -112,11 +112,13 @@ export default function FAQPage() {
           <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s' }}>
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
           </span>
-          <input type="text" aria-label="ابحث في الأسئلة الشائعة" placeholder="ابحث... (طوارئ، بناء، عمل، أجانب...)"
+          <input type="text"
+            aria-label={isAr ? 'ابحث في الأسئلة الشائعة' : 'Search FAQ'}
+            placeholder={isAr ? 'ابحث... (طوارئ، بناء، عمل، أجانب...)' : 'Search... (emergency, work, property...)'}
             value={search} onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
-            style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: 'rtl' }}
+            style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: isAr ? 'rtl' : 'ltr' }}
           />
           {search && <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
