@@ -371,7 +371,9 @@ export default function ServicesPage() {
   }, [search, selectedCat])
 
   const activeCatLabel = selectedCat
-    ? SERVICE_CATEGORIES.find(c => c.slug === selectedCat)?.label_ar
+    ? (isAr
+        ? SERVICE_CATEGORIES.find(c => c.slug === selectedCat)?.label_ar
+        : SERVICE_CATEGORIES.find(c => c.slug === selectedCat)?.label_en)
     : null
 
   return (
@@ -588,7 +590,7 @@ export default function ServicesPage() {
                   }}
                 >
                   <span style={{ fontSize: 14, lineHeight: 1 }}>{cat.icon}</span>
-                  {cat.label_ar}
+                  {isAr ? cat.label_ar : cat.label_en}
                   {cnt > 0 && <span style={{ opacity: 0.55, fontSize: 10, fontWeight: 600 }}>{cnt}</span>}
                 </button>
               )
@@ -764,7 +766,7 @@ export default function ServicesPage() {
                     const cardDocs = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
                     return cardDocs && cardDocs.length > 0 && (
                       <span style={{ fontSize: 10, color: '#5C4A3A', background: '#EAE4D9', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
-                        {cardDocs.length} وثيقة
+                        {cardDocs.length} {isAr ? 'وثيقة' : 'docs'}
                       </span>
                     )
                   })()}
