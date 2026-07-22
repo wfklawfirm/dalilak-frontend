@@ -70,7 +70,7 @@ export default function TopNav({
         }
       `}</style>
 
-      <header style={{
+      <header dir={isAr ? 'rtl' : 'ltr'} style={{
         flexShrink: 0,
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.35)',

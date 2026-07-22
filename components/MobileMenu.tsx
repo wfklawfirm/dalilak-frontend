@@ -166,6 +166,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
       <div
         role="dialog"
         aria-modal="true"
+        dir={isAr ? 'rtl' : 'ltr'}
         aria-label={isAr ? 'القائمة' : 'Menu'}
         style={{
         position: 'fixed',
