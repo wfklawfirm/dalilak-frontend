@@ -19,9 +19,9 @@ export default function ProcedureDetailClient() {
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cairo','Inter',sans-serif" }}>
         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
-          <h2 style={{ fontSize: 18, color: '#1A1208', marginBottom: 8 }}>المعاملة غير موجودة</h2>
-          <button type="button" aria-label='العودة للمعاملات' onClick={() => router.push('/procedures')} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
-            عودة للدليل
+          <h2 style={{ fontSize: 18, color: '#1A1208', marginBottom: 8 }}>{isAr ? 'المعاملة غير موجودة' : 'Procedure not found'}</h2>
+          <button type="button" aria-label={isAr ? 'العودة للمعاملات' : 'Back to procedures'} onClick={() => router.push('/procedures')} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
+            {isAr ? 'عودة للدليل' : 'Back to directory'}
           </button>
         </div>
       </div>
@@ -39,7 +39,7 @@ export default function ProcedureDetailClient() {
 
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '12px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'pdcHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button type="button" aria-label='العودة للمعاملات' onClick={() => router.push('/procedures')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
+          <button type="button" aria-label={isAr ? 'العودة للمعاملات' : 'Back to procedures'} onClick={() => router.push('/procedures')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }}>
             <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display:'block' }}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
             {isAr ? 'الدليل' : 'Directory'}
           </button>

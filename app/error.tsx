@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function Error({
   error,
@@ -9,6 +10,8 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const { isAr } = useLanguage()
+
   useEffect(() => {
     // Log error to monitoring service in production
     if (process.env.NODE_ENV === 'production') {
@@ -48,7 +51,7 @@ export default function Error({
         color: '#1A1208',
         margin: '0 0 8px',
       }}>
-        حدث خطأ غير متوقع
+        {isAr ? 'حدث خطأ غير متوقع' : 'An Unexpected Error Occurred'}
       </h1>
 
       <p style={{
@@ -57,7 +60,9 @@ export default function Error({
         maxWidth: 340,
         lineHeight: 1.7,
       }}>
-        نعتذر عن هذا الخطأ. يُرجى المحاولة مرة أخرى. إذا استمرت المشكلة، تواصل معنا.
+        {isAr
+          ? 'نعتذر عن هذا الخطأ. يُرجى المحاولة مرة أخرى. إذا استمرت المشكلة، تواصل معنا.'
+          : 'We apologize for this error. Please try again. If the problem persists, contact us.'}
       </p>
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -83,7 +88,7 @@ export default function Error({
           <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
-          المحاولة مجدداً
+          {isAr ? 'المحاولة مجدداً' : 'Try Again'}
         </button>
 
         <a
@@ -104,7 +109,7 @@ export default function Error({
             cursor: 'pointer',
           }}
         >
-          العودة للرئيسية
+          {isAr ? 'العودة للرئيسية' : 'Back to Home'}
         </a>
       </div>
     </div>

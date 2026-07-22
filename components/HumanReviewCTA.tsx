@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { RiskLevel } from '@/lib/types'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface Props {
   riskLevel?: RiskLevel
@@ -24,6 +25,7 @@ export default function HumanReviewCTA({
   alwaysShow = false,
   onRequest,
 }: Props) {
+  const { isAr } = useLanguage()
   const [open, setOpen] = useState(false)
   const [type, setType] = useState('legal')
   const [summary, setSummary] = useState(context || '')
@@ -57,8 +59,8 @@ export default function HumanReviewCTA({
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#78350F', margin: '0 0 3px' }}>تم إرسال طلب المراجعة</p>
-        <p style={{ fontSize: 11.5, color: '#78350F', margin: 0 }}>سيتواصل معك أحد المختصين قريباً</p>
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#78350F', margin: '0 0 3px' }}>{isAr ? 'تم إرسال طلب المراجعة' : 'Review Request Sent'}</p>
+        <p style={{ fontSize: 11.5, color: '#78350F', margin: 0 }}>{isAr ? 'سيتواصل معك أحد المختصين قريباً' : 'A specialist will contact you shortly'}</p>
       </div>
     )
   }
@@ -86,12 +88,12 @@ export default function HumanReviewCTA({
         </div>
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>
-            هل تحتاج مراجعة قانونية؟
+            {isAr ? 'هل تحتاج مراجعة قانونية؟' : 'Do you need legal review?'}
           </p>
           <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.55 }}>
             {isCritical
-              ? 'هذه المعاملة تنطوي على مخاطر حرجة — يُلزم مراجعة محامٍ أو مختص قبل المضي.'
-              : 'المعاملة تنطوي على تعقيدات — يُنصح بمراجعة محامٍ أو مختص لضمان صحة الإجراءات.'}
+              ? (isAr ? 'هذه المعاملة تنطوي على مخاطر حرجة — يُلزم مراجعة محامٍ أو مختص قبل المضي.' : 'This transaction carries critical risks — a lawyer or specialist review is required before proceeding.')
+              : (isAr ? 'المعاملة تنطوي على تعقيدات — يُنصح بمراجعة محامٍ أو مختص لضمان صحة الإجراءات.' : 'The transaction involves complexities — consulting a lawyer or specialist is advised to ensure procedural correctness.')}
           </p>
         </div>
       </div>
@@ -114,15 +116,15 @@ export default function HumanReviewCTA({
           onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 5px 16px rgba(139,26,26,0.35)' }}
           onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(139,26,26,0.25)' }}
         >
-          اطلب مراجعة بشرية
+          {isAr ? 'اطلب مراجعة بشرية' : 'Request Human Review'}
         </button>
       ) : (
         <div id="review-form" style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
           <div>
-            <label htmlFor="review-type" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>نوع المراجعة</label>
+            <label htmlFor="review-type" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'نوع المراجعة' : 'Review Type'}</label>
             <select
               id="review-type"
-              aria-label="نوع المراجعة"
+              aria-label={isAr ? 'نوع المراجعة' : 'Review type'}
               value={type}
               onChange={e => setType(e.target.value)}
               style={{
@@ -131,19 +133,19 @@ export default function HumanReviewCTA({
                 outline: 'none', fontFamily: 'inherit', color: '#1A1208',
               }}
             >
-              <option value="legal">استشارة قانونية</option>
-              <option value="administrative">مراجعة إدارية</option>
-              <option value="urgent">طارئة — أحتاج مساعدة فورية</option>
+              <option value="legal">{isAr ? 'استشارة قانونية' : 'Legal Consultation'}</option>
+              <option value="administrative">{isAr ? 'مراجعة إدارية' : 'Administrative Review'}</option>
+              <option value="urgent">{isAr ? 'طارئة — أحتاج مساعدة فورية' : 'Urgent — I need immediate help'}</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="review-summary" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>وصف الحالة</label>
+            <label htmlFor="review-summary" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'وصف الحالة' : 'Case Description'}</label>
             <textarea
               id="review-summary"
               value={summary}
               onChange={e => setSummary(e.target.value)}
-              placeholder="اشرح بإيجاز ما تحتاج المساعدة فيه..."
+              placeholder={isAr ? 'اشرح بإيجاز ما تحتاج المساعدة فيه...' : 'Briefly describe what you need help with...'}
               rows={3}
               style={{
                 width: '100%', fontSize: 13, border: '1.5px solid #EAE4D9',
@@ -157,10 +159,10 @@ export default function HumanReviewCTA({
           </div>
 
           <div>
-            <label htmlFor="review-urgency" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>الأولوية</label>
+            <label htmlFor="review-urgency" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'الأولوية' : 'Priority'}</label>
             <select
               id="review-urgency"
-              aria-label="الأولوية"
+              aria-label={isAr ? 'الأولوية' : 'Priority'}
               value={urgency}
               onChange={e => setUrgency(e.target.value)}
               style={{
@@ -169,9 +171,9 @@ export default function HumanReviewCTA({
                 outline: 'none', fontFamily: 'inherit', color: '#1A1208',
               }}
             >
-              <option value="normal">عادي</option>
-              <option value="urgent">عاجل</option>
-              <option value="very_urgent">عاجل جداً</option>
+              <option value="normal">{isAr ? 'عادي' : 'Normal'}</option>
+              <option value="urgent">{isAr ? 'عاجل' : 'Urgent'}</option>
+              <option value="very_urgent">{isAr ? 'عاجل جداً' : 'Very Urgent'}</option>
             </select>
           </div>
 
@@ -188,7 +190,7 @@ export default function HumanReviewCTA({
                 fontFamily: 'inherit',
               }}
             >
-              إرسال الطلب
+              {isAr ? 'إرسال الطلب' : 'Submit Request'}
             </button>
             <button
               type="button"
@@ -200,7 +202,7 @@ export default function HumanReviewCTA({
                 fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
-              إلغاء
+              {isAr ? 'إلغاء' : 'Cancel'}
             </button>
           </div>
         </div>

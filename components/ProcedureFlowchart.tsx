@@ -69,6 +69,14 @@ const STATUS_LABELS_AR: Record<NonNullable<NodeStatus>, string> = {
   needs_review: 'يحتاج مراجعة',
 }
 
+const STATUS_LABELS_EN: Record<NonNullable<NodeStatus>, string> = {
+  not_started: 'Not Started',
+  current: 'In Progress',
+  completed: 'Completed',
+  blocked: 'Blocked',
+  needs_review: 'Needs Review',
+}
+
 const CONFIDENCE_COLORS: Record<'low' | 'medium' | 'high', string> = {
   high: '#065F46',
   medium: '#B8860B',
@@ -233,7 +241,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                       {isAr ? NODE_LABELS_AR[node.type] : node.type.replace('_', ' ')}
                     </span>
                     <span style={{ fontSize: 9.5, fontWeight: 700, color: statusColor, background: `${statusColor}15`, borderRadius: 6, padding: '1px 7px' }}>
-                      {STATUS_LABELS_AR[effectiveStatus]}
+                      {isAr ? STATUS_LABELS_AR[effectiveStatus] : STATUS_LABELS_EN[effectiveStatus]}
                     </span>
                     {node.confidence && (
                       <span style={{ fontSize: 9.5, fontWeight: 700, color: CONFIDENCE_COLORS[node.confidence], background: `${CONFIDENCE_COLORS[node.confidence]}15`, borderRadius: 6, padding: '1px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}>

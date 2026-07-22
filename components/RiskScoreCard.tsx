@@ -1,6 +1,7 @@
 'use client'
 
 import { RiskLevel, RecommendedAction } from '@/lib/types'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface RiskProps {
   risk: {
@@ -14,19 +15,34 @@ interface RiskProps {
   lang?: 'ar' | 'en'
 }
 
+const LEVEL_CONFIG_AR: Record<string, string> = {
+  low:     'منخفض',
+  medium:  'متوسط',
+  high:    'عالٍ',
+  critical:'حرج',
+  unknown: 'غير محدد',
+}
+
+const LEVEL_CONFIG_EN: Record<string, string> = {
+  low:     'Low',
+  medium:  'Medium',
+  high:    'High',
+  critical:'Critical',
+  unknown: 'Unknown',
+}
+
 const LEVEL_CONFIG: Record<string, {
-  label: string
   bg: string
   text: string
   border: string
   barColor: string
   iconBg: string
 }> = {
-  low:      { label: 'منخفض',    bg: '#FFFBEB', text: '#78350F', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
-  medium:   { label: 'متوسط',    bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
-  high:     { label: 'عالٍ',     bg: '#FFFBEB', text: '#B45309', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
-  critical: { label: 'حرج',      bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
-  unknown:  { label: 'غير محدد', bg: '#EAE4D9', text: '#5C4A3A', border: '#D5CEC4', barColor: '#9C8E80', iconBg: '#9C8E80' },
+  low:      { bg: '#FFFBEB', text: '#78350F', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
+  medium:   { bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
+  high:     { bg: '#FFFBEB', text: '#B45309', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
+  critical: { bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
+  unknown:  { bg: '#EAE4D9', text: '#5C4A3A', border: '#D5CEC4', barColor: '#9C8E80', iconBg: '#9C8E80' },
 }
 
 const ACTION_COLORS: Record<string, string> = {
@@ -36,18 +52,28 @@ const ACTION_COLORS: Record<string, string> = {
   admin_review:  '#8B1A1A',
   human_support: '#8B1A1A',
 }
-const ACTION_LABELS: Record<string, string> = {
+const ACTION_LABELS_AR: Record<string, string> = {
   continue:      'استمر في المعاملة',
   verify:        'تحقق من المعلومات',
   lawyer_review: 'راجع محامياً',
   admin_review:  'راجع المشرف',
   human_support: 'اطلب دعم بشري',
 }
+const ACTION_LABELS_EN: Record<string, string> = {
+  continue:      'Continue Transaction',
+  verify:        'Verify Information',
+  lawyer_review: 'Consult a Lawyer',
+  admin_review:  'Consult Supervisor',
+  human_support: 'Request Human Support',
+}
 
 export default function RiskScoreCard({ risk, onRequestReview, compact = false }: RiskProps) {
+  const { isAr } = useLanguage()
   const level = risk.level || 'unknown'
   const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG.unknown
+  const levelLabel = isAr ? (LEVEL_CONFIG_AR[level] || level) : (LEVEL_CONFIG_EN[level] || level)
   const action = risk.recommendedAction as string | undefined
+  const actionLabel = action ? (isAr ? ACTION_LABELS_AR[action] : ACTION_LABELS_EN[action]) : undefined
   const score = risk.score ?? null
   const reasons = risk.reasons || []
 
@@ -87,13 +113,13 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
             {icon}
           </span>
           <div>
-            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1 }}>مستوى المخاطرة</p>
-            <p style={{ fontSize: 15, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{cfg.label}</p>
+            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1 }}>{isAr ? 'مستوى المخاطرة' : 'Risk Level'}</p>
+            <p style={{ fontSize: 15, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{levelLabel}</p>
           </div>
         </div>
         {score !== null && (
           <div style={{ textAlign: 'left' }}>
-            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>النقاط</p>
+            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>{isAr ? 'النقاط' : 'Score'}</p>
             <p style={{ fontSize: 18, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{score}</p>
           </div>
         )}
@@ -140,7 +166,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
       )}
 
       {/* Action button */}
-      {action && ACTION_LABELS[action] && (
+      {action && actionLabel && (
         <button
           type="button"
           onClick={onRequestReview}
@@ -154,14 +180,14 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             transition: 'opacity 0.12s, transform 0.12s',
           }}
-          aria-label={ACTION_LABELS[action]}
+          aria-label={actionLabel}
           onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
           onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
         >
           <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
-          {ACTION_LABELS[action]}
+          {actionLabel}
         </button>
       )}
     </div>

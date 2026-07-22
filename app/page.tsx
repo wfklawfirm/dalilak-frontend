@@ -414,7 +414,7 @@ export default function Home() {
     if (flagged) {
       setMessages(prev => [...prev,
         { role: 'user', content: cleanText },
-        { role: 'assistant', content: 'تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.', streaming: false },
+        { role: 'assistant', content: isAr ? 'تعذّر معالجة هذا الطلب. يرجى إعادة صياغة السؤال.' : 'This request could not be processed. Please rephrase your question.', streaming: false },
       ])
       return
     }
@@ -466,7 +466,9 @@ export default function Home() {
         if (last?.role === 'assistant' && last.streaming && !last.content) {
           u[u.length - 1] = {
             ...last,
-            content: '**النظام في وضع السكون، جاري التنشيط...**\n\nقد يستغرق الرد 30-60 ثانية في أول طلب. يُرجى الانتظار.',
+            content: isAr
+              ? '**النظام في وضع السكون، جاري التنشيط...**\n\nقد يستغرق الرد 30-60 ثانية في أول طلب. يُرجى الانتظار.'
+              : '**System is waking up...**\n\nThe first response may take 30-60 seconds. Please wait.',
           }
         }
         return u
@@ -534,7 +536,9 @@ export default function Home() {
       if (res.status === 402) {
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
-          content: '**انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.',
+          content: isAr
+            ? '**انتهت فترتك التجريبية.**\n\nللاستمرار في استخدام دليلك، يرجى الترقية إلى الاشتراك المدفوع. تواصل معنا عبر البريد أو واتساب.'
+            : '**Your trial period has ended.**\n\nTo continue using Dalilak, please upgrade to a paid subscription. Contact us via email or WhatsApp.',
           streaming: false,
         }))
         setLoading(false)
@@ -542,10 +546,12 @@ export default function Home() {
       }
       if (res.status === 429) {
         const data = await res.json().catch(() => ({}))
-        const detail: string = data?.detail || 'استنفذت حصتك اليومية'
+        const detail: string = data?.detail || (isAr ? 'استنفذت حصتك اليومية' : 'Daily quota exhausted')
         setMessages(prev => prev.slice(0, -1).concat({
           role: 'assistant',
-          content: `**${detail}**\n\nللحصول على المزيد من الأسئلة، يمكنك الترقية إلى الاشتراك المدفوع (200 سؤال/يوم). تواصل معنا عبر البريد أو واتساب.`,
+          content: isAr
+            ? `**${detail}**\n\nللحصول على المزيد من الأسئلة، يمكنك الترقية إلى الاشتراك المدفوع (200 سؤال/يوم). تواصل معنا عبر البريد أو واتساب.`
+            : `**${detail}**\n\nTo get more questions, upgrade to a paid subscription (200 questions/day). Contact us via email or WhatsApp.`,
           streaming: false,
         }))
         setLoading(false)
@@ -606,7 +612,7 @@ export default function Home() {
           } catch {}
         }
       }
-      const finalAnswer = accumulated || 'عذراً، لم أتلقَّ ردّاً.'
+      const finalAnswer = accumulated || (isAr ? 'عذراً، لم أتلقَّ ردّاً.' : 'Sorry, no response received.')
       setMessages(prev => {
         const u = [...prev]
         u[u.length - 1] = {
@@ -638,7 +644,7 @@ export default function Home() {
     } catch {
       setMessages(prev => {
         const u = [...prev]
-        u[u.length - 1] = { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال. تحقق من اتصالك وأعد المحاولة.', streaming: false }
+        u[u.length - 1] = { role: 'assistant', content: isAr ? 'عذراً، حدث خطأ في الاتصال. تحقق من اتصالك وأعد المحاولة.' : 'Sorry, a connection error occurred. Check your connection and try again.', streaming: false }
         return u
       })
       if (!file) setRetryMsg(text)   // offer retry chip for text-only queries
@@ -1205,7 +1211,9 @@ export default function Home() {
               {quotaRemaining <= 3
                 ? <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 : <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 4, verticalAlign: 'middle' }}><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              } {quotaRemaining === 0 ? 'استنفذت حصتك اليومية' : `${quotaRemaining} سؤال متبقٍ اليوم`}
+              } {quotaRemaining === 0
+                ? (isAr ? 'استنفذت حصتك اليومية' : 'Daily quota exhausted')
+                : (isAr ? `${quotaRemaining} سؤال متبقٍ اليوم` : `${quotaRemaining} questions left today`)}
             </span>
           </div>
         )}

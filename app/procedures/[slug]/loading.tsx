@@ -1,5 +1,8 @@
-// Server component — no 'use client' needed
+'use client'
+import { useLanguage } from '@/lib/LanguageContext'
+
 export default function ProcedureLoading() {
+  const { isAr } = useLanguage()
   return (
     <div
       style={{
@@ -10,7 +13,7 @@ export default function ProcedureLoading() {
         justifyContent: 'center',
         fontFamily: "'Cairo','Inter',sans-serif",
       }}
-      dir="rtl"
+      dir={isAr ? 'rtl' : 'ltr'}
     >
       <div style={{ textAlign: 'center' }}>
         <div
@@ -25,7 +28,7 @@ export default function ProcedureLoading() {
           }}
         />
         <style>{`@keyframes pl-spin { to { transform: rotate(360deg) } }`}</style>
-        <p style={{ color: '#9C8E80', fontSize: 13, margin: 0 }}>جارٍ التحميل...</p>
+        <p style={{ color: '#9C8E80', fontSize: 13, margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
       </div>
     </div>
   )

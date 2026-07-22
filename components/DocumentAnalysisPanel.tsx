@@ -4,6 +4,7 @@ import React from 'react'
 import { DocumentAnalysis, ContractRiskReview, ActionType } from '@/lib/types'
 import RiskScoreCard from './RiskScoreCard'
 import MissingDocumentsChecklist from './MissingDocumentsChecklist'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface Props {
   analysis: DocumentAnalysis
@@ -27,6 +28,20 @@ const DOC_TYPE_AR: Record<string, string> = {
   unknown:           'وثيقة',
 }
 
+const DOC_TYPE_EN: Record<string, string> = {
+  lease_contract:    'Lease Contract',
+  sale_contract:     'Sale Contract',
+  power_of_attorney: 'Power of Attorney',
+  civil_record:      'Civil Record',
+  property_document: 'Property Document',
+  company_document:  'Company Document',
+  identity_document: 'Identity Document',
+  invoice:           'Invoice',
+  certificate:       'Certificate',
+  correspondence:    'Official Correspondence',
+  unknown:           'Document',
+}
+
 const CONF_STYLE: Record<string, React.CSSProperties> = {
   high:    { color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A' },
   medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
@@ -36,6 +51,10 @@ const CONF_STYLE: Record<string, React.CSSProperties> = {
 
 const CONF_AR: Record<string, string> = {
   high: 'عالية', medium: 'متوسطة', low: 'منخفضة', unknown: 'غير محدد',
+}
+
+const CONF_EN: Record<string, string> = {
+  high: 'High', medium: 'Medium', low: 'Low', unknown: 'Unknown',
 }
 
 const WARN_CSS: Record<string, React.CSSProperties> = {
@@ -55,6 +74,10 @@ const RISK_AR: Record<string, string> = {
   critical: 'حرج', high: 'عالٍ', medium: 'متوسط', low: 'منخفض',
 }
 
+const RISK_EN: Record<string, string> = {
+  critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low',
+}
+
 const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
   strong:     { color: '#78350F' },
   acceptable: { color: '#8B1A1A' },
@@ -67,8 +90,12 @@ const STRENGTH_AR: Record<string, string> = {
   strong: 'قوية', acceptable: 'مقبولة', weak: 'ضعيفة', missing: 'مفقودة', unclear: 'غير واضحة',
 }
 
-function actionLabel(type: ActionType): string {
-  const MAP: Record<string, string> = {
+const STRENGTH_EN: Record<string, string> = {
+  strong: 'Strong', acceptable: 'Acceptable', weak: 'Weak', missing: 'Missing', unclear: 'Unclear',
+}
+
+function actionLabel(type: ActionType, isAr: boolean): string {
+  const MAP_AR: Record<string, string> = {
     upload_document:       'رفع وثيقة',
     request_human_review:  'طلب مراجعة بشرية',
     verify_source:         'تحقق من المصدر',
@@ -77,13 +104,23 @@ function actionLabel(type: ActionType): string {
     analyze_document:      'تحليل الوثيقة',
     contract_review:       'مراجعة العقد',
   }
-  return MAP[type] || type
+  const MAP_EN: Record<string, string> = {
+    upload_document:       'Upload Document',
+    request_human_review:  'Request Human Review',
+    verify_source:         'Verify Source',
+    download_checklist:    'Download Checklist',
+    ask_followup:          'Ask Follow-up Question',
+    analyze_document:      'Analyze Document',
+    contract_review:       'Contract Review',
+  }
+  return (isAr ? MAP_AR[type] : MAP_EN[type]) || type
 }
 
 const ROW_S: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8 }
 const LABEL_S: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: '#9C8E80', marginBottom: 6 }
 
 export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName, onRequestReview }: Props) {
+  const { isAr } = useLanguage()
   const confLevel = analysis.confidence?.level || 'unknown'
 
   return (
@@ -96,30 +133,30 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: '#6b2737' }}>
-              {DOC_TYPE_AR[analysis.document_type] || analysis.document_type}
+              {(isAr ? DOC_TYPE_AR[analysis.document_type] : DOC_TYPE_EN[analysis.document_type]) || analysis.document_type}
             </span>
             {analysis.detected_country && analysis.detected_country !== 'unknown' && (
               <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
-                {analysis.detected_country === 'lebanon' ? 'لبنان' : analysis.detected_country}
+                {analysis.detected_country === 'lebanon' ? (isAr ? 'لبنان' : 'Lebanon') : analysis.detected_country}
               </span>
             )}
             {analysis.detected_language && (
               <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
-                {analysis.detected_language === 'ar' ? 'عربي' : analysis.detected_language === 'en' ? 'إنجليزي' : analysis.detected_language}
+                {analysis.detected_language === 'ar' ? (isAr ? 'عربي' : 'Arabic') : analysis.detected_language === 'en' ? (isAr ? 'إنجليزي' : 'English') : analysis.detected_language}
               </span>
             )}
           </div>
           {fileName && <p style={{ fontSize: 11, color: '#9C8E80', margin: '3px 0 0' }}>{fileName}</p>}
         </div>
         <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, fontWeight: 600, whiteSpace: 'nowrap', ...CONF_STYLE[confLevel] }}>
-          دقة {CONF_AR[confLevel]}
+          {isAr ? `دقة ${CONF_AR[confLevel]}` : `${CONF_EN[confLevel]} accuracy`}
         </span>
       </div>
 
       {/* Summary */}
       {analysis.summary && (
         <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
-          <p style={LABEL_S}>الملخص</p>
+          <p style={LABEL_S}>{isAr ? 'الملخص' : 'Summary'}</p>
           <p style={{ fontSize: 13, color: '#1A1208', lineHeight: 1.7, margin: 0 }}>{analysis.summary}</p>
         </div>
       )}
@@ -130,7 +167,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {analysis.warnings.map((w, i) => (
             <div key={i} style={{ borderRadius: 12, padding: '10px 14px', fontSize: 13, ...(WARN_CSS[w.level] || WARN_CSS.info), animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 6) * 0.07}s` }}>
               <span style={{ fontWeight: 700, marginLeft: 4 }}>
-                {w.level === 'critical' ? 'تحذير حرج:' : w.level === 'warning' ? 'تنبيه:' : 'معلومة:'}
+                {isAr
+                  ? (w.level === 'critical' ? 'تحذير حرج:' : w.level === 'warning' ? 'تنبيه:' : 'معلومة:')
+                  : (w.level === 'critical' ? 'Critical Warning:' : w.level === 'warning' ? 'Warning:' : 'Info:')}
               </span>
               {w.message}
             </div>
@@ -141,7 +180,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Extracted fields */}
       {analysis.extracted_fields?.length > 0 && (
         <div>
-          <p style={LABEL_S}>البيانات المستخرجة</p>
+          <p style={LABEL_S}>{isAr ? 'البيانات المستخرجة' : 'Extracted Data'}</p>
           <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
             {analysis.extracted_fields.map((f, i) => (
               <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < analysis.extracted_fields.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
@@ -163,7 +202,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Parties */}
       {analysis.parties && analysis.parties.length > 0 && (
         <div>
-          <p style={LABEL_S}>الأطراف</p>
+          <p style={LABEL_S}>{isAr ? 'الأطراف' : 'Parties'}</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {analysis.parties.map((p, i) => (
               <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 10, padding: '6px 12px', animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
@@ -178,7 +217,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Key facts */}
       {analysis.key_facts && analysis.key_facts.length > 0 && (
         <div>
-          <p style={LABEL_S}>الحقائق الأساسية</p>
+          <p style={LABEL_S}>{isAr ? 'الحقائق الأساسية' : 'Key Facts'}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             {analysis.key_facts.map((fact, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#2D1B0E' }}>
@@ -193,7 +232,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Missing documents */}
       {analysis.missing_documents?.length > 0 && (
         <div>
-          <p style={LABEL_S}>الوثائق الناقصة</p>
+          <p style={LABEL_S}>{isAr ? 'الوثائق الناقصة' : 'Missing Documents'}</p>
           <MissingDocumentsChecklist missingDocs={analysis.missing_documents} />
         </div>
       )}
@@ -201,7 +240,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* Suggested actions */}
       {analysis.suggested_next_actions?.length > 0 && (
         <div>
-          <p style={LABEL_S}>الإجراءات المقترحة</p>
+          <p style={LABEL_S}>{isAr ? 'الإجراءات المقترحة' : 'Suggested Actions'}</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {analysis.suggested_next_actions.map((a, i) => (
               <button
@@ -219,7 +258,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                   animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s`,
                 }}
               >
-                {a.label || actionLabel(a.action_type)}
+                {a.label || actionLabel(a.action_type, isAr)}
               </button>
             ))}
           </div>
@@ -229,7 +268,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {/* ── Contract Review Section ── */}
       {reviewResult && (
         <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <p style={{ fontSize: 14, fontWeight: 700, color: '#6b2737', margin: 0 }}>مراجعة العقد</p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#6b2737', margin: 0 }}>{isAr ? 'مراجعة العقد' : 'Contract Review'}</p>
 
           {/* Risk score */}
           {reviewResult.risk_score && (
@@ -246,14 +285,18 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Extracted facts */}
           {reviewResult.extracted_facts && Object.values(reviewResult.extracted_facts).some(Boolean) && (
             <div>
-              <p style={LABEL_S}>بيانات العقد</p>
+              <p style={LABEL_S}>{isAr ? 'بيانات العقد' : 'Contract Data'}</p>
               <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
                 {(Object.entries(reviewResult.extracted_facts) as [string, string | string[] | null | undefined][]).map(([k, v], idx, arr) => {
                   if (!v) return null
-                  const label: Record<string, string> = {
+                  const label: Record<string, string> = isAr ? {
                     parties: 'الأطراف', subject: 'الموضوع', property: 'العقار',
                     duration: 'المدة', amount: 'المبلغ', currency: 'العملة',
                     payment_terms: 'الدفع', start_date: 'تاريخ البداية', end_date: 'تاريخ النهاية',
+                  } : {
+                    parties: 'Parties', subject: 'Subject', property: 'Property',
+                    duration: 'Duration', amount: 'Amount', currency: 'Currency',
+                    payment_terms: 'Payment', start_date: 'Start Date', end_date: 'End Date',
                   }
                   const display = Array.isArray(v) ? v.join('، ') : String(v)
                   return (
@@ -270,15 +313,15 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Party risk balance */}
           {reviewResult.party_risk_balance?.favors && (
             <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
-              <p style={LABEL_S}>توازن العقد</p>
+              <p style={LABEL_S}>{isAr ? 'توازن العقد' : 'Contract Balance'}</p>
               <p style={{ fontSize: 13, color: '#1A1208', margin: 0 }}>
                 {reviewResult.party_risk_balance.favors === 'balanced'
-                  ? 'العقد متوازن بين الطرفين'
+                  ? (isAr ? 'العقد متوازن بين الطرفين' : 'The contract is balanced between both parties')
                   : reviewResult.party_risk_balance.favors === 'party_one'
-                  ? 'العقد يميل لصالح الطرف الأول'
+                  ? (isAr ? 'العقد يميل لصالح الطرف الأول' : 'The contract favors party one')
                   : reviewResult.party_risk_balance.favors === 'party_two'
-                  ? 'العقد يميل لصالح الطرف الثاني'
-                  : 'التوازن غير واضح'}
+                  ? (isAr ? 'العقد يميل لصالح الطرف الثاني' : 'The contract favors party two')
+                  : (isAr ? 'التوازن غير واضح' : 'Balance unclear')}
               </p>
               {reviewResult.party_risk_balance.notes && (
                 <p style={{ fontSize: 11, color: '#9C8E80', margin: '4px 0 0' }}>{reviewResult.party_risk_balance.notes}</p>
@@ -289,7 +332,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Key clauses */}
           {reviewResult.key_clauses_found?.length > 0 && (
             <div>
-              <p style={LABEL_S}>البنود الأساسية</p>
+              <p style={LABEL_S}>{isAr ? 'البنود الأساسية' : 'Key Clauses'}</p>
               <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
                 {reviewResult.key_clauses_found.slice(0, 10).map((c, i) => (
                   <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < Math.min(reviewResult.key_clauses_found.length, 10) - 1 ? '1px solid #EAE4D9' : 'none' }}>
@@ -304,7 +347,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                     </span>
                     <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{c.clause}</span>
                     <span style={{ fontSize: 11, fontWeight: 600, ...(STRENGTH_STYLE[c.strength] || {}) }}>
-                      {STRENGTH_AR[c.strength] || c.strength}
+                      {(isAr ? STRENGTH_AR[c.strength] : STRENGTH_EN[c.strength]) || c.strength}
                     </span>
                   </div>
                 ))}
@@ -315,19 +358,19 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Missing/weak clauses */}
           {reviewResult.missing_or_weak_clauses?.length > 0 && (
             <div>
-              <p style={LABEL_S}>بنود ناقصة أو ضعيفة ({reviewResult.missing_or_weak_clauses.length})</p>
+              <p style={LABEL_S}>{isAr ? `بنود ناقصة أو ضعيفة (${reviewResult.missing_or_weak_clauses.length})` : `Missing or Weak Clauses (${reviewResult.missing_or_weak_clauses.length})`}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {reviewResult.missing_or_weak_clauses.map((c, i) => (
                   <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8, animation: 'dapItem 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                       <p style={{ fontWeight: 700, fontSize: 13, color: '#1A1208', margin: 0 }}>{c.clause}</p>
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, whiteSpace: 'nowrap', ...(RISK_CLAUSE_STYLE[c.risk_level] || {}) }}>
-                        {RISK_AR[c.risk_level] || c.risk_level}
+                        {(isAr ? RISK_AR[c.risk_level] : RISK_EN[c.risk_level]) || c.risk_level}
                       </span>
                     </div>
                     <p style={{ fontSize: 12, color: '#5C4A3A', margin: 0 }}>{c.why_it_matters}</p>
                     <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '10px 12px' }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>التوصية</p>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>{isAr ? 'التوصية' : 'Recommendation'}</p>
                       <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{c.recommendation}</p>
                     </div>
                   </div>
@@ -340,7 +383,11 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {reviewResult.overall_recommendation && (
             <div style={{ background: 'rgba(107,39,55,0.06)', border: '1.5px solid rgba(107,39,55,0.2)', borderRadius: 14, padding: '14px 16px' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: '#6b2737', margin: '0 0 6px' }}>
-                {reviewResult.overall_verdict === 'safe' ? 'العقد آمن للمراجعة' : reviewResult.overall_verdict === 'caution' ? 'يحتاج تعديلات' : 'مخاطر عالية'}
+                {reviewResult.overall_verdict === 'safe'
+                  ? (isAr ? 'العقد آمن للمراجعة' : 'Contract is safe to review')
+                  : reviewResult.overall_verdict === 'caution'
+                  ? (isAr ? 'يحتاج تعديلات' : 'Needs amendments')
+                  : (isAr ? 'مخاطر عالية' : 'High risk')}
               </p>
               <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: 0, lineHeight: 1.6 }}>
                 {reviewResult.overall_recommendation}

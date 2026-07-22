@@ -147,7 +147,7 @@ export default function ExpatPropertyPackPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <button
               type="button"
-              aria-label="الخدمات"
+              aria-label={isAr ? 'الخدمات' : 'Services'}
               onClick={() => router.push('/services')}
               onTouchStart={e => (e.currentTarget.style.opacity = '0.65')}
               onTouchEnd={e => (e.currentTarget.style.opacity = '1')}

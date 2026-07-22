@@ -1,7 +1,9 @@
 'use client'
 import Link from 'next/link'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function NotFound() {
+  const { isAr } = useLanguage()
   return (
     <div id="main-content" style={{
       minHeight: '100vh',
@@ -43,7 +45,7 @@ export default function NotFound() {
         color: '#1A1208',
         margin: '0 0 8px',
       }}>
-        الصفحة غير موجودة
+        {isAr ? 'الصفحة غير موجودة' : 'Page Not Found'}
       </h1>
 
       <p style={{
@@ -52,7 +54,9 @@ export default function NotFound() {
         maxWidth: 320,
         lineHeight: 1.7,
       }}>
-        لم نتمكن من العثور على الصفحة التي تبحث عنها. ربما تم نقلها أو حذفها.
+        {isAr
+          ? 'لم نتمكن من العثور على الصفحة التي تبحث عنها. ربما تم نقلها أو حذفها.'
+          : 'We could not find the page you were looking for. It may have been moved or deleted.'}
       </p>
 
       <Link
@@ -76,7 +80,7 @@ export default function NotFound() {
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
-        العودة للرئيسية
+        {isAr ? 'العودة للرئيسية' : 'Back to Home'}
       </Link>
     </div>
   )

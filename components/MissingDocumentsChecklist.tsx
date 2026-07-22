@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { MissingDocument } from '@/lib/types'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface RequiredDoc {
   title: string
@@ -31,12 +32,20 @@ const PRIORITY_AR: Record<string, string> = {
   low:      'منخفض',
 }
 
+const PRIORITY_EN: Record<string, string> = {
+  critical: 'Critical',
+  high:     'High',
+  medium:   'Medium',
+  low:      'Low',
+}
+
 export default function MissingDocumentsChecklist({
   missingDocs,
   requiredDocs = [],
   uploadedDocIds = [],
   onUpload,
 }: Props) {
+  const { isAr } = useLanguage()
   const missingMap = new Map(missingDocs.map((d) => [d.title, d]))
 
   const allDocs: Array<{ title: string; required: boolean; notes?: string; missing?: MissingDocument }> =
@@ -49,8 +58,8 @@ export default function MissingDocumentsChecklist({
 
   if (total === 0) {
     return (
-      <div dir="rtl" style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#9C8E80', fontFamily: "'Cairo','Inter',sans-serif" }}>
-        لا توجد وثائق مطلوبة
+      <div dir={isAr ? 'rtl' : 'ltr'} style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#9C8E80', fontFamily: "'Cairo','Inter',sans-serif" }}>
+        {isAr ? 'لا توجد وثائق مطلوبة' : 'No required documents'}
       </div>
     )
   }
@@ -60,11 +69,11 @@ export default function MissingDocumentsChecklist({
   return (
     <>
     <style>{`@keyframes mdcFade { from { opacity:0; } to { opacity:1; } }`}</style>
-    <div dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif", animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
+    <div dir={isAr ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif", animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
       {/* Summary row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <p style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', margin: 0 }}>
-          {uploaded} من {total} وثائق مكتملة
+          {isAr ? `${uploaded} من ${total} وثائق مكتملة` : `${uploaded} of ${total} documents complete`}
         </p>
         <div style={{ width: 120, background: '#EAE4D9', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
           <div style={{
@@ -129,7 +138,7 @@ export default function MissingDocumentsChecklist({
                   padding: '2px 7px', borderRadius: 99,
                   ...(PRIORITY_STYLE[doc.missing.priority] || {}),
                 }}>
-                  {PRIORITY_AR[doc.missing.priority] || doc.missing.priority}
+                  {(isAr ? PRIORITY_AR[doc.missing.priority] : PRIORITY_EN[doc.missing.priority]) || doc.missing.priority}
                 </span>
               )}
 
@@ -144,11 +153,11 @@ export default function MissingDocumentsChecklist({
                     color: '#fff', border: 'none', borderRadius: 8,
                     cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s',
                   }}
-                  aria-label={`رفع وثيقة: ${doc.title}`}
+                  aria-label={isAr ? `رفع وثيقة: ${doc.title}` : `Upload document: ${doc.title}`}
                   onTouchStart={e => { e.currentTarget.style.opacity = '0.8' }}
                   onTouchEnd={e => { e.currentTarget.style.opacity = '1' }}
                 >
-                  رفع
+                  {isAr ? 'رفع' : 'Upload'}
                 </button>
               )}
             </div>

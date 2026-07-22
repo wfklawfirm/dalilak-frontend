@@ -72,7 +72,7 @@ export default function FormDetailClient({ form }: Props) {
         <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
-            aria-label="رجوع"
+            aria-label={isAr ? 'رجوع' : 'Back'}
             onClick={() => router.back()}
             onTouchStart={e => (e.currentTarget.style.opacity = '0.7')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
