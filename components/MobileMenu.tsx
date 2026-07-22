@@ -220,7 +220,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
                 <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
               </div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.3px' }}>دليلك</div>
+                <div style={{ fontSize: 15, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-0.3px' }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
                 <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
                   {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
                 </div>

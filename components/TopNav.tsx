@@ -112,7 +112,7 @@ export default function TopNav({
                 fontSize: 16, fontWeight: 900, color: '#fff',
                 lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap',
               }}>
-                دليلك
+                {isAr ? 'دليلك' : 'Dalilak'}
               </div>
               <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.55)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
                 {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
@@ -185,7 +185,7 @@ export default function TopNav({
               fontSize: 17, fontWeight: 900, color: '#fff',
               letterSpacing: '-0.3px', lineHeight: 1,
             }}>
-              دليلك
+              {isAr ? 'دليلك' : 'Dalilak'}
             </div>
           </button>
 
