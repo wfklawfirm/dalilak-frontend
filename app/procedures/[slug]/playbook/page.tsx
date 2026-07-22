@@ -46,7 +46,7 @@ export default function PlaybookPage() {
     <button
       type="button"
       onClick={toggleLang}
-      aria-label="تغيير اللغة"
+      aria-label={isAr ? 'تغيير اللغة' : 'Switch language'}
       style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', borderRadius: 20, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700 }}
     >
       {isAr ? 'EN' : 'AR'}

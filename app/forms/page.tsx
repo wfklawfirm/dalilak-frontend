@@ -66,7 +66,7 @@ export default function FormsPage() {
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'formHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
+          <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -160,7 +160,7 @@ export default function FormsPage() {
               background: ministryFilter === 'all' ? '#FEF2F2' : '#fff',
               color: ministryFilter === 'all' ? '#8B1A1A' : '#5C4A3A',
             }}>
-              الكل ({viewTab === 'all-tx' ? TX_ALL.length : TX_WITH_FORMS.length})
+              {isAr ? 'الكل' : 'All'} ({viewTab === 'all-tx' ? TX_ALL.length : TX_WITH_FORMS.length})
             </button>
             {topMinistries.map(m => (
               <button type="button" key={m.slug} aria-pressed={ministryFilter === m.slug} onClick={() => setMinistryFilter(m.slug)}
@@ -188,7 +188,11 @@ export default function FormsPage() {
 
         {/* Results count */}
         <p aria-live="polite" aria-atomic="true" style={{ fontSize: 11, color: '#9C8E80', margin: '0 0 10px' }}>
-          {viewTab === 'all-tx' ? `${filteredAllTx.length} معاملة حكومية` : viewTab === 'forms-tx' ? `${filteredTx.length} معاملة بنموذج PDF` : `${filteredCurated.length} نموذج منظّم`}
+          {viewTab === 'all-tx'
+            ? `${filteredAllTx.length} ${isAr ? 'معاملة حكومية' : 'government transactions'}`
+            : viewTab === 'forms-tx'
+              ? `${filteredTx.length} ${isAr ? 'معاملة بنموذج PDF' : 'transactions with PDF form'}`
+              : `${filteredCurated.length} ${isAr ? 'نموذج منظّم' : 'curated forms'}`}
         </p>
 
         {/* ── ALL TRANSACTIONS VIEW ──────────────────────────────────────────── */}
@@ -196,12 +200,12 @@ export default function FormsPage() {
           filteredAllTx.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
-              <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نتائج</p>
+              <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
               <button type="button" onClick={() => askAI(`أريد معلومات عن معاملة: ${search}`)}
                 onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 6px rgba(139,26,26,0.25)', transition: 'opacity 0.12s, transform 0.12s' }}>
-                اسأل دليلك
+                {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
               </button>
             </div>
           ) : (
@@ -230,7 +234,9 @@ export default function FormsPage() {
               ))}
               {filteredAllTx.length > 200 && (
                 <div style={{ textAlign: 'center', padding: '12px', color: '#9C8E80', fontSize: 11 }}>
-                  يتم عرض أول 200 نتيجة من {filteredAllTx.length} — استخدم البحث لتضييق النتائج
+                  {isAr
+                    ? `يتم عرض أول 200 نتيجة من ${filteredAllTx.length} — استخدم البحث لتضييق النتائج`
+                    : `Showing first 200 of ${filteredAllTx.length} — use search to narrow results`}
                 </div>
               )}
             </div>
@@ -242,12 +248,12 @@ export default function FormsPage() {
           filteredTx.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
-              <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نتائج</p>
+              <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
               <button type="button" onClick={() => askAI(`أريد معلومات عن نماذج ${search}`)}
                 onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 6px rgba(139,26,26,0.25)', transition: 'opacity 0.12s, transform 0.12s' }}>
-                اسأل دليلك
+                {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
               </button>
             </div>
           ) : (
@@ -282,7 +288,7 @@ export default function FormsPage() {
                     )}
                     {!tx.pdfUrl && (
                       <span style={{ flex: 1, padding: '7px', background: '#FAFAF8', color: '#5C4A3A', border: '1px solid #EAE4D9', borderRadius: 9, fontSize: 11, textAlign: 'center' }}>
-                        بلا نموذج
+                        {isAr ? 'بلا نموذج' : 'No form'}
                       </span>
                     )}
                   </div>
@@ -297,7 +303,7 @@ export default function FormsPage() {
           filteredCurated.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
-              <p style={{ fontSize: 14, margin: 0 }}>لم يُعثر على نماذج</p>
+              <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نماذج' : 'No forms found'}</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

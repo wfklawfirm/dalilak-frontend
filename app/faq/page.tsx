@@ -61,7 +61,7 @@ export default function FAQPage() {
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'faqHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
+          <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -183,8 +183,8 @@ export default function FAQPage() {
                 <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
               </svg>
             </div>
-            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>لم يُعثر على نتائج</p>
-            <p style={{ fontSize: 12, margin: '0 0 14px' }}>جرّب كلمة مختلفة أو اسأل دليلك مباشرة</p>
+            <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px' }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
+            <p style={{ fontSize: 12, margin: '0 0 14px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
             <button type="button" onClick={() => askAI(search || (isAr ? 'دليلك' : 'Dalilak'))}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}

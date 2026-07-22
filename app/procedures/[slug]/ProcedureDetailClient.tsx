@@ -92,7 +92,7 @@ export default function ProcedureDetailClient() {
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-          <button type="button" aria-label='اسأل دليلك عن هذه المعاملة' onClick={askAI} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 3px 12px rgba(139,26,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <button type="button" aria-label={isAr ? 'اسأل دليلك عن هذه المعاملة' : 'Ask Dalilak about this procedure'} onClick={askAI} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 3px 12px rgba(139,26,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
             {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
           </button>

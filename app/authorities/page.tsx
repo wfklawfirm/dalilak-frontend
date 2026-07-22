@@ -66,15 +66,15 @@ function deriveAuthorities(): DerivedAuthority[] {
 const ALL_AUTHORITIES = deriveAuthorities()
 
 const TYPE_FILTERS = [
-  { key: 'all', labelAr: 'الكل' },
-  { key: 'ministry', labelAr: 'وزارة' },
-  { key: 'council', labelAr: 'هيئة ومجلس' },
-  { key: 'municipality', labelAr: 'بلدية' },
-  { key: 'court', labelAr: 'قضاء' },
-  { key: 'union', labelAr: 'نقابة' },
-  { key: 'bank', labelAr: 'مصرف' },
-  { key: 'security', labelAr: 'أمن' },
-  { key: 'other', labelAr: 'أخرى' },
+  { key: 'all', labelAr: 'الكل', labelEn: 'All' },
+  { key: 'ministry', labelAr: 'وزارة', labelEn: 'Ministry' },
+  { key: 'council', labelAr: 'هيئة ومجلس', labelEn: 'Council' },
+  { key: 'municipality', labelAr: 'بلدية', labelEn: 'Municipality' },
+  { key: 'court', labelAr: 'قضاء', labelEn: 'Court' },
+  { key: 'union', labelAr: 'نقابة', labelEn: 'Union' },
+  { key: 'bank', labelAr: 'مصرف', labelEn: 'Bank' },
+  { key: 'security', labelAr: 'أمن', labelEn: 'Security' },
+  { key: 'other', labelAr: 'أخرى', labelEn: 'Other' },
 ]
 
 const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }> = {
@@ -187,7 +187,7 @@ export default function AuthoritiesPage() {
         animation: 'authHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button type="button" aria-label="الرئيسية" onClick={() => router.push('/')}
+          <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{
@@ -279,7 +279,7 @@ export default function AuthoritiesPage() {
             }}
           />
           {search && (
-            <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{
+            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{
               position: 'absolute', top: '50%', transform: 'translateY(-50%)',
               left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%',
               width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A',
@@ -315,7 +315,7 @@ export default function AuthoritiesPage() {
                 color: active ? '#8B1A1A' : '#5C4A3A',
                 transition: 'border-color 0.15s, background 0.15s, color 0.15s',
               }}>
-                {f.labelAr}
+                {isAr ? f.labelAr : f.labelEn}
               </button>
             )
           })}
@@ -367,7 +367,9 @@ export default function AuthoritiesPage() {
         <div className="auth-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 12 }}>
           {filtered.map((auth, idx) => {
             const colors = TYPE_COLORS[auth.type] || TYPE_COLORS.other
-            const typeLabel = TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || 'أخرى'
+            const typeLabel = isAr
+              ? (TYPE_FILTERS.find(f => f.key === auth.type)?.labelAr || 'أخرى')
+              : (TYPE_FILTERS.find(f => f.key === auth.type)?.labelEn || 'Other')
             return (
               <div key={auth.name_ar} className="auth-card"
                 onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.10)'; e.currentTarget.style.transform = 'scale(0.985)' }}
@@ -413,7 +415,7 @@ export default function AuthoritiesPage() {
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                       </svg>
-                      {auth.serviceCount} خدمة
+                      {auth.serviceCount} {isAr ? 'خدمة' : 'services'}
                     </span>
                     {auth.online_count > 0 && (
                       <span style={{
@@ -424,7 +426,7 @@ export default function AuthoritiesPage() {
 <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                         </svg>
-                        {auth.online_count} أونلاين
+                        {auth.online_count} {isAr ? 'أونلاين' : 'online'}
                       </span>
                     )}
                   </div>
