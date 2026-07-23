@@ -16,6 +16,7 @@ import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/servi
 import { useLanguage } from '@/lib/LanguageContext'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 import { ALL_SERVICES } from '@/lib/allServices'
+import { LIFE_JOURNEYS, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -263,6 +264,236 @@ const HERO_CARDS = [
 ] as const
 type HeroCard = (typeof HERO_CARDS)[number]
 
+// ── Journey Sheet ─────────────────────────────────────────────────────────────
+function JourneySheet({
+  journey, onClose, onAsk,
+}: { journey: LifeJourney; onClose: () => void; onAsk: (q: string) => void }) {
+  const { isAr } = useLanguage()
+
+  return (
+    <div
+      role="presentation"
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+      onKeyDown={e => { if (e.key === 'Escape') onClose() }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={isAr ? journey.titleAr : journey.titleEn}
+        dir={isAr ? 'rtl' : 'ltr'}
+        style={{
+          background: '#fff', borderRadius: '24px 24px 0 0',
+          width: '100%', maxWidth: 680,
+          maxHeight: '88vh', overflowY: 'auto',
+          display: 'flex', flexDirection: 'column',
+          animation: 'slideUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
+        }}
+      >
+        <style>{`@keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}`}</style>
+
+        {/* Header */}
+        <div style={{
+          padding: '20px 20px 18px',
+          borderBottom: '1px solid var(--border)',
+          position: 'sticky', top: 0, background: '#fff', zIndex: 2,
+          display: 'flex', alignItems: 'flex-start', gap: 14,
+        }}>
+          <div style={{
+            fontSize: 34, lineHeight: 1, flexShrink: 0,
+            width: 52, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--brand-soft)', borderRadius: 14,
+          }}>
+            {journey.emoji}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', margin: '0 0 3px' }}>
+              {isAr ? journey.titleAr : journey.titleEn}
+            </h2>
+            <p style={{ fontSize: 12.5, color: 'var(--text-3)', margin: '0 0 8px' }}>
+              {isAr ? journey.subtitleAr : journey.subtitleEn}
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <span style={{
+                fontSize: 11, padding: '3px 10px', borderRadius: 99,
+                background: 'var(--brand-soft)', color: 'var(--brand)',
+                fontWeight: 700, border: '1px solid var(--brand-ring)',
+              }}>
+                ⏱ {isAr ? journey.totalEstAr : journey.totalEstEn}
+              </span>
+              <span style={{
+                fontSize: 11, padding: '3px 10px', borderRadius: 99,
+                background: 'var(--surface-2)', color: 'var(--text-2)',
+                fontWeight: 600, border: '1px solid var(--border)',
+              }}>
+                💰 {isAr ? journey.totalFeesAr : journey.totalFeesEn}
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={isAr ? 'إغلاق' : 'Close'}
+            style={{
+              width: 34, height: 34, borderRadius: 9, flexShrink: 0,
+              border: '1.5px solid var(--border)', background: 'transparent',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--text-3)',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Description */}
+        <div style={{ padding: '16px 20px 0' }}>
+          <p style={{ fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.7, margin: 0 }}>
+            {isAr ? journey.descAr : journey.descEn}
+          </p>
+        </div>
+
+        {/* Steps timeline */}
+        <div style={{ padding: '20px 20px' }}>
+          <div style={{
+            fontSize: 10.5, fontWeight: 700, color: 'var(--text-3)',
+            letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 16,
+          }}>
+            {isAr ? 'الخطوات بالترتيب' : 'Steps in Order'}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {journey.steps.map((step: JourneyStep, i: number) => (
+              <div key={i} style={{ display: 'flex', gap: 14, position: 'relative', paddingBottom: i < journey.steps.length - 1 ? 20 : 0 }}>
+                {/* Connector line */}
+                {i < journey.steps.length - 1 && (
+                  <div style={{
+                    position: 'absolute',
+                    [isAr ? 'right' : 'left']: 16,
+                    top: 34, bottom: 0, width: 2,
+                    background: step.optional ? 'var(--border-light)' : 'var(--border)',
+                    borderRadius: 2,
+                  }} />
+                )}
+                {/* Step number */}
+                <div style={{
+                  width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: step.optional ? 'var(--surface-2)' : 'var(--brand)',
+                  color: step.optional ? 'var(--text-3)' : '#fff',
+                  fontSize: 13, fontWeight: 800, zIndex: 1,
+                  border: step.parallel ? '2.5px dashed var(--brand)' : 'none',
+                }}>
+                  {i + 1}
+                </div>
+                {/* Content */}
+                <div style={{
+                  flex: 1, background: 'var(--surface-muted)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 12, padding: '12px 14px',
+                  opacity: step.optional ? 0.75 : 1,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.3 }}>
+                      {isAr ? step.titleAr : step.titleEn}
+                      {step.optional && (
+                        <span style={{
+                          marginInlineStart: 8, fontSize: 10, fontWeight: 700,
+                          background: 'var(--surface-3)', color: 'var(--text-3)',
+                          borderRadius: 6, padding: '2px 7px',
+                        }}>
+                          {isAr ? 'اختياري' : 'Optional'}
+                        </span>
+                      )}
+                      {step.parallel && (
+                        <span style={{
+                          marginInlineStart: 8, fontSize: 10, fontWeight: 700,
+                          background: '#eff6ff', color: '#1d4ed8',
+                          borderRadius: 6, padding: '2px 7px',
+                        }}>
+                          {isAr ? 'متوازٍ' : 'Parallel'}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { onAsk(isAr ? step.promptAr : step.promptEn); onClose() }}
+                      style={{
+                        flexShrink: 0, height: 28, padding: '0 10px', borderRadius: 7,
+                        border: 'none', background: step.optional ? 'var(--surface-3)' : 'var(--brand)',
+                        color: step.optional ? 'var(--text-2)' : '#fff',
+                        fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                      }}
+                    >
+                      <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                      </svg>
+                      {isAr ? 'اسأل' : 'Ask'}
+                    </button>
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-3)', display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <span>🏛 {isAr ? step.authorityAr : step.authorityEn}</span>
+                    <span>⏱ {isAr ? step.estAr : step.estEn}</span>
+                    <span>💰 {isAr ? step.feesAr : step.feesEn}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tips */}
+        {journey.tipsAr.length > 0 && (
+          <div style={{ margin: '0 20px 20px', padding: '14px 16px', background: 'var(--accent-light)', borderRadius: 12, border: '1px solid var(--warning-border)' }}>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--accent)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {isAr ? 'نصائح مهمة' : 'Important Tips'}
+            </div>
+            <ul style={{ margin: 0, padding: isAr ? '0 16px 0 0' : '0 0 0 16px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+              {(isAr ? journey.tipsAr : journey.tipsEn).map((tip, i) => (
+                <li key={i} style={{ fontSize: 12.5, color: 'var(--warning-fg)', lineHeight: 1.6 }}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* CTA */}
+        <div style={{ padding: '0 20px 24px' }}>
+          <button
+            type="button"
+            onClick={() => {
+              onAsk(isAr
+                ? `أريد البدء بـ "${journey.titleAr}" — أرشدني من البداية خطوة بخطوة`
+                : `I want to start "${journey.titleEn}" — guide me step by step from the beginning`)
+              onClose()
+            }}
+            style={{
+              width: '100%', height: 48, borderRadius: 12, border: 'none',
+              background: 'var(--brand)', color: '#fff',
+              fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              boxShadow: 'var(--shadow-brand)',
+              transition: 'background 0.14s, transform 0.14s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--brand-hover)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--brand)' }}
+          >
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z"/>
+            </svg>
+            {isAr ? 'ابدأ رحلتي الآن' : 'Start My Journey'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const router = useRouter()
   const { lang, isAr, toggleLang } = useLanguage()
@@ -302,6 +533,8 @@ export default function Home() {
   const [enhanceSuggestion, setEnhanceSuggestion] = useState<string | null>(null)
   // True for 4s after voice ends with text — shows auto-enhance hint
   const [voiceJustEnded, setVoiceJustEnded] = useState(false)
+  // Life Event Journey sheet
+  const [activeJourney, setActiveJourney] = useState<LifeJourney | null>(null)
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
 
@@ -1220,6 +1453,69 @@ Question: ${text}`
                 </div>
               </section>
 
+              {/* ══ LIFE JOURNEYS ══ */}
+              <section style={{ background:'var(--bg-page)', padding:'clamp(48px,5vw,80px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:8, gap:16 }}>
+                    <div>
+                      <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 4px', letterSpacing:'-0.4px' }}>
+                        {isAr ? 'أنت في أي مرحلة من حياتك؟' : 'What life stage are you in?'}
+                      </h2>
+                      <p style={{ fontSize:13.5, color:'var(--text-3)', margin:0 }}>
+                        {isAr ? 'اختر حدثاً حياتياً لترى كل الإجراءات المترابطة دفعةً واحدة' : 'Pick a life event to see all related procedures in one place'}
+                      </p>
+                    </div>
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:12, marginTop:24 }}>
+                    {LIFE_JOURNEYS.map(journey => (
+                      <button
+                        key={journey.slug}
+                        type="button"
+                        onClick={() => setActiveJourney(journey)}
+                        style={{
+                          textAlign: isAr ? 'right' : 'left',
+                          background:'var(--surface)',
+                          border:'1.5px solid var(--border)',
+                          borderRadius:14, padding:'16px 16px 14px',
+                          cursor:'pointer', fontFamily:'inherit',
+                          transition:'border-color 0.14s, box-shadow 0.14s, transform 0.14s',
+                          display:'flex', flexDirection:'column', gap:8,
+                        }}
+                        onMouseEnter={e => {
+                          const t = e.currentTarget as HTMLButtonElement
+                          t.style.borderColor = 'var(--brand)'
+                          t.style.boxShadow = 'var(--shadow-brand)'
+                          t.style.transform = 'translateY(-2px)'
+                        }}
+                        onMouseLeave={e => {
+                          const t = e.currentTarget as HTMLButtonElement
+                          t.style.borderColor = 'var(--border)'
+                          t.style.boxShadow = 'none'
+                          t.style.transform = ''
+                        }}
+                      >
+                        <div style={{ fontSize:28, lineHeight:1 }}>{journey.emoji}</div>
+                        <div>
+                          <div style={{ fontSize:14, fontWeight:700, color:'var(--text-1)', lineHeight:1.3, marginBottom:3 }}>
+                            {isAr ? journey.titleAr : journey.titleEn}
+                          </div>
+                          <div style={{ fontSize:11.5, color:'var(--text-3)' }}>
+                            {isAr ? journey.subtitleAr : journey.subtitleEn}
+                          </div>
+                        </div>
+                        <div style={{
+                          marginTop:'auto', paddingTop:4,
+                          fontSize:11, color:'var(--brand)', fontWeight:700,
+                          display:'flex', alignItems:'center', gap:4,
+                        }}>
+                          {isAr ? 'عرض الخطوات ←' : '→ View Steps'}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
               {/* ══ HOW IT WORKS ══ */}
               <section style={{ background:'var(--surface-muted)', padding:'clamp(48px,5vw,80px) 0', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
@@ -1991,6 +2287,15 @@ Question: ${text}`
           }
         }}
       />
+
+      {/* ══ JOURNEY SHEET ══════════════════════════════ */}
+      {activeJourney && (
+        <JourneySheet
+          journey={activeJourney}
+          onClose={() => setActiveJourney(null)}
+          onAsk={(q) => sendMessage(q)}
+        />
+      )}
 
       {/* ══════════════ MOBILE MENU DRAWER ══════════════ */}
       <MobileMenu
