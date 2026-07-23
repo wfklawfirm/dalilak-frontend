@@ -10,13 +10,17 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [resultMsg, setResultMsg] = useState('')
+  const [resultInfo, setResultInfo] = useState('')
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      await apiForgotPassword(email.trim())
+      const resp = await apiForgotPassword(email.trim())
+      setResultMsg(typeof resp?.message === 'string' ? resp.message : '')
+      setResultInfo(typeof resp?.info === 'string' ? resp.info : '')
       setSent(true)
     } catch (err) {
       setError((err instanceof Error ? err.message : (isAr ? 'خطأ — حاول مرة أخرى' : 'Error — please try again')))
@@ -102,10 +106,10 @@ export default function ForgotPasswordPage() {
             </div>
             <h2 style={{ fontSize: 18, fontWeight: 800, color: '#191713', margin: '0 0 10px' }}>{isAr ? 'تم إرسال الطلب' : 'Request sent'}</h2>
             <p style={{ fontSize: 13, color: '#69645C', lineHeight: 1.6, margin: '0 0 8px' }}>
-              {isAr ? 'إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.' : 'If your email is registered, our support team will contact you within 24 hours with your recovery code.'}
+              {resultMsg || (isAr ? 'إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.' : 'If your email is registered, our support team will contact you within 24 hours with your recovery code.')}
             </p>
             <p style={{ fontSize: 11.5, color: '#918B82', margin: '0 0 20px' }}>
-              {isAr ? 'يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.' : 'You can also contact us directly via WhatsApp or email.'}
+              {resultInfo || (isAr ? 'يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.' : 'You can also contact us directly via WhatsApp or email.')}
             </p>
             <Link
               href="/login"

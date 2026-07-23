@@ -24,11 +24,13 @@ import { useLanguage } from '@/lib/LanguageContext'
 
 const LS_HC = 'dalilak_a11y_hc'
 const LS_LT = 'dalilak_a11y_lt'
+const LS_RM = 'dalilak_a11y_rm'
 
-function applyClasses(hc: boolean, lt: boolean) {
+function applyClasses(hc: boolean, lt: boolean, rm: boolean) {
   const html = document.documentElement
   html.classList.toggle('dalilak-high-contrast', hc)
   html.classList.toggle('dalilak-large-text', lt)
+  html.classList.toggle('dalilak-reduce-motion', rm)
 }
 
 export default function AccessibilityBar() {
@@ -36,6 +38,7 @@ export default function AccessibilityBar() {
   const [open, setOpen] = useState(false)
   const [hc, setHc] = useState(false)
   const [lt, setLt] = useState(false)
+  const [rm, setRm] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -43,8 +46,9 @@ export default function AccessibilityBar() {
     try {
       const h = localStorage.getItem(LS_HC) === '1'
       const l = localStorage.getItem(LS_LT) === '1'
-      setHc(h); setLt(l)
-      applyClasses(h, l)
+      const r = localStorage.getItem(LS_RM) === '1'
+      setHc(h); setLt(l); setRm(r)
+      applyClasses(h, l, r)
     } catch {}
   }, [])
 
@@ -52,19 +56,26 @@ export default function AccessibilityBar() {
     const next = !hc
     setHc(next)
     try { localStorage.setItem(LS_HC, next ? '1' : '0') } catch {}
-    applyClasses(next, lt)
+    applyClasses(next, lt, rm)
   }
 
   function toggleLt() {
     const next = !lt
     setLt(next)
     try { localStorage.setItem(LS_LT, next ? '1' : '0') } catch {}
-    applyClasses(hc, next)
+    applyClasses(hc, next, rm)
+  }
+
+  function toggleRm() {
+    const next = !rm
+    setRm(next)
+    try { localStorage.setItem(LS_RM, next ? '1' : '0') } catch {}
+    applyClasses(hc, lt, next)
   }
 
   if (!mounted) return null
 
-  const anyActive = hc || lt
+  const anyActive = hc || lt || rm
   const side = isAr ? 'left' : 'right'
 
   return (
@@ -89,6 +100,14 @@ export default function AccessibilityBar() {
         .dalilak-large-text input,
         .dalilak-large-text textarea {
           font-size: inherit !important;
+        }
+        .dalilak-reduce-motion *,
+        .dalilak-reduce-motion *::before,
+        .dalilak-reduce-motion *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
         }
       `}</style>
 
@@ -232,6 +251,44 @@ export default function AccessibilityBar() {
                   }} />
                 </div>
               </button>
+
+              {/* Reduce motion */}
+              <button
+                type="button"
+                role="switch"
+                aria-checked={rm}
+                onClick={toggleRm}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  width: '100%', padding: '9px 14px',
+                  background: rm ? 'rgba(26,86,219,0.07)' : 'transparent',
+                  border: 'none', cursor: 'pointer',
+                  textAlign: isAr ? 'right' : 'left', fontFamily: 'inherit',
+                }}
+              >
+                <span style={{ fontSize: 17 }}>🎞️</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#191713' }}>
+                    {isAr ? 'تقليل الحركة' : 'Reduce Motion'}
+                  </div>
+                  <div style={{ fontSize: 10, color: '#9ca3af' }}>
+                    {isAr ? 'إيقاف التأثيرات الحركية' : 'Disable animations & transitions'}
+                  </div>
+                </div>
+                <div style={{
+                  width: 34, height: 18, borderRadius: 9,
+                  background: rm ? '#1a56db' : '#D5CEC4',
+                  position: 'relative', transition: 'background 0.2s', flexShrink: 0,
+                }}>
+                  <div style={{
+                    position: 'absolute', top: 3, width: 12, height: 12,
+                    borderRadius: '50%', background: '#fff',
+                    transition: 'left 0.2s',
+                    [isAr ? 'right' : 'left']: rm ? 3 : 'auto',
+                    [isAr ? 'left' : 'right']: !rm ? 3 : 'auto',
+                  }} />
+                </div>
+              </button>
             </div>
 
             {/* Reset */}
@@ -239,7 +296,7 @@ export default function AccessibilityBar() {
               <div style={{ padding: '4px 14px 10px' }}>
                 <button
                   type="button"
-                  onClick={() => { setHc(false); setLt(false); applyClasses(false, false); try { localStorage.removeItem(LS_HC); localStorage.removeItem(LS_LT) } catch {} }}
+                  onClick={() => { setHc(false); setLt(false); setRm(false); applyClasses(false, false, false); try { localStorage.removeItem(LS_HC); localStorage.removeItem(LS_LT); localStorage.removeItem(LS_RM) } catch {} }}
                   style={{
                     width: '100%', padding: '5px',
                     background: 'none', border: '1px solid #E6E2DC',

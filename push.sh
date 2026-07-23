@@ -44,11 +44,17 @@
 #
 #   #312 ChatDraftAutosave           — persists unsent chat input across refresh
 #   #313 ChatMessageSearchInThread   — find & jump to text within current conversation
+#
+#   + AccessibilityBar: added third toggle "Reduce Motion" (disables animations/transitions)
+#   + forgot-password page: now shows the backend's real response message
+#     (was hardcoded "support will contact you in 24h" regardless of outcome)
+#     — pairs with backend v6 (push_backend_v6.sh) which now actually emails
+#     the reset code when SMTP env vars are configured.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-313 — 29 new components + fix mobile FAB overlap + fix broken flowchart generation fallback"
+git diff --cached --quiet || git commit -m "feat: batch #284-313 — 29 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging"
 git push origin main
 echo "✅ Done"
