@@ -349,49 +349,15 @@ export default function Home() {
       if (improved && improved.length < 400) {
         setter(improved)
 
-        // ── Generate contextual chips via a second /chat/stream call ──
-        ;(async () => {
-          try {
-            const chipsMsg = isAr
-              ? `بناءً على هذا السؤال: "${improved}"\nاكتب 4 أسئلة متابعة مختصرة جداً (سطر واحد لكل سؤال، بدون أرقام أو نقاط أو أي تنسيق، كل سؤال في سطر منفصل فقط):`
-              : `Based on this question: "${improved}"\nWrite 4 short follow-up questions (one per line, no numbers, no bullets, no formatting — just the questions):`
-
-            const r2 = await fetch(`${API_URL}/chat/stream`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', ...authHeaders() },
-              body: JSON.stringify({ message: chipsMsg, history: [] }),
-            })
-            if (!r2.ok || !r2.body) return
-
-            const reader2 = r2.body.getReader()
-            const decoder2 = new TextDecoder()
-            let raw = ''
-
-            outer2: while (true) {
-              const { done, value } = await reader2.read()
-              if (done) break
-              for (const line of decoder2.decode(value, { stream: true }).split('\n')) {
-                if (!line.startsWith('data: ')) continue
-                const p = line.slice(6)
-                if (p === '[DONE]') break outer2
-                try {
-                  const j = JSON.parse(p)
-                  const t = j.text ?? j.token ?? ''
-                  if (t && j.type !== 'meta' && j.type !== 'error') raw += t
-                  if (j.done) break outer2
-                } catch { /* skip */ }
-              }
-            }
-
-            const chips = raw
-              .split('\n')
-              .map(l => l.trim().replace(/^[\d\.\-\*\#]+\s*/, '').replace(/^["«»""]+|["«»""]+$/g, '').trim())
-              .filter(l => l.length > 6 && l.length < 120)
-              .slice(0, 4)
-
-            if (chips.length >= 2) setVisibleQ(chips)
-          } catch { /* silent */ }
-        })()
+        // ── Fetch contextual chips from /suggest_followup ──
+        fetch(`${API_URL}/suggest_followup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body: JSON.stringify({ question: improved, answer: '', lang: isAr ? 'ar' : 'en' }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => { if (d?.questions?.length >= 2) setVisibleQ(d.questions.slice(0, 4)) })
+          .catch(() => {})
       }
     } catch { /* silent */ } finally {
       setLoading(false)
@@ -822,7 +788,7 @@ export default function Home() {
         fetch(API_URL + '/suggest_followup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...authHeaders() },
-          body: JSON.stringify({ question: prefixedMessage.slice(0, 300), answer: accumulated.slice(0, 600) }),
+          body: JSON.stringify({ question: prefixedMessage.slice(0, 300), answer: accumulated.slice(0, 600), lang: isAr ? 'ar' : 'en' }),
         })
           .then(r => r.ok ? r.json() : null)
           .then(d => { if (d?.questions?.length) setFollowupQuestions(d.questions.slice(0, 3)) })
