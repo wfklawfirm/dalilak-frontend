@@ -294,6 +294,8 @@ export default function Home() {
   // Inline error for voice/file (replaces browser alert)
   const [voiceError, setVoiceError] = useState<string | null>(null)
   const [activeCard, setActiveCard] = useState(0)
+  const [displayCard, setDisplayCard] = useState(0)
+  const [cardVisible, setCardVisible] = useState(true)
   const [enhancing, setEnhancing] = useState(false)
   const [heroEnhancing, setHeroEnhancing] = useState(false)
   // Session restore — number of messages reloaded from localStorage
@@ -320,6 +322,17 @@ export default function Home() {
       setLoading(false)
     }
   }, [currentUser])
+
+  // Cross-fade hero card on switch
+  useEffect(() => {
+    if (activeCard === displayCard) return
+    setCardVisible(false)
+    const t = setTimeout(() => {
+      setDisplayCard(activeCard)
+      setCardVisible(true)
+    }, 220)
+    return () => clearTimeout(t)
+  }, [activeCard]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-rotate hero preview card
   useEffect(() => {
@@ -1026,11 +1039,10 @@ export default function Home() {
                     {/* ── Right Column — Rotating Procedure Preview (desktop only) ── */}
                     <div className="hp" style={{ display:'none' }}>
                       <style>{`
-                        @keyframes hpCardIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
                         .hp-icon-passport path { stroke-linecap:round; stroke-linejoin:round; }
                       `}</style>
                       {(() => {
-                        const card = HERO_CARDS[activeCard] as HeroCard
+                        const card = HERO_CARDS[displayCard] as HeroCard
                         const getIcon = (id: string) => {
                           const p = { fill:'none', stroke:'#fff', strokeWidth:2, width:18, height:18 }
                           if (id==='passport') return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg>
@@ -1041,8 +1053,8 @@ export default function Home() {
                         }
                         return (
                           <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:20, overflow:'hidden', boxShadow:'var(--shadow-lg)' }}>
-                            {/* Animated card body — key change triggers entry animation */}
-                            <div key={activeCard} style={{ animation:'hpCardIn 0.38s cubic-bezier(0.22,1,0.36,1) both' }}>
+                            {/* Card body — cross-fade via opacity transition */}
+                            <div style={{ opacity: cardVisible ? 1 : 0, transform: cardVisible ? 'translateY(0)' : 'translateY(6px)', transition: 'opacity 0.22s ease, transform 0.22s ease' }}>
                               {/* Card header */}
                               <div style={{ background:'var(--brand)', padding:'14px 18px', display:'flex', alignItems:'center', gap:10 }}>
                                 <div style={{ width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.15)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
@@ -1092,7 +1104,7 @@ export default function Home() {
                                 <button key={idx} type="button"
                                   aria-label={`Procedure ${idx + 1}`}
                                   onClick={() => setActiveCard(idx)}
-                                  style={{ width: idx===activeCard ? 18 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.25s cubic-bezier(0.22,1,0.36,1)', background: idx===activeCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
+                                  style={{ width: idx===displayCard ? 20 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.32s cubic-bezier(0.34,1.56,0.64,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
                                 />
                               ))}
                             </div>
