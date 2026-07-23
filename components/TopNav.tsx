@@ -20,11 +20,12 @@ interface TopNavProps {
 }
 
 const NAV_LINKS = [
-  { href: '/',           ar: 'الرئيسية',  en: 'Home'       },
-  { href: '/services',   ar: 'الخدمات',   en: 'Services'   },
-  { href: '/procedures', ar: 'المعاملات', en: 'Procedures' },
-  { href: '/forms',      ar: 'النماذج',   en: 'Forms'      },
-  { href: '/faq',        ar: 'أسئلة',     en: 'FAQ'        },
+  { href: '/',              ar: 'الرئيسية',  en: 'Home'        },
+  { href: '/services',      ar: 'الخدمات',   en: 'Services'    },
+  { href: '/procedures',    ar: 'المعاملات', en: 'Procedures'  },
+  { href: '/authorities',   ar: 'الجهات',    en: 'Authorities' },
+  { href: '/forms',         ar: 'النماذج',   en: 'Forms'       },
+  { href: '/faq',           ar: 'أسئلة',     en: 'FAQ'         },
 ]
 
 export default function TopNav({

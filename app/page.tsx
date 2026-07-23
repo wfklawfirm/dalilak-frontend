@@ -222,6 +222,8 @@ export default function Home() {
   const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null)
   // Last failed message — shown as retry chip on error
   const [retryMsg, setRetryMsg] = useState<string | null>(null)
+  // Hero search input — separate from the bottom chat bar
+  const [heroInput, setHeroInput] = useState('')
   // Inline error for voice/file (replaces browser alert)
   const [voiceError, setVoiceError] = useState<string | null>(null)
   // Session restore — number of messages reloaded from localStorage
@@ -815,14 +817,56 @@ export default function Home() {
                   </h1>
                   {/* Warm accent line */}
                   <div style={{ width:44, height:3, background:'linear-gradient(90deg, rgba(255,220,180,0.7), rgba(255,255,255,0.06))', borderRadius:3, margin:'0 0 10px' }} />
-                  <p style={{ fontSize:12, color:'rgba(255,255,255,0.5)', margin:'0 0 22px', lineHeight:1.6, letterSpacing:'0.1px' }}>
+                  <p style={{ fontSize:12, color:'rgba(255,255,255,0.5)', margin:'0 0 18px', lineHeight:1.6, letterSpacing:'0.1px' }}>
                     {isAr
                       ? 'معاملات حكومية · وثائق رسمية · إجراءات قانونية'
                       : 'Government procedures · Official documents · Legal guidance'}
                   </p>
 
+                  {/* ── Hero Search Bar ── */}
+                  <form
+                    onSubmit={e => { e.preventDefault(); if (heroInput.trim()) { sendMessage(heroInput); setHeroInput('') } }}
+                    style={{ position:'relative', marginBottom:14, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.12s' }}
+                  >
+                    <input
+                      type="text"
+                      value={heroInput}
+                      onChange={e => setHeroInput(e.target.value)}
+                      placeholder={isAr ? 'اكتب سؤالك هنا... مثلاً: كيف أستخرج جواز سفر؟' : 'Ask anything... e.g. How do I get a passport?'}
+                      dir={isAr ? 'rtl' : 'ltr'}
+                      style={{
+                        width:'100%', height:52,
+                        padding: isAr ? '0 20px 0 52px' : '0 52px 0 20px',
+                        borderRadius:16,
+                        background:'rgba(255,255,255,0.97)',
+                        border:'none',
+                        fontSize:13.5, fontFamily:'inherit', fontWeight:500,
+                        color:'#1A1208', outline:'none',
+                        boxShadow:'0 4px 28px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.2)',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={!heroInput.trim()}
+                      aria-label={isAr ? 'إرسال' : 'Send'}
+                      style={{
+                        position:'absolute', top:'50%', transform:'translateY(-50%)',
+                        [isAr ? 'left' : 'right']: 10,
+                        width:34, height:34, borderRadius:11,
+                        background: heroInput.trim() ? '#8B1A1A' : 'rgba(139,26,26,0.22)',
+                        border:'none', cursor: heroInput.trim() ? 'pointer' : 'default',
+                        display:'flex', alignItems:'center', justifyContent:'center',
+                        transition:'background 0.15s',
+                      }}
+                    >
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </button>
+                  </form>
+
                   {/* Rotating quick questions */}
-                  <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginBottom:20 }}>
+                  <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginBottom:16 }}>
                     {visibleQ.map((q, i) => (
                       <button
                         type="button"
@@ -964,10 +1008,48 @@ export default function Home() {
                   ))}
                 </div>
 
+                {/* ── How it works ── */}
+                <div style={{
+                  marginBottom:20,
+                  background:'linear-gradient(135deg,#fff9f6,#fff)',
+                  border:'1px solid rgba(210,195,178,0.5)',
+                  borderRadius:16,
+                  padding:'16px 16px 14px',
+                  animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay:'0.22s',
+                  boxShadow:'0 1px 6px rgba(100,60,20,0.05)',
+                }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:9, marginBottom:14 }}>
+                    <div style={{ width:3.5, height:16, borderRadius:2, background:'linear-gradient(180deg,#8B1A1A,#c45c3c)', flexShrink:0 }} />
+                    <span style={{ fontSize:13, fontWeight:800, color:'#2A1A0E', letterSpacing:'-0.2px' }}>
+                      {isAr ? 'كيف يعمل دليلك؟' : 'How Dalilak works'}
+                    </span>
+                  </div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+                    {[
+                      { num:'١', numEn:'1', ar:'اطرح سؤالك', en:'Ask your question', ar2:'اكتب معاملتك بلغتك الطبيعية', en2:'Type in Arabic or English', icon:<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> },
+                      { num:'٢', numEn:'2', ar:'احصل على دليل موثّق', en:'Get verified guidance', ar2:'خطوات وجهات ومستندات', en2:'Steps, docs, and authorities', icon:<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+                      { num:'٣', numEn:'3', ar:'أنجز معاملتك', en:'Complete your transaction', ar2:'ارفع ملفاتك وتابع التقدم', en2:'Upload files and track progress', icon:<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg> },
+                    ].map((step, i) => (
+                      <div key={i} style={{ textAlign:'center', padding:'10px 6px' }}>
+                        <div style={{ width:32, height:32, borderRadius:'50%', background:'linear-gradient(135deg,#FEF2F2,#FEEEE8)', border:'1.5px solid rgba(139,26,26,0.15)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
+                          {step.icon}
+                        </div>
+                        <div style={{ fontSize:11.5, fontWeight:800, color:'#2A1A0E', marginBottom:3, lineHeight:1.3 }}>
+                          {isAr ? step.ar : step.en}
+                        </div>
+                        <div style={{ fontSize:10, color:'#9C8E80', lineHeight:1.4, fontWeight:500 }}>
+                          {isAr ? step.ar2 : step.en2}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* ── Services section ── */}
                 <div>
                   {/* Section header */}
-                  <div style={{ marginBottom:12, display:'flex', alignItems:'center', justifyContent:'space-between', animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.22s' }}>
+                  <div style={{ marginBottom:12, display:'flex', alignItems:'center', justifyContent:'space-between', animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.30s' }}>
                     <div style={{ display:'flex', alignItems:'center', gap:9 }}>
                       <div style={{ width:3.5, height:16, borderRadius:2, background:'linear-gradient(180deg, #8B1A1A 0%, #c45c3c 100%)', flexShrink:0 }} />
                       <span style={{ fontSize:13.5, fontWeight:800, color:'#2A1A0E', letterSpacing:'-0.3px' }}>
@@ -1033,6 +1115,33 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
+
+                {/* ── Trust section ── */}
+                <div style={{
+                  marginTop:20,
+                  display:'flex', flexWrap:'wrap', gap:8, justifyContent:'center',
+                  animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
+                  animationDelay:'0.38s',
+                }}>
+                  {[
+                    { ar:'مصدر رسمي موثّق', en:'Official Sources', icon:<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+                    { ar:'خصوصيّة مضمونة', en:'Privacy Protected', icon:<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> },
+                    { ar:'متاح على مدار الساعة', en:'24/7 Available', icon:<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
+                  ].map((badge, i) => (
+                    <div key={i} style={{
+                      display:'flex', alignItems:'center', gap:5,
+                      padding:'5px 11px', borderRadius:20,
+                      background:'rgba(255,255,255,0.7)',
+                      border:'1px solid rgba(210,195,178,0.5)',
+                      fontSize:10.5, fontWeight:600,
+                      color:'#5C4A3A',
+                    }}>
+                      <span style={{ color:'#8B1A1A', display:'flex' }}>{badge.icon}</span>
+                      {isAr ? badge.ar : badge.en}
+                    </div>
+                  ))}
+                </div>
+
               </div>{/* end content area */}
             </div>
 
