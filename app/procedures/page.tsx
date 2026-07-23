@@ -14,6 +14,7 @@ import CostEstimator from '@/components/CostEstimator'
 import { trackView } from '@/lib/savedItems'
 import ProcedureTimeline from '@/components/ProcedureTimeline'
 import ProcedureCopyableSteps from '@/components/ProcedureCopyableSteps'
+import ProcedureStepsAudio from '@/components/ProcedureStepsAudio'
 import ProcedureStepHighlight from '@/components/ProcedureStepHighlight'
 import ProcedureNeedHelpToggle from '@/components/ProcedureNeedHelpToggle'
 import PrintProcedureModal from '@/components/PrintProcedureModal'
@@ -44,6 +45,8 @@ import ProcedureRemindMeLater from '@/components/ProcedureRemindMeLater'
 import ProcedureDocumentShare from '@/components/ProcedureDocumentShare'
 import ProcedureDocumentStatus from '@/components/ProcedureDocumentStatus'
 import ProcedureChecklistExport from '@/components/ProcedureChecklistExport'
+import ProcedureDocumentPhotoTips from '@/components/ProcedureDocumentPhotoTips'
+import ProcedureBackToTopButton from '@/components/ProcedureBackToTopButton'
 import ProcedureFeeHistory from '@/components/ProcedureFeeHistory'
 import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
 import ProcedureViewCount from '@/components/ProcedureViewCount'
@@ -224,6 +227,7 @@ export default function ProceduresPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir={isAr ? 'rtl' : 'ltr'}>
+      <ProcedureBackToTopButton isAr={isAr} />
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
@@ -826,6 +830,7 @@ export default function ProceduresPage() {
                           titleEn={proc.title_en}
                           isAr={isAr}
                         />
+                        <ProcedureDocumentPhotoTips isAr={isAr} />
                         <ProcedureFeeHistory code={proc.code} fees={isAr ? proc.fees : proc.fees_en} isAr={isAr} />
                       </>
                     )}
@@ -847,6 +852,12 @@ export default function ProceduresPage() {
                           titleEn={proc.title_en}
                           isAr={isAr}
                         />
+                        <div style={{ marginTop: 8, marginBottom: 8 }}>
+                          <ProcedureStepsAudio
+                            steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                            isAr={isAr}
+                          />
+                        </div>
                         <ProcedureStepHighlight
                           code={proc.code}
                           steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}

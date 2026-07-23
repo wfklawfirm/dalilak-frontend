@@ -24,11 +24,28 @@
 #   #305 HomepageQuickActionsBar     — 4-shortcut nav row (procedures/forms/faq/authorities)
 #   #306 ProcedureLanguageToggleHint — one-time dismissible language-switch tip on procedure page
 #   #307 ChatScrollToBottomButton    — floating jump-to-latest-message button in chat
+#   #308 ProcedureStepsAudio         — "listen to the steps" TTS row on procedure detail
+#   #309 ProcedureDocumentPhotoTips  — collapsible generic photo/scan tips for documents
+#   #310 ChatKeyboardSendHint        — desktop-only "Enter to send" hint below chat input
+#   #311 ProcedureBackToTopButton    — floating back-to-top for /procedures list
+#
+#   FIXES:
+#   - Bottom-left floating buttons (language switch, accessibility, ministry
+#     phone dial) were overlapping/scattered on mobile (each hardcoded its own
+#     bottom/left offset). Now stacked into one clean column with consistent
+#     spacing + safe-area-inset-bottom awareness.
+#     Files: GlobalLangSwitch.tsx, AccessibilityBar.tsx, MinistryQuickDial.tsx
+#   - "Generate AI procedure map" button called a backend route
+#     (POST /flowchart/generate) that does not exist on the deployed backend,
+#     so it always failed. Frontend now falls back to the working
+#     GET /procedures/{slug}/flowchart route when the AI-generation route
+#     is unavailable, instead of failing outright. No backend code touched.
+#     File: lib/auth.ts (generateFlowchart)
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-307 — 23 new components: checklist export, TTS, FAQ card, emoji react, weather, help, save-to-notes, step highlight, motivation, fee history, AI badge, countdown, recent ministries, alt offices, char counter, user stats, office map, need-help toggle, quick actions bar, language hint, scroll-to-bottom"
+git diff --cached --quiet || git commit -m "feat: batch #284-311 — 27 new components + fix mobile FAB overlap + fix broken flowchart generation fallback"
 git push origin main
 echo "✅ Done"

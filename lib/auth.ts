@@ -361,14 +361,27 @@ export async function generateFlowchart(data: {
   descriptionAr?: string
   knownSteps?: string[]
 }) {
-  const res = await fetch(`${API}/flowchart/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify(data),
+  // المسار الأساسي: توليد بالذكاء الاصطناعي (POST /flowchart/generate).
+  // إن لم يكن هذا المسار متاحاً على الباك-إند حالياً (404) أو فشل لأي سبب آخر،
+  // نستخدم المسار الاحتياطي الموثوق GET /procedures/{slug}/flowchart الذي
+  // يعيد دائماً خارطة صالحة (مُعدّة مسبقاً أو عامة) بدل ترك المستخدم بدون نتيجة.
+  try {
+    const res = await fetch(`${API}/flowchart/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify(data),
+    })
+    if (res.ok) return await res.json()
+  } catch {
+    /* شبكة أو مسار غير متاح — ننتقل للاحتياطي أدناه */
+  }
+
+  const fallbackRes = await fetch(`${API}/procedures/${encodeURIComponent(data.slug)}/flowchart`, {
+    headers: authHeaders(),
   })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.detail || 'تعذّر توليد خارطة الإجراء')
-  return json
+  const fallbackJson = await fallbackRes.json()
+  if (!fallbackRes.ok) throw new Error(fallbackJson.detail || 'تعذّر توليد خارطة الإجراء')
+  return fallbackJson
 }
 
 // ═══════════════════════════════════════════════════════════════

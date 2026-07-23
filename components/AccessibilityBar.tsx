@@ -96,7 +96,7 @@ export default function AccessibilityBar() {
         dir={isAr ? 'rtl' : 'ltr'}
         style={{
           position: 'fixed',
-          bottom: 82,
+          bottom: 'calc(134px + env(safe-area-inset-bottom, 0px))',
           [side]: 14,
           zIndex: 8400,
           display: 'flex',

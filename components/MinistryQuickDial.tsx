@@ -67,8 +67,8 @@ export default function MinistryQuickDial() {
         aria-label={isAr ? 'أرقام الوزارات' : 'Ministry phone numbers'}
         style={{
           position: 'fixed',
-          bottom: 82,
-          [isAr ? 'left' : 'right']: 70,
+          bottom: 'calc(82px + env(safe-area-inset-bottom, 0px))',
+          [isAr ? 'left' : 'right']: 14,
           width: 44, height: 44, borderRadius: '50%',
           background: 'linear-gradient(135deg, #1D4ED8, #1E40AF)',
           border: 'none', color: '#fff',

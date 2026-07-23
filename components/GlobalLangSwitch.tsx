@@ -18,9 +18,9 @@ export default function GlobalLangSwitch() {
       aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
       style={{
         position: 'fixed',
-        bottom: 'calc(64px + env(safe-area-inset-bottom, 0px))',
-        [isAr ? 'left' : 'right']: 12,
-        zIndex: 200,
+        bottom: 'calc(182px + env(safe-area-inset-bottom, 0px))',
+        [isAr ? 'left' : 'right']: 14,
+        zIndex: 8400,
         height: 34,
         minWidth: 46,
         padding: '0 12px',
