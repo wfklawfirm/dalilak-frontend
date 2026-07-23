@@ -294,8 +294,33 @@ export default function Home() {
   // Inline error for voice/file (replaces browser alert)
   const [voiceError, setVoiceError] = useState<string | null>(null)
   const [activeCard, setActiveCard] = useState(0)
+  const [enhancing, setEnhancing] = useState(false)
+  const [heroEnhancing, setHeroEnhancing] = useState(false)
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
+
+  // ── Enhance prompt via AI ──
+  const enhancePrompt = useCallback(async (text: string, setter: (v: string) => void, setLoading: (v: boolean) => void) => {
+    if (!text.trim() || text.trim().length < 4) return
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(currentUser ? { Authorization: `Bearer ${localStorage.getItem('token') || ''}` } : {}) },
+        body: JSON.stringify({
+          message: `أنت مساعد لتحسين الأسئلة. حسّن السؤال التالي ليكون أكثر وضوحاً ودقة لنظام دليلك للمعاملات الحكومية اللبنانية. أعط السؤال المحسّن فقط بدون أي شرح إضافي أو علامات اقتباس:\n\n${text}`,
+          mode: 'concise',
+          enhance_only: true,
+        }),
+      })
+      const data = await res.json()
+      const improved = (data.reply || data.message || '').trim().replace(/^["«»]+|["«»]+$/g, '').trim()
+      if (improved && improved.length > 5) setter(improved)
+    } catch { /* silent fail */ } finally {
+      setLoading(false)
+    }
+  }, [currentUser])
+
   // Auto-rotate hero preview card
   useEffect(() => {
     if (messages.length > 0) return
@@ -957,6 +982,22 @@ export default function Home() {
                           dir={isAr ? 'rtl' : 'ltr'}
                           style={{ flex:1, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:14.5, fontFamily:'inherit', fontWeight:500, color:'var(--text-1)' }}
                         />
+                        {heroInput.trim().length > 3 && (
+                          <button type="button"
+                            disabled={heroEnhancing}
+                            onClick={() => enhancePrompt(heroInput, setHeroInput, setHeroEnhancing)}
+                            aria-label={isAr ? 'تحسين السؤال' : 'Enhance question'}
+                            title={isAr ? 'تحسين السؤال بالذكاء الاصطناعي' : 'AI-enhance your question'}
+                            style={{ flexShrink:0, height:'100%', padding:'0 13px', border:'none', borderInlineStart:'1.5px solid var(--border)', background:'var(--brand-soft)', color:'var(--brand)', fontSize:12, fontWeight:700, cursor: heroEnhancing ? 'default' : 'pointer', fontFamily:'inherit', transition:'background 0.14s', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap' }}
+                            onMouseEnter={e => !heroEnhancing && ((e.currentTarget as HTMLButtonElement).style.background = '#FDDDE2')}
+                            onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--brand-soft)')}>
+                            {heroEnhancing
+                              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation:'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" strokeOpacity="0.2"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                              : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5zM19 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
+                            }
+                            {isAr ? 'حسّن' : 'Enhance'}
+                          </button>
+                        )}
                         <button type="submit" disabled={!heroInput.trim()}
                           style={{ flexShrink:0, height:'100%', padding:'0 18px', border:'none', borderInlineStart:'1.5px solid var(--border)', background: heroInput.trim() ? 'var(--brand)' : 'var(--surface-2)', color: heroInput.trim() ? '#fff' : 'var(--text-3)', fontSize:13, fontWeight:700, cursor: heroInput.trim() ? 'pointer' : 'default', fontFamily:'inherit', transition:'background 0.14s, color 0.14s', whiteSpace:'nowrap' }}>
                           {isAr ? 'بحث' : 'Search'}
@@ -1668,6 +1709,32 @@ export default function Home() {
                   }}>
                     {input.length}/{MAX_INPUT}
                   </span>
+                )}
+
+                {/* Enhance ✨ */}
+                {input.trim().length > 3 && !recording && !attachedFile && (
+                  <button type="button"
+                    disabled={loading || enhancing}
+                    onClick={() => enhancePrompt(input, setInput, setEnhancing)}
+                    aria-label={isAr ? 'تحسين السؤال' : 'Enhance question'}
+                    title={isAr ? 'تحسين السؤال بالذكاء الاصطناعي' : 'AI-enhance your question'}
+                    className="icon-btn"
+                    style={{
+                      flexShrink:0, width:38, height:38, borderRadius:12, border:'none',
+                      cursor:(loading||enhancing) ? 'default' : 'pointer',
+                      background: enhancing ? 'var(--brand-soft)' : 'none',
+                      color: enhancing ? 'var(--brand)' : 'var(--text-3)',
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      opacity:(loading||enhancing) ? 0.8 : 1,
+                      transition:'background 0.15s, color 0.15s',
+                    }}
+                    onTouchStart={e => !loading && !enhancing && ((e.currentTarget as HTMLButtonElement).style.background='var(--brand-soft)')}
+                    onTouchEnd={e => !enhancing && ((e.currentTarget as HTMLButtonElement).style.background='none')}>
+                    {enhancing
+                      ? <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{animation:'spin 0.8s linear infinite'}}><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                      : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                    }
+                  </button>
                 )}
 
                 {/* Mic */}
