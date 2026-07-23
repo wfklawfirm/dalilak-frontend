@@ -2392,26 +2392,27 @@ Question: ${text}`
               </div>
             )}
 
-            {/* ── Mode selector — ModeSelector handles mobile/desktop ── */}
-            <div style={{ marginBottom: 10 }}>
+            {/* ── Mode + response-length controls — grouped on one row ── */}
+            <div style={{
+              display: 'flex', alignItems: 'center', flexWrap: 'wrap',
+              justifyContent: 'space-between', gap: 8, marginBottom: 6,
+            }}>
               <ModeSelector mode={mode} onSelect={setMode} isAr={isAr} />
+              <ChatResponseLength isAr={isAr} />
             </div>
 
-            {/* ── Active context bar (procedure / ministry / journey) ── */}
+            {/* ── Active context bar (procedure / ministry / journey) — hidden when empty ── */}
             <ChatContextBar
               mode={mode !== 'quick' ? mode : undefined}
               modeAr={mode === 'detailed' ? 'وضع مفصّل' : mode === 'research' ? 'وضع بحثي' : undefined}
               modeEn={mode === 'detailed' ? 'Detailed mode' : mode === 'research' ? 'Research mode' : undefined}
             />
 
-            {/* ── Response length toggle ── */}
-            <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 4 }}>
-              <ChatResponseLength isAr={isAr} />
+            {/* ── Char counter + keyboard hint — one slim utility row ── */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+              <ChatKeyboardSendHint isAr={isAr} />
+              <ChatInputCharCounter text={input} isAr={isAr} />
             </div>
-
-            {/* ── Char counter ── */}
-            <ChatInputCharCounter text={input} isAr={isAr} />
-            <ChatKeyboardSendHint isAr={isAr} />
             <ChatDraftAutosave input={input} setInput={setInput} />
 
             {/* ── Quick reply chips (after assistant message, when input is empty) ── */}

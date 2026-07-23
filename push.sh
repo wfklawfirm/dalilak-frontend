@@ -52,11 +52,34 @@
 #     the reset code when SMTP env vars are configured.
 #   #314 ProcedureCopyDeepLink       — copy a direct #proc-{code} link to a procedure card
 #   #315 ProcedureCopySummaryLine    — copy a compact one-line summary (title — ministry — fees)
+#
+#   DECLUTTER PASS (professional look, less "عجقة"):
+#   - app/page.tsx: merged ModeSelector + ChatResponseLength into one shared
+#     row (was two stacked pill rows); merged ChatKeyboardSendHint +
+#     ChatInputCharCounter into one row (was two stacked rows).
+#   - components/ChatQuickReplies.tsx: chips now scroll horizontally in one
+#     clean row instead of wrapping into a crowded two-row block.
+#   - NEW components/ProcedureSectionGroup.tsx: labeled, collapsible section
+#     wrapper — used to reorganize the procedures page. No component or
+#     feature was removed; every widget still renders, just grouped under
+#     a clear header with consistent spacing instead of ~35 widgets stacked
+#     back-to-back with no visual hierarchy.
+#   - app/procedures/page.tsx: expanded procedure card body regrouped into
+#     6 labeled sections — "المستندات المطلوبة", "خطوات الإجراء",
+#     "تتبع التقدم والتذكيرات", "اسأل دليلك", "مشاركة وطباعة" (+ contact/
+#     cost/fees left inline). Primary sections (documents, steps, ask-AI)
+#     open by default; secondary/power-user sections (tracking, share &
+#     print — 9 and 8 widgets respectively) collapsed by default so the
+#     card isn't showing 35+ widgets at once on first expand.
+#   NOTE: this fixes the SAME FAB-overlap + control-duplication issue
+#   reported again in a later screenshot — that screenshot was still
+#   showing the OLD deployed frontend because this push.sh hadn't been
+#   run since the earlier fix. Running this script now makes both live.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging"
+git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls and procedures page into labeled sections"
 git push origin main
 echo "✅ Done"

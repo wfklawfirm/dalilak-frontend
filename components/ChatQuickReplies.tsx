@@ -111,9 +111,10 @@ export default function ChatQuickReplies({ lastMessageContent, lastMessageRole, 
     <div
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
-        display: 'flex', gap: 6, flexWrap: 'wrap',
+        display: 'flex', gap: 6, flexWrap: 'nowrap', overflowX: 'auto',
         padding: '6px 14px 4px',
         animation: 'fadeUp 0.15s ease both',
+        scrollbarWidth: 'none',
       }}
       aria-label={isAr ? 'اقتراحات سريعة' : 'Quick suggestions'}
     >
@@ -134,6 +135,7 @@ export default function ChatQuickReplies({ lastMessageContent, lastMessageRole, 
             fontFamily: 'inherit',
             transition: 'all 0.12s',
             whiteSpace: 'nowrap',
+            flexShrink: 0,
           }}
           onMouseEnter={e => {
             e.currentTarget.style.background = 'rgba(143,29,44,0.06)'

@@ -69,6 +69,7 @@ import ProcedureFAQChips from '@/components/ProcedureFAQChips'
 import ProcedureReminderBell from '@/components/ProcedureReminderBell'
 import ProcedureEstimatedFeeChip from '@/components/ProcedureEstimatedFeeChip'
 import ProcedureStepTimer from '@/components/ProcedureStepTimer'
+import ProcedureSectionGroup from '@/components/ProcedureSectionGroup'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -753,23 +754,20 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* Ministry contact strip */}
-                    <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
-                    {/* Alternative submission offices */}
-                    <ProcedureAlternativeOffices ministrySlug={proc.ministrySlug} isAr={isAr} />
-                    <ProcedureOfficeMap ministrySlug={proc.ministrySlug} isAr={isAr} />
-
-                    {/* Ministry map placeholder */}
-                    <div style={{ marginBottom: 8 }}>
-                      <ProcedureMinistryMap ministry={proc.ministry} ministry_en={proc.ministry_en} isAr={isAr} />
+                    {/* Contact & location */}
+                    <div style={{ marginBottom: 14 }}>
+                      <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
+                      <ProcedureAlternativeOffices ministrySlug={proc.ministrySlug} isAr={isAr} />
+                      <ProcedureOfficeMap ministrySlug={proc.ministrySlug} isAr={isAr} />
+                      <div style={{ marginTop: 8 }}>
+                        <ProcedureMinistryMap ministry={proc.ministry} ministry_en={proc.ministry_en} isAr={isAr} />
+                      </div>
+                      <ProcedureExternalLinks ministrySlug={proc.ministrySlug} isAr={isAr} />
                     </div>
-
-                    {/* Official portal links */}
-                    <ProcedureExternalLinks ministrySlug={proc.ministrySlug} isAr={isAr} />
 
                     {/* Cost estimator */}
                     {displayFees && (
-                      <div style={{ marginBottom: 12 }}>
+                      <div style={{ marginBottom: 14 }}>
                         <CostEstimator
                           feesRaw={displayFees}
                           docCount={proc.requiredDocuments.length}
@@ -780,9 +778,9 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* Required documents — interactive readiness checker */}
+                    {/* Required documents — grouped, open by default (primary content) */}
                     {proc.requiredDocuments.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
+                      <ProcedureSectionGroup icon="📁" titleAr="المستندات المطلوبة" titleEn="Required documents" isAr={isAr} defaultOpen>
                         <ReadinessChecker
                           storageKey={`enr-${proc.code}`}
                           documentsAr={proc.requiredDocuments}
@@ -791,23 +789,13 @@ export default function ProceduresPage() {
                           titleEn={proc.title_en}
                           onAsk={handleAsk}
                         />
-                      </div>
-                    )}
-
-                    {/* Doc readiness chip bar */}
-                    {proc.requiredDocuments.length > 0 && (
-                      <div id={`proc-${proc.code}-docs`}>
-                        <ProcedureDocReadinessBar
-                          code={proc.code}
-                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en ?? proc.requiredDocuments)}
-                          isAr={isAr}
-                        />
-                      </div>
-                    )}
-
-                    {/* Document checklist with progress */}
-                    {proc.requiredDocuments.length > 0 && (
-                      <>
+                        <div id={`proc-${proc.code}-docs`}>
+                          <ProcedureDocReadinessBar
+                            code={proc.code}
+                            docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en ?? proc.requiredDocuments)}
+                            isAr={isAr}
+                          />
+                        </div>
                         <ProcedureDocumentChecklist
                           code={proc.code}
                           docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
@@ -834,12 +822,12 @@ export default function ProceduresPage() {
                         />
                         <ProcedureDocumentPhotoTips isAr={isAr} />
                         <ProcedureFeeHistory code={proc.code} fees={isAr ? proc.fees : proc.fees_en} isAr={isAr} />
-                      </>
+                      </ProcedureSectionGroup>
                     )}
 
-                    {/* Steps — interactive timeline */}
+                    {/* Steps — grouped, open by default (primary content) */}
                     {proc.steps.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
+                      <ProcedureSectionGroup icon="📌" titleAr="خطوات الإجراء" titleEn="Procedure steps" isAr={isAr} defaultOpen>
                         <ProcedureTimeline
                           storageKey={`enr-${proc.code}`}
                           stepsAr={proc.steps}
@@ -860,54 +848,42 @@ export default function ProceduresPage() {
                           fees={displayFees}
                           isAr={isAr}
                         />
-                        <div style={{ marginTop: 8, marginBottom: 8 }}>
-                          <ProcedureStepsAudio
-                            steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
-                            isAr={isAr}
-                          />
-                        </div>
+                        <ProcedureStepsAudio
+                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                          isAr={isAr}
+                        />
                         <ProcedureStepHighlight
                           code={proc.code}
                           steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
                           isAr={isAr}
                         />
-                        <div style={{ marginTop: 8 }}>
-                          <ProcedureNeedHelpToggle code={proc.code} isAr={isAr} />
+                        <ProcedureNeedHelpToggle code={proc.code} isAr={isAr} />
+                        <div id={`proc-${proc.code}-steps`}>
+                          <ProcedureStepProgress
+                            code={proc.code}
+                            steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                            isAr={isAr}
+                          />
                         </div>
-                      </div>
+                        <div>
+                          <div style={{ fontSize: 10, fontWeight: 800, color: '#918B82', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            ⏱ {isAr ? 'مؤقّت الخطوات' : 'Step timers'}
+                          </div>
+                          <ProcedureStepTimer
+                            code={proc.code}
+                            steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                            isAr={isAr}
+                          />
+                        </div>
+                      </ProcedureSectionGroup>
                     )}
 
                     {/* Mini map — section navigation */}
                     <ProcedureMiniMap anchorPrefix={`proc-${proc.code}`} isAr={isAr} />
 
-                    {/* Interactive step checklist */}
-                    {proc.steps.length > 0 && (
-                      <div id={`proc-${proc.code}-steps`}>
-                        <ProcedureStepProgress
-                          code={proc.code}
-                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
-                          isAr={isAr}
-                        />
-                      </div>
-                    )}
-
-                    {/* Per-step countdown timers */}
-                    {proc.steps.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 10, fontWeight: 800, color: '#918B82', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          ⏱ {isAr ? 'مؤقّت الخطوات' : 'Step timers'}
-                        </div>
-                        <ProcedureStepTimer
-                          code={proc.code}
-                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
-                          isAr={isAr}
-                        />
-                      </div>
-                    )}
-
                     {/* Fees — detailed breakdown */}
                     {displayFees && (
-                      <div id={`proc-${proc.code}-fees`}>
+                      <div id={`proc-${proc.code}-fees`} style={{ marginBottom: 14 }}>
                         <ProcedureCostBreakdown
                           fees={proc.fees}
                           fees_en={proc.fees_en}
@@ -936,122 +912,106 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* Last reviewed date */}
-                    <div style={{ marginBottom: 8 }}>
-                      <ProcedureLastUpdatedBadge code={proc.code} isAr={isAr} />
-                      <ProcedureLanguageToggleHint isAr={isAr} />
-                    </div>
-
-                    {/* Global procedure deadline countdown */}
-                    <ProcedureCountdownTimer code={proc.code} titleAr={proc.title} isAr={isAr} />
-
-                    {/* Started / completed markers */}
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
-                      <ProcedureStartButton code={proc.code} isAr={isAr} />
-                      <ProcedureCompletionBadge code={proc.code} isAr={isAr} />
-                    </div>
-
-                    {/* Estimated completion based on start date + processingTime */}
-                    <ProcedureEstimatedCompletion
-                      code={proc.code}
-                      processingTime={proc.processingTime}
-                      processingTimeEn={proc.processingTime_en}
-                    />
-
-                    {/* Application stage tracker */}
-                    <ProcedureApprovalTracker code={proc.code} isAr={isAr} />
-
-                    {/* Activity history log */}
-                    <ProcedureHistoryLog code={proc.code} isAr={isAr} />
-
-                    {/* Personal notes */}
-                    <ProcedureNotesPanel code={proc.code} isAr={isAr} />
-
-                    {/* Quick remind-me-later chip */}
-                    <ProcedureRemindMeLater
-                      code={proc.code}
-                      titleAr={proc.title}
-                      titleEn={proc.title_en}
-                      isAr={isAr}
-                    />
-
-                    {/* Set deadline — personal deadline reminder for this procedure */}
-                    {(() => {
-                      let savedDeadline = ''
-                      try { savedDeadline = localStorage.getItem(`dalilak_proc_deadline_${proc.code}`) || '' } catch {}
-                      return (
-                        <div style={{
-                          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-                          marginBottom: 12, padding: '9px 12px',
-                          background: '#F8F9FF', border: '1px solid #DBEAFE', borderRadius: 10,
-                        }}>
-                          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" style={{ flexShrink: 0 }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: '#1D4ED8', flex: 1 }}>
-                            {isAr ? 'حدّد موعداً نهائياً لهذه المعاملة' : 'Set a deadline for this procedure'}
-                          </span>
-                          <input
-                            type="date"
-                            defaultValue={savedDeadline}
-                            min={new Date().toISOString().slice(0, 10)}
-                            onChange={e => {
-                              const val = e.target.value
-                              if (val) {
-                                setDeadline(proc.code, val)
-                              } else {
-                                clearDeadline(proc.code)
-                              }
-                            }}
-                            style={{
-                              fontSize: 11, fontFamily: 'inherit', padding: '4px 8px',
-                              border: '1px solid #BFDBFE', borderRadius: 7,
-                              background: '#fff', color: '#1D4ED8', outline: 'none',
-                              cursor: 'pointer',
-                            }}
-                          />
-                          {savedDeadline && (
-                            <button
-                              type="button"
-                              onClick={() => clearDeadline(proc.code)}
-                              title={isAr ? 'حذف الموعد' : 'Remove deadline'}
-                              style={{
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                color: '#93C5FD', fontSize: 13, padding: 2,
-                                display: 'flex', alignItems: 'center',
+                    {/* Progress tracking & reminders — grouped, collapsed by default (secondary tools) */}
+                    <ProcedureSectionGroup icon="🗂️" titleAr="تتبع التقدم والتذكيرات" titleEn="Progress tracking & reminders" isAr={isAr}>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <ProcedureLastUpdatedBadge code={proc.code} isAr={isAr} />
+                        <ProcedureLanguageToggleHint isAr={isAr} />
+                      </div>
+                      <ProcedureCountdownTimer code={proc.code} titleAr={proc.title} isAr={isAr} />
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        <ProcedureStartButton code={proc.code} isAr={isAr} />
+                        <ProcedureCompletionBadge code={proc.code} isAr={isAr} />
+                      </div>
+                      <ProcedureEstimatedCompletion
+                        code={proc.code}
+                        processingTime={proc.processingTime}
+                        processingTimeEn={proc.processingTime_en}
+                      />
+                      <ProcedureApprovalTracker code={proc.code} isAr={isAr} />
+                      <ProcedureHistoryLog code={proc.code} isAr={isAr} />
+                      <ProcedureNotesPanel code={proc.code} isAr={isAr} />
+                      <ProcedureRemindMeLater
+                        code={proc.code}
+                        titleAr={proc.title}
+                        titleEn={proc.title_en}
+                        isAr={isAr}
+                      />
+                      {(() => {
+                        let savedDeadline = ''
+                        try { savedDeadline = localStorage.getItem(`dalilak_proc_deadline_${proc.code}`) || '' } catch {}
+                        return (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+                            padding: '9px 12px',
+                            background: '#F8F9FF', border: '1px solid #DBEAFE', borderRadius: 10,
+                          }}>
+                            <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" style={{ flexShrink: 0 }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: '#1D4ED8', flex: 1 }}>
+                              {isAr ? 'حدّد موعداً نهائياً لهذه المعاملة' : 'Set a deadline for this procedure'}
+                            </span>
+                            <input
+                              type="date"
+                              defaultValue={savedDeadline}
+                              min={new Date().toISOString().slice(0, 10)}
+                              onChange={e => {
+                                const val = e.target.value
+                                if (val) {
+                                  setDeadline(proc.code, val)
+                                } else {
+                                  clearDeadline(proc.code)
+                                }
                               }}
-                            >✕</button>
-                          )}
-                        </div>
-                      )
-                    })()}
+                              style={{
+                                fontSize: 11, fontFamily: 'inherit', padding: '4px 8px',
+                                border: '1px solid #BFDBFE', borderRadius: 7,
+                                background: '#fff', color: '#1D4ED8', outline: 'none',
+                                cursor: 'pointer',
+                              }}
+                            />
+                            {savedDeadline && (
+                              <button
+                                type="button"
+                                onClick={() => clearDeadline(proc.code)}
+                                title={isAr ? 'حذف الموعد' : 'Remove deadline'}
+                                style={{
+                                  background: 'none', border: 'none', cursor: 'pointer',
+                                  color: '#93C5FD', fontSize: 13, padding: 2,
+                                  display: 'flex', alignItems: 'center',
+                                }}
+                              >✕</button>
+                            )}
+                          </div>
+                        )
+                      })()}
+                    </ProcedureSectionGroup>
 
-                    {/* Related FAQ chips */}
-                    <ProcedureFAQChips
-                      ministry={proc.ministry}
-                      title={proc.title}
-                      isAr={isAr}
-                      onAsk={handleAsk}
-                    />
+                    {/* Ask Dalilak — grouped, open by default (primary content) */}
+                    <ProcedureSectionGroup icon="💬" titleAr="اسأل دليلك" titleEn="Ask Dalilak" isAr={isAr} defaultOpen>
+                      <ProcedureFAQChips
+                        ministry={proc.ministry}
+                        title={proc.title}
+                        isAr={isAr}
+                        onAsk={handleAsk}
+                      />
+                      <ProcedureQuickAskChips
+                        code={proc.code}
+                        titleAr={proc.title}
+                        titleEn={proc.title_en}
+                        isAr={isAr}
+                        onAsk={handleAsk}
+                      />
+                      <ProcedureAIAssistButton
+                        title={proc.title}
+                        title_en={proc.title_en}
+                        code={proc.code}
+                        isAr={isAr}
+                        onAsk={handleAsk}
+                      />
+                    </ProcedureSectionGroup>
 
-                    {/* Quick-ask chips */}
-                    <ProcedureQuickAskChips
-                      code={proc.code}
-                      titleAr={proc.title}
-                      titleEn={proc.title_en}
-                      isAr={isAr}
-                      onAsk={handleAsk}
-                    />
-
-                    {/* AI Assist Button with preset questions */}
-                    <ProcedureAIAssistButton
-                      title={proc.title}
-                      title_en={proc.title_en}
-                      code={proc.code}
-                      isAr={isAr}
-                      onAsk={handleAsk}
-                    />
-
-                    {/* CTA row: Ask + Save */}
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    {/* CTA row: Ask + Save — always visible, primary actions */}
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
                       <button type="button" onClick={() => handleAsk(displayTitle)}
                         onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
                         onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
@@ -1082,6 +1042,11 @@ export default function ProceduresPage() {
                           href: '/procedures',
                         }}
                       />
+                    </div>
+
+                    {/* Share & print — grouped, collapsed by default (secondary tools) */}
+                    <ProcedureSectionGroup icon="🔗" titleAr="مشاركة وطباعة" titleEn="Share & print" isAr={isAr}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                       {/* Share via WhatsApp */}
                       <button
                         type="button"
@@ -1161,6 +1126,7 @@ export default function ProceduresPage() {
                         }}
                       >🖨️</button>
                     </div>
+                    </ProcedureSectionGroup>
                   </div>
                 )}
               </div>
