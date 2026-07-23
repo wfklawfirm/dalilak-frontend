@@ -42,8 +42,14 @@ export default function FormsPage() {
     filterTxForms(ministryFilter === 'all' ? '' : ministryFilter, search),
     [search, ministryFilter])
 
-  // Top ministries for filter
-  const topMinistries = useMemo(() => TX_MINISTRIES.slice(0, 20), [])
+  // Top ministries for filter — deduplicated by slug (highest-count first), skip 'other'
+  const topMinistries = useMemo(() => {
+    const seen = new Set<string>()
+    return TX_MINISTRIES
+      .filter(m => m.slug !== 'other')
+      .filter(m => { if (seen.has(m.slug)) return false; seen.add(m.slug); return true })
+      .slice(0, 18)
+  }, [])
 
   const askAI = (prompt: string) => router.push(`/?q=${encodeURIComponent(prompt)}`)
 

@@ -23,7 +23,6 @@ const MINISTRY_CHIPS = [
   { slug: 'health',           ar: 'الصحة',             en: 'Health' },
   { slug: 'agriculture',      ar: 'الزراعة',           en: 'Agriculture' },
   { slug: 'social',           ar: 'الشؤون الاجتماعية', en: 'Social Affairs' },
-  { slug: 'tourism',          ar: 'السياحة',           en: 'Tourism' },
   { slug: 'education',        ar: 'التربية',           en: 'Education' },
   { slug: 'justice',          ar: 'العدل',             en: 'Justice' },
   { slug: 'finance',          ar: 'المالية',           en: 'Finance' },
