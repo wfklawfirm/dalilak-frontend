@@ -82,6 +82,7 @@ import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatInputCharCounter from '@/components/ChatInputCharCounter'
 import ChatKeyboardSendHint from '@/components/ChatKeyboardSendHint'
+import ChatDraftAutosave from '@/components/ChatDraftAutosave'
 import ChatContextBar from '@/components/ChatContextBar'
 import ChatResponseLength, { useResponseLength } from '@/components/ChatResponseLength'
 import ModeSelector from '@/components/MobileModeSheet'
@@ -2409,6 +2410,7 @@ Question: ${text}`
             {/* ── Char counter ── */}
             <ChatInputCharCounter text={input} isAr={isAr} />
             <ChatKeyboardSendHint isAr={isAr} />
+            <ChatDraftAutosave input={input} setInput={setInput} />
 
             {/* ── Quick reply chips (after assistant message, when input is empty) ── */}
             {messages.length > 0 && !input.trim() && !loading && (() => {

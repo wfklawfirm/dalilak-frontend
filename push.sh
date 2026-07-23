@@ -41,11 +41,13 @@
 #     GET /procedures/{slug}/flowchart route when the AI-generation route
 #     is unavailable, instead of failing outright. No backend code touched.
 #     File: lib/auth.ts (generateFlowchart)
+#
+#   #312 ChatDraftAutosave           — persists unsent chat input across refresh
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-311 — 27 new components + fix mobile FAB overlap + fix broken flowchart generation fallback"
+git diff --cached --quiet || git commit -m "feat: batch #284-312 — 28 new components + fix mobile FAB overlap + fix broken flowchart generation fallback"
 git push origin main
 echo "✅ Done"
