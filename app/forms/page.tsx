@@ -73,6 +73,7 @@ export default function FormsPage() {
       <header style={{ background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)', padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'formHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
+            className="nav-home-btn"
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -113,6 +114,12 @@ export default function FormsPage() {
               onTouchEnd={e => {
                 e.currentTarget.style.background = viewTab === tab ? '#fff' : 'transparent'
               }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = viewTab === tab ? '#F5F5F5' : 'rgba(143,29,44,0.06)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = viewTab === tab ? '#fff' : 'transparent'
+              }}
               style={{
               flex: 1, padding: '7px 6px', borderRadius: 9, fontSize: 11, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit', border: 'none', transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
@@ -143,7 +150,7 @@ export default function FormsPage() {
             onBlur={() => setSearchFocused(false)}
             style={{ width: '100%', padding: '11px 42px 11px 36px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#191713', direction: isAr ? 'rtl' : 'ltr' }}
           />
-          {search && <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#69645C' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+          {search && <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 4, background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#69645C' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Ministry filter — for transaction tabs */}
@@ -156,6 +163,16 @@ export default function FormsPage() {
                 e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : 'rgba(143,29,44,0.3)'
               }}
               onTouchEnd={e => {
+                const isActive = ministryFilter === 'all'
+                e.currentTarget.style.background = isActive ? '#F8EDEF' : '#fff'
+                e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : '#E6E2DC'
+              }}
+              onMouseEnter={e => {
+                const isActive = ministryFilter === 'all'
+                e.currentTarget.style.background = isActive ? '#FDE8E8' : '#FEF9F9'
+                e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : 'rgba(143,29,44,0.3)'
+              }}
+              onMouseLeave={e => {
                 const isActive = ministryFilter === 'all'
                 e.currentTarget.style.background = isActive ? '#F8EDEF' : '#fff'
                 e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : '#E6E2DC'
@@ -176,6 +193,16 @@ export default function FormsPage() {
                   e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : 'rgba(143,29,44,0.3)'
                 }}
                 onTouchEnd={e => {
+                  const isActive = ministryFilter === m.slug
+                  e.currentTarget.style.background = isActive ? '#F8EDEF' : '#fff'
+                  e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : '#E6E2DC'
+                }}
+                onMouseEnter={e => {
+                  const isActive = ministryFilter === m.slug
+                  e.currentTarget.style.background = isActive ? '#FDE8E8' : '#FEF9F9'
+                  e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : 'rgba(143,29,44,0.3)'
+                }}
+                onMouseLeave={e => {
                   const isActive = ministryFilter === m.slug
                   e.currentTarget.style.background = isActive ? '#F8EDEF' : '#fff'
                   e.currentTarget.style.borderColor = isActive ? '#8F1D2C' : '#E6E2DC'

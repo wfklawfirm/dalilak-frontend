@@ -204,14 +204,14 @@ export default function ProfessionalWorkspacePage() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={toggleLang} style={{
+              <button onClick={toggleLang} className="prof-header-btn" style={{
                 padding: '6px 12px', background: 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8,
                 color: '#fff', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit',
               }}>
                 {isAr ? 'EN' : 'AR'}
               </button>
-              <button onClick={() => router.back()} style={{
+              <button onClick={() => router.back()} className="prof-header-btn" style={{
                 padding: '6px 12px', background: 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8,
                 color: '#fff', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit',
@@ -224,7 +224,7 @@ export default function ProfessionalWorkspacePage() {
           {/* Section tabs */}
           <div style={{ display: 'flex', gap: 6, marginTop: 20, overflowX: 'auto', paddingBottom: 2 }}>
             {SECTIONS.map(s => (
-              <button key={s.id} onClick={() => setSection(s.id)} style={{
+              <button key={s.id} onClick={() => setSection(s.id)} className="prof-tab-btn" style={{
                 padding: '7px 14px', borderRadius: 20,
                 background: activeSection === s.id ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.08)',
                 color: activeSection === s.id ? '#fff' : 'rgba(255,255,255,0.6)',

@@ -188,6 +188,7 @@ export default function AuthoritiesPage() {
       }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
+            className="nav-home-btn"
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{

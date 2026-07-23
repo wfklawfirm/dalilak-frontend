@@ -253,6 +253,7 @@ export default function ProceduresPage() {
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
+            className="nav-home-btn"
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -377,7 +378,7 @@ export default function ProceduresPage() {
             onClick={() => setSearchModalOpen(true)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+              width: 36, height: 36, borderRadius: 8, flexShrink: 0,
               background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
               cursor: 'pointer', color: '#8F1D2C',
             }}
@@ -393,7 +394,7 @@ export default function ProceduresPage() {
             onClick={() => setFilterDrawerOpen(true)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+              width: 36, height: 36, borderRadius: 8, flexShrink: 0,
               background: hasActiveFilters(advFilters) ? '#8F1D2C' : '#F8EDEF',
               border: `1px solid ${hasActiveFilters(advFilters) ? '#8F1D2C' : 'rgba(143,29,44,0.2)'}`,
               cursor: 'pointer', color: hasActiveFilters(advFilters) ? '#fff' : '#8F1D2C',

@@ -949,6 +949,19 @@ input:focus {
    The dedicated PrintProcedureModal component is unaffected — it opens its
    own print-formatted window, not the browser's native print of the page.
    ──────────────────────────────────────────────────────────────────────── */
+/* Shared "Home" header icon button — used on procedures/services/forms/faq/
+   authorities/my-files/drafting-studio headers. Had touch feedback
+   (onTouchStart/onTouchEnd) but no desktop mouse hover feedback at all. */
+.nav-home-btn { transition: background 0.15s; }
+.nav-home-btn:hover { background: rgba(255,255,255,0.22) !important; }
+
+/* /professional header controls (lang toggle, back, section tabs) had no
+   hover feedback at all for desktop mouse users — filter:brightness works
+   regardless of each button's own background (active vs inactive tab),
+   so it doesn't fight inline styles or need !important. */
+.prof-header-btn, .prof-tab-btn { transition: filter 0.15s; }
+.prof-header-btn:hover, .prof-tab-btn:hover { filter: brightness(1.35); }
+
 @media print {
   header, nav, .no-print {
     display: none !important;

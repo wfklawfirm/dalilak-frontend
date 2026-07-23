@@ -122,27 +122,29 @@ export default function SettingsPage() {
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', paddingBottom: 90 }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #E6E2DC', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          aria-label={isAr ? 'رجوع' : 'Back'}
-          style={{
-            width: 34, height: 34, borderRadius: 9, border: '1.5px solid #E6E2DC',
-            background: 'transparent', cursor: 'pointer', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}
-        >
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#191713" strokeWidth="2.3">
-            <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
-          </svg>
-        </button>
-        <div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: '#191713' }}>
-            ⚙️ {isAr ? 'الإعدادات' : 'Settings'}
-          </div>
-          <div style={{ fontSize: 11, color: '#918B82' }}>
-            {isAr ? 'تفضيلاتك في مكان واحد' : 'All your preferences in one place'}
+      <div style={{ background: '#fff', borderBottom: '1px solid #E6E2DC' }}>
+        <div style={{ maxWidth: 560, margin: '0 auto', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            aria-label={isAr ? 'رجوع' : 'Back'}
+            style={{
+              width: 38, height: 38, borderRadius: 9, border: '1.5px solid #E6E2DC',
+              background: 'transparent', cursor: 'pointer', display: 'flex',
+              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}
+          >
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#191713" strokeWidth="2.3">
+              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
+            </svg>
+          </button>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#191713' }}>
+              ⚙️ {isAr ? 'الإعدادات' : 'Settings'}
+            </div>
+            <div style={{ fontSize: 11, color: '#918B82' }}>
+              {isAr ? 'تفضيلاتك في مكان واحد' : 'All your preferences in one place'}
+            </div>
           </div>
         </div>
       </div>

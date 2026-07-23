@@ -201,6 +201,7 @@ export default function MyFilesPage() {
             type="button"
             aria-label={isAr ? 'الرئيسية' : 'Home'}
             onClick={() => router.push('/')}
+            className="nav-home-btn"
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}

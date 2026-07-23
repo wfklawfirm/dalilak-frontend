@@ -99,6 +99,7 @@ export default function FAQPage() {
       <header style={{ background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'faqHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
+            className="nav-home-btn"
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
             onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
@@ -157,7 +158,7 @@ export default function FAQPage() {
             onBlur={() => setSearchFocused(false)}
             style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#191713', direction: isAr ? 'rtl' : 'ltr' }}
           />
-          {search && <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+          {search && <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 4, background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Category filters */}
@@ -165,6 +166,8 @@ export default function FAQPage() {
           <button type="button" aria-pressed={catFilter === 'all'} onClick={() => setCatFilter('all')}
             onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.opacity = '0.85' }}
             onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.opacity = '1' }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = '0.85' }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
             style={{
               padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
               fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,

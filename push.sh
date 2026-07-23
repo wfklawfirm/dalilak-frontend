@@ -157,6 +157,35 @@
 #     enlarged via padding (was ~15x15 effective).
 #   Desktop layout unaffected — all changes are to already-mobile-only
 #   or size-only properties, no breakpoints removed.
+#
+#   MOBILE TOUCH-TARGET PASS 2 (remaining pages): forms/page.tsx,
+#   faq/page.tsx search-clear buttons 20x20 -> 36x36; settings/page.tsx
+#   back button 34x34 -> 38x38; procedures/page.tsx advanced-search and
+#   advanced-filter toolbar buttons 30x30 -> 36x36. Audit confirmed no
+#   missing aria-labels and no unsafe bottom-fixed padding remained
+#   anywhere else in the app. Size-only changes, desktop unaffected.
+#
+#   DESKTOP PASS (per user request to cover computer + mobile equally):
+#   - NEW shared CSS: .nav-home-btn:hover (globals.css) — the identical
+#     header "Home" icon button on procedures/services/forms/faq/
+#     authorities/my-files/drafting-studio only had onTouchStart/
+#     onTouchEnd feedback; desktop mouse users got zero hover feedback.
+#     Applied the class to all 7 occurrences.
+#   - NEW .prof-header-btn / .prof-tab-btn (filter:brightness hover) —
+#     professional/page.tsx's language toggle, back button, and section
+#     tabs had no feedback of any kind (not even touch). Filter-based
+#     hover works regardless of each button's own active/inactive
+#     background, no !important conflicts.
+#   - forms/page.tsx view-tab switcher + ministry filter chips, and
+#     faq/page.tsx category filter chips: added onMouseEnter/onMouseLeave
+#     mirroring their existing onTouchStart/onTouchEnd so desktop mouse
+#     users get the same feedback touch users already had.
+#   - settings/page.tsx: header row now shares the same maxWidth:560 +
+#     margin:auto wrapper as the page content below it — on wide desktop
+#     monitors the header no longer hugged the far edge while the panel
+#     sat centered in a narrow column.
+#   All mobile behavior unchanged — these are additive desktop-only
+#   hover affordances plus one header-alignment fix.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
