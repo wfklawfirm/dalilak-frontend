@@ -113,6 +113,7 @@ export default function AccessibilityBar() {
 
       <div
         dir={isAr ? 'rtl' : 'ltr'}
+        className="no-print"
         style={{
           position: 'fixed',
           bottom: 'calc(134px + env(safe-area-inset-bottom, 0px))',

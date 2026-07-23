@@ -65,6 +65,7 @@ export default function MinistryQuickDial() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={isAr ? 'أرقام الوزارات' : 'Ministry phone numbers'}
+        className="no-print"
         style={{
           position: 'fixed',
           bottom: 'calc(82px + env(safe-area-inset-bottom, 0px))',

@@ -14,7 +14,7 @@ export default function GlobalLangSwitch() {
     <button
       type="button"
       onClick={toggleLang}
-      className="global-lang-switch"
+      className="global-lang-switch no-print"
       aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
       style={{
         position: 'fixed',

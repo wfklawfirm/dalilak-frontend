@@ -46,6 +46,7 @@ export default function OfflineNotice() {
       dir={isAr ? 'rtl' : 'ltr'}
       role="status"
       aria-live="polite"
+      className="no-print"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 99998,
         background: offline ? '#1f2937' : '#065f46',

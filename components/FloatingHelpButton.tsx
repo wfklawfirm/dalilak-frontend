@@ -73,6 +73,7 @@ export default function FloatingHelpButton({ onAsk }: Props) {
     <div
       ref={panelRef}
       dir={isAr ? 'rtl' : 'ltr'}
+      className="no-print"
       style={{
         position: 'fixed',
         bottom: 80,

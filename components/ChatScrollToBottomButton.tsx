@@ -45,6 +45,7 @@ export default function ChatScrollToBottomButton({ containerId, isAr }: Props) {
     <button
       onClick={scrollDown}
       aria-label={isAr ? 'الانتقال لأسفل' : 'Scroll to bottom'}
+      className="no-print"
       style={{
         position: 'fixed',
         bottom: 100,

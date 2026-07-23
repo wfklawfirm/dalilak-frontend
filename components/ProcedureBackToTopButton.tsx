@@ -38,6 +38,7 @@ export default function ProcedureBackToTopButton({ isAr }: Props) {
     <button
       onClick={scrollUp}
       aria-label={isAr ? 'العودة للأعلى' : 'Back to top'}
+      className="no-print"
       style={{
         position: 'fixed',
         bottom: 100,

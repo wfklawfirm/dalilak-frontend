@@ -113,6 +113,32 @@
 #   real logo already used in TopNav), not new artwork. Also added
 #   appleWebApp meta to layout.tsx for iOS home-screen support. No
 #   existing metadata/route/env var touched.
+#
+#   NEW: print stylesheet (globals.css @media print) — hitting the
+#   browser's native print (Ctrl/Cmd+P) used to print the fixed TopNav,
+#   BottomNav, and every floating widget on top of the content. Added a
+#   .no-print class (applied to GlobalLangSwitch, AccessibilityBar,
+#   MinistryQuickDial, FloatingHelpButton, OfflineNotice,
+#   ChatScrollToBottomButton, ProcedureBackToTopButton) + a print rule
+#   hiding header/nav/.no-print. On-screen appearance unchanged — @media
+#   print only. The dedicated PrintProcedureModal is unaffected.
+#
+#   NEW: lazy-load ~27 homepage widgets (app/page.tsx) — the components
+#   used only inside the collapsed-by-default homepage sections (stats,
+#   suggestions, saved/favorites, search & chat history, extra tools) now
+#   use next/dynamic (ssr:false) instead of static imports, so their code
+#   is fetched only when the user opens that section instead of bundled
+#   into the initial homepage load. Same components, same behavior,
+#   smaller first paint. tsc verified with 0 errors (generic dyn<P>()
+#   helper preserves each component's prop types).
+#
+#   FIX: SectionCollapseToggle.tsx header text was var(--text-3)
+#   (#918B82) on white/near-white backgrounds — only 3.38:1 contrast,
+#   below the WCAG AA 4.5:1 minimum for text this size. Changed to
+#   var(--text-2) (5.87:1, passes AA) and bumped the chevron icon to
+#   var(--text-3) (was --text-4, even lower contrast). Affects every
+#   section built with this component, old and new — pure color fix, no
+#   layout/behavior change.
 # ================================================================
 set -e
 cd "$(dirname "$0")"

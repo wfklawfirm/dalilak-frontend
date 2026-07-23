@@ -938,4 +938,23 @@ input:focus {
 
 /* Footer grid */
 .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+/* ────────────────────────────────────────────────────────────────────────
+   Print stylesheet — was missing entirely, so hitting the browser's native
+   print (Ctrl/Cmd+P) on any page printed the fixed nav bar, bottom nav, and
+   every floating widget (language switch, accessibility, ministry dial,
+   help, scroll-to-top/bottom) on top of the content. This hides persistent
+   chrome only — modals/sheets are already conditionally rendered and don't
+   need it. Does not affect on-screen appearance at all (@media print only).
+   The dedicated PrintProcedureModal component is unaffected — it opens its
+   own print-formatted window, not the browser's native print of the page.
+   ──────────────────────────────────────────────────────────────────────── */
+@media print {
+  header, nav, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}
 @media (min-width: 768px) { .fgrid { grid-template-columns: 2fr 1fr 1fr; } }

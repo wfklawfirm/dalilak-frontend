@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
@@ -9,35 +10,20 @@ import MobileMenu from '@/components/MobileMenu'
 import DocExpiryBanner from '@/components/DocExpiryBanner'
 import DocExpiryCalendar from '@/components/DocExpiryCalendar'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
-import SavedItemsPanel from '@/components/SavedItemsPanel'
-import RecentlyViewedPanel from '@/components/RecentlyViewedPanel'
 import AppointmentTracker from '@/components/AppointmentTracker'
-import QuickContacts from '@/components/QuickContacts'
-import SmartSuggestions from '@/components/SmartSuggestions'
-import DailyTip from '@/components/DailyTip'
 import GovCalendar from '@/components/GovCalendar'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
 import UserOnboarding from '@/components/UserOnboarding'
-import LanguagePreferenceCard from '@/components/LanguagePreferenceCard'
 import WelcomeBackBanner from '@/components/WelcomeBackBanner'
-import SearchHistoryPanel from '@/components/SearchHistoryPanel'
-import HomepageRecentMinistries from '@/components/HomepageRecentMinistries'
 import ChatSummaryCard from '@/components/ChatSummaryCard'
-import DocChecklistBuilder from '@/components/DocChecklistBuilder'
-import ProcedureComparator from '@/components/ProcedureComparator'
-import ProcedureFavoritesList from '@/components/ProcedureFavoritesList'
 import AppointmentReminder from '@/components/AppointmentReminder'
-import QuickNotepad from '@/components/QuickNotepad'
 import ProcedureProgressTracker from '@/components/ProcedureProgressTracker'
 import RecentActivityFeed from '@/components/RecentActivityFeed'
 import FeedbackWidget from '@/components/FeedbackWidget'
 import FloatingHelpButton from '@/components/FloatingHelpButton'
-import StatsBadgeStrip from '@/components/StatsBadgeStrip'
 import SmartHomeBanner from '@/components/SmartHomeBanner'
 import GovHolidayAlert from '@/components/GovHolidayAlert'
-import SavedCostSummary from '@/components/SavedCostSummary'
 import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
-import HomepageProgressRing from '@/components/HomepageProgressRing'
 import ChatTypingIndicator from '@/components/ChatTypingIndicator'
 import ChatMessageActions from '@/components/ChatMessageActions'
 import ChatPinButton, { ChatPinnedBanner } from '@/components/ChatPinnedMessage'
@@ -45,39 +31,24 @@ import ChatVoicePlayback from '@/components/ChatVoicePlayback'
 import ChatEmojiReactions from '@/components/ChatEmojiReactions'
 import ChatSaveToNotes from '@/components/ChatSaveToNotes'
 import ChatAIBadge from '@/components/ChatAIBadge'
-import ProcedureOfTheWeek from '@/components/ProcedureOfTheWeek'
-import LiveBeirutClock from '@/components/LiveBeirutClock'
-import HomepageWeatherWidget from '@/components/HomepageWeatherWidget'
-import HomepageMotivationalQuote from '@/components/HomepageMotivationalQuote'
-import HomepageUserStats from '@/components/HomepageUserStats'
 import HomepageQuickActionsBar from '@/components/HomepageQuickActionsBar'
 import ChatScrollToBottomButton from '@/components/ChatScrollToBottomButton'
-import ProcedureBookmarks from '@/components/ProcedureBookmarks'
 import ProcedureStatusBoard from '@/components/ProcedureStatusBoard'
 import SmartReminder from '@/components/SmartReminder'
-import ChatHistoryPanel, { saveChatSession } from '@/components/ChatHistoryPanel'
-import HomepageProcedureStats from '@/components/HomepageProcedureStats'
+import { saveChatSession } from '@/components/ChatHistoryPanel'
 import ProcedureAlertSummary from '@/components/ProcedureAlertSummary'
 import ProcedureCompletionCelebration from '@/components/ProcedureCompletionCelebration'
-import HomepageWeatherBanner from '@/components/HomepageWeatherBanner'
 import ChatSessionTimer from '@/components/ChatSessionTimer'
-import HomepageNewProceduresBadge from '@/components/HomepageNewProceduresBadge'
 import ProcedureChatContext from '@/components/ProcedureChatContext'
 import HomepageTodayTasks from '@/components/HomepageTodayTasks'
 import ChatVoiceInputBtn from '@/components/ChatVoiceInputBtn'
-import HomepageStreakCounter from '@/components/HomepageStreakCounter'
 import HomepageCalendarWidget from '@/components/HomepageCalendarWidget'
 import ChatSessionSummaryChip from '@/components/ChatSessionSummaryChip'
 import HomepageCompletionCTA from '@/components/HomepageCompletionCTA'
 import HomepageWeeklyGoalWidget from '@/components/HomepageWeeklyGoalWidget'
-import HomepageMiniStats from '@/components/HomepageMiniStats'
-import HomepageProcedureOfTheDay from '@/components/HomepageProcedureOfTheDay'
 import ChatLanguageToggleChip from '@/components/ChatLanguageToggleChip'
 import HomepageChatSuggestionsBar from '@/components/HomepageChatSuggestionsBar'
-import HomepageLiveStats from '@/components/HomepageLiveStats'
-import HomepageMinistrySpotlight from '@/components/HomepageMinistrySpotlight'
 import HomepageTodaysTasks from '@/components/HomepageTodaysTasks'
-import HomepageFeaturedFAQ from '@/components/HomepageFeaturedFAQ'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatInputCharCounter from '@/components/ChatInputCharCounter'
@@ -98,6 +69,50 @@ import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { ALL_SERVICES } from '@/lib/allServices'
 import { LIFE_JOURNEYS, getJourneyBySlug, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
+
+// ── Lazy-loaded homepage widgets ────────────────────────────────────────────
+// These only render inside the collapsed-by-default SectionCollapseToggle
+// groups ("At a glance", "Suggestions for you", "Saved & favorites",
+// "Search & chat history", "Extra tools") added when the homepage was
+// decluttered. Using next/dynamic code-splits them into separate chunks
+// fetched on demand instead of bundled into the initial homepage load —
+// same components, same behavior, smaller first paint. ssr:false is safe
+// here since every one of these already gated its real content behind a
+// mounted-on-client check.
+function dyn<P extends object>(loader: () => Promise<{ default: React.ComponentType<P> }>) {
+  return dynamic<P>(loader, { ssr: false })
+}
+const SavedItemsPanel          = dyn(() => import('@/components/SavedItemsPanel'))
+const RecentlyViewedPanel      = dyn(() => import('@/components/RecentlyViewedPanel'))
+const QuickContacts            = dyn(() => import('@/components/QuickContacts'))
+const SmartSuggestions         = dyn(() => import('@/components/SmartSuggestions'))
+const DailyTip                 = dyn(() => import('@/components/DailyTip'))
+const LanguagePreferenceCard   = dyn(() => import('@/components/LanguagePreferenceCard'))
+const SearchHistoryPanel       = dyn(() => import('@/components/SearchHistoryPanel'))
+const HomepageRecentMinistries = dyn(() => import('@/components/HomepageRecentMinistries'))
+const DocChecklistBuilder      = dyn(() => import('@/components/DocChecklistBuilder'))
+const ProcedureComparator      = dyn(() => import('@/components/ProcedureComparator'))
+const ProcedureFavoritesList   = dyn(() => import('@/components/ProcedureFavoritesList'))
+const QuickNotepad             = dyn(() => import('@/components/QuickNotepad'))
+const StatsBadgeStrip          = dyn(() => import('@/components/StatsBadgeStrip'))
+const SavedCostSummary         = dyn(() => import('@/components/SavedCostSummary'))
+const HomepageProgressRing     = dyn(() => import('@/components/HomepageProgressRing'))
+const ProcedureOfTheWeek       = dyn(() => import('@/components/ProcedureOfTheWeek'))
+const LiveBeirutClock          = dyn(() => import('@/components/LiveBeirutClock'))
+const HomepageWeatherWidget    = dyn(() => import('@/components/HomepageWeatherWidget'))
+const HomepageMotivationalQuote = dyn(() => import('@/components/HomepageMotivationalQuote'))
+const HomepageUserStats        = dyn(() => import('@/components/HomepageUserStats'))
+const ProcedureBookmarks       = dyn(() => import('@/components/ProcedureBookmarks'))
+const ChatHistoryPanel         = dyn(() => import('@/components/ChatHistoryPanel'))
+const HomepageProcedureStats   = dyn(() => import('@/components/HomepageProcedureStats'))
+const HomepageWeatherBanner    = dyn(() => import('@/components/HomepageWeatherBanner'))
+const HomepageNewProceduresBadge = dyn(() => import('@/components/HomepageNewProceduresBadge'))
+const HomepageStreakCounter    = dyn(() => import('@/components/HomepageStreakCounter'))
+const HomepageMiniStats        = dyn(() => import('@/components/HomepageMiniStats'))
+const HomepageProcedureOfTheDay = dyn(() => import('@/components/HomepageProcedureOfTheDay'))
+const HomepageLiveStats        = dyn(() => import('@/components/HomepageLiveStats'))
+const HomepageMinistrySpotlight = dyn(() => import('@/components/HomepageMinistrySpotlight'))
+const HomepageFeaturedFAQ      = dyn(() => import('@/components/HomepageFeaturedFAQ'))
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 

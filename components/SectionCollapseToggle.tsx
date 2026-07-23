@@ -79,7 +79,7 @@ export default function SectionCollapseToggle({
         {icon && <span style={{ fontSize: 14 }}>{icon}</span>}
         <span style={{
           flex: 1, fontSize: 11, fontWeight: 800,
-          color: 'var(--text-3)', textTransform: 'uppercase',
+          color: 'var(--text-2)', textTransform: 'uppercase',
           letterSpacing: '0.05em',
         }}>
           {isAr ? titleAr : titleEn}
@@ -91,7 +91,7 @@ export default function SectionCollapseToggle({
           height="12"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="var(--text-4)"
+          stroke="var(--text-3)"
           strokeWidth="2.5"
           style={{
             transition: 'transform 0.2s ease',
