@@ -666,10 +666,16 @@ export default function Home() {
   const showCharCount = input.length > 3000
 
   if (!authChecked) return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAFAF8', gap: 14 }}>
-      <img src="/logo-icon.png" alt="دليلك" style={{ width: 52, height: 52, objectFit: 'contain', opacity: 0.7 }} />
-      <div style={{ display: 'flex', gap: 6 }}>
-        {[0,1,2].map(i => <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: '#8B1A1A', display: 'inline-block', animation: `typing-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
+    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'linear-gradient(160deg,#4e1520 0%,#8B1A1A 60%,#6b2030 100%)', gap:20 }}>
+      <div style={{ width:64, height:64, borderRadius:18, background:'rgba(255,255,255,0.12)', border:'1.5px solid rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 8px 32px rgba(0,0,0,0.3)' }}>
+        <img src="/logo-icon.png" alt="دليلك" style={{ width:42, height:42, objectFit:'contain' }} />
+      </div>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ fontSize:18, fontWeight:900, color:'#fff', letterSpacing:'-0.5px', marginBottom:4 }}>دليلك</div>
+        <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', fontWeight:500 }}>الدليل الحكومي الذكي</div>
+      </div>
+      <div style={{ display:'flex', gap:6 }}>
+        {[0,1,2].map(i => <span key={i} style={{ width:7, height:7, borderRadius:'50%', background:'rgba(255,255,255,0.6)', display:'inline-block', animation:`typing-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
       </div>
     </div>
   )
@@ -1311,13 +1317,13 @@ export default function Home() {
         )}
 
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
-        {/* bottom-nav-padding only when keyboard is closed — prevents 56px phantom gap above keyboard */}
         <footer className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
           flexShrink: 0,
-          backgroundColor: 'transparent',
+          background: 'linear-gradient(to top, rgba(242,237,230,1) 0%, rgba(242,237,230,0.96) 70%, rgba(242,237,230,0) 100%)',
+          paddingTop: 8,
           paddingBottom: footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '6px 12px 10px' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 10px' }}>
 
             {/* ── Active Document Context Chip (Phase 9) ── */}
             {activeDocumentName && messages.length > 0 && !attachedFile && (
@@ -1423,10 +1429,10 @@ export default function Home() {
                 style={{
                   display: 'flex', alignItems: 'flex-end', gap: 4,
                   backgroundColor: '#fff',
-                  border: recording ? '2px solid #FCA5A5' : '2px solid var(--border)',
-                  borderRadius: 20, padding: '6px 8px',
-                  boxShadow: '0 2px 14px rgba(0,0,0,0.07)',
-                  transition: 'border-color 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                  border: recording ? '2px solid #FCA5A5' : '1.5px solid rgba(210,195,178,0.7)',
+                  borderRadius: 22, padding: '7px 8px',
+                  boxShadow: '0 2px 16px rgba(100,60,20,0.09), 0 1px 4px rgba(0,0,0,0.05)',
+                  transition: 'border-color 0.18s, box-shadow 0.18s',
                 }}>
 
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
