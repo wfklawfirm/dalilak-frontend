@@ -48,9 +48,9 @@ export default function RegisterPage() {
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(160deg, #6b2737 0%, #8B1A1A 40%, #f7f0eb 100%)',
+      background: '#F8F8F6',
       padding: '20px 16px',
-      fontFamily: "'Cairo','Inter',sans-serif",
+      fontFamily: "'IBM Plex Sans Arabic','Cairo','Inter',sans-serif",
     }}>
       <style>{`
         * { box-sizing: border-box; }
@@ -65,8 +65,8 @@ export default function RegisterPage() {
           color: #1A1208;
         }
         .auth-input:focus {
-          border-color: #8B1A1A;
-          box-shadow: 0 0 0 3px rgba(139,26,26,0.10);
+          border-color: #8F1D2C;
+          box-shadow: 0 0 0 3px rgba(143,29,44,0.10);
           background: #fff;
         }
         .auth-btn {
@@ -75,10 +75,10 @@ export default function RegisterPage() {
           color: #fff; border: none; border-radius: 14px;
           font-size: 15px; font-weight: 700; cursor: pointer;
           font-family: inherit;
-          box-shadow: 0 4px 16px rgba(139,26,26,0.35);
+          box-shadow: 0 4px 16px rgba(143,29,44,0.35);
           transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1);
         }
-        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.4); }
+        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(143,29,44,0.4); }
         .auth-btn:active:not(:disabled) { transform: scale(0.98); }
         .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
       `}</style>
@@ -87,18 +87,18 @@ export default function RegisterPage() {
       <div style={{ textAlign: 'center', marginBottom: 20, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{
           width: 72, height: 72, borderRadius: 20,
-          background: 'rgba(255,255,255,0.15)',
-          border: '2px solid rgba(255,255,255,0.3)',
+          background: '#F8EDEF',
+          border: '2px solid rgba(143,29,44,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 12px', backdropFilter: 'blur(8px)',
+          margin: '0 auto 12px',
         }}>
           <img src="/logo-icon.png" alt="دليلك"
             style={{ width: 50, height: 50, objectFit: 'contain' }} />
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.3px' }}>
+        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#191713', margin: 0, letterSpacing: '-0.3px' }}>
           دليلك
         </h1>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
+        <p style={{ fontSize: 12, color: '#918B82', marginTop: 3 }}>
           {isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}
         </p>
       </div>
@@ -108,7 +108,7 @@ export default function RegisterPage() {
         width: '100%', maxWidth: 380,
         background: '#fff', borderRadius: 24,
         padding: '24px 22px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
         <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', textAlign: 'center' }}>
@@ -128,7 +128,7 @@ export default function RegisterPage() {
           <div id="reg-error" role="alert" style={{
             marginBottom: 14, padding: '10px 14px',
             background: '#FEF2F2', border: '1.5px solid #FECACA',
-            borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center',
+            borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center',
           }}>
             {error}
           </div>
@@ -137,14 +137,14 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
           <div>
-            <label htmlFor="reg-fullname" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'الاسم الكامل' : 'Full name'}</label>
+            <label htmlFor="reg-fullname" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'الاسم الكامل' : 'Full name'}</label>
             <input id="reg-fullname" type="text" aria-invalid={!!error} aria-describedby={error ? "reg-error" : undefined} value={form.full_name} onChange={e => update('full_name', e.target.value)}
               className="auth-input" placeholder={isAr ? 'أحمد علي' : 'John Doe'} dir="auto" />
           </div>
 
           <div>
-            <label htmlFor="reg-username" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              {isAr ? 'اسم المستخدم' : 'Username'} <span style={{ color: '#8B1A1A' }}>*</span>
+            <label htmlFor="reg-username" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
+              {isAr ? 'اسم المستخدم' : 'Username'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
             <input id="reg-username" type="text" value={form.username}
               onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
@@ -153,8 +153,8 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="reg-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8B1A1A' }}>*</span>
+            <label htmlFor="reg-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
+              {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
             <input id="reg-email" type="email" value={form.email} onChange={e => update('email', e.target.value)}
               className="auth-input" placeholder="you@example.com" required
@@ -162,15 +162,15 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="reg-phone" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'رقم الهاتف' : 'Phone number'}</label>
+            <label htmlFor="reg-phone" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'رقم الهاتف' : 'Phone number'}</label>
             <input id="reg-phone" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
               className="auth-input" placeholder="+961 xx xxx xxx"
               dir="ltr" style={{ textAlign: 'left' }} />
           </div>
 
           <div>
-            <label htmlFor="reg-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              {isAr ? 'كلمة المرور' : 'Password'} <span style={{ color: '#8B1A1A' }}>*</span>
+            <label htmlFor="reg-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
+              {isAr ? 'كلمة المرور' : 'Password'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
             <div style={{ position: 'relative' }}>
               <input id="reg-password" type={showPass ? 'text' : 'password'} value={form.password}
@@ -191,8 +191,8 @@ export default function RegisterPage() {
 
           {/* Confirm password */}
           <div>
-            <label htmlFor="reg-confirm" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-              {isAr ? 'تأكيد كلمة المرور' : 'Confirm password'} <span style={{ color: '#8B1A1A' }}>*</span>
+            <label htmlFor="reg-confirm" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
+              {isAr ? 'تأكيد كلمة المرور' : 'Confirm password'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
             <input
               id="reg-confirm"
@@ -215,15 +215,15 @@ export default function RegisterPage() {
 
         <div style={{ marginTop: 16, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
           {isAr ? 'لديك حساب بالفعل؟' : 'Already have an account?'}{' '}
-          <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
+          <Link href="/login" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الدخول' : 'Log in'}
           </Link>
         </div>
       </div>
 
-      <p style={{ marginTop: 18, fontSize: 11, color: 'rgba(255,255,255,0.45)', textAlign: 'center' }}>
+      <p style={{ marginTop: 18, fontSize: 11, color: '#B8B2AA', textAlign: 'center' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, justifyContent: 'center' }}>
-          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
+          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 6l9 4 9-4M3 6v12l9 4m0-12v12m0-12L12 2l9 4M21 6v12l-9 4"/></svg>
           {isAr ? 'خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak service — guidance information, not a substitute for a legal professional'}
         </span>
       </p>
