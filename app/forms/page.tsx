@@ -51,7 +51,7 @@ export default function FormsPage() {
   const typeBg = (t: string) => t === 'official' ? '#FFFBEB' : '#FFF7ED'
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }

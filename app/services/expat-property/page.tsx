@@ -127,7 +127,7 @@ export default function ExpatPropertyPackPage() {
   const currentSection = PACK_SECTIONS.find(s => s.id === activeSection)!
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={dir}>
+    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={dir}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }

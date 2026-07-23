@@ -86,15 +86,25 @@ export default function ChatMessage({
           />
         </div>
       ) : (
-        <AgentResponseRenderer
-          content={msg.content}
-          isAr={ar}
-          streaming={msg.streaming}
-          sources={msg.sources}
-          confidence={msg.confidence}
-          onFollowUp={onFollowUp}
-          question={question}
-        />
+        /* ── AI response card ── */
+        <div style={{
+          flex: 1, minWidth: 0, maxWidth: '100%',
+          background: '#fff',
+          borderRadius: 18, borderTopLeftRadius: ar ? 4 : 18, borderTopRightRadius: ar ? 18 : 4,
+          border: '1px solid rgba(210,195,178,0.5)',
+          boxShadow: '0 1px 8px rgba(100,60,20,0.06), 0 0.5px 1px rgba(0,0,0,0.04)',
+          padding: '13px 15px 10px',
+        }}>
+          <AgentResponseRenderer
+            content={msg.content}
+            isAr={ar}
+            streaming={msg.streaming}
+            sources={msg.sources}
+            confidence={msg.confidence}
+            onFollowUp={onFollowUp}
+            question={question}
+          />
+        </div>
       )}
     </div>
   )

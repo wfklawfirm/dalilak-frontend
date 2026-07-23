@@ -694,7 +694,7 @@ export default function Home() {
           --red-light: #FEF2F2;
           --gold: #B8860B;
           --gold-light: #FFFBEB;
-          --bg: #FAFAF8;
+          --bg: #F2EDE6;
           --card: #FFFFFF;
           --border: #EAE4D9;
           --border-strong: #D5CEC4;
@@ -1182,9 +1182,10 @@ export default function Home() {
                     }}>
                       <div style={{
                         display: 'inline-flex', alignItems: 'center', gap: 5,
-                        background: '#FAFAF8', border: '1px solid #EAE4D9',
+                        background: '#fff', border: '1px solid rgba(210,195,178,0.5)',
                         borderRadius: isAr ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                         padding: '10px 16px',
+                        boxShadow: '0 1px 8px rgba(100,60,20,0.06)',
                       }}>
                         {[0, 1, 2].map(j => (
                           <span key={j} style={{

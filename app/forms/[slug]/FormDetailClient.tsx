@@ -60,7 +60,7 @@ export default function FormDetailClient({ form }: Props) {
   }
 
   return (
-    <div dir={dir} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: isAr ? "'Cairo',sans-serif" : "'Inter',sans-serif" }}>
+    <div dir={dir} style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: isAr ? "'Cairo',sans-serif" : "'Inter',sans-serif" }}>
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 3px; } @keyframes fdcHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       <header style={{

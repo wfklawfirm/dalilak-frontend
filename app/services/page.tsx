@@ -377,7 +377,7 @@ export default function ServicesPage() {
     : null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; height: 3px; }
@@ -456,7 +456,7 @@ export default function ServicesPage() {
       </header>
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
-      <div id="main-content" style={{ background: '#FAFAF8', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
+      <div id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
         <div style={{ position: 'relative', background: '#fff', border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
           <span style={{
             position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',

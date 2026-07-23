@@ -174,7 +174,7 @@ export default function MyFilesPage() {
     : 'linear-gradient(90deg, #6b2737, #8B1A1A)'
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
@@ -383,7 +383,7 @@ export default function MyFilesPage() {
                 <div key={selected.id} style={{ background: '#fff', borderRadius: 20, border: '1.5px solid #EAE4D9', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', overflow: 'hidden', animation: 'mfEnter 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
 
                   {/* Panel header */}
-                  <div style={{ padding: '20px 22px 18px', borderBottom: '1px solid #EAE4D9', background: '#FAFAF8' }}>
+                  <div style={{ padding: '20px 22px 18px', borderBottom: '1px solid #EAE4D9', background: 'rgba(242,237,230,0.5)' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                       <div style={{ flex: 1 }}>
                         <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 7px', lineHeight: 1.3 }}>
