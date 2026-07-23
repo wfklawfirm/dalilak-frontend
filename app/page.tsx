@@ -60,6 +60,10 @@ import ChatSessionSummaryChip from '@/components/ChatSessionSummaryChip'
 import HomepageCompletionCTA from '@/components/HomepageCompletionCTA'
 import HomepageWeeklyGoalWidget from '@/components/HomepageWeeklyGoalWidget'
 import HomepageMiniStats from '@/components/HomepageMiniStats'
+import HomepageProcedureOfTheDay from '@/components/HomepageProcedureOfTheDay'
+import ChatLanguageToggleChip from '@/components/ChatLanguageToggleChip'
+import HomepageChatSuggestionsBar from '@/components/HomepageChatSuggestionsBar'
+import HomepageLiveStats from '@/components/HomepageLiveStats'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -72,6 +76,7 @@ import ServiceGroupSheet from '@/components/ServiceGroupSheet'
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
 import { useLanguage } from '@/lib/LanguageContext'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
+import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { ALL_SERVICES } from '@/lib/allServices'
 import { LIFE_JOURNEYS, getJourneyBySlug, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
 
@@ -1912,7 +1917,14 @@ Question: ${text}`
                     <AppointmentTracker onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 
+                  <HomepageLiveStats
+                    totalProcedures={TX_ALL.length + ENRICHED_PROCEDURES.length}
+                    ministriesCount={TX_MINISTRIES.length}
+                    formsCount={TX_WITH_FORMS.length}
+                    isAr={isAr}
+                  />
                   <HomepageMiniStats />
+                  <HomepageProcedureOfTheDay />
                   <HomepageTodayTasks />
                   <HomepageCalendarWidget />
                   <HomepageCompletionCTA />
@@ -1969,8 +1981,22 @@ Question: ${text}`
                 </div>
               )}
 
+              {/* Quick suggestion chips — disappears after first message */}
+              <HomepageChatSuggestionsBar
+                messageCount={messages.length}
+                isAr={isAr}
+                onAsk={q => sendMessage(q)}
+              />
+
               {/* Session summary chip — appears at 10+ messages */}
               <ChatSessionSummaryChip
+                messageCount={messages.length}
+                isAr={isAr}
+                onAsk={q => sendMessage(q)}
+              />
+
+              {/* Language toggle chip — one-time prompt to switch AI reply language */}
+              <ChatLanguageToggleChip
                 messageCount={messages.length}
                 isAr={isAr}
                 onAsk={q => sendMessage(q)}

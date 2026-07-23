@@ -33,6 +33,10 @@ import ProcedureMinistryMap from '@/components/ProcedureMinistryMap'
 import ProcedurePrintableCard from '@/components/ProcedurePrintableCard'
 import ProcedureHistoryLog from '@/components/ProcedureHistoryLog'
 import ProcedureTagSearch from '@/components/ProcedureTagSearch'
+import ProcedureDocumentChecklist from '@/components/ProcedureDocumentChecklist'
+import ProcedureCostBreakdown from '@/components/ProcedureCostBreakdown'
+import ProcedureAIAssistButton from '@/components/ProcedureAIAssistButton'
+import ProcedureRemindMeLater from '@/components/ProcedureRemindMeLater'
 import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
 import ProcedureStepProgress from '@/components/ProcedureStepProgress'
 import ProcedureDocReadinessBar from '@/components/ProcedureDocReadinessBar'
@@ -775,6 +779,15 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
+                    {/* Document checklist with progress */}
+                    {proc.requiredDocuments.length > 0 && (
+                      <ProcedureDocumentChecklist
+                        code={proc.code}
+                        docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
+                        isAr={isAr}
+                      />
+                    )}
+
                     {/* Steps — interactive timeline */}
                     {proc.steps.length > 0 && (
                       <div style={{ marginBottom: 12 }}>
@@ -817,14 +830,14 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* Fees */}
+                    {/* Fees — detailed breakdown */}
                     {displayFees && (
-                      <div id={`proc-${proc.code}-fees`} style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '9px 12px', marginBottom: 12 }}>
-                        <div style={{ fontSize: 9, fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                          {isAr ? 'الرسوم والتكاليف' : 'Fees & Costs'}
-                        </div>
-                        <span style={{ fontSize: 11.5, color: '#78350F', lineHeight: 1.6 }}>{displayFees.length > 200 ? displayFees.slice(0, 200) + '…' : displayFees}</span>
+                      <div id={`proc-${proc.code}-fees`}>
+                        <ProcedureCostBreakdown
+                          fees={proc.fees}
+                          fees_en={proc.fees_en}
+                          isAr={isAr}
+                        />
                       </div>
                     )}
 
@@ -869,6 +882,14 @@ export default function ProceduresPage() {
 
                     {/* Personal notes */}
                     <ProcedureNotesPanel code={proc.code} isAr={isAr} />
+
+                    {/* Quick remind-me-later chip */}
+                    <ProcedureRemindMeLater
+                      code={proc.code}
+                      titleAr={proc.title}
+                      titleEn={proc.title_en}
+                      isAr={isAr}
+                    />
 
                     {/* Set deadline — personal deadline reminder for this procedure */}
                     {(() => {
@@ -932,6 +953,15 @@ export default function ProceduresPage() {
                       code={proc.code}
                       titleAr={proc.title}
                       titleEn={proc.title_en}
+                      isAr={isAr}
+                      onAsk={handleAsk}
+                    />
+
+                    {/* AI Assist Button with preset questions */}
+                    <ProcedureAIAssistButton
+                      title={proc.title}
+                      title_en={proc.title_en}
+                      code={proc.code}
                       isAr={isAr}
                       onAsk={handleAsk}
                     />

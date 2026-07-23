@@ -1,20 +1,21 @@
 #!/bin/bash
 # ================================================================
-# Batch #257-263 — Step timer, ministry map, weekly goal, printable
-#                  card, history log, mini stats, tag search
-#   #257 ProcedureStepTimer          — per-step countdown timers
-#   #258 ProcedureMinistryMap        — static ministry location visual
-#   #259 HomepageWeeklyGoalWidget    — "هدف الأسبوع" weekly goal tracker
-#   #260 ProcedurePrintableCard      — print-ready card via window.open
-#   #261 ProcedureHistoryLog         — per-procedure activity event log
-#   #262 HomepageMiniStats           — 4-stat completed/started/reminders/saved strip
-#   #263 ProcedureTagSearch          — enriched ministry label tag cloud filter
-#   #264 TSC clean (0 errors) + push
+# Batch #264-271 — Document checklist, POTD, chat language toggle,
+#                  cost breakdown, AI assist button, suggestions bar,
+#                  remind-me-later, live stats
+#   #264 ProcedureDocumentChecklist     — interactive doc checkbox list
+#   #265 HomepageProcedureOfTheDay      — daily featured procedure card
+#   #266 ChatLanguageToggleChip         — one-tap AI reply language switch
+#   #267 ProcedureCostBreakdown         — expandable fee line-item breakdown
+#   #268 ProcedureAIAssistButton        — preset question CTA on procedure cards
+#   #269 HomepageChatSuggestionsBar     — horizontal quick-prompt chip bar
+#   #270 ProcedureRemindMeLater         — 1-click reminder in 1/3/7/14 days
+#   #271 HomepageLiveStats              — animated counter strip (procs/ministries/forms)
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #257-263 — step timer, ministry map, weekly goal, printable card, history log, mini stats, tag search"
+git diff --cached --quiet || git commit -m "feat: batch #264-271 — doc checklist, POTD, chat lang toggle, cost breakdown, AI assist, suggestions bar, remind-later, live stats"
 git push origin main
 echo "✅ Done"
