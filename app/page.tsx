@@ -667,16 +667,17 @@ export default function Home() {
   const showCharCount = input.length > 3000
 
   if (!authChecked) return (
-    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'linear-gradient(160deg,#4e1520 0%,#8B1A1A 60%,#6b2030 100%)', gap:20 }}>
-      <div style={{ width:64, height:64, borderRadius:18, background:'rgba(255,255,255,0.12)', border:'1.5px solid rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 8px 32px rgba(0,0,0,0.3)' }}>
+    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#F8F8F6', gap:20 }}>
+      <style>{`@keyframes auth-dot { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-6px);opacity:1} }`}</style>
+      <div style={{ width:64, height:64, borderRadius:18, background:'#F8EDEF', border:'1.5px solid rgba(143,29,44,0.15)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 20px rgba(143,29,44,0.12)' }}>
         <img src="/logo-icon.png" alt="دليلك" style={{ width:42, height:42, objectFit:'contain' }} />
       </div>
       <div style={{ textAlign:'center' }}>
-        <div style={{ fontSize:18, fontWeight:900, color:'#fff', letterSpacing:'-0.5px', marginBottom:4 }}>دليلك</div>
-        <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', fontWeight:500 }}>الدليل الحكومي الذكي</div>
+        <div style={{ fontSize:18, fontWeight:900, color:'#191713', letterSpacing:'-0.5px', marginBottom:4 }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
+        <div style={{ fontSize:11, color:'#918B82', fontWeight:500 }}>{isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}</div>
       </div>
-      <div style={{ display:'flex', gap:6 }}>
-        {[0,1,2].map(i => <span key={i} style={{ width:7, height:7, borderRadius:'50%', background:'rgba(255,255,255,0.6)', display:'inline-block', animation:`typing-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
+      <div style={{ display:'flex', gap:7 }}>
+        {[0,1,2].map(i => <span key={i} style={{ width:7, height:7, borderRadius:'50%', background:'#8F1D2C', display:'inline-block', animation:`auth-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
       </div>
     </div>
   )
