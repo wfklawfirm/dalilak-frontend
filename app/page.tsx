@@ -38,6 +38,10 @@ import SavedCostSummary from '@/components/SavedCostSummary'
 import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
 import HomepageProgressRing from '@/components/HomepageProgressRing'
 import ChatTypingIndicator from '@/components/ChatTypingIndicator'
+import ChatMessageActions from '@/components/ChatMessageActions'
+import ProcedureOfTheWeek from '@/components/ProcedureOfTheWeek'
+import LiveBeirutClock from '@/components/LiveBeirutClock'
+import ProcedureBookmarks from '@/components/ProcedureBookmarks'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -1857,6 +1861,7 @@ Question: ${text}`
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <LiveBeirutClock />
                   <HomepageProgressRing />
                   <GovHolidayAlert />
                   <SmartHomeBanner onAsk={q => sendMessage(q)} />
@@ -1864,7 +1869,9 @@ Question: ${text}`
                   <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
                   <LanguagePreferenceCard />
                   <DailyTip onAsk={q => sendMessage(q)} />
+                  <ProcedureOfTheWeek onAsk={q => sendMessage(q)} />
                   <SmartSuggestions onAsk={q => sendMessage(q)} />
+                  <ProcedureBookmarks onAsk={q => sendMessage(q)} />
                   <SearchHistoryPanel onAsk={q => sendMessage(q)} />
                   <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
                     <DocExpiryBanner onAsk={q => sendMessage(q)} />
@@ -1952,6 +1959,11 @@ Question: ${text}`
                         ? messages[i - 1].content.replace(/^\[.*?\]\n?/, '').slice(0, 300)
                         : undefined}
                     />
+                    {msg.role === 'assistant' && !msg.streaming && msg.content.length > 10 && (
+                      <div style={{ paddingInlineStart: isAr ? 0 : 10, paddingInlineEnd: isAr ? 10 : 0 }}>
+                        <ChatMessageActions text={msg.content} isAr={isAr} />
+                      </div>
+                    )}
                   </div>
                 )
               })}
