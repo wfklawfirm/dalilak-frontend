@@ -465,7 +465,7 @@ export default function ProceduresPage() {
                       </span>
                       {displayDocs.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
                       {displaySteps.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
-                      {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>نموذج</span>}
+                      {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>{displayTitle}</div>
                     <div style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, marginTop: 2 }}>{displayMinistry}</div>
