@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Cairo:wght@600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,34 +11,34 @@
 
 :root {
   /* ── Brand / Primary ──────────────────────────────── */
-  --brand:            #8B1A1A;   /* الأحمر اللبناني الداكن */
-  --brand-hover:      #7a1616;
-  --brand-dark:       #6b2737;
-  --brand-deeper:     #4e1a28;
-  --brand-light:      #FDF4F4;
-  --brand-soft:       #FEF2F2;
-  --brand-muted:      #FEEEE8;
-  --brand-ring:       rgba(139, 26, 26, 0.12);
+  --brand:            #8F1D2C;   /* الأحمر اللبناني الرسمي */
+  --brand-hover:      #741622;
+  --brand-dark:       #5C1020;
+  --brand-deeper:     #3D0A14;
+  --brand-light:      #FBF0F2;
+  --brand-soft:       #F8EDEF;
+  --brand-muted:      #FEEEF1;
+  --brand-ring:       rgba(143, 29, 44, 0.15);
   --brand-fg:         #ffffff;   /* text on brand background */
 
   /* ── Accent (warm amber / gold) ───────────────────── */
-  --accent:           #C45C2A;   /* أبرونز دافئ */
-  --accent-hover:     #a84e23;
-  --accent-light:     #FFF7ED;
+  --accent:           #B76B00;   /* عنبري دافئ */
+  --accent-hover:     #945600;
+  --accent-light:     #FFFBEB;
   --accent-fg:        #ffffff;
 
   /* ── Status colors ────────────────────────────────── */
-  --success:          #16a34a;
+  --success:          #147A55;
   --success-bg:       #f0fdf4;
   --success-border:   #bbf7d0;
   --success-fg:       #14532d;
 
-  --warning:          #d97706;
+  --warning:          #B76B00;
   --warning-bg:       #fffbeb;
   --warning-border:   #fde68a;
   --warning-fg:       #78350f;
 
-  --error:            #dc2626;
+  --error:            #B42318;
   --error-bg:         #fef2f2;
   --error-border:     #fecaca;
   --error-fg:         #7f1d1d;
@@ -49,37 +49,37 @@
   --info-fg:          #1e3a8a;
 
   /* ── Backgrounds & Surfaces ───────────────────────── */
-  --bg:               #F2EDE6;   /* الخلفية العامة — رمل دافئ */
-  --bg-page:          #F2EDE6;
-  --bg-hero:          #FFFFFF;   /* Hero — أبيض نظيف مع تدرج كريمي */
-  --surface:          #FFFFFF;   /* البطاقات والأسطح الرئيسية */
-  --surface-2:        #F0EBE3;   /* أسطح ثانوية */
-  --surface-3:        #EAE4D9;   /* حدود وخلفيات خافتة */
-  --surface-muted:    #FBF8F4;   /* خلفية خافتة جداً */
-  --surface-overlay:  rgba(26, 18, 8, 0.45); /* overlay للـ modals */
+  --bg:               #F8F8F6;   /* خلفية عامة — أبيض دافئ */
+  --bg-page:          #F8F8F6;
+  --bg-hero:          #FFFFFF;
+  --surface:          #FFFFFF;
+  --surface-2:        #F3F1EE;
+  --surface-3:        #EAE7E2;
+  --surface-muted:    #F8F7F5;
+  --surface-overlay:  rgba(25, 23, 19, 0.45);
 
   /* ── Borders ──────────────────────────────────────── */
-  --border:           #E2D9CE;
-  --border-light:     #EDE6DD;
-  --border-strong:    #C8BDB0;
-  --border-brand:     rgba(139, 26, 26, 0.25);
+  --border:           #E6E2DC;
+  --border-light:     #EDEBE7;
+  --border-strong:    #D5D0C8;
+  --border-brand:     rgba(143, 29, 44, 0.20);
 
   /* ── Text ─────────────────────────────────────────── */
-  --text-1:           #1A1208;   /* العنوان — شبه أسود دافئ */
-  --text-2:           #4A3728;   /* النص الثانوي */
-  --text-3:           #8C7D6E;   /* النص الخافت */
-  --text-4:           #B5A898;   /* Placeholder / disabled */
+  --text-1:           #191713;   /* شبه أسود دافئ */
+  --text-2:           #69645C;   /* ثانوي */
+  --text-3:           #918B82;   /* خافت */
+  --text-4:           #B8B2AA;   /* Placeholder */
   --text-on-brand:    #ffffff;
 
   /* ── Shadows ──────────────────────────────────────── */
-  --shadow-xs:        0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm:        0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:        0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
-  --shadow-lg:        0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
-  --shadow-xl:        0 8px 28px rgba(0,0,0,0.12), 0 3px 10px rgba(0,0,0,0.07);
-  --shadow-brand:     0 3px 12px rgba(139, 26, 26, 0.24);
-  --shadow-brand-lg:  0 6px 24px rgba(139, 26, 26, 0.32);
-  --shadow-warm:      0 2px 10px rgba(100, 60, 20, 0.08);
+  --shadow-xs:        0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm:        0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:        0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg:        0 8px 24px rgba(0,0,0,0.10), 0 3px 8px rgba(0,0,0,0.06);
+  --shadow-xl:        0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-brand:     0 4px 14px rgba(143, 29, 44, 0.25);
+  --shadow-brand-lg:  0 8px 28px rgba(143, 29, 44, 0.32);
+  --shadow-warm:      0 2px 10px rgba(100, 60, 20, 0.06);
 
   /* ── Border Radius ────────────────────────────────── */
   --radius-xs:        6px;
@@ -139,7 +139,7 @@ body { min-height: 100%; overflow-x: hidden; }
    BASE STYLES
    ════════════════════════════════════════════════════════ */
 body {
-  font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+  font-family: 'IBM Plex Sans Arabic', 'Cairo', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text-1);
   -webkit-font-smoothing: antialiased;
@@ -875,4 +875,17 @@ input:focus {
   backdrop-filter: blur(16px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 6px 28px rgba(80,10,10,0.4) !important;
+}
+
+/* ── GlobalLangSwitch — hide on desktop (lang toggle in TopNav + footer) ── */
+@media (min-width: 768px) {
+  .global-lang-switch { display: none !important; }
+}
+
+/* ── TopNav scrolled — light theme shadow ── */
+.tn-scrolled {
+  background: #FFFFFF !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.09) !important;
 }

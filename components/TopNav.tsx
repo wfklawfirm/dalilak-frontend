@@ -6,9 +6,6 @@ import { isAdmin, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 
 interface TopNavProps {
-  // isAr و onLangToggle أصبحا اختياريين — إن لم يُمرَّرا، يقرأ المكوّن اللغة
-  // المشتركة مباشرة من LanguageContext (حتى لا تُضطر كل صفحة لتمرير حالة لغة
-  // محلية خاصة بها، وهو ما كان يسبب رجوع اللغة للعربية عند تغيير الصفحة).
   isAr?: boolean
   currentUser: User | null
   messages?: unknown[]
@@ -20,19 +17,19 @@ interface TopNavProps {
 }
 
 const NAV_LINKS = [
-  { href: '/',              ar: 'الرئيسية',  en: 'Home'        },
-  { href: '/services',      ar: 'الخدمات',   en: 'Services'    },
-  { href: '/procedures',    ar: 'المعاملات', en: 'Procedures'  },
-  { href: '/authorities',   ar: 'الجهات',    en: 'Authorities' },
-  { href: '/forms',         ar: 'النماذج',   en: 'Forms'       },
-  { href: '/faq',           ar: 'أسئلة',     en: 'FAQ'         },
+  { href: '/',            ar: 'الرئيسية',  en: 'Home'        },
+  { href: '/services',    ar: 'الخدمات',   en: 'Services'    },
+  { href: '/procedures',  ar: 'المعاملات', en: 'Procedures'  },
+  { href: '/authorities', ar: 'الجهات',    en: 'Authorities' },
+  { href: '/forms',       ar: 'النماذج',   en: 'Forms'       },
+  { href: '/faq',         ar: 'أسئلة',     en: 'FAQ'         },
 ]
 
 export default function TopNav({
   currentUser, messages = [], onLangToggle: onLangToggleProp,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
 }: TopNavProps) {
-  const router  = useRouter()
+  const router   = useRouter()
   const pathname = usePathname()
   const hasChat  = messages.length > 0
   const { isAr, toggleLang } = useLanguage()
@@ -40,7 +37,6 @@ export default function TopNav({
 
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
-    // The page scrolls inside <main id="main-content">, not window
     const el = document.getElementById('main-content')
     if (!el) return
     const onScroll = () => setScrolled(el.scrollTop > 8)
@@ -52,88 +48,100 @@ export default function TopNav({
     <>
       <style>{`
         @keyframes tn-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-        @keyframes tn-drop { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes tn-drop { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
 
-        /* ── Nav link hover ── */
+        /* ── Nav link ── */
         .tn-link { transition: background 0.14s, color 0.14s; }
-        .tn-link:hover { background: rgba(255,255,255,0.13) !important; color: #fff !important; }
-        .tn-link-active { background: rgba(255,255,255,0.17) !important; }
+        .tn-link:hover { background: var(--surface-2) !important; color: var(--text-1) !important; }
+        .tn-link-active { background: var(--brand-soft) !important; color: var(--brand) !important; }
 
-        /* ── Icon button hover ── */
-        .tn-ibtn { transition: background 0.14s; }
-        .tn-ibtn:hover { background: rgba(255,255,255,0.20) !important; }
+        /* ── Icon / ghost button ── */
+        .tn-ibtn { transition: background 0.14s, color 0.14s, border-color 0.14s; }
+        .tn-ibtn:hover { background: var(--surface-2) !important; color: var(--text-1) !important; border-color: var(--border-strong) !important; }
 
-        /* ── Responsive breakpoint ── */
+        /* ── CTA button ── */
+        .tn-cta { transition: background 0.14s, box-shadow 0.14s, transform 0.14s; }
+        .tn-cta:hover { background: var(--brand-hover) !important; box-shadow: var(--shadow-brand-lg) !important; transform: translateY(-1px); }
+        .tn-cta:active { transform: scale(0.97) !important; }
+
+        /* ── Scroll shadow ── */
+        .tn-scrolled { box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important; }
+
+        /* ── Responsive ── */
         @media (min-width: 768px) {
-          .tn-nav-links  { display: flex !important; }
-          .tn-desk-only  { display: flex !important; }
-          .tn-hamburger  { display: none  !important; }
-          .tn-mobile-brand { display: none !important; }
-          .tn-desk-brand { display: flex !important; }
+          .tn-nav-links    { display: flex !important; }
+          .tn-desk-only    { display: flex !important; }
+          .tn-hamburger    { display: none  !important; }
+          .tn-mobile-brand { display: none  !important; }
+          .tn-desk-brand   { display: flex  !important; }
         }
         @media (max-width: 767px) {
-          .tn-nav-links  { display: none  !important; }
-          .tn-desk-only  { display: none  !important; }
-          .tn-hamburger  { display: flex  !important; }
-          .tn-mobile-brand { display: flex !important; }
-          .tn-desk-brand { display: none  !important; }
-          .tn-lang-btn   { display: none  !important; }
+          .tn-nav-links    { display: none  !important; }
+          .tn-desk-only    { display: none  !important; }
+          .tn-hamburger    { display: flex  !important; }
+          .tn-mobile-brand { display: flex  !important; }
+          .tn-desk-brand   { display: none  !important; }
         }
       `}</style>
 
-      <header dir={isAr ? 'rtl' : 'ltr'} className={scrolled ? 'tn-scrolled' : ''} style={{
-        flexShrink: 0,
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.35)',
-        zIndex: 50,
-        transition: 'background 0.22s ease, box-shadow 0.22s ease, backdrop-filter 0.22s ease',
-        animation: 'tn-drop 0.28s cubic-bezier(0.22,1,0.36,1) both',
-      }}>
+      <header
+        dir={isAr ? 'rtl' : 'ltr'}
+        className={scrolled ? 'tn-scrolled' : ''}
+        style={{
+          flexShrink: 0,
+          background: '#FFFFFF',
+          borderBottom: '1px solid var(--border)',
+          boxShadow: 'none',
+          zIndex: 50,
+          transition: 'box-shadow 0.22s ease',
+          animation: 'tn-drop 0.24s cubic-bezier(0.22,1,0.36,1) both',
+        }}
+      >
         <div style={{
-          maxWidth: 960, margin: '0 auto',
-          padding: '0 16px',
-          height: 58,
+          maxWidth: 1200, margin: '0 auto',
+          padding: '0 clamp(16px,3vw,32px)',
+          height: 64,
           display: 'flex', alignItems: 'center', gap: 0,
         }}>
 
-          {/* ══ DESKTOP BRAND (left) ══════════════════════════════════ */}
+          {/* ══ DESKTOP BRAND ══ */}
           <button
             type="button"
             className="tn-desk-brand"
             aria-label={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
             style={{
-              display: 'none',
-              alignItems: 'center', gap: 9,
+              display: 'none', alignItems: 'center', gap: 9,
               background: 'none', border: 'none',
-              cursor: 'pointer', padding: '0 0', flexShrink: 0,
-              marginInlineEnd: 28,
+              cursor: 'pointer', padding: 0, flexShrink: 0,
+              marginInlineEnd: 32,
             }}
           >
             <div style={{
               width: 34, height: 34, borderRadius: 9,
-              background: 'rgba(255,255,255,0.18)',
-              border: '1.5px solid rgba(255,255,255,0.3)',
+              background: 'var(--brand-soft)',
+              border: '1px solid var(--brand-ring)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               overflow: 'hidden',
             }}>
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
-              <div style={{
-                fontSize: 16, fontWeight: 900, color: '#fff',
-                lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap',
-              }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-1)', lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>
                 {isAr ? 'دليلك' : 'Dalilak'}
               </div>
-              <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.55)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
                 {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
               </div>
             </div>
           </button>
 
-          {/* ══ DESKTOP NAV LINKS (center-left) ═════════════════════ */}
-          <nav className="tn-nav-links" aria-label={isAr ? 'روابط التنقل' : 'Navigation links'} style={{ display: 'none', alignItems: 'center', gap: 2, flex: 1 }}>
+          {/* ══ DESKTOP NAV LINKS ══ */}
+          <nav
+            className="tn-nav-links"
+            aria-label={isAr ? 'روابط التنقل' : 'Navigation links'}
+            style={{ display: 'none', alignItems: 'center', gap: 2, flex: 1 }}
+          >
             {NAV_LINKS.map(link => {
               const active = pathname === link.href
               return (
@@ -144,11 +152,11 @@ export default function TopNav({
                   onClick={() => link.href === '/' && onNewChat ? onNewChat() : router.push(link.href)}
                   className={`tn-link${active ? ' tn-link-active' : ''}`}
                   style={{
-                    height: 34, padding: '0 13px', borderRadius: 8,
+                    height: 36, padding: '0 12px', borderRadius: 8,
                     border: 'none',
-                    background: active ? 'rgba(255,255,255,0.17)' : 'transparent',
-                    color: active ? '#fff' : 'rgba(255,255,255,0.68)',
-                    fontSize: 12.5, fontWeight: active ? 700 : 500,
+                    background: active ? 'var(--brand-soft)' : 'transparent',
+                    color: active ? 'var(--brand)' : 'var(--text-2)',
+                    fontSize: 13.5, fontWeight: active ? 700 : 500,
                     cursor: 'pointer', fontFamily: 'inherit',
                     whiteSpace: 'nowrap',
                     display: 'flex', alignItems: 'center',
@@ -158,8 +166,8 @@ export default function TopNav({
                   {isAr ? link.ar : link.en}
                   {active && (
                     <span style={{
-                      position: 'absolute', bottom: 0, left: '20%', right: '20%',
-                      height: 2, background: 'rgba(255,255,255,0.75)', borderRadius: 2,
+                      position: 'absolute', bottom: -1, left: '20%', right: '20%',
+                      height: 2, background: 'var(--brand)', borderRadius: 2,
                     }} />
                   )}
                 </button>
@@ -167,10 +175,10 @@ export default function TopNav({
             })}
           </nav>
 
-          {/* ══ MOBILE: left gap ═════════════════════════════════════ */}
+          {/* ══ MOBILE: spacer ══ */}
           <div className="tn-mobile-brand" style={{ display: 'none', flex: 1 }} />
 
-          {/* ══ MOBILE BRAND (center, absolute) ═════════════════════ */}
+          {/* ══ MOBILE BRAND (center) ══ */}
           <button
             type="button"
             className="tn-mobile-brand"
@@ -185,36 +193,31 @@ export default function TopNav({
             }}
           >
             <div style={{
-              width: 32, height: 32, borderRadius: 9,
-              background: 'rgba(255,255,255,0.18)',
-              border: '1.5px solid rgba(255,255,255,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden',
+              width: 30, height: 30, borderRadius: 8,
+              background: 'var(--brand-soft)', border: '1px solid var(--brand-ring)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
             }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+              <img src="/logo-icon.png" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain', display: 'block' }} />
             </div>
-            <div style={{
-              fontSize: 17, fontWeight: 900, color: '#fff',
-              letterSpacing: '-0.3px', lineHeight: 1,
-            }}>
+            <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-1)', letterSpacing: '-0.3px', lineHeight: 1 }}>
               {isAr ? 'دليلك' : 'Dalilak'}
             </div>
           </button>
 
-          {/* ══ RIGHT ACTIONS ════════════════════════════════════════ */}
+          {/* ══ RIGHT ACTIONS ══ */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginInlineStart: 'auto', flexShrink: 0 }}>
 
-            {/* Online pill — desktop */}
+            {/* Online dot — desktop */}
             <div className="tn-desk-only" style={{
               display: 'none', alignItems: 'center', gap: 5,
-              background: 'rgba(34,197,94,0.12)', borderRadius: 20,
-              padding: '4px 10px', border: '1px solid rgba(34,197,94,0.25)',
+              background: '#f0fdf4', borderRadius: 20,
+              padding: '4px 10px', border: '1px solid #bbf7d0',
             }}>
               <span style={{
-                width: 6, height: 6, borderRadius: '50%', background: '#4ade80',
-                boxShadow: '0 0 6px #4ade80', animation: 'tn-pulse 2.5s infinite',
+                width: 6, height: 6, borderRadius: '50%', background: '#22c55e',
+                boxShadow: '0 0 5px #22c55e66', animation: 'tn-pulse 2.5s infinite',
               }} />
-              <span style={{ fontSize: 10.5, color: '#4ade80', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#15803d', fontWeight: 600 }}>
                 {isAr ? 'متصل' : 'Online'}
               </span>
             </div>
@@ -224,11 +227,16 @@ export default function TopNav({
               <div className="tn-desk-only" style={{
                 display: 'none', fontSize: 10.5, fontWeight: 700,
                 whiteSpace: 'nowrap', borderRadius: 20, padding: '4px 10px',
-                color: currentUser.days_left <= 1 ? '#fca5a5' : '#fde68a',
-                background: 'rgba(255,255,255,0.07)',
-                border: `1px solid ${currentUser.days_left <= 1 ? 'rgba(252,165,165,0.3)' : 'rgba(253,230,138,0.3)'}`,
+                color: currentUser.days_left <= 1 ? 'var(--error)' : 'var(--warning)',
+                background: currentUser.days_left <= 1 ? 'var(--error-bg)' : 'var(--warning-bg)',
+                border: `1px solid ${currentUser.days_left <= 1 ? 'var(--error-border)' : 'var(--warning-border)'}`,
               }}>
-                <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg>{currentUser.days_left}{isAr ? ' يوم' : 'd'}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/>
+                  </svg>
+                  {currentUser.days_left}{isAr ? ' يوم' : 'd'}
+                </span>
               </div>
             )}
 
@@ -237,14 +245,15 @@ export default function TopNav({
               <button
                 type="button"
                 onClick={onStartGuide}
-                className="tn-ibtn tn-desk-only"
+                className="tn-cta tn-desk-only"
                 style={{
-                  display: 'none', alignItems: 'center', gap: 5,
-                  height: 32, padding: '0 13px', borderRadius: 9,
-                  border: '1.5px solid rgba(255,255,255,0.25)',
-                  background: 'rgba(255,255,255,0.09)',
-                  color: '#fff', fontSize: 11.5, fontWeight: 600,
+                  display: 'none', alignItems: 'center', gap: 6,
+                  height: 36, padding: '0 16px', borderRadius: 9,
+                  border: 'none',
+                  background: 'var(--brand)',
+                  color: '#fff', fontSize: 12.5, fontWeight: 700,
                   cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+                  boxShadow: 'var(--shadow-brand)',
                 }}
               >
                 <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -261,21 +270,19 @@ export default function TopNav({
                 aria-label={isAr ? 'محادثة جديدة' : 'New conversation'}
                 onClick={onNewChat}
                 className="tn-ibtn"
-                onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
-                onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 5,
-                  height: 32, padding: '0 12px', borderRadius: 9,
-                  border: '1.5px solid rgba(255,255,255,0.22)',
-                  background: 'rgba(255,255,255,0.09)',
-                  color: '#fff', fontSize: 11.5, fontWeight: 600,
-                  cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
+                  height: 34, padding: '0 12px', borderRadius: 9,
+                  border: '1.5px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--text-2)', fontSize: 12, fontWeight: 600,
+                  cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
                 <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span style={{ display: 'none' }} className="tn-desk-only">{isAr ? 'جديد' : 'New'}</span>
+                <span className="tn-desk-only" style={{ display: 'none' }}>{isAr ? 'جديد' : 'New'}</span>
               </button>
             )}
 
@@ -284,13 +291,13 @@ export default function TopNav({
               type="button"
               aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
               onClick={onLangToggle}
-              className="tn-ibtn tn-lang-btn"
+              className="tn-ibtn"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                height: 32, width: 46, borderRadius: 9,
-                border: '1.5px solid rgba(255,255,255,0.22)',
-                background: 'rgba(255,255,255,0.09)',
-                color: '#fff', fontSize: 11, fontWeight: 700,
+                height: 34, minWidth: 46, padding: '0 12px', borderRadius: 9,
+                border: '1.5px solid var(--border)',
+                background: 'transparent',
+                color: 'var(--text-2)', fontSize: 11.5, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.5px',
               }}
             >
@@ -303,13 +310,12 @@ export default function TopNav({
               onClick={() => router.push('/my-files')}
               className="tn-ibtn tn-desk-only"
               aria-label={isAr ? 'حسابي' : 'My account'}
-              title={isAr ? 'حسابي' : 'Account'}
               style={{
                 display: 'none', alignItems: 'center', justifyContent: 'center',
-                height: 32, width: 32, borderRadius: 9,
-                border: '1.5px solid rgba(255,255,255,0.22)',
-                background: 'rgba(255,255,255,0.09)',
-                color: '#fff', cursor: 'pointer',
+                height: 34, width: 34, borderRadius: 9,
+                border: '1.5px solid var(--border)',
+                background: 'transparent',
+                color: 'var(--text-2)', cursor: 'pointer',
               }}
             >
               <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -326,10 +332,10 @@ export default function TopNav({
                 aria-label={isAr ? 'لوحة الإدارة' : 'Admin panel'}
                 style={{
                   display: 'none', alignItems: 'center', justifyContent: 'center',
-                  height: 32, width: 32, borderRadius: 9,
-                  border: '1.5px solid rgba(255,255,255,0.22)',
-                  background: 'rgba(255,255,255,0.09)',
-                  color: '#fff', cursor: 'pointer',
+                  height: 34, width: 34, borderRadius: 9,
+                  border: '1.5px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--text-2)', cursor: 'pointer',
                 }}
               >
                 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -338,10 +344,10 @@ export default function TopNav({
               </button>
             )}
 
-            {/* Divider — desktop only, before hamburger boundary */}
+            {/* Divider before hamburger */}
             <div className="tn-hamburger" style={{
               display: 'none', width: 1, height: 20,
-              background: 'rgba(255,255,255,0.18)', margin: '0 2px',
+              background: 'var(--border)', margin: '0 2px',
             }} />
 
             {/* Hamburger — mobile */}
@@ -349,22 +355,21 @@ export default function TopNav({
               type="button"
               className="tn-ibtn tn-hamburger"
               onClick={onMenuOpen}
-              onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
-              onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
               aria-label={isAr ? 'القائمة' : 'Menu'}
               style={{
                 display: 'none', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', gap: 4.5,
                 height: 34, width: 36, borderRadius: 9,
-                border: '1.5px solid rgba(255,255,255,0.22)',
-                background: 'rgba(255,255,255,0.09)',
+                border: '1.5px solid var(--border)',
+                background: 'transparent',
                 cursor: 'pointer', transition: 'background 0.12s',
               }}
             >
-              <span style={{ width: 15, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 11, height: 1.5, background: 'rgba(255,255,255,0.65)', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 15, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 15, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 11, height: 1.5, background: 'var(--text-3)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 15, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
             </button>
+
           </div>
 
         </div>

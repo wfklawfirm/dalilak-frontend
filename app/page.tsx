@@ -684,24 +684,24 @@ export default function Home() {
   return (
     <>
       <style>{`
-        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #F2EDE6; }
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #F8F8F6; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         textarea { font-family: inherit; }
         :root {
           --safe-top: env(safe-area-inset-top, 0px);
           --safe-bottom: env(safe-area-inset-bottom, 0px);
-          --red: #8B1A1A;
-          --red-dark: #6b2737;
-          --red-light: #FEF2F2;
-          --gold: #B8860B;
+          --red: #8F1D2C;
+          --red-dark: #741622;
+          --red-light: #F8EDEF;
+          --gold: #B76B00;
           --gold-light: #FFFBEB;
-          --bg: #F2EDE6;
+          --bg: #F8F8F6;
           --card: #FFFFFF;
-          --border: #EAE4D9;
-          --border-strong: #D5CEC4;
-          --text: #1A1208;
-          --text-2: #5C4A3A;
-          --text-3: #9C8E80;
+          --border: #E6E2DC;
+          --border-strong: #D5D0C8;
+          --text: #191713;
+          --text-2: #69645C;
+          --text-3: #918B82;
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
@@ -761,15 +761,34 @@ export default function Home() {
         /* How-it-works: 3 cols always, tighter on narrow screens */
         @media (max-width: 400px) {
           .wlc-how-grid > div { padding: 10px 6px 8px !important; }
-          .wlc-how-grid > div > div:last-child { display: none; } /* hide description on very small */
+          .wlc-how-grid > div > div:last-child { display: none; }
         }
+        /* ── Homepage v3 grid classes ── */
+        .hl { display:grid; gap:clamp(32px,5vw,48px); }
+        @media (min-width:900px) { .hl { grid-template-columns:1fr 420px; align-items:center; } }
+        .hp { display:none !important; }
+        @media (min-width:900px) { .hp { display:block !important; } }
+        .pgrid { display:grid; grid-template-columns:1fr; gap:16px; }
+        @media (min-width:640px) { .pgrid { grid-template-columns:repeat(2,1fr); } }
+        @media (min-width:1024px) { .pgrid { grid-template-columns:repeat(3,1fr); } }
+        .pcard { background:var(--surface,#fff); border:1px solid var(--border,#E6E2DC); border-radius:14px; padding:20px; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; transition:border-color 0.15s, box-shadow 0.15s, transform 0.15s; width:100%; }
+        .pcard:hover { border-color:rgba(143,29,44,0.20); box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-2px); }
+        .pcard:active { transform:scale(0.98) !important; }
+        .hwgrid { display:grid; grid-template-columns:1fr; gap:16px; }
+        @media (min-width:640px) { .hwgrid { grid-template-columns:repeat(3,1fr); gap:24px; } }
+        .tgrid { display:grid; grid-template-columns:1fr; gap:12px; }
+        @media (min-width:640px) { .tgrid { grid-template-columns:repeat(2,1fr); } }
+        @media (min-width:1024px) { .tgrid { grid-template-columns:repeat(4,1fr); } }
+        .fgrid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+        @media (min-width:768px) { .fgrid { grid-template-columns:2fr 1fr 1fr; } }
+        .hsearch:focus-within { border-color:var(--brand,#8F1D2C) !important; box-shadow:0 0 0 3px rgba(143,29,44,0.12) !important; }
       `}</style>
 
       <div style={{
         position: 'fixed', top: 0, left: 0, right: 0,
         bottom: footerBottom,
         display: 'flex', flexDirection: 'column',
-        backgroundColor: '#F2EDE6',
+        backgroundColor: '#F8F8F6',
         paddingTop: 'var(--safe-top)',
       }}>
 
@@ -794,301 +813,373 @@ export default function Home() {
         }}>
           {messages.length === 0 ? (
 
-            /* ══ Welcome Screen — Elegant & Professional ══ */
-            <div style={{ minHeight:'100%', background:'#F2EDE6', direction: isAr ? 'rtl' : 'ltr' }}>
+            /* ══ Welcome Screen v3 ══ */
+            <div style={{ minHeight:'100%', background:'var(--bg-page)', direction: isAr ? 'rtl' : 'ltr' }}>
 
-              {/* ══ HERO — light, professional ══════════════════════════ */}
-              <div style={{
-                background:'linear-gradient(180deg, #FFFFFF 0%, #FAF7F4 60%, #F5EFE8 100%)',
-                padding:'clamp(28px,5vw,48px) clamp(20px,5vw,32px) clamp(40px,7vw,56px)',
-                position:'relative', overflow:'hidden',
-                borderBottom:'1px solid rgba(210,195,178,0.5)',
-                boxShadow:'0 4px 32px rgba(0,0,0,0.05)',
-              }}>
-                {/* Subtle dot pattern — red tinted */}
-                <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(rgba(139,26,26,0.028) 1px, transparent 1px)', backgroundSize:'28px 28px', pointerEvents:'none' }} />
+              {/* ══ HERO ══ */}
+              <section style={{ background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'clamp(48px,6vw,88px) 0 clamp(56px,7vw,96px)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div className="hl">
 
-                <div style={{ maxWidth:560, margin:'0 auto', position:'relative', textAlign:'center' }}>
+                    {/* ── Left Column ── */}
+                    <div>
+                      {/* Badge */}
+                      <div style={{ display:'inline-flex', alignItems:'center', gap:8, marginBottom:24, padding:'6px 16px 6px 10px', borderRadius:999, background:'var(--brand-soft)', border:'1px solid var(--brand-ring)' }}>
+                        <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width:20, height:20, objectFit:'contain', borderRadius:4 }} />
+                        <span style={{ fontSize:12, fontWeight:700, color:'var(--brand)', letterSpacing:'0.2px' }}>
+                          {isAr ? 'دليلك — الدليل الحكومي الذكي' : 'Dalilak — Smart Government Guide'}
+                        </span>
+                      </div>
 
-                  {/* Brand badge — red accent on white */}
-                  <div className="wlc-hero-band" style={{ display:'inline-flex', alignItems:'center', gap:6, marginBottom:18,
-                    background:'rgba(139,26,26,0.05)', border:'1.5px solid rgba(139,26,26,0.12)',
-                    borderRadius:20, padding:'5px 14px 5px 9px' }}>
-                    <img src="/logo-icon.png" alt="" style={{ width:18, height:18, objectFit:'contain', borderRadius:4 }} />
-                    <span style={{ color:'#8B1A1A', fontSize:11, fontWeight:700, letterSpacing:'0.3px' }}>
-                      {isAr ? 'دليلك' : 'Dalilak'}
-                    </span>
-                    <span style={{ color:'#C8B8A4', fontSize:10 }}>·</span>
-                    <span style={{ color:'#8C7D6E', fontSize:10 }}>
-                      {isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}
-                    </span>
-                  </div>
+                      {/* H1 */}
+                      <h1 style={{ fontSize:'clamp(30px,5vw,54px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 16px', lineHeight:1.1, letterSpacing:'-1px' }}>
+                        {isAr
+                          ? <>{`أنجز معاملتك الحكومية`}<br/><span style={{ color:'var(--brand)' }}>بخطوات واضحة</span></>
+                          : <>{`Navigate Lebanon's`}<br/><span style={{ color:'var(--brand)' }}>Government System</span></>
+                        }
+                      </h1>
 
-                  {/* Headline — dark on light */}
-                  <h1 style={{ fontSize:'clamp(26px,6.5vw,42px)', fontWeight:900, color:'#1A1208', margin:'0 0 12px', lineHeight:1.08, letterSpacing:'-1.5px', whiteSpace:'pre-line' }}>
-                    {isAr ? 'أنجز معاملتك الحكومية\nبخطوات واضحة' : 'Navigate government\ntransactions with ease'}
-                  </h1>
-                  <p style={{ fontSize:13, color:'#6B5A4A', margin:'0 0 24px', lineHeight:1.65 }}>
-                    {isAr ? 'اسأل عن أي معاملة — دليلك يوجّهك خطوة بخطوة بمصادر رسمية' : 'Ask in Arabic or English — step-by-step guidance from official sources'}
-                  </p>
+                      {/* Description */}
+                      <p style={{ fontSize:'clamp(15px,2vw,17px)', color:'var(--text-2)', margin:'0 0 28px', lineHeight:1.7, maxWidth:480 }}>
+                        {isAr
+                          ? 'اسأل عن أي معاملة حكومية — دليلك يوجّهك خطوة بخطوة بمصادر رسمية محدّثة'
+                          : 'Ask about any government procedure — step-by-step guidance from official Lebanese sources'
+                        }
+                      </p>
 
-                  {/* ── SEARCH ── */}
-                  <form
-                    onSubmit={e => { e.preventDefault(); if (heroInput.trim()) { sendMessage(heroInput); setHeroInput('') } }}
-                    style={{ position:'relative', maxWidth:520, margin:'0 auto' }}
-                  >
-                    <input
-                      type="text"
-                      value={heroInput}
-                      onChange={e => setHeroInput(e.target.value)}
-                      placeholder={isAr ? 'مثلاً: استخراج جواز سفر، تسجيل شركة...' : 'e.g. passport renewal, company registration...'}
-                      dir={isAr ? 'rtl' : 'ltr'}
-                      style={{
-                        width:'100%', height:54, boxSizing:'border-box',
-                        padding: isAr ? '0 22px 0 58px' : '0 58px 0 22px',
-                        borderRadius:16,
-                        background:'#fff',
-                        border:'2px solid rgba(139,26,26,0.10)',
-                        fontSize:14, fontFamily:'inherit', fontWeight:500,
-                        color:'#1A1208', outline:'none',
-                        boxShadow:'0 4px 20px rgba(0,0,0,0.07)',
-                        transition:'border-color 0.15s, box-shadow 0.15s',
-                      }}
-                      onFocus={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.35)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.07), 0 0 0 3px rgba(139,26,26,0.07)' }}
-                      onBlur={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.10)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)' }}
-                    />
-                    <button type="submit" aria-label={isAr ? 'بحث' : 'Search'}
-                      style={{
-                        position:'absolute', top:'50%', transform:'translateY(-50%)',
-                        [isAr ? 'left' : 'right']: 9,
-                        width:38, height:38, borderRadius:12,
-                        background: heroInput.trim() ? 'linear-gradient(135deg,#8B1A1A,#6b2737)' : 'rgba(139,26,26,0.12)',
-                        border:'none', cursor:'pointer',
-                        display:'flex', alignItems:'center', justifyContent:'center',
-                        boxShadow: heroInput.trim() ? '0 3px 14px rgba(139,26,26,0.38)' : 'none',
-                        transition:'all 0.15s',
-                      }}>
-                      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={heroInput.trim() ? '#fff' : '#8B1A1A'} strokeWidth="2.5">
-                        <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
-                      </svg>
-                    </button>
-                  </form>
+                      {/* CTAs */}
+                      <div style={{ display:'flex', gap:12, flexWrap:'wrap', marginBottom:28 }}>
+                        <button type="button"
+                          onClick={() => sendMessage(isAr ? 'مرحباً، أريد مساعدة في معاملة حكومية' : 'Hello, I need help with a government procedure')}
+                          style={{ height:44, padding:'0 22px', borderRadius:11, border:'none', background:'var(--brand)', color:'#fff', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:7, boxShadow:'var(--shadow-brand)', transition:'background 0.14s, transform 0.14s' }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background='var(--brand-hover)'; (e.currentTarget as HTMLButtonElement).style.transform='translateY(-1px)' }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background='var(--brand)'; (e.currentTarget as HTMLButtonElement).style.transform='' }}
+                        >
+                          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                          {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+                        </button>
+                        <button type="button"
+                          onClick={() => router.push('/procedures')}
+                          style={{ height:44, padding:'0 22px', borderRadius:11, border:'1.5px solid var(--border-strong)', background:'transparent', color:'var(--text-1)', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:7, transition:'border-color 0.14s, background 0.14s, color 0.14s' }}
+                          onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--brand)'; t.style.background='var(--brand-soft)'; t.style.color='var(--brand)' }}
+                          onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border-strong)'; t.style.background='transparent'; t.style.color='var(--text-1)' }}
+                        >
+                          {isAr ? 'تصفح المعاملات' : 'Browse Procedures'}
+                        </button>
+                      </div>
 
-                </div>
-              </div>
-
-              {/* ══ CONTENT ══════════════════════════════════════════ */}
-              <div style={{ maxWidth:640, margin:'0 auto', padding:'20px 16px 100px' }}>
-
-                {/* ── Suggestion chips — below hero ── */}
-                <div style={{ marginBottom:24, display:'flex', gap:6, justifyContent:'center', flexWrap:'nowrap', overflow:'hidden', animation:'fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
-                  {visibleQ.slice(0, 2).map((q, i) => {
-                    const short = q.length > 30 ? q.slice(0, 28) + '…' : q
-                    return (
-                      <button type="button" key={q} className="quick-btn"
-                        onClick={() => sendMessage(q)}
-                        style={{
-                          padding:'6px 14px', borderRadius:20, flexShrink:1, minWidth:0,
-                          background:'#fff', border:'1px solid rgba(210,195,178,0.5)',
-                          color:'#5C4A3A', fontSize:11.5, cursor:'pointer', fontFamily:'inherit',
-                          fontWeight:500, animationDelay:`${i*0.08}s`, animationFillMode:'both',
-                          whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
-                          boxShadow:'0 1px 4px rgba(0,0,0,0.05)',
-                          display:'flex', alignItems:'center', gap:5,
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.25)'; e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(210,195,178,0.5)'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.05)' }}
+                      {/* Search bar */}
+                      <form
+                        className="hsearch"
+                        onSubmit={e => { e.preventDefault(); if (heroInput.trim()) { sendMessage(heroInput); setHeroInput('') } }}
+                        style={{ display:'flex', alignItems:'center', height:56, background:'var(--surface)', border:'1.5px solid var(--border)', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s, box-shadow 0.15s', marginBottom:16, maxWidth:540 }}
                       >
-                        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5" style={{ flexShrink:0 }}><circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
-                        {short}
-                      </button>
-                    )
-                  })}
-                </div>
+                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.2" style={{ flexShrink:0, margin:'0 14px' }}>
+                          <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        <input
+                          type="text"
+                          value={heroInput}
+                          onChange={e => setHeroInput(e.target.value)}
+                          placeholder={isAr ? 'اكتب اسم المعاملة أو سؤالك...' : 'Type a procedure or ask a question...'}
+                          dir={isAr ? 'rtl' : 'ltr'}
+                          style={{ flex:1, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:14.5, fontFamily:'inherit', fontWeight:500, color:'var(--text-1)' }}
+                        />
+                        <button type="submit" disabled={!heroInput.trim()}
+                          style={{ flexShrink:0, height:'100%', padding:'0 18px', border:'none', borderInlineStart:'1.5px solid var(--border)', background: heroInput.trim() ? 'var(--brand)' : 'var(--surface-2)', color: heroInput.trim() ? '#fff' : 'var(--text-3)', fontSize:13, fontWeight:700, cursor: heroInput.trim() ? 'pointer' : 'default', fontFamily:'inherit', transition:'background 0.14s, color 0.14s', whiteSpace:'nowrap' }}>
+                          {isAr ? 'بحث' : 'Search'}
+                        </button>
+                      </form>
 
-                {/* ── Popular Procedures ── */}
-                <div style={{ marginBottom:20, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.06s' }}>
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
-                    <span style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase' }}>
-                      {isAr ? 'الأكثر طلباً' : 'MOST REQUESTED'}
-                    </span>
+                      {/* Suggestion chips */}
+                      {visibleQ.length > 0 && (
+                        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                          {visibleQ.slice(0, 4).map((q, i) => (
+                            <button key={i} type="button"
+                              onClick={() => sendMessage(q)}
+                              className="quick-btn"
+                              style={{ padding:'6px 14px', borderRadius:999, background:'var(--surface)', border:'1px solid var(--border)', color:'var(--text-2)', fontSize:12, fontWeight:500, cursor:'pointer', fontFamily:'inherit', display:'inline-flex', alignItems:'center', gap:5, animationDelay:`${i*0.06}s`, whiteSpace:'nowrap', maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', boxShadow:'var(--shadow-xs)', transition:'border-color 0.14s, color 0.14s' }}
+                              onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border-brand)'; t.style.color='var(--brand)' }}
+                              onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border)'; t.style.color='var(--text-2)' }}
+                            >
+                              <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5"><circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                              {q.length > 32 ? q.slice(0,30)+'…' : q}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── Right Column — UI Preview (desktop only) ── */}
+                    <div className="hp" style={{ display:'none' }}>
+                      <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:20, overflow:'hidden', boxShadow:'var(--shadow-lg)' }}>
+                        {/* Card header */}
+                        <div style={{ background:'var(--brand)', padding:'14px 18px', display:'flex', alignItems:'center', gap:10 }}>
+                          <div style={{ width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg>
+                          </div>
+                          <div>
+                            <div style={{ fontSize:13.5, fontWeight:800, color:'#fff', lineHeight:1.2 }}>{isAr ? 'استخراج جواز السفر' : 'Passport Application'}</div>
+                            <div style={{ fontSize:10.5, color:'rgba(255,255,255,0.65)', marginTop:2 }}>{isAr ? 'الأمن العام — 4 خطوات' : 'General Security — 4 Steps'}</div>
+                          </div>
+                        </div>
+                        {/* Steps timeline */}
+                        <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:0 }}>
+                          {([
+                            { ar:'تجهيز المستندات المطلوبة', en:'Prepare required documents', done:true },
+                            { ar:'تقديم الطلب في الأمن العام', en:'Submit at General Security', done:true },
+                            { ar:'دفع الرسوم', en:'Pay the fees', done:false, active:true },
+                            { ar:'استلام جواز السفر', en:'Receive passport', done:false },
+                          ] as {ar:string;en:string;done:boolean;active?:boolean}[]).map((step, i) => (
+                            <div key={i} style={{ display:'flex', gap:12, paddingBottom: i < 3 ? 16 : 0, position:'relative' }}>
+                              {i < 3 && <div style={{ position:'absolute', [isAr ? 'right' : 'left']: 11, top:24, bottom:0, width:1.5, background: step.done ? 'var(--brand)' : 'var(--border)', borderRadius:2 }} />}
+                              <div style={{ width:24, height:24, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', background: step.done ? 'var(--brand)' : step.active ? 'var(--brand-soft)' : 'var(--surface-2)', border: step.active ? '2px solid var(--brand)' : 'none', zIndex:1 }}>
+                                {step.done
+                                  ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                  : <span style={{ width:7, height:7, borderRadius:'50%', background: step.active ? 'var(--brand)' : 'var(--border-strong)', display:'block' }} />
+                                }
+                              </div>
+                              <div style={{ flex:1, paddingTop:3 }}>
+                                <div style={{ fontSize:12.5, fontWeight: step.active ? 700 : 500, color: step.done ? 'var(--text-4)' : step.active ? 'var(--text-1)' : 'var(--text-2)', textDecoration: step.done ? 'line-through' : 'none' }}>
+                                  {isAr ? step.ar : step.en}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Card footer */}
+                        <div style={{ padding:'12px 18px', borderTop:'1px solid var(--border)', background:'var(--surface-muted)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                          <span style={{ fontSize:11, color:'var(--text-3)', display:'flex', alignItems:'center', gap:4 }}>
+                            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            {isAr ? 'مصادر رسمية' : 'Official sources'}
+                          </span>
+                          <button type="button" onClick={() => sendMessage(isAr ? 'كيف أستخرج أو أجدد جواز سفري اللبناني؟' : 'How do I get or renew my Lebanese passport?')}
+                            style={{ fontSize:11.5, fontWeight:700, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>
+                            {isAr ? 'ابدأ الآن ←' : '→ Start Now'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>{/* .hl */}
+                </div>
+              </section>
+
+              {/* ══ PROCEDURES ══ */}
+              <section style={{ padding:'clamp(48px,5vw,80px) 0', background:'var(--bg-page)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:24, gap:16 }}>
+                    <div>
+                      <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 4px', letterSpacing:'-0.4px' }}>
+                        {isAr ? 'الإجراءات الأكثر طلباً' : 'Most Requested Procedures'}
+                      </h2>
+                      <p style={{ fontSize:13.5, color:'var(--text-3)', margin:0 }}>
+                        {isAr ? 'اضغط على أي معاملة للحصول على خطوات مفصّلة' : 'Tap any procedure for step-by-step guidance'}
+                      </p>
+                    </div>
                     <button type="button" onClick={() => router.push('/procedures')}
-                      style={{ background:'none', border:'none', cursor:'pointer', fontSize:11, color:'#8B1A1A', fontWeight:600, fontFamily:'inherit', display:'flex', alignItems:'center', gap:3, opacity:0.7 }}
-                      onMouseEnter={e => e.currentTarget.style.opacity='1'}
-                      onMouseLeave={e => e.currentTarget.style.opacity='0.7'}>
-                      {isAr ? 'كل المعاملات' : 'All procedures'}
-                      <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
+                      style={{ fontSize:13, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4, whiteSpace:'nowrap', flexShrink:0 }}>
+                      {isAr ? 'كل المعاملات' : 'All'}
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
                     </button>
                   </div>
-                  <div className="wlc-svc-grid">
-                    {[
-                      {
-                        ar:'استخراج جواز السفر', en:'Passport',
-                        pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟', pEn:'How do I get or renew my Lebanese passport?',
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0M9 21v-2m6 2v-2"/></svg>,
-                      },
-                      {
-                        ar:'شهادة حسن السيرة', en:'Good Conduct',
-                        pAr:'كيف أستخرج شهادة حسن السيرة والسلوك من وزارة العدل؟', pEn:'How do I get a good conduct certificate in Lebanon?',
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>,
-                      },
-                      {
-                        ar:'إخراج قيد نفوس', en:'Civil Registry',
-                        pAr:'كيف أستخرج إخراج قيد نفوس من السجل المدني؟', pEn:'How do I get a civil registry extract?',
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
-                      },
-                      {
-                        ar:'تسجيل شركة', en:'Company Reg.',
-                        pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?',
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
-                      },
-                      {
-                        ar:'رخصة القيادة', en:"Driver's License",
-                        pAr:'كيف أجدد رخصة القيادة في لبنان وما هي الوثائق المطلوبة؟', pEn:"How do I renew my driver's license in Lebanon?",
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>,
-                      },
-                      {
-                        ar:'تجديد إقامة الأجانب', en:'Residency Renewal',
-                        pAr:'كيف أجدد إقامة أجنبي في لبنان عبر الأمن العام؟', pEn:"How do I renew a foreigner's residency in Lebanon?",
-                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
-                      },
-                    ].map(p => (
-                      <button type="button" key={p.en} onClick={() => sendMessage(isAr ? p.pAr : p.pEn)}
-                        className="wlc-svc-btn"
-                        style={{
-                          display:'flex', alignItems:'center', gap:10, padding:'11px 12px',
-                          background:'#fff', border:'1px solid rgba(210,195,178,0.4)',
-                          borderRadius:12, cursor:'pointer', fontFamily:'inherit',
-                          transition:'border-color 0.14s, background 0.14s, transform 0.14s, box-shadow 0.14s',
-                          boxShadow:'0 1px 3px rgba(100,60,20,0.04)', textAlign:isAr?'right':'left', width:'100%',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.22)'; e.currentTarget.style.background='#FEFCFA'; e.currentTarget.style.boxShadow='0 3px 14px rgba(0,0,0,0.07)'; e.currentTarget.style.transform='translateY(-1px)' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(210,195,178,0.4)'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 3px rgba(100,60,20,0.04)'; e.currentTarget.style.transform='' }}
-                        onTouchStart={e => { e.currentTarget.style.background='#FEF6F3'; e.currentTarget.style.transform='scale(0.97)' }}
-                        onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='' }}
+                  <div className="pgrid">
+                    {([
+                      { ar:'استخراج جواز السفر', en:'Passport Application', authAr:'الأمن العام', authEn:'General Security', stepsAr:'4 خطوات', stepsEn:'4 Steps', pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟', pEn:'How do I get or renew my Lebanese passport?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg> },
+                      { ar:'إخراج قيد فردي', en:'Civil Registry Extract', authAr:'السجل المدني', authEn:'Civil Registry', stepsAr:'3 خطوات', stepsEn:'3 Steps', pAr:'كيف أستخرج إخراج قيد فردي من السجل المدني؟', pEn:'How do I get a civil registry extract?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+                      { ar:'تسجيل شركة', en:'Company Registration', authAr:'وزارة الاقتصاد', authEn:'Ministry of Economy', stepsAr:'7 خطوات', stepsEn:'7 Steps', pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
+                      { ar:'تسجيل سيارة جديدة', en:'Vehicle Registration', authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration', stepsAr:'5 خطوات', stepsEn:'5 Steps', pAr:'كيف أسجّل سيارة جديدة في لبنان؟', pEn:'How do I register a new vehicle in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> },
+                      { ar:'تجديد رخصة القيادة', en:"Driver's License Renewal", authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration', stepsAr:'4 خطوات', stepsEn:'4 Steps', pAr:'كيف أجدد رخصة القيادة في لبنان؟', pEn:"How do I renew my driver's license in Lebanon?", icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg> },
+                      { ar:'تجديد إقامة الأجانب', en:'Residency Renewal', authAr:'الأمن العام', authEn:'General Security', stepsAr:'5 خطوات', stepsEn:'5 Steps', pAr:'كيف أجدد إقامة أجنبي في لبنان؟', pEn:"How do I renew a foreigner's residency in Lebanon?", icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+                    ] as {ar:string;en:string;authAr:string;authEn:string;stepsAr:string;stepsEn:string;pAr:string;pEn:string;icon:React.ReactNode}[]).map(p => (
+                      <button type="button" key={p.en}
+                        onClick={() => sendMessage(isAr ? p.pAr : p.pEn)}
+                        className="pcard"
+                        style={{ textAlign: isAr ? 'right' : 'left' }}
                       >
-                        <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(139,26,26,0.06)', border:'1px solid rgba(139,26,26,0.10)', display:'flex', alignItems:'center', justifyContent:'center', color:'#8B1A1A' }}>
+                        <div style={{ width:44, height:44, borderRadius:12, background:'var(--brand-soft)', border:'1px solid var(--brand-ring)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--brand)', marginBottom:14 }}>
                           {p.icon}
                         </div>
-                        <div style={{ minWidth:0, flex:1 }}>
-                          <div style={{ fontSize:12, fontWeight:700, color:'#1A1208', lineHeight:1.25, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                            {isAr ? p.ar : p.en}
-                          </div>
-                          <div style={{ fontSize:9.5, color:'#B0A090', marginTop:1, fontWeight:500 }}>
-                            {isAr ? 'اضغط للبدء' : 'Tap to start'}
-                          </div>
+                        <div style={{ fontSize:15, fontWeight:700, color:'var(--text-1)', marginBottom:6, lineHeight:1.3 }}>
+                          {isAr ? p.ar : p.en}
                         </div>
-                        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#CCC0B0" strokeWidth="2.5" style={{ flexShrink:0 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
-                        </svg>
+                        <div style={{ display:'flex', gap:8, marginTop:'auto', paddingTop:12, flexWrap:'wrap' }}>
+                          <span style={{ fontSize:11.5, color:'var(--text-3)', background:'var(--surface-2)', borderRadius:6, padding:'3px 8px' }}>{isAr ? p.authAr : p.authEn}</span>
+                          <span style={{ fontSize:11.5, color:'var(--brand)', background:'var(--brand-soft)', borderRadius:6, padding:'3px 8px' }}>{isAr ? p.stepsAr : p.stepsEn}</span>
+                        </div>
                       </button>
                     ))}
                   </div>
                 </div>
+              </section>
 
-                {/* ── How it works — 3 steps ── */}
-                <div style={{ marginBottom:16, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.12s' }}>
-                  <span style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase', display:'block', marginBottom:10 }}>
-                    {isAr ? 'كيف يعمل دليلك؟' : 'HOW IT WORKS'}
-                  </span>
-                  <div className="wlc-how-grid" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-                    {[
-                      { num:'١', numEn:'1', ar:'اكتب سؤالك', en:'اسأل', descAr:'اكتب اسم المعاملة أو صف حالتك', descEn:'Type the transaction or describe your case' },
-                      { num:'٢', numEn:'2', ar:'راجع الخطوات', en:'راجع', descAr:'خطوات واضحة والمستندات المطلوبة', descEn:'Clear steps & required documents' },
-                      { num:'٣', numEn:'3', ar:'تابع بثقة', en:'تابع', descAr:'مصادر رسمية لبنانية', descEn:'Official Lebanese sources' },
-                    ].map(s => (
-                      <div key={s.num} style={{ background:'#fff', border:'1px solid rgba(210,195,178,0.35)', borderRadius:12, padding:'12px 8px 10px', textAlign:'center' }}>
-                        <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(139,26,26,0.07)', color:'#8B1A1A', fontSize:13, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
-                          {isAr ? s.num : s.numEn}
+              {/* ══ CATEGORIES ══ */}
+              <section style={{ background:'var(--surface)', padding:'clamp(32px,4vw,56px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <h3 style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:16 }}>
+                    {isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
+                  </h3>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
+                    {([
+                      { ar:'الأحوال الشخصية',             en:'Personal Status',       q_ar:'ما هي معاملات الأحوال الشخصية في لبنان؟',        q_en:'What are personal status procedures in Lebanon?' },
+                      { ar:'السفر والإقامة',               en:'Travel & Residency',    q_ar:'ما هي إجراءات السفر والإقامة في لبنان؟',          q_en:'What are travel and residency procedures in Lebanon?' },
+                      { ar:'الشركات والأعمال',             en:'Business',              q_ar:'كيف أسجّل شركة أو أبدأ عمل تجاري في لبنان؟',     q_en:'How do I register a business in Lebanon?' },
+                      { ar:'السيارات والنقل',              en:'Vehicles & Transport',  q_ar:'ما هي إجراءات السيارات والنقل في لبنان؟',         q_en:'What are vehicle and transport procedures in Lebanon?' },
+                      { ar:'العقارات',                     en:'Real Estate',           q_ar:'ما هي إجراءات العقارات وتسجيل الملكية في لبنان؟', q_en:'What are real estate procedures in Lebanon?' },
+                      { ar:'البلديات',                     en:'Municipalities',        q_ar:'ما هي خدمات البلديات في لبنان؟',                   q_en:'What are municipality services in Lebanon?' },
+                      { ar:'الكاتب العدل',                 en:'Notary Public',         q_ar:'ما هي خدمات الكاتب العدل في لبنان؟',               q_en:'What are notary public services in Lebanon?' },
+                      { ar:'التعليم',                      en:'Education',             q_ar:'ما هي إجراءات التعليم في لبنان؟',                   q_en:'What are education procedures in Lebanon?' },
+                      { ar:'العمل والضمان',                en:'Labor & Social Security',q_ar:'ما هي إجراءات العمل والضمان الاجتماعي في لبنان؟', q_en:'What are labor and social security procedures in Lebanon?' },
+                      { ar:'القضاء والمعاملات القانونية', en:'Legal Procedures',       q_ar:'ما هي الإجراءات القضائية والقانونية في لبنان؟',    q_en:'What are legal and court procedures in Lebanon?' },
+                    ] as {ar:string;en:string;q_ar:string;q_en:string}[]).map(cat => (
+                      <button type="button" key={cat.en}
+                        onClick={() => sendMessage(isAr ? cat.q_ar : cat.q_en)}
+                        style={{ padding:'9px 18px', borderRadius:999, background:'var(--surface-2)', border:'1px solid var(--border)', color:'var(--text-2)', fontSize:13.5, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'background 0.13s, border-color 0.13s, color 0.13s' }}
+                        onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='var(--brand-soft)'; t.style.borderColor='var(--border-brand)'; t.style.color='var(--brand)' }}
+                        onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='var(--surface-2)'; t.style.borderColor='var(--border)'; t.style.color='var(--text-2)' }}
+                      >
+                        {isAr ? cat.ar : cat.en}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* ══ HOW IT WORKS ══ */}
+              <section style={{ background:'var(--surface-muted)', padding:'clamp(48px,5vw,80px) 0', borderBottom:'1px solid var(--border)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div style={{ textAlign:'center', marginBottom:36 }}>
+                    <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 8px', letterSpacing:'-0.4px' }}>
+                      {isAr ? 'كيف يعمل دليلك؟' : 'How does Dalilak work?'}
+                    </h2>
+                    <p style={{ fontSize:14, color:'var(--text-3)', margin:0 }}>
+                      {isAr ? 'ثلاث خطوات تفصلك عن أي إجابة حكومية' : 'Three steps to any government answer'}
+                    </p>
+                  </div>
+                  <div className="hwgrid">
+                    {([
+                      { num:'1', numAr:'١', ar:'اطرح سؤالك', en:'Ask Your Question', descAr:'اكتب اسم المعاملة أو صف وضعك بكلماتك — عربي أو إنجليزي', descEn:'Type the procedure or describe your situation — Arabic or English', color:'var(--brand)' },
+                      { num:'2', numAr:'٢', ar:'راجع الخطوات', en:'Review the Steps', descAr:'خطوات مرتّبة مع المستندات والجهات المختصة والرسوم', descEn:'Organized steps with required documents, authorities, and fees', color:'#1d4ed8' },
+                      { num:'3', numAr:'٣', ar:'تابع بثقة', en:'Proceed with Confidence', descAr:'كل المعلومات مستندة إلى مصادر رسمية لبنانية محدّثة', descEn:'All information backed by updated official Lebanese sources', color:'var(--success)' },
+                    ] as {num:string;numAr:string;ar:string;en:string;descAr:string;descEn:string;color:string}[]).map(step => (
+                      <div key={step.num} style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, padding:'28px 24px', textAlign:'center' }}>
+                        <div style={{ width:48, height:48, borderRadius:'50%', background:step.color, color:'#fff', fontSize:20, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 18px' }}>
+                          {isAr ? step.numAr : step.num}
                         </div>
-                        <div style={{ fontSize:11, fontWeight:800, color:'#1A1208', marginBottom:3, lineHeight:1.3 }}>{isAr ? s.ar : s.en}</div>
-                        <div style={{ fontSize:9, color:'#A89480', lineHeight:1.45 }}>{isAr ? s.descAr : s.descEn}</div>
+                        <div style={{ fontSize:16, fontWeight:700, color:'var(--text-1)', marginBottom:10 }}>{isAr ? step.ar : step.en}</div>
+                        <div style={{ fontSize:13.5, color:'var(--text-2)', lineHeight:1.65 }}>{isAr ? step.descAr : step.descEn}</div>
                       </div>
                     ))}
                   </div>
                 </div>
+              </section>
 
-                {/* ── Quick actions — horizontal row ── */}
-                <div style={{ marginBottom:16, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.18s' }}>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-                    {[
-                      {
-                        ar:'مسار موجّه', en:'Guided Wizard',
-                        descAr:'خطوة بخطوة', descEn:'Step by step',
-                        color:'#7a1a1a', bg:'#FEF7F7', border:'#F5D0D0',
-                        action: () => setShowTransactionStarter(true),
-                        icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 9m0 8V9m0 0L9 7"/></svg>,
-                      },
-                      {
-                        ar:'رفع وثيقة', en:'Analyze Doc',
-                        descAr:'تحليل فوري', descEn:'Instant AI review',
-                        color:'#1e3a8a', bg:'#EFF6FF', border:'#BFDBFE',
-                        action: () => fileInputRef.current?.click(),
-                        icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>,
-                      },
-                      {
-                        ar:'أسئلة شائعة', en:'FAQ',
-                        descAr:'إجابات جاهزة', descEn:'Common questions',
-                        color:'#065f46', bg:'#F0FDF4', border:'#A7F3D0',
-                        action: () => router.push('/faq'),
-                        icon: <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
-                      },
-                    ].map(a => (
-                      <button key={a.en} type="button" onClick={a.action}
-                        style={{
-                          display:'flex', flexDirection:'column', alignItems:'center', gap:8,
-                          padding:'14px 8px 12px',
-                          background:a.bg, border:`1.5px solid ${a.border}`,
-                          borderRadius:14, cursor:'pointer', fontFamily:'inherit',
-                          transition:'transform 0.14s cubic-bezier(0.22,1,0.36,1), box-shadow 0.14s',
-                          boxShadow:'0 1px 3px rgba(0,0,0,0.05)',
-                          color:a.color,
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 6px 20px rgba(0,0,0,0.09)' }}
-                        onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='0 1px 3px rgba(0,0,0,0.05)' }}
-                        onTouchStart={e => { e.currentTarget.style.transform='scale(0.96)' }}
-                        onTouchEnd={e => { e.currentTarget.style.transform='' }}
-                      >
-                        <div style={{ width:38, height:38, borderRadius:11, background:'rgba(255,255,255,0.7)', border:`1.5px solid ${a.border}`, display:'flex', alignItems:'center', justifyContent:'center', color:a.color }}>
-                          {a.icon}
+              {/* ══ TRUST ══ */}
+              <section style={{ background:'var(--surface)', padding:'clamp(40px,5vw,72px) 0', borderBottom:'1px solid var(--border)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div className="tgrid">
+                    {([
+                      { ar:'مصادر رسمية فقط', en:'Official Sources Only', descAr:'كل المعلومات مستقاة من المواقع والوثائق الرسمية للحكومة اللبنانية', descEn:'All information sourced from official Lebanese government websites and documents', color:'var(--success)', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> },
+                      { ar:'متاح ٢٤ ساعة', en:'Available 24/7', descAr:'دليلك متاح دائماً — بلا طوابير ولا أوقات دوام', descEn:'Always available — no queues, no office hours', color:'var(--brand)', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
+                      { ar:'خصوصية كاملة', en:'Full Privacy', descAr:'لا نحتفظ ببياناتك الشخصية — محادثاتك خاصة بك تماماً', descEn:"We don't store your personal data — your conversations stay private", color:'#1d4ed8', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
+                      { ar:'عربي وإنجليزي', en:'Arabic & English', descAr:'اسأل بأي لغة — دليلك يجيبك بنفس اللغة التي تختارها', descEn:'Ask in either language — Dalilak responds in your chosen language', color:'#7c3aed', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg> },
+                    ] as {ar:string;en:string;descAr:string;descEn:string;color:string;icon:React.ReactNode}[]).map(trust => (
+                      <div key={trust.en} style={{ background:'var(--surface-muted)', border:'1px solid var(--border)', borderRadius:16, padding:'24px 20px', display:'flex', gap:16, alignItems:'flex-start' }}>
+                        <div style={{ width:44, height:44, borderRadius:12, background:'var(--surface)', border:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'center', color:trust.color, flexShrink:0 }}>
+                          {trust.icon}
                         </div>
-                        <div style={{ textAlign:'center' }}>
-                          <div style={{ fontSize:11.5, fontWeight:800, color:'#1A1208', lineHeight:1.2, marginBottom:2 }}>{isAr ? a.ar : a.en}</div>
-                          <div style={{ fontSize:10, color:'#9C8E80', fontWeight:500 }}>{isAr ? a.descAr : a.descEn}</div>
+                        <div>
+                          <div style={{ fontSize:14.5, fontWeight:700, color:'var(--text-1)', marginBottom:5 }}>{isAr ? trust.ar : trust.en}</div>
+                          <div style={{ fontSize:13, color:'var(--text-2)', lineHeight:1.6 }}>{isAr ? trust.descAr : trust.descEn}</div>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
+              </section>
 
-                {/* ── Trust strip ── */}
-                <div style={{
-                  paddingTop:16,
-                  borderTop:'1px solid rgba(210,195,178,0.25)',
-                  display:'flex', flexWrap:'wrap', gap:5, justifyContent:'center',
-                  animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
-                  animationDelay:'0.24s',
-                }}>
-                  {[
-                    { ar:'مصادر رسمية', en:'Official sources' },
-                    { ar:'خصوصيّة كاملة', en:'Full privacy' },
-                    { ar:'متاح ٢٤/٧', en:'24/7' },
-                    { ar:'عربي وإنجليزي', en:'AR & EN' },
-                  ].map((b, i) => (
-                    <span key={i} style={{
-                      display:'inline-flex', alignItems:'center', gap:4,
-                      padding:'3px 9px', borderRadius:20,
-                      background:'rgba(255,255,255,0.6)',
-                      border:'1px solid rgba(210,195,178,0.28)',
-                      fontSize:10, fontWeight:600, color:'#9C8E80',
-                    }}>
-                      <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                      {isAr ? b.ar : b.en}
-                    </span>
-                  ))}
+              {/* ══ FOOTER ══ */}
+              <footer style={{ background:'#191713', padding:'clamp(40px,5vw,64px) 0 clamp(24px,3vw,40px)' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+                  <div className="fgrid" style={{ marginBottom:40 }}>
+                    {/* Brand col */}
+                    <div>
+                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14 }}>
+                        <div style={{ width:36, height:36, borderRadius:10, background:'var(--brand-soft)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+                          <img src="/logo-icon.png" alt="دليلك" style={{ width:26, height:26, objectFit:'contain' }} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize:16, fontWeight:800, color:'#fff', lineHeight:1 }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
+                          <div style={{ fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:2 }}>{isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}</div>
+                        </div>
+                      </div>
+                      <p style={{ fontSize:13, color:'rgba(255,255,255,0.45)', lineHeight:1.7, maxWidth:300, margin:0 }}>
+                        {isAr
+                          ? 'منصة ذكية تساعد المواطنين اللبنانيين على فهم الإجراءات الحكومية بسهولة وثقة.'
+                          : 'A smart platform helping Lebanese citizens understand government procedures with confidence.'
+                        }
+                      </p>
+                      <button type="button" onClick={toggleLang}
+                        style={{ marginTop:20, display:'inline-flex', alignItems:'center', gap:6, padding:'7px 16px', borderRadius:20, border:'1px solid rgba(255,255,255,0.12)', background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.6)', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'background 0.13s, color 0.13s' }}
+                        onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='rgba(255,255,255,0.10)'; t.style.color='#fff' }}
+                        onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='rgba(255,255,255,0.05)'; t.style.color='rgba(255,255,255,0.6)' }}
+                      >
+                        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+                        {isAr ? 'English' : 'العربية'}
+                      </button>
+                    </div>
+                    {/* Quick links */}
+                    <div>
+                      <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:14 }}>
+                        {isAr ? 'روابط سريعة' : 'Quick Links'}
+                      </div>
+                      {([
+                        { ar:'الرئيسية', en:'Home', href:'/' },
+                        { ar:'الخدمات', en:'Services', href:'/services' },
+                        { ar:'المعاملات', en:'Procedures', href:'/procedures' },
+                        { ar:'الجهات', en:'Authorities', href:'/authorities' },
+                        { ar:'النماذج', en:'Forms', href:'/forms' },
+                        { ar:'الأسئلة', en:'FAQ', href:'/faq' },
+                      ] as {ar:string;en:string;href:string}[]).map(link => (
+                        <button key={link.href} type="button" onClick={() => router.push(link.href)}
+                          style={{ display:'block', background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:'inherit', padding:'5px 0', lineHeight:1.4, textAlign: isAr ? 'right' : 'left', transition:'color 0.13s' }}
+                          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color='#fff'}
+                          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.5)'}
+                        >
+                          {isAr ? link.ar : link.en}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Account links */}
+                    <div>
+                      <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:14 }}>
+                        {isAr ? 'حسابي' : 'Account'}
+                      </div>
+                      {([
+                        { ar:'ملفاتي', en:'My Files', href:'/my-files' },
+                        { ar:'استوديو الصياغة', en:'Drafting Studio', href:'/drafting-studio' },
+                      ] as {ar:string;en:string;href:string}[]).map(link => (
+                        <button key={link.href} type="button" onClick={() => router.push(link.href)}
+                          style={{ display:'block', background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:'inherit', padding:'5px 0', lineHeight:1.4, textAlign: isAr ? 'right' : 'left', transition:'color 0.13s' }}
+                          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color='#fff'}
+                          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.5)'}
+                        >
+                          {isAr ? link.ar : link.en}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ borderTop:'1px solid rgba(255,255,255,0.07)', paddingTop:20, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
+                    <div style={{ fontSize:12, color:'rgba(255,255,255,0.3)' }}>
+                      {isAr ? '© ٢٠٢٤ دليلك — جميع الحقوق محفوظة' : '© 2024 Dalilak — All rights reserved'}
+                    </div>
+                    <div style={{ fontSize:12, color:'rgba(255,255,255,0.25)' }}>
+                      {isAr ? 'ليس بديلاً عن الاستشارة القانونية الرسمية' : 'Not a substitute for official legal advice'}
+                    </div>
+                  </div>
                 </div>
+              </footer>
 
-              </div>{/* end content area */}
             </div>
 
           ) : (
