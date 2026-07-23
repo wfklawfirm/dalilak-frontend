@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { isAdmin, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
+import GlobalSearch from '@/components/GlobalSearch'
+import NotificationBell from '@/components/NotificationBell'
 
 interface TopNavProps {
   isAr?: boolean
@@ -14,6 +16,10 @@ interface TopNavProps {
   onMenuOpen?: () => void
   onStartGuide?: () => void
   showGuideBtn?: boolean
+  /** Pass through to GlobalSearch so search results can trigger AI on homepage */
+  onAsk?: (q: string) => void
+  /** Pass through to GlobalSearch so journey results open the JourneySheet */
+  onJourneySelect?: (slug: string) => void
 }
 
 const NAV_LINKS = [
@@ -28,6 +34,7 @@ const NAV_LINKS = [
 export default function TopNav({
   currentUser, messages = [], onLangToggle: onLangToggleProp,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
+  onAsk, onJourneySelect,
 }: TopNavProps) {
   const router   = useRouter()
   const pathname = usePathname()
@@ -36,6 +43,8 @@ export default function TopNav({
   const onLangToggle = onLangToggleProp ?? toggleLang
 
   const [scrolled, setScrolled] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+
   useEffect(() => {
     const el = document.getElementById('main-content')
     if (!el) return
@@ -263,6 +272,12 @@ export default function TopNav({
               </button>
             )}
 
+            {/* Notification Bell */}
+            <NotificationBell onAsk={onAsk} />
+
+            {/* Global Search — Cmd+K */}
+            <GlobalSearch onAsk={onAsk} onJourneySelect={onJourneySelect} />
+
             {/* New chat — in conversation */}
             {hasChat && (
               <button
@@ -304,24 +319,122 @@ export default function TopNav({
               {isAr ? 'EN' : 'AR'}
             </button>
 
-            {/* Account — desktop */}
-            <button
-              type="button"
-              onClick={() => router.push('/my-files')}
-              className="tn-ibtn tn-desk-only"
-              aria-label={isAr ? 'حسابي' : 'My account'}
-              style={{
-                display: 'none', alignItems: 'center', justifyContent: 'center',
-                height: 34, width: 34, borderRadius: 9,
-                border: '1.5px solid var(--border)',
-                background: 'transparent',
-                color: 'var(--text-2)', cursor: 'pointer',
-              }}
-            >
-              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-              </svg>
-            </button>
+            {/* Account — desktop: shows initials badge + dropdown */}
+            <div style={{ position: 'relative' }} className="tn-desk-only">
+              <button
+                type="button"
+                aria-label={isAr ? 'حسابي' : 'My account'}
+                aria-expanded={userMenuOpen}
+                onClick={() => setUserMenuOpen(o => !o)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  height: 34, minWidth: 34, padding: currentUser ? '0 10px 0 4px' : '0',
+                  borderRadius: 9, border: '1.5px solid var(--border)',
+                  background: userMenuOpen ? 'var(--surface-2)' : 'transparent',
+                  cursor: 'pointer', gap: 6,
+                }}
+              >
+                {currentUser ? (() => {
+                  const initials = currentUser.full_name
+                    ? currentUser.full_name.trim().split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+                    : currentUser.username?.slice(0, 2).toUpperCase() || '?'
+                  return (
+                    <>
+                      <span style={{
+                        width: 24, height: 24, borderRadius: 7, flexShrink: 0,
+                        background: 'linear-gradient(135deg, #8F1D2C, #741622)',
+                        color: '#fff', fontSize: 10, fontWeight: 800,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        letterSpacing: '0.5px',
+                      }}>
+                        {initials}
+                      </span>
+                      <span style={{
+                        fontSize: 11.5, fontWeight: 600, color: 'var(--text-2)',
+                        maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>
+                        {currentUser.full_name?.split(' ')[0] || currentUser.username}
+                      </span>
+                    </>
+                  )
+                })() : (
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* User menu dropdown */}
+              {userMenuOpen && (
+                <>
+                  {/* Backdrop to close */}
+                  <div
+                    style={{ position: 'fixed', inset: 0, zIndex: 9998 }}
+                    onClick={() => setUserMenuOpen(false)}
+                  />
+                  <div
+                    dir={isAr ? 'rtl' : 'ltr'}
+                    style={{
+                      position: 'absolute', top: 40, [isAr ? 'left' : 'right']: 0,
+                      width: 200, zIndex: 9999,
+                      background: 'var(--bg)', border: '1px solid var(--border)',
+                      borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                      overflow: 'hidden',
+                      animation: 'tn-drop 0.15s ease both',
+                    }}
+                  >
+                    {currentUser && (
+                      <div style={{
+                        padding: '12px 14px 10px',
+                        borderBottom: '1px solid var(--border)',
+                      }}>
+                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
+                          {currentUser.full_name || currentUser.username}
+                        </div>
+                        <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 2 }}>
+                          {currentUser.email}
+                        </div>
+                      </div>
+                    )}
+                    {[
+                      { href: '/my-files', ar: '📁 ملفاتي', en: '📁 My Files' },
+                      { href: '/procedures', ar: '📋 المعاملات', en: '📋 Procedures' },
+                    ].map(item => (
+                      <button
+                        key={item.href}
+                        type="button"
+                        onClick={() => { router.push(item.href); setUserMenuOpen(false) }}
+                        style={{
+                          display: 'block', width: '100%', padding: '9px 14px',
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          textAlign: isAr ? 'right' : 'left',
+                          fontSize: 12.5, color: 'var(--text-2)', fontFamily: 'inherit',
+                          borderBottom: '1px solid var(--border)',
+                        }}
+                      >
+                        {isAr ? item.ar : item.en}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        router.push('/login')
+                        setUserMenuOpen(false)
+                      }}
+                      style={{
+                        display: 'block', width: '100%', padding: '9px 14px',
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        textAlign: isAr ? 'right' : 'left',
+                        fontSize: 12.5, color: '#dc2626', fontFamily: 'inherit',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {isAr ? '🚪 تسجيل الخروج' : '🚪 Sign Out'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Admin — desktop */}
             {isAdmin() && (

@@ -6,6 +6,36 @@ import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
 import GuidedFlow from '@/components/GuidedFlow'
 import MobileMenu from '@/components/MobileMenu'
+import DocExpiryBanner from '@/components/DocExpiryBanner'
+import DocExpiryCalendar from '@/components/DocExpiryCalendar'
+import SectionCollapseToggle from '@/components/SectionCollapseToggle'
+import SavedItemsPanel from '@/components/SavedItemsPanel'
+import RecentlyViewedPanel from '@/components/RecentlyViewedPanel'
+import AppointmentTracker from '@/components/AppointmentTracker'
+import QuickContacts from '@/components/QuickContacts'
+import SmartSuggestions from '@/components/SmartSuggestions'
+import DailyTip from '@/components/DailyTip'
+import GovCalendar from '@/components/GovCalendar'
+import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
+import UserOnboarding from '@/components/UserOnboarding'
+import LanguagePreferenceCard from '@/components/LanguagePreferenceCard'
+import WelcomeBackBanner from '@/components/WelcomeBackBanner'
+import SearchHistoryPanel from '@/components/SearchHistoryPanel'
+import ChatSummaryCard from '@/components/ChatSummaryCard'
+import DocChecklistBuilder from '@/components/DocChecklistBuilder'
+import ProcedureComparator from '@/components/ProcedureComparator'
+import ProcedureFavoritesList from '@/components/ProcedureFavoritesList'
+import AppointmentReminder from '@/components/AppointmentReminder'
+import QuickNotepad from '@/components/QuickNotepad'
+import ProcedureProgressTracker from '@/components/ProcedureProgressTracker'
+import RecentActivityFeed from '@/components/RecentActivityFeed'
+import FeedbackWidget from '@/components/FeedbackWidget'
+import FloatingHelpButton from '@/components/FloatingHelpButton'
+import StatsBadgeStrip from '@/components/StatsBadgeStrip'
+import SmartHomeBanner from '@/components/SmartHomeBanner'
+import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
+import ChatQuickReplies from '@/components/ChatQuickReplies'
+import ChatContextBar from '@/components/ChatContextBar'
 import ModeSelector from '@/components/MobileModeSheet'
 import TopNav from '@/components/TopNav'
 import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
@@ -16,7 +46,7 @@ import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/servi
 import { useLanguage } from '@/lib/LanguageContext'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 import { ALL_SERVICES } from '@/lib/allServices'
-import { LIFE_JOURNEYS, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
+import { LIFE_JOURNEYS, getJourneyBySlug, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -538,6 +568,11 @@ export default function Home() {
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
 
+  // ── Smart input suggestions autocomplete ──────────────────────────────────
+  const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(
+    input, isAr, (s) => { setInput(s); textareaRef.current?.focus() }
+  )
+
   // ── Enhance prompt via AI — reads /chat/stream, updates chips after ──
   const enhancePrompt = useCallback(async (
     text: string,
@@ -663,6 +698,13 @@ Question: ${text}`
         sessionStorage.removeItem('dalilak_draft_prompt')
         sendMessage(draft)
       }
+      return
+    }
+    // GlobalSearch stores query in sessionStorage when used from non-home pages
+    const pending = sessionStorage.getItem('dalilak_pending_query')
+    if (pending) {
+      sessionStorage.removeItem('dalilak_pending_query')
+      sendMessage(pending)
     }
   }, [authChecked])
 
@@ -696,6 +738,16 @@ Question: ${text}`
       // Network error — keep showing cached user
       if (!cached) setAuthChecked(true)
     })
+  }, [])
+
+  // ── Handle onboarding quick-start question ───────────────
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const q = (e as CustomEvent<{ q: string }>).detail?.q
+      if (q) sendMessage(q)
+    }
+    window.addEventListener('dalilak_onboarding_question', handler)
+    return () => window.removeEventListener('dalilak_onboarding_question', handler)
   }, [])
 
   // ── Load chat history from localStorage (after auth) ─────
@@ -831,6 +883,59 @@ Question: ${text}`
   }, [])
 
   const formatSize = (b: number) => b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
+
+  /** Export conversation as a formatted printable HTML page */
+  const exportChat = () => {
+    if (messages.length === 0) return
+    const stripMd = (s: string) => s
+      .replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1')
+      .replace(/#{1,6}\s?(.+)/g, '$1').replace(/\[(.+?)\]\(.+?\)/g, '$1')
+      .replace(/`{1,3}([\s\S]+?)`{1,3}/g, '$1')
+    const rows = messages
+      .filter(m => m.content)
+      .map(m => {
+        const isUser = m.role === 'user'
+        const bg = isUser ? '#8F1D2C' : '#F9F7F5'
+        const fg = isUser ? '#fff' : '#1a1a1a'
+        const align = isAr ? (isUser ? 'right' : 'left') : (isUser ? 'right' : 'left')
+        const label = isUser ? (isAr ? 'أنت' : 'You') : 'دليلك AI'
+        return `<div style="margin-bottom:16px;text-align:${align}">
+          <div style="display:inline-block;max-width:80%;padding:12px 16px;border-radius:14px;background:${bg};color:${fg};font-size:14px;line-height:1.6;text-align:start">
+            <div style="font-size:10px;opacity:0.65;margin-bottom:4px;font-weight:700">${label}</div>
+            ${stripMd(m.content).replace(/\n/g, '<br>')}
+          </div>
+        </div>`
+      }).join('')
+    const dateStr = new Date().toLocaleDateString(isAr ? 'ar-LB' : 'en-LB', { year: 'numeric', month: 'long', day: 'numeric' })
+    const win = window.open('', '_blank', 'width=700,height=900')
+    if (!win) return
+    win.document.write(`<!DOCTYPE html><html dir="${isAr ? 'rtl' : 'ltr'}"><head>
+      <meta charset="utf-8"><title>${isAr ? 'محادثة دليلك' : 'Dalilak Chat'} — ${dateStr}</title>
+      <style>
+        body{font-family:Arial,sans-serif;margin:0;background:#F2EDE6;color:#1a1a1a}
+        .header{background:#8F1D2C;color:#fff;padding:20px 30px}
+        .header h1{margin:0 0 4px;font-size:20px}
+        .header p{margin:0;font-size:12px;opacity:0.75}
+        .chat{max-width:680px;margin:24px auto;padding:0 20px}
+        .footer{text-align:center;font-size:11px;color:#999;padding:20px;border-top:1px solid #ddd;margin-top:24px}
+        @media print{body{background:#fff}.header{-webkit-print-color-adjust:exact;print-color-adjust:exact}button{display:none}}
+      </style></head><body>
+      <div class="header">
+        <h1>🏛️ ${isAr ? 'محادثة دليلك AI' : 'Dalilak AI Conversation'}</h1>
+        <p>${dateStr} &nbsp;·&nbsp; ${messages.filter(m => m.role === 'user').length} ${isAr ? 'سؤال' : 'questions'} &nbsp;·&nbsp; dalilak.vercel.app</p>
+      </div>
+      <div class="chat">${rows}</div>
+      <div class="footer">
+        ${isAr ? 'دليلك AI — مساعد المعاملات الحكومية اللبنانية' : 'Dalilak AI — Lebanese Government Procedures Assistant'}<br>
+        <em style="font-size:10px">${isAr ? 'هذا المحتوى للمساعدة فقط وليس استشارة قانونية.' : 'This content is for guidance only and is not legal advice.'}</em>
+        <br><br>
+        <button onclick="window.print()" style="padding:8px 20px;background:#8F1D2C;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px">
+          ${isAr ? 'طباعة / PDF' : 'Print / Save PDF'}
+        </button>
+      </div>
+    </body></html>`)
+    win.document.close()
+  }
   const getFileIcon = (t: string) => t.startsWith('image/') ? 'IMG' : t === 'application/pdf' ? 'PDF' : t.includes('word') ? 'DOC' : 'FILE'
 
   // ── Send ──────────────────────────────────────────────────
@@ -1168,6 +1273,11 @@ Question: ${text}`
           onMenuOpen={() => setMobileMenuOpen(true)}
           onStartGuide={() => setShowGuide(true)}
           showGuideBtn={messages.length === 0}
+          onAsk={q => sendMessage(q)}
+          onJourneySelect={slug => {
+            const j = getJourneyBySlug(slug)
+            if (j) setActiveJourney(j)
+          }}
         />
 
 
@@ -1658,7 +1768,7 @@ Question: ${text}`
             /* ── Chat Messages ── */
             <div aria-live="polite" aria-label={isAr ? 'محادثة المساعد القانوني' : 'Legal assistant conversation'} style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
               {/* Home button — visible on mobile inside chat */}
-              <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', gap: 8, marginBottom: 8 }}>
                 <button
                   type="button"
                   aria-label={isAr ? 'العودة للصفحة الرئيسية' : 'Return to home'}
@@ -1681,6 +1791,30 @@ Question: ${text}`
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
                   </svg>
                   {isAr ? 'الرئيسية' : 'Home'}
+                </button>
+
+                {/* Export chat button */}
+                <button
+                  type="button"
+                  aria-label={isAr ? 'تصدير المحادثة' : 'Export chat'}
+                  onClick={exportChat}
+                  title={isAr ? 'تصدير / طباعة المحادثة' : 'Export / Print conversation'}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    padding: '6px 12px', borderRadius: 20,
+                    background: '#fff', border: '1.5px solid #E6E2DC',
+                    fontSize: 11.5, color: '#918B82', fontWeight: 600,
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                    transition: 'border-color 0.15s, color 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.color = '#8F1D2C' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = '#918B82' }}
+                >
+                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="6 9 6 2 18 2 18 9"/><path strokeLinecap="round" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+                  </svg>
+                  {isAr ? 'تصدير' : 'Export'}
                 </button>
               </div>
 
@@ -1712,6 +1846,53 @@ Question: ${text}`
                     </svg>
                   </button>
                 </div>
+              )}
+
+              {/* ── Document Expiry Banner + Saved Items ── */}
+              {messages.length === 0 && (
+                <>
+                  <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <SmartHomeBanner onAsk={q => sendMessage(q)} />
+                  <StatsBadgeStrip />
+                  <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
+                  <LanguagePreferenceCard />
+                  <DailyTip onAsk={q => sendMessage(q)} />
+                  <SmartSuggestions onAsk={q => sendMessage(q)} />
+                  <SearchHistoryPanel onAsk={q => sendMessage(q)} />
+                  <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
+                    <DocExpiryBanner onAsk={q => sendMessage(q)} />
+                    <DocExpiryCalendar onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="مواعيدي" titleEn="My Appointments" icon="📅" storageKey="dalilak_sec_appts" defaultOpen={true}>
+                    <AppointmentTracker onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
+
+                  <SavedItemsPanel onAsk={q => sendMessage(q)} />
+                  <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
+                  <DocChecklistBuilder onAsk={q => sendMessage(q)} />
+                  <ProcedureComparator onAsk={q => sendMessage(q)} />
+                  <QuickContacts onAsk={q => sendMessage(q)} />
+                  <GovCalendar onAsk={q => sendMessage(q)} />
+
+                  <SectionCollapseToggle titleAr="تقدمي في المعاملات" titleEn="My Procedure Progress" icon="📊" storageKey="dalilak_sec_progress" defaultOpen={true}>
+                    <ProcedureProgressTracker onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="آخر نشاطاتي" titleEn="Recent Activity" icon="🕐" storageKey="dalilak_sec_activity" defaultOpen={true}>
+                    <RecentActivityFeed onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
+
+                  <QuickNotepad />
+                </>
+              )}
+
+              {/* Chat summary card — appears after 5+ messages */}
+              {messages.length >= 5 && (
+                <ChatSummaryCard
+                  messages={messages}
+                  onAsk={q => sendMessage(q)}
+                />
               )}
 
               {messages.map((msg, i) => {
@@ -1746,6 +1927,7 @@ Question: ${text}`
                     <ChatMessage
                       msg={msg}
                       isAr={isAr}
+                      index={i}
                       onFollowUp={(q) => { setInput(q); textareaRef.current?.focus() }}
                       onSendMessage={(q) => sendMessage(q)}
                       onUploadFile={() => fileInputRef.current?.click()}
@@ -2056,6 +2238,36 @@ Question: ${text}`
               <ModeSelector mode={mode} onSelect={setMode} isAr={isAr} />
             </div>
 
+            {/* ── Active context bar (procedure / ministry / journey) ── */}
+            <ChatContextBar
+              mode={mode !== 'quick' ? mode : undefined}
+              modeAr={mode === 'detailed' ? 'وضع مفصّل' : mode === 'research' ? 'وضع بحثي' : undefined}
+              modeEn={mode === 'detailed' ? 'Detailed mode' : mode === 'research' ? 'Research mode' : undefined}
+            />
+
+            {/* ── Quick reply chips (after assistant message, when input is empty) ── */}
+            {messages.length > 0 && !input.trim() && !loading && (() => {
+              const last = messages[messages.length - 1]
+              if (last.role !== 'assistant') return null
+              return (
+                <ChatQuickReplies
+                  lastMessageContent={typeof last.content === 'string' ? last.content : ''}
+                  lastMessageRole="assistant"
+                  onSelect={text => { sendMessage(text) }}
+                  isAr={isAr}
+                />
+              )
+            })()}
+
+            {/* ── Smart input autocomplete suggestions ── */}
+            {smartSuggestions.length > 0 && (
+              <SmartInputSuggestions
+                input={input}
+                onSelect={s => { setInput(s); textareaRef.current?.focus(); setSmartDismissed(true) }}
+                isAr={isAr}
+              />
+            )}
+
             {/* ── Input box ── */}
             <form onSubmit={handleSubmit}>
               <div className={inputFocused ? 'input-focused' : ''}
@@ -2096,7 +2308,7 @@ Question: ${text}`
                   ref={textareaRef}
                   value={input}
                   onChange={e => { setInput(e.target.value.slice(0, MAX_INPUT)); setEnhanceSuggestion(null); setVoiceJustEnded(false) }}
-                  onKeyDown={handleKeyDown}
+                  onKeyDown={e => { smartKeyDown(e); if (!e.defaultPrevented) handleKeyDown(e) }}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
                   aria-label={isAr ? 'اكتب سؤالك القانوني' : 'Type your legal question'}
@@ -2215,6 +2427,21 @@ Question: ${text}`
 
           </div>}
         </footer>
+
+        {/* Keyboard shortcuts help (floating ? button + modal) */}
+        <KeyboardShortcutsHelp />
+
+        {/* First-time user onboarding wizard */}
+        <UserOnboarding onComplete={(_type) => { /* type stored in localStorage by component */ }} />
+
+        {/* 24h appointment reminder toast */}
+        <AppointmentReminder onAsk={q => sendMessage(q)} />
+
+        {/* Floating site feedback widget */}
+        <FeedbackWidget messageCount={messages.length} />
+
+        {/* Floating emergency help button */}
+        <FloatingHelpButton onAsk={q => sendMessage(q)} />
 
         {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
         <div className="bottom-nav-wrapper">

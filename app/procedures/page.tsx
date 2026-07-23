@@ -8,6 +8,17 @@ import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure }
 import BottomNav from '@/components/BottomNav'
 import { TX_MINISTRIES } from '@/lib/allTransactions'
 import { useLanguage } from '@/lib/LanguageContext'
+import ReadinessChecker from '@/components/ReadinessChecker'
+import SaveButton from '@/components/SaveButton'
+import CostEstimator from '@/components/CostEstimator'
+import { trackView } from '@/lib/savedItems'
+import ProcedureTimeline from '@/components/ProcedureTimeline'
+import PrintProcedureModal from '@/components/PrintProcedureModal'
+import ProcedureSearchModal from '@/components/ProcedureSearchModal'
+import ProcedureRelatedSuggestions from '@/components/ProcedureRelatedSuggestions'
+import ProcedureProgressBadge from '@/components/ProcedureProgressBadge'
+import ProcedureFilterDrawer, { type ProcFilters, DEFAULT_FILTERS, hasActiveFilters } from '@/components/ProcedureFilterDrawer'
+import ProcedureDeadlineAlert, { setDeadline, clearDeadline } from '@/components/ProcedureDeadlineAlert'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -65,6 +76,32 @@ function MinistryIcon({ slug, size = 18 }: { slug: string; size?: number }) {
   return <svg {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
 }
 
+/** Small inline copy-to-clipboard button with checkmark flash */
+function CopyBtn({ text, isAr }: { text: string; isAr: boolean }) {
+  const [copied, setCopied] = React.useState(false)
+  const copy = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    try { navigator.clipboard.writeText(text) } catch {}
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+  return (
+    <button
+      type="button"
+      title={isAr ? 'نسخ' : 'Copy'}
+      onClick={copy}
+      style={{
+        background: 'none', border: 'none', cursor: 'pointer', padding: '0 3px',
+        color: copied ? '#10b981' : '#9ca3af',
+        fontSize: 11, lineHeight: 1, flexShrink: 0, display: 'inline-flex',
+        alignItems: 'center',
+      }}
+    >
+      {copied ? '✓' : '⎘'}
+    </button>
+  )
+}
+
 export default function ProceduresPage() {
   const router = useRouter()
   const { isAr, toggleLang } = useLanguage()
@@ -72,6 +109,12 @@ export default function ProceduresPage() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [ministryFilter, setMinistryFilter] = useState('all')
+  const [printProc, setPrintProc] = useState<EnrichedProcedure | null>(null)
+  const [searchModalOpen, setSearchModalOpen] = useState(false)
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
+  const [advFilters, setAdvFilters] = useState<ProcFilters>(DEFAULT_FILTERS)
+  // Deadline date input state — tracks the typed value in the deadline date picker per procedure
+  const [deadlineInput, setDeadlineInput] = useState<string>('')
 
   const filteredGuided = useMemo(() => {
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
@@ -93,8 +136,33 @@ export default function ProceduresPage() {
     if (ministryFilter !== 'all') {
       list = list.filter(p => p.ministrySlug === ministryFilter)
     }
+    // Advanced filters
+    if (advFilters.hasForm !== 'any') {
+      list = list.filter(p => advFilters.hasForm === 'yes' ? !!p.hasForm : !p.hasForm)
+    }
+    if (advFilters.feeType !== 'any') {
+      list = list.filter(p => {
+        const fees = p.fees || ''
+        const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
+        return advFilters.feeType === 'free' ? isFree : !isFree
+      })
+    }
+    if (advFilters.speed !== 'any') {
+      list = list.filter(p => {
+        const pt = (p.processingTime || '').toLowerCase()
+        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
+        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('week') || pt.includes('أسبوعين')
+        if (advFilters.speed === 'slow')   return pt.includes('شهر') || pt.includes('month') || pt.includes('سنة') || pt.includes('year')
+        return true
+      })
+    }
+    if (advFilters.started === 'yes') {
+      try {
+        list = list.filter(p => localStorage.getItem(`dalilak_checklist_${p.code}`) !== null)
+      } catch { /* skip in SSR */ }
+    }
     return list
-  }, [search, ministryFilter])
+  }, [search, ministryFilter, advFilters])
 
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
@@ -151,6 +219,16 @@ export default function ProceduresPage() {
       </header>
 
       <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
+
+        {/* Deadline alerts — shown when any procedure has a deadline within 7 days */}
+        <ProcedureDeadlineAlert
+          onGoTo={code => {
+            setExpandedProc(code)
+            setTimeout(() => {
+              document.getElementById(`proc-${code}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }, 120)
+          }}
+        />
 
         {/* Stats strip — premium individual cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
@@ -230,6 +308,50 @@ export default function ProceduresPage() {
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           )}
+          {/* Fullscreen search modal button */}
+          <button
+            type="button"
+            title={isAr ? 'البحث المتقدم' : 'Advanced search'}
+            onClick={() => setSearchModalOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+              background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
+              cursor: 'pointer', color: '#8F1D2C',
+            }}
+          >
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h10M4 18h4"/>
+            </svg>
+          </button>
+          {/* Advanced filter button */}
+          <button
+            type="button"
+            title={isAr ? 'فلترة متقدمة' : 'Advanced filters'}
+            onClick={() => setFilterDrawerOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+              background: hasActiveFilters(advFilters) ? '#8F1D2C' : '#F8EDEF',
+              border: `1px solid ${hasActiveFilters(advFilters) ? '#8F1D2C' : 'rgba(143,29,44,0.2)'}`,
+              cursor: 'pointer', color: hasActiveFilters(advFilters) ? '#fff' : '#8F1D2C',
+              position: 'relative',
+            }}
+          >
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            {hasActiveFilters(advFilters) && (
+              <span style={{
+                position: 'absolute', top: -4, [isAr ? 'left' : 'right']: -4,
+                width: 12, height: 12, borderRadius: '50%',
+                background: '#ef4444', border: '2px solid #fff',
+                fontSize: 7, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {Object.values(advFilters).filter(v => v !== 'any').length}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* Count + active filter badge */}
@@ -347,21 +469,14 @@ export default function ProceduresPage() {
                       </p>
                       {proc.requiredDocuments.length > 0 && (
                         <div style={{ marginBottom: 12 }}>
-                          <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 7, display: 'flex', alignItems: 'center', gap: 5 }}>
-                            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            {isAr ? 'الوثائق المطلوبة' : 'Required Documents'}
-                            <span style={{ fontWeight: 600, color: '#918B82', fontSize: 10 }}>({proc.requiredDocuments.length})</span>
-                          </div>
-                          <div style={{ borderRadius: 9, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
-                            {proc.requiredDocuments.map((doc, i) => (
-                              <div key={i} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '7px 12px', background: i % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: i < proc.requiredDocuments.length - 1 ? '1px solid #E6E2DC' : 'none', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                                <span style={{ color: '#8F1D2C', flexShrink: 0, marginTop: 5 }}>
-                                  <svg aria-hidden="true" width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8F1D2C" opacity="0.7"/></svg>
-                                </span>
-                                <span style={{ lineHeight: 1.5 }}>{isAr ? doc.name_ar : doc.name_en}</span>
-                              </div>
-                            ))}
-                          </div>
+                          <ReadinessChecker
+                            storageKey={`proc-${proc.slug}`}
+                            documentsAr={proc.requiredDocuments.map((d: {name_ar: string}) => d.name_ar)}
+                            documentsEn={proc.requiredDocuments.map((d: {name_en?: string; name_ar: string}) => d.name_en || d.name_ar)}
+                            titleAr={proc.title_ar}
+                            titleEn={proc.title_en}
+                            onAsk={handleAsk}
+                          />
                         </div>
                       )}
                       {proc.steps.length > 0 && (
@@ -435,7 +550,7 @@ export default function ProceduresPage() {
               const displayProcessingTime = isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime)
               const displayWhereToApply = isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply)
               return (
-              <div key={proc.code} className="proc-card" style={{
+              <div key={proc.code} id={`proc-${proc.code}`} className="proc-card" style={{
                 background: '#fff', border: `1.5px solid ${expandedProc === proc.code ? '#8F1D2C' : '#E6E2DC'}`,
                 borderRadius: 14, overflow: 'hidden',
                 transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
@@ -445,7 +560,21 @@ export default function ProceduresPage() {
               }}>
                 <button
                   type="button"
-                  onClick={() => setExpandedProc(expandedProc === proc.code ? null : proc.code)}
+                  onClick={() => {
+                    const next = expandedProc === proc.code ? null : proc.code
+                    setExpandedProc(next)
+                    if (next) trackView({
+                      id: `enr-${proc.code}`,
+                      type: 'enriched',
+                      icon: proc.icon || '📄',
+                      titleAr: proc.title,
+                      titleEn: proc.title_en || proc.title,
+                      subtitleAr: proc.ministry,
+                      subtitleEn: proc.ministry_en || proc.ministry,
+                      aiPrompt: `أخبرني بكل التفاصيل عن: ${proc.title} — الإجراءات والوثائق والرسوم`,
+                      href: '/procedures',
+                    })
+                  }}
                   aria-expanded={expandedProc === proc.code}
                   style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                   onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
@@ -464,8 +593,28 @@ export default function ProceduresPage() {
                       {displayDocs.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
                       {displaySteps.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
+                      {displayFees && (() => {
+                        const isFree = displayFees.includes('مجان') || displayFees.toLowerCase().includes('free') || displayFees === '0'
+                        return (
+                          <span style={{
+                            fontSize: 9.5, borderRadius: 6, padding: '1px 7px',
+                            background: isFree ? '#D1FAE5' : '#F0FDF4',
+                            color: isFree ? '#065F46' : '#166534',
+                            border: `1px solid ${isFree ? '#A7F3D0' : '#BBF7D0'}`,
+                            fontWeight: 700,
+                          }}>
+                            💰 {isFree
+                              ? (isAr ? 'مجاني' : 'Free')
+                              : (displayFees.length > 14 ? displayFees.slice(0, 14) + '…' : displayFees)
+                            }
+                          </span>
+                        )
+                      })()}
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>{displayTitle}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>{displayTitle}</div>
+                      <ProcedureProgressBadge code={proc.code} total={proc.requiredDocuments.length} compact />
+                    </div>
                     <div style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, marginTop: 2 }}>{displayMinistry}</div>
                     {displayDescription && expandedProc !== proc.code && (
                       <div style={{ fontSize: 10.5, color: '#6B5A4A', marginTop: 3, lineHeight: 1.5, opacity: 0.85 }}>
@@ -496,7 +645,10 @@ export default function ProceduresPage() {
                             <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             <div style={{ minWidth: 0 }}>
                               <div style={{ fontSize: 9, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{isAr ? 'مدة الإنجاز' : 'Processing time'}</div>
-                              <div style={{ fontSize: 11, color: '#78350F', fontWeight: 600, lineHeight: 1.3 }}>{displayProcessingTime}</div>
+                              <div style={{ fontSize: 11, color: '#78350F', fontWeight: 600, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                {displayProcessingTime}
+                                <CopyBtn text={displayProcessingTime} isAr={isAr} />
+                              </div>
                             </div>
                           </div>
                         )}
@@ -505,56 +657,54 @@ export default function ProceduresPage() {
                             <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             <div style={{ minWidth: 0 }}>
                               <div style={{ fontSize: 9, fontWeight: 700, color: '#8F1D2C', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{isAr ? 'مكان التقديم' : 'Where to apply'}</div>
-                              <div style={{ fontSize: 11, color: '#5C1A1A', fontWeight: 600, lineHeight: 1.3 }}>{displayWhereToApply}</div>
+                              <div style={{ fontSize: 11, color: '#5C1A1A', fontWeight: 600, lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                {displayWhereToApply}
+                                <CopyBtn text={displayWhereToApply} isAr={isAr} />
+                              </div>
                             </div>
                           </div>
                         )}
                       </div>
                     )}
 
-                    {/* Required documents */}
-                    {displayDocs.length > 0 && (
+                    {/* Cost estimator */}
+                    {displayFees && (
                       <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 7, display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                          {isAr ? 'الوثائق المطلوبة' : 'Required Documents'}
-                          <span style={{ fontWeight: 600, color: '#918B82', fontSize: 10 }}>({displayDocs.length})</span>
-                        </div>
-                        <div style={{ borderRadius: 9, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
-                          {displayDocs.map((d, i) => (
-                            <div key={i} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '7px 12px', background: i % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: i < displayDocs.length - 1 ? '1px solid #E6E2DC' : 'none', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                              <span style={{ color: '#8F1D2C', flexShrink: 0, marginTop: 5 }}>
-                                <svg aria-hidden="true" width="5" height="5" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8F1D2C" opacity="0.7"/></svg>
-                              </span>
-                              <span style={{ lineHeight: 1.5 }}>{d}</span>
-                            </div>
-                          ))}
-                        </div>
+                        <CostEstimator
+                          feesRaw={displayFees}
+                          docCount={proc.requiredDocuments.length}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          onAsk={handleAsk}
+                        />
                       </div>
                     )}
 
-                    {/* Steps */}
-                    {displaySteps.length > 0 && (
+                    {/* Required documents — interactive readiness checker */}
+                    {proc.requiredDocuments.length > 0 && (
                       <div style={{ marginBottom: 12 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
-                          {isAr ? 'خطوات الإجراء' : 'Steps'}
-                          <span style={{ fontWeight: 600, color: '#918B82', fontSize: 10 }}>({displaySteps.length} {isAr ? 'خطوات' : 'steps'})</span>
-                        </div>
-                        {displaySteps.map((s, i) => {
-                          const isLast = i === displaySteps.length - 1
-                          return (
-                            <div key={i} style={{ display: 'flex', gap: 10, paddingBottom: isLast ? 0 : 10, alignItems: 'stretch' }}>
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 4px rgba(143,29,44,0.25)' }}>{i + 1}</span>
-                                {!isLast && <div style={{ width: 1.5, flex: 1, background: 'rgba(143,29,44,0.15)', marginTop: 3, borderRadius: 1 }} />}
-                              </div>
-                              <div style={{ paddingTop: 3, paddingBottom: isLast ? 0 : 4 }}>
-                                <span style={{ fontSize: 12, color: '#2D1B0E', lineHeight: 1.65 }}>{s}</span>
-                              </div>
-                            </div>
-                          )
-                        })}
+                        <ReadinessChecker
+                          storageKey={`enr-${proc.code}`}
+                          documentsAr={proc.requiredDocuments}
+                          documentsEn={proc.requiredDocuments_en}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          onAsk={handleAsk}
+                        />
+                      </div>
+                    )}
+
+                    {/* Steps — interactive timeline */}
+                    {proc.steps.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <ProcedureTimeline
+                          storageKey={`enr-${proc.code}`}
+                          stepsAr={proc.steps}
+                          stepsEn={proc.steps_en}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          onAsk={handleAsk}
+                        />
                       </div>
                     )}
 
@@ -589,22 +739,140 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* CTA */}
-                    <button type="button" onClick={() => handleAsk(displayTitle)}
-                      onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
-                      onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
-                      style={{
-                        width: '100%', padding: '11px 18px', borderRadius: 11,
-                        background: 'linear-gradient(135deg, #8F1D2C, #741622)',
-                        border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
-                        cursor: 'pointer', fontFamily: 'inherit',
-                        transition: 'opacity 0.12s, transform 0.12s',
-                        boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                      }}>
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                      {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask about this procedure'}
-                    </button>
+                    {/* Set deadline — personal deadline reminder for this procedure */}
+                    {(() => {
+                      let savedDeadline = ''
+                      try { savedDeadline = localStorage.getItem(`dalilak_proc_deadline_${proc.code}`) || '' } catch {}
+                      return (
+                        <div style={{
+                          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+                          marginBottom: 12, padding: '9px 12px',
+                          background: '#F8F9FF', border: '1px solid #DBEAFE', borderRadius: 10,
+                        }}>
+                          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" style={{ flexShrink: 0 }}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#1D4ED8', flex: 1 }}>
+                            {isAr ? 'حدّد موعداً نهائياً لهذه المعاملة' : 'Set a deadline for this procedure'}
+                          </span>
+                          <input
+                            type="date"
+                            defaultValue={savedDeadline}
+                            min={new Date().toISOString().slice(0, 10)}
+                            onChange={e => {
+                              const val = e.target.value
+                              if (val) {
+                                setDeadline(proc.code, val)
+                              } else {
+                                clearDeadline(proc.code)
+                              }
+                            }}
+                            style={{
+                              fontSize: 11, fontFamily: 'inherit', padding: '4px 8px',
+                              border: '1px solid #BFDBFE', borderRadius: 7,
+                              background: '#fff', color: '#1D4ED8', outline: 'none',
+                              cursor: 'pointer',
+                            }}
+                          />
+                          {savedDeadline && (
+                            <button
+                              type="button"
+                              onClick={() => clearDeadline(proc.code)}
+                              title={isAr ? 'حذف الموعد' : 'Remove deadline'}
+                              style={{
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                color: '#93C5FD', fontSize: 13, padding: 2,
+                                display: 'flex', alignItems: 'center',
+                              }}
+                            >✕</button>
+                          )}
+                        </div>
+                      )
+                    })()}
+
+                    {/* CTA row: Ask + Save */}
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <button type="button" onClick={() => handleAsk(displayTitle)}
+                        onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                        onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+                        style={{
+                          flex: 1, padding: '11px 18px', borderRadius: 11,
+                          background: 'linear-gradient(135deg, #8F1D2C, #741622)',
+                          border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
+                          cursor: 'pointer', fontFamily: 'inherit',
+                          transition: 'opacity 0.12s, transform 0.12s',
+                          boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                        }}>
+                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        {isAr ? 'اسأل دليلك عن هذا الإجراء' : 'Ask about this procedure'}
+                      </button>
+                      <SaveButton
+                        variant="pill"
+                        size="md"
+                        item={{
+                          id: `enr-${proc.code}`,
+                          type: 'enriched',
+                          icon: proc.icon || '📄',
+                          titleAr: proc.title,
+                          titleEn: proc.title_en || proc.title,
+                          subtitleAr: proc.ministry,
+                          subtitleEn: proc.ministry_en || proc.ministry,
+                          aiPrompt: `أخبرني بكل التفاصيل عن: ${proc.title} — الإجراءات والوثائق والرسوم`,
+                          href: '/procedures',
+                        }}
+                      />
+                      {/* Share via WhatsApp */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const title = isAr ? proc.title : (proc.title_en || proc.title)
+                          const ministry = isAr ? proc.ministry : (proc.ministry_en || proc.ministry)
+                          const steps = (isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps)).slice(0, 4)
+                          const docs = proc.requiredDocuments.slice(0, 4)
+                          const lines = [
+                            `📋 *${title}*`,
+                            `🏛️ ${ministry}`,
+                            '',
+                            isAr ? '📌 الخطوات:' : '📌 Steps:',
+                            ...steps.map((s, i) => `${i + 1}. ${s}`),
+                            '',
+                            isAr ? '📁 الوثائق:' : '📁 Documents:',
+                            ...docs.map(d => `• ${d}`),
+                            '',
+                            `🔗 dalilak.vercel.app`,
+                          ]
+                          const text = lines.join('\n')
+                          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+                        }}
+                        title={isAr ? 'مشاركة عبر واتساب' : 'Share via WhatsApp'}
+                        style={{
+                          height: 36, padding: '0 12px', borderRadius: 9,
+                          background: '#25D366', border: 'none',
+                          color: '#fff', fontSize: 11.5, fontWeight: 700,
+                          cursor: 'pointer', fontFamily: 'inherit',
+                          display: 'flex', alignItems: 'center', gap: 5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.876L.057 23.882l6.187-1.473A11.948 11.948 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.875 9.875 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 012.106 12c0-5.459 4.435-9.894 9.894-9.894 5.46 0 9.894 4.435 9.894 9.894 0 5.46-4.434 9.894-9.894 9.894z"/>
+                        </svg>
+                        {isAr ? 'شارك' : 'Share'}
+                      </button>
+                      {/* Print button */}
+                      <button
+                        type="button"
+                        title={isAr ? 'طباعة هذا الإجراء' : 'Print this procedure'}
+                        onClick={() => setPrintProc(proc)}
+                        style={{
+                          height: 36, width: 36, borderRadius: 9, flexShrink: 0,
+                          background: 'var(--surface)', border: '1px solid var(--border)',
+                          color: 'var(--text-3)', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 15,
+                        }}
+                      >🖨️</button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -612,6 +880,27 @@ export default function ProceduresPage() {
             })}
           </div>
         )}
+
+        {/* Related procedures */}
+        {expandedProc && (() => {
+          const activeProcObj = ENRICHED_PROCEDURES.find(p => p.code === expandedProc)
+          if (!activeProcObj) return null
+          return (
+            <div style={{ padding: '0 16px 4px' }}>
+              <ProcedureRelatedSuggestions
+                proc={activeProcObj}
+                onSelect={code => {
+                  setExpandedProc(code)
+                  setTimeout(() => {
+                    const el = document.getElementById(`proc-${code}`)
+                    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }, 100)
+                }}
+                onAsk={q => handleAsk(q)}
+              />
+            </div>
+          )
+        })()}
 
         {/* Link to full services directory */}
         <div style={{ marginTop: 28, borderTop: '1px solid #E6E2DC', paddingTop: 20 }}>
@@ -646,6 +935,39 @@ export default function ProceduresPage() {
       </div>
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
+
+      {/* Print procedure modal */}
+      {printProc && (
+        <PrintProcedureModal
+          procedure={printProc}
+          onClose={() => setPrintProc(null)}
+        />
+      )}
+
+      {/* Fullscreen procedure search modal */}
+      {searchModalOpen && (
+        <ProcedureSearchModal
+          onClose={() => setSearchModalOpen(false)}
+          onSelect={proc => {
+            setExpandedProc(proc.code)
+            setSearchModalOpen(false)
+            setTimeout(() => {
+              document.getElementById(`proc-${proc.code}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }, 100)
+          }}
+          onAsk={q => router.push(`/?q=${encodeURIComponent(q)}`)}
+        />
+      )}
+
+      {/* Advanced filter drawer */}
+      {filterDrawerOpen && (
+        <ProcedureFilterDrawer
+          filters={advFilters}
+          onChange={f => setAdvFilters(f)}
+          onClose={() => setFilterDrawerOpen(false)}
+          totalResults={filteredEnriched.length + filteredGuided.length}
+        />
+      )}
     </div>
   )
 }

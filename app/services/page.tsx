@@ -8,7 +8,11 @@ import { useFlowchart } from '@/lib/useFlowchart'
 import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
+import ReadinessChecker from '@/components/ReadinessChecker'
+import SaveButton from '@/components/SaveButton'
+import { trackView } from '@/lib/savedItems'
 import type { ServiceItem } from '@/lib/allServices'
+import ServiceMapPlaceholder from '@/components/ServiceMapPlaceholder'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
 
@@ -131,23 +135,17 @@ function ServiceSheet({ service, onClose, onAsk }: {
             </p>
           )}
 
-          {/* Required documents */}
+          {/* Required documents — interactive readiness checker */}
           {displayRequiredDocuments && displayRequiredDocuments.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ fontSize: 12, fontWeight: 800, color: '#191713', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 24, height: 24, borderRadius: 7, background: '#F8EDEF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                </span>
-                {isAr ? 'المستندات المطلوبة' : 'Required Documents'}
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {displayRequiredDocuments.map((doc, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#FAFAF8', borderRadius: 9, border: '1px solid #E6E2DC' }}>
-                    <svg aria-hidden="true" width="8" height="8" viewBox="0 0 10 10" style={{ flexShrink: 0 }}><circle cx="5" cy="5" r="4.5" fill="#8F1D2C"/></svg>
-                    <span style={{ fontSize: 12, color: '#191713', lineHeight: 1.4 }}>{doc}</span>
-                  </div>
-                ))}
-              </div>
+              <ReadinessChecker
+                storageKey={`svc-${service.slug}`}
+                documentsAr={service.required_documents}
+                documentsEn={service.required_documents_en}
+                titleAr={service.name_ar}
+                titleEn={service.name_en}
+                onAsk={onAsk}
+              />
             </div>
           )}
 
@@ -308,6 +306,52 @@ function ServiceSheet({ service, onClose, onAsk }: {
             </svg>
             {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
           </button>
+          <SaveButton
+            variant="pill"
+            size="md"
+            item={{
+              id: `svc-${service.slug}`,
+              type: 'service',
+              icon: service.icon || '🏛️',
+              titleAr: service.name_ar,
+              titleEn: service.name_en || service.name_ar,
+              subtitleAr: service.authority_ar || service.category || '',
+              subtitleEn: service.authority_en || service.category_en || service.category || '',
+              aiPrompt: isAr ? (service.chatPrompt_ar || service.name_ar) : `What are the requirements and steps for: ${service.name_en || service.name_ar}?`,
+              href: '/services',
+            }}
+          />
+          {/* WhatsApp share */}
+          <button
+            type="button"
+            onClick={() => {
+              const title = isAr ? service.name_ar : (service.name_en || service.name_ar)
+              const auth = isAr ? service.authority_ar : (service.authority_en || service.authority_ar)
+              const docs = service.required_documents?.slice(0, 4) || []
+              const lines = [
+                `🏛️ *${title}*`,
+                auth ? `📍 ${auth}` : '',
+                '',
+                docs.length > 0 ? (isAr ? '📁 الوثائق المطلوبة:' : '📁 Required documents:') : '',
+                ...docs.map((d: string) => `• ${d}`),
+                '',
+                `🔗 dalilak.vercel.app`,
+              ].filter(Boolean)
+              window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer')
+            }}
+            title={isAr ? 'مشاركة واتساب' : 'Share via WhatsApp'}
+            style={{
+              padding: '13px 14px', borderRadius: 14, background: '#25D366',
+              border: 'none', color: '#fff', fontSize: 12,
+              fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.876L.057 23.882l6.187-1.473A11.948 11.948 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.875 9.875 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 012.106 12c0-5.459 4.435-9.894 9.894-9.894 5.46 0 9.894 4.435 9.894 9.894 0 5.46-4.434 9.894-9.894 9.894z"/>
+            </svg>
+          </button>
           <button
             type="button"
             onClick={onClose}
@@ -329,6 +373,27 @@ function ServiceSheet({ service, onClose, onAsk }: {
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
+function ServiceCardSkeleton() {
+  return (
+    <div style={{
+      background: '#fff', borderRadius: 16, padding: 14,
+      border: '1px solid #e6e2dc', minHeight: 110,
+      display: 'flex', flexDirection: 'column', gap: 10,
+      overflow: 'hidden',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="sk-pulse" style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0 }} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className="sk-pulse" style={{ height: 12, borderRadius: 4, width: '70%' }} />
+          <div className="sk-pulse" style={{ height: 9, borderRadius: 4, width: '45%' }} />
+        </div>
+      </div>
+      <div className="sk-pulse" style={{ height: 9, borderRadius: 4, width: '85%' }} />
+      <div className="sk-pulse" style={{ height: 9, borderRadius: 4, width: '60%' }} />
+    </div>
+  )
+}
+
 export default function ServicesPage() {
   const router = useRouter()
   const { isAr } = useLanguage()
@@ -336,6 +401,12 @@ export default function ServicesPage() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 350)
+    return () => clearTimeout(t)
+  }, [])
 
   const handleAsk = useCallback((q: string) => {
     setSelectedService(null)
@@ -390,6 +461,8 @@ export default function ServicesPage() {
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes svcEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes svcStatsIn { from { opacity: 0; transform: translateY(-5px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+        .sk-pulse { background: linear-gradient(90deg, #f0efed 25%, #e8e6e2 50%, #f0efed 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; }
         .cat-chips-row::-webkit-scrollbar { display: none; }
         .cat-chips-row { -ms-overflow-style: none; scrollbar-width: none; }
         @media (max-width: 599px) {
@@ -526,6 +599,9 @@ export default function ServicesPage() {
             </div>
           ))}
         </div>
+
+        {/* ── Map placeholder — find nearby offices ──────────────────────── */}
+        <ServiceMapPlaceholder />
 
         {/* ── Category chips — horizontal scroll, no wrap ──────────────────── */}
         <div style={{ marginBottom: 16, marginRight: -14, marginLeft: -14 }}>
@@ -682,6 +758,13 @@ export default function ServicesPage() {
               </button>
             </div>
           </div>
+        ) : !mounted ? (
+          <div
+            className="svc-grid"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
+          >
+            {Array.from({ length: 12 }).map((_, i) => <ServiceCardSkeleton key={i} />)}
+          </div>
         ) : (
           <div
             className="svc-grid"
@@ -692,7 +775,20 @@ export default function ServicesPage() {
                 type="button"
                 key={service.id}
                 aria-label={isAr ? service.name_ar : (service.name_en || service.name_ar)}
-                onClick={() => setSelectedService(service)}
+                onClick={() => {
+                  setSelectedService(service)
+                  trackView({
+                    id: `svc-${service.id}`,
+                    type: 'service',
+                    icon: service.icon || '🏛️',
+                    titleAr: service.name_ar,
+                    titleEn: service.name_en || service.name_ar,
+                    subtitleAr: service.authority_ar || service.category || '',
+                    subtitleEn: service.authority_en || service.category_en || '',
+                    aiPrompt: service.chatPrompt_ar || `أخبرني عن خدمة: ${service.name_ar}`,
+                    href: '/services',
+                  })
+                }}
                 className="svc-card"
                 style={{
                   display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,

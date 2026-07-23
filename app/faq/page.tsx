@@ -26,6 +26,23 @@ const CAT_EN: Record<string, string> = {
   'التوثيق والشهر العقاري':         'Notary & Land Registry',
 }
 
+/** Highlight search term in text — returns array of spans */
+function Highlight({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>
+  // Escape regex special chars
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'))
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase()
+          ? <mark key={i} style={{ background: '#fde68a', color: '#78350f', borderRadius: 3, padding: '0 2px' }}>{part}</mark>
+          : <React.Fragment key={i}>{part}</React.Fragment>
+      )}
+    </>
+  )
+}
+
 export default function FAQPage() {
   const router = useRouter()
   const { isAr, toggleLang } = useLanguage()
@@ -257,7 +274,7 @@ export default function FAQPage() {
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8F1D2C' : '#191713', lineHeight: 1.5 }}>
-                        {item.title}
+                        <Highlight text={item.title} query={search} />
                       </div>
                       <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 2 }}>{isAr ? item.category : (CAT_EN[item.category] || item.category)}</div>
                     </div>

@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import './globals.css'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import GlobalLangSwitch from '@/components/GlobalLangSwitch'
+import OfflineNotice from '@/components/OfflineNotice'
+import AccessibilityBar from '@/components/AccessibilityBar'
 
 export const metadata: Metadata = {
   title: 'دليلك — دليل المواطن اللبناني للمعاملات الحكومية',
@@ -75,8 +77,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <a href="#main-content" className="skip-link">
             انتقل إلى المحتوى الرئيسي / Skip to main content
           </a>
+          <OfflineNotice />
           {children}
           <GlobalLangSwitch />
+          <AccessibilityBar />
         </LanguageProvider>
       </body>
     </html>
