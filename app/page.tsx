@@ -36,6 +36,7 @@ import SmartHomeBanner from '@/components/SmartHomeBanner'
 import GovHolidayAlert from '@/components/GovHolidayAlert'
 import SavedCostSummary from '@/components/SavedCostSummary'
 import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
+import HomepageProgressRing from '@/components/HomepageProgressRing'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -1855,6 +1856,7 @@ Question: ${text}`
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <HomepageProgressRing />
                   <GovHolidayAlert />
                   <SmartHomeBanner onAsk={q => sendMessage(q)} />
                   <StatsBadgeStrip />

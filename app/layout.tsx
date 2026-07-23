@@ -5,6 +5,7 @@ import { LanguageProvider } from '@/lib/LanguageContext'
 import GlobalLangSwitch from '@/components/GlobalLangSwitch'
 import OfflineNotice from '@/components/OfflineNotice'
 import AccessibilityBar from '@/components/AccessibilityBar'
+import MinistryQuickDial from '@/components/MinistryQuickDial'
 
 export const metadata: Metadata = {
   title: 'دليلك — دليل المواطن اللبناني للمعاملات الحكومية',
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
           <GlobalLangSwitch />
           <AccessibilityBar />
+          <MinistryQuickDial />
         </LanguageProvider>
       </body>
     </html>

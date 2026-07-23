@@ -22,6 +22,9 @@ import ProcedureDeadlineAlert, { setDeadline, clearDeadline } from '@/components
 import ProcedureNotesPanel from '@/components/ProcedureNotesPanel'
 import GovHolidayAlert from '@/components/GovHolidayAlert'
 import ProcedureStartButton from '@/components/ProcedureStartButton'
+import ProcedureCompletionBadge from '@/components/ProcedureCompletionBadge'
+import ProcedureEstimatedCompletion from '@/components/ProcedureEstimatedCompletion'
+import ProcedureShareViaEmail from '@/components/ProcedureShareViaEmail'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -745,10 +748,18 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
-                    {/* Started / in-progress marker */}
-                    <div style={{ marginBottom: 10 }}>
+                    {/* Started / completed markers */}
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
                       <ProcedureStartButton code={proc.code} isAr={isAr} />
+                      <ProcedureCompletionBadge code={proc.code} isAr={isAr} />
                     </div>
+
+                    {/* Estimated completion based on start date + processingTime */}
+                    <ProcedureEstimatedCompletion
+                      code={proc.code}
+                      processingTime={proc.processingTime}
+                      processingTimeEn={proc.processingTime_en}
+                    />
 
                     {/* Personal notes */}
                     <ProcedureNotesPanel code={proc.code} isAr={isAr} />
@@ -873,6 +884,8 @@ export default function ProceduresPage() {
                         </svg>
                         {isAr ? 'شارك' : 'Share'}
                       </button>
+                      {/* Share via Email */}
+                      <ProcedureShareViaEmail proc={proc} isAr={isAr} />
                       {/* Print button */}
                       <button
                         type="button"
