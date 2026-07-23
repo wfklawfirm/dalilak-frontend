@@ -107,6 +107,12 @@
 #   in PROCEDURES_DATA (title, description, ministry, steps), no invented
 #   content. Invisible to users, helps search engines show step-by-step
 #   rich results.
+#   NEW: app/manifest.ts + public/icon-192.png + public/icon-512.png —
+#   PWA support was missing entirely (no "Add to Home Screen" on mobile).
+#   Icons are square, padded resizes of the existing logo-icon.png (same
+#   real logo already used in TopNav), not new artwork. Also added
+#   appleWebApp meta to layout.tsx for iOS home-screen support. No
+#   existing metadata/route/env var touched.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
