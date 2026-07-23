@@ -301,27 +301,63 @@ export default function Home() {
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
 
-  // ── Enhance prompt via AI ──
+  // ── Enhance prompt via AI — reads /chat/stream, updates chips after ──
   const enhancePrompt = useCallback(async (text: string, setter: (v: string) => void, setLoading: (v: boolean) => void) => {
     if (!text.trim() || text.trim().length < 4) return
     setLoading(true)
     try {
-      const res = await fetch(`${API_URL}/api/chat`, {
+      const enhanceMsg = isAr
+        ? `حسّن هذا السؤال فقط — اكتب نسخة أوضح وأدق للسؤال التالي مع ذكر اسم المعاملة الحكومية إن كانت واضحة، بدون أي شرح أو مقدمة، السؤال المحسّن فقط:\n"${text}"`
+        : `Improve this question only — rewrite it as a clearer, more specific Lebanese government procedure question. No explanation or preamble, just the improved question:\n"${text}"`
+
+      const res = await fetch(`${API_URL}/chat/stream`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(currentUser ? { Authorization: `Bearer ${localStorage.getItem('token') || ''}` } : {}) },
-        body: JSON.stringify({
-          message: `أنت مساعد لتحسين الأسئلة. حسّن السؤال التالي ليكون أكثر وضوحاً ودقة لنظام دليلك للمعاملات الحكومية اللبنانية. أعط السؤال المحسّن فقط بدون أي شرح إضافي أو علامات اقتباس:\n\n${text}`,
-          mode: 'concise',
-          enhance_only: true,
-        }),
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ message: enhanceMsg, history: [] }),
       })
-      const data = await res.json()
-      const improved = (data.reply || data.message || '').trim().replace(/^["«»]+|["«»]+$/g, '').trim()
-      if (improved && improved.length > 5) setter(improved)
-    } catch { /* silent fail */ } finally {
+      if (!res.ok || !res.body) return
+
+      // Read streaming response chunks
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+
+      outer: while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const chunk = decoder.decode(value, { stream: true })
+        for (const line of chunk.split('\n')) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const json = JSON.parse(line.slice(6))
+            if (json.token) accumulated += json.token
+            if (json.done) break outer
+          } catch { /* skip malformed */ }
+        }
+      }
+
+      // Clean: strip quotes, bold, markdown, take first non-empty line
+      const improved = accumulated
+        .split('\n')
+        .map(l => l.trim().replace(/^[\*\#"«»""]+|[\*\#"«»""]+$/g, '').trim())
+        .find(l => l.length > 5) || ''
+
+      if (improved && improved.length < 400) {
+        setter(improved)
+        // Update suggestion chips to match the improved question
+        fetch(`${API_URL}/suggest_followup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body: JSON.stringify({ question: improved, answer: '' }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => { if (d?.questions?.length) setVisibleQ(d.questions.slice(0, 4)) })
+          .catch(() => {})
+      }
+    } catch { /* silent */ } finally {
       setLoading(false)
     }
-  }, [currentUser])
+  }, [isAr]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cross-fade hero card on switch
   useEffect(() => {
