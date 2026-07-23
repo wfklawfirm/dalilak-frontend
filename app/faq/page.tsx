@@ -6,6 +6,26 @@ import BottomNav from '@/components/BottomNav'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
 import { useLanguage } from '@/lib/LanguageContext'
 
+const CAT_EN: Record<string, string> = {
+  'الطوارئ والأرقام المهمة':       'Emergency Numbers',
+  'الخدمات البلدية':                'Municipal Services',
+  'أسئلة شائعة':                    'General FAQ',
+  'قانون العمل':                    'Labor Law',
+  'الخدمات الاجتماعية':             'Social Services',
+  'المعاملات العقارية':             'Real Estate',
+  'الخدمات العامة والمرافق':        'Public Utilities',
+  'مراجع قانونية':                  'Legal References',
+  'جدول الرسوم':                    'Fee Schedule',
+  'حقوق الأجانب في لبنان':          'Expat Rights',
+  'السجل المدني والأحوال الشخصية':  'Civil Registry',
+  'الضمان الاجتماعي والتأمينات':    'Social Security',
+  'الجمارك والاستيراد':             'Customs & Import',
+  'الضرائب والمالية العامة':        'Taxes & Finance',
+  'الصحة والترخيص المهني':          'Health & Licensing',
+  'الأشغال العامة والنقل':          'Public Works & Transport',
+  'التوثيق والشهر العقاري':         'Notary & Land Registry',
+}
+
 export default function FAQPage() {
   const router = useRouter()
   const { isAr, toggleLang } = useLanguage()
@@ -152,7 +172,7 @@ export default function FAQPage() {
                 color: catFilter === cat ? '#8B1A1A' : '#5C4A3A',
               }}>
               <FaqCatIcon cat={cat} size={11} />
-              {cat.length > 20 ? cat.slice(0, 20) + '…' : cat}
+              {(() => { const label = isAr ? cat : (CAT_EN[cat] || cat); return label.length > 20 ? label.slice(0, 20) + '…' : label })()}
             </button>
           ))}
         </div>
@@ -168,7 +188,7 @@ export default function FAQPage() {
             </span>
           </div>
           {catFilter !== 'all' && (
-            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— {catFilter}</span>
+            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— {isAr ? catFilter : (CAT_EN[catFilter] || catFilter)}</span>
           )}
           {search && (
             <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>
@@ -223,7 +243,7 @@ export default function FAQPage() {
                     onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                     style={{
                       width: '100%', padding: '12px 14px', background: 'none', border: 'none',
-                      cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right',
+                      cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
                       display: 'flex', alignItems: 'center', gap: 10,
                     }}
                   >
@@ -239,7 +259,7 @@ export default function FAQPage() {
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8B1A1A' : '#1A1208', lineHeight: 1.5 }}>
                         {item.title}
                       </div>
-                      <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 2 }}>{item.category}</div>
+                      <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? item.category : (CAT_EN[item.category] || item.category)}</div>
                     </div>
                     <span style={{
                       color: isOpen ? '#8B1A1A' : '#9C8E80',
