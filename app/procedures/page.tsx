@@ -14,6 +14,7 @@ import CostEstimator from '@/components/CostEstimator'
 import { trackView } from '@/lib/savedItems'
 import ProcedureTimeline from '@/components/ProcedureTimeline'
 import ProcedureCopyableSteps from '@/components/ProcedureCopyableSteps'
+import ProcedureCopySummaryLine from '@/components/ProcedureCopySummaryLine'
 import ProcedureStepsAudio from '@/components/ProcedureStepsAudio'
 import ProcedureStepHighlight from '@/components/ProcedureStepHighlight'
 import ProcedureNeedHelpToggle from '@/components/ProcedureNeedHelpToggle'
@@ -851,6 +852,12 @@ export default function ProceduresPage() {
                           steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
                           titleAr={proc.title}
                           titleEn={proc.title_en}
+                          isAr={isAr}
+                        />
+                        <ProcedureCopySummaryLine
+                          title={displayTitle}
+                          ministry={displayMinistry}
+                          fees={displayFees}
                           isAr={isAr}
                         />
                         <div style={{ marginTop: 8, marginBottom: 8 }}>

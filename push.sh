@@ -51,11 +51,12 @@
 #     — pairs with backend v6 (push_backend_v6.sh) which now actually emails
 #     the reset code when SMTP env vars are configured.
 #   #314 ProcedureCopyDeepLink       — copy a direct #proc-{code} link to a procedure card
+#   #315 ProcedureCopySummaryLine    — copy a compact one-line summary (title — ministry — fees)
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-314 — 30 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging"
+git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging"
 git push origin main
 echo "✅ Done"
