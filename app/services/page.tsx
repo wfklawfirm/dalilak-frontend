@@ -478,7 +478,7 @@ export default function ServicesPage() {
               width: '100%', padding: '12px 44px 12px 42px', borderRadius: 14,
               fontSize: 13.5, border: 'none', outline: 'none',
               fontFamily: "'Cairo','Inter',sans-serif",
-              direction: 'rtl', color: '#1A1208', background: 'transparent',
+              direction: isAr ? 'rtl' : 'ltr', color: '#1A1208', background: 'transparent',
             }}
           />
           {search && (
