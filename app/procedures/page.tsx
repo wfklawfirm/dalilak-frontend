@@ -29,6 +29,7 @@ import ProcedureStartButton from '@/components/ProcedureStartButton'
 import ProcedureCompletionBadge from '@/components/ProcedureCompletionBadge'
 import ProcedureEstimatedCompletion from '@/components/ProcedureEstimatedCompletion'
 import ProcedureShareViaEmail from '@/components/ProcedureShareViaEmail'
+import ProcedureCopyDeepLink from '@/components/ProcedureCopyDeepLink'
 import ProcedureHelpRequest from '@/components/ProcedureHelpRequest'
 import ProcedureQRShare from '@/components/ProcedureQRShare'
 import ProcedureQuickAskChips from '@/components/ProcedureQuickAskChips'
@@ -1115,6 +1116,7 @@ export default function ProceduresPage() {
                       </button>
                       {/* Share via Email */}
                       <ProcedureShareViaEmail proc={proc} isAr={isAr} />
+                      <ProcedureCopyDeepLink code={proc.code} isAr={isAr} />
                       {/* Human help via WhatsApp */}
                       <ProcedureHelpRequest code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
                       {/* QR Share */}
