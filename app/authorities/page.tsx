@@ -89,7 +89,7 @@ const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }>
 }
 
 function TypeIcon({ type, size = 20 }: { type: string; size?: number }) {
-  const s = { width: size, height: size, flexShrink: 0 as const, 'aria-hidden': true as const }
+  const s = { width: size, height: size, flexShrink: 0 as const }
   if (type === 'ministry') return (
     <svg aria-hidden="true" {...s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -160,7 +160,7 @@ export default function AuthoritiesPage() {
   }), [])
 
   const askAI = (name: string) =>
-    router.push(`/?q=${encodeURIComponent(`ما هي خدمات ${name} وكيف أتواصل معها؟`)}`)
+    router.push(`/?q=${encodeURIComponent(isAr ? `ما هي خدمات ${name} وكيف أتواصل معها؟` : `What services does ${name} provide and how to contact them?`)}`)
 
   return (
     <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -343,7 +343,7 @@ export default function AuthoritiesPage() {
             <p style={{ fontSize: 13.5, fontWeight: 700, color: '#5C4A3A', margin: '0 0 6px' }}>{isAr ? 'لا توجد جهات مطابقة' : 'No matching authorities'}</p>
             <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
             <button type="button"
-              onClick={() => router.push(`/?q=${encodeURIComponent(`ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟`)}`)}
+              onClick={() => router.push(`/?q=${encodeURIComponent(isAr ? `ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟` : `What are the ${search || typeFilter !== 'all' ? `${typeFilter} type` : 'official'} authorities in Lebanon?`)}`)}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{

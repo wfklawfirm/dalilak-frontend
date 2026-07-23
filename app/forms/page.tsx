@@ -201,7 +201,7 @@ export default function FormsPage() {
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
               <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
-              <button type="button" onClick={() => askAI(`أريد معلومات عن معاملة: ${search}`)}
+              <button type="button" onClick={() => askAI(isAr ? `أريد معلومات عن معاملة: ${search}` : `I need information about: ${search}`)}
                 onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 6px rgba(139,26,26,0.25)', transition: 'opacity 0.12s, transform 0.12s' }}>
@@ -249,7 +249,7 @@ export default function FormsPage() {
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9C8E80' }}>
               <div style={{ marginBottom: 8, color: '#C4B5A5' }}><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
               <p style={{ fontSize: 14, margin: 0 }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
-              <button type="button" onClick={() => askAI(`أريد معلومات عن نماذج ${search}`)}
+              <button type="button" onClick={() => askAI(isAr ? `أريد معلومات عن نماذج ${search}` : `I need information about forms: ${search}`)}
                 onTouchStart={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{ marginTop: 12, padding: '8px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 6px rgba(139,26,26,0.25)', transition: 'opacity 0.12s, transform 0.12s' }}>

@@ -298,9 +298,9 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
               {!isLast && (
                 <div style={{ display: 'flex', paddingRight: compact ? 18 : 22, margin: compact ? '3px 0' : '5px 0' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingRight: compact ? 0 : 0 }}>
-                    {outgoingEdges.length > 0 && outgoingEdges[0].label && (
+                    {outgoingEdges.length > 0 && (outgoingEdges[0].labelAr ?? outgoingEdges[0].labelEn) && (
                       <span style={{ fontSize: 9.5, color: '#9C8E80', background: '#EAE4D9', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
-                        {outgoingEdges[0].label}
+                        {outgoingEdges[0].labelAr ?? outgoingEdges[0].labelEn}
                       </span>
                     )}
                     <svg aria-hidden="true" width="12" height="18" viewBox="0 0 12 18" fill="none">

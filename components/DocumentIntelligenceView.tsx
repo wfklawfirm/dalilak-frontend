@@ -781,7 +781,7 @@ function CollapsibleSection({
 export default function DocumentIntelligenceView({
   analysis, isAr, onAction, onRequestHumanReview, onSend,
 }: DocumentIntelligenceViewProps) {
-  const meta = getDocCategoryMeta(analysis.category as DocCategory)
+  const meta = getDocCategoryMeta(analysis.documentType.category as DocCategory)
   const riskSummary = summarizeRiskLevel(analysis.risks)
 
   const handleAction = (action: NextAction) => { if (onAction) onAction(action) }
@@ -797,7 +797,7 @@ export default function DocumentIntelligenceView({
           <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: '#1A1208' }}>{isAr ? meta.labelAr : meta.labelEn}</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: '#1A1208' }}>{isAr ? meta.titleAr : meta.titleEn}</div>
           <div style={{ fontSize: 11, color: '#5C4A3A', marginTop: 2 }}>
             {isAr
               ? `${analysis.extractedFacts.length} بيانات مستخرجة · ${analysis.relatedProcedures.length} معاملات مرتبطة`
@@ -838,10 +838,10 @@ export default function DocumentIntelligenceView({
               <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #EAE4D9', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>{isAr ? p.titleAr : p.titleEn}</div>
-                  <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? p.ministry : p.ministry}</div>
+                  <div style={{ fontSize: 10.5, color: '#9C8E80', marginTop: 2 }}>{p.reason}</div>
                 </div>
                 <span style={{ fontSize: 9, fontWeight: 700, color: '#8B1A1A', background: '#FEF2F2', borderRadius: 20, padding: '2px 8px' }}>
-                  {Math.round(p.relevanceScore * 100)}%
+                  {p.relevance === 'high' ? '↑ عالٍ' : p.relevance === 'medium' ? '→ متوسط' : '↓ منخفض'}
                 </span>
               </div>
             ))}
@@ -850,20 +850,20 @@ export default function DocumentIntelligenceView({
       )}
 
       {/* Missing requirements */}
-      {(analysis.missingFields.length > 0 || analysis.missingDocuments.length > 0) && (
+      {(analysis.missingInformation.length > 0 || analysis.missingDocuments.length > 0) && (
         <CollapsibleSection
           title={isAr ? 'النواقص' : 'Missing Requirements'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {analysis.missingFields.map((f, i) => (
+            {analysis.missingInformation.map((f, i) => (
               <div key={i} style={{ padding: '7px 10px', background: '#FFF7ED', border: '1px solid #FDE68A', borderRadius: 8, fontSize: 12, color: '#854D0E' }}>
-                {isAr ? f.labelAr : f.labelEn}
+                {f.field}
               </div>
             ))}
             {analysis.missingDocuments.map((d, i) => (
               <div key={i} style={{ padding: '7px 10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#991B1B' }}>
-                {isAr ? d.labelAr : d.labelEn}
+                {isAr ? d.titleAr : (d.titleEn ?? d.titleAr)}
               </div>
             ))}
           </div>
@@ -881,8 +881,8 @@ export default function DocumentIntelligenceView({
               const [bg, fg] = riskColors(r.level)
               return (
                 <div key={i} style={{ padding: '8px 10px', background: bg, border: `1px solid ${fg}30`, borderRadius: 8 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: fg, marginBottom: 3 }}>{isAr ? r.titleAr : r.titleEn}</div>
-                  <div style={{ fontSize: 11, color: '#5C4A3A' }}>{isAr ? r.descriptionAr : r.descriptionEn}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: fg, marginBottom: 3 }}>{r.title}</div>
+                  <div style={{ fontSize: 11, color: '#5C4A3A' }}>{r.explanation}</div>
                 </div>
               )
             })}

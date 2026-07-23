@@ -261,7 +261,7 @@ export default function AdminPage() {
               }}
               style={{
                 padding: '7px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                fontFamily: 'inherit', border: 'none', transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
+                fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
                 background: tab === t.id ? 'linear-gradient(135deg, #6b2737, #8B1A1A)' : '#fff',
                 color: tab === t.id ? '#fff' : '#5C4A3A',
                 boxShadow: tab === t.id ? '0 2px 8px rgba(139,26,26,0.25)' : '0 1px 3px rgba(0,0,0,0.06)',

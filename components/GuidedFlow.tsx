@@ -387,7 +387,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
 
               {/* Options */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-                {currentFlowStep.options.map((opt, i) => (
+                {(currentFlowStep.options ?? []).map((opt, i) => (
                   <button
                     key={opt.value}
                     type="button"

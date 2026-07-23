@@ -44,6 +44,8 @@ export interface ProcedureFlowchart {
   procedureSlug: string
   titleAr: string
   titleEn: string
+  authorityAr?: string
+  authorityEn?: string
   country: string
   version: string
   verificationStatus: VerificationStatus

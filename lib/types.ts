@@ -401,6 +401,8 @@ export interface ContractRiskReview {
   risk_score: RiskScore
   confidence: ConfidenceSummary
   disclaimer: string
+  overall_recommendation?: string
+  overall_verdict?: 'safe' | 'caution' | 'high_risk'
 }
 
 export interface UploadedDocumentMeta {

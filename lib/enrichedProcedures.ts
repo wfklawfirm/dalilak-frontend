@@ -24,6 +24,7 @@ export interface EnrichedProcedure {
   processingTime_en?: string
   steps_en?: string[]
   whereToApply_en?: string
+  authority?: string
 }
 
 export const ENRICHED_PROCEDURES: EnrichedProcedure[] = [

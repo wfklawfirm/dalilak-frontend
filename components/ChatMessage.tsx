@@ -80,9 +80,7 @@ export default function ChatMessage({
           <UniversalDocumentAnalysisView
             analysis={msg.documentAnalysis}
             isAr={ar}
-            onSendMessage={onSendMessage ?? onFollowUp ?? (() => {})}
-            onStartFlow={onStartFlow}
-            onUploadFile={onUploadFile}
+            onSend={onSendMessage ?? onFollowUp ?? (() => {})}
           />
         </div>
       ) : (
