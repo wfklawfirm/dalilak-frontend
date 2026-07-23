@@ -513,7 +513,7 @@ a { color: inherit; text-decoration: none; }
 }
 .card-hover:hover {
   border-color: var(--brand) !important;
-  box-shadow: 0 4px 16px rgba(139,26,26,0.10) !important;
+  box-shadow: 0 4px 16px rgba(143,29,44,0.10) !important;
   transform: translateY(-1px);
 }
 
@@ -852,8 +852,8 @@ input:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(139,26,26,0.05);
-  border: 1.5px solid rgba(139,26,26,0.12);
+  background: rgba(143,29,44,0.05);
+  border: 1.5px solid rgba(143,29,44,0.12);
   border-radius: var(--radius-full);
   padding: 5px 14px 5px 9px;
   margin-bottom: 18px;
@@ -865,13 +865,13 @@ input:focus {
 }
 .quick-btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(139,26,26,0.25) !important;
+  border-color: rgba(143,29,44,0.25) !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
 }
 
 /* ── TopNav scroll glassmorphism ── */
 .tn-scrolled {
-  background: linear-gradient(135deg, rgba(107,39,55,0.88) 0%, rgba(139,26,26,0.88) 60%, rgba(122,24,24,0.88) 100%) !important;
+  background: linear-gradient(135deg, rgba(107,39,55,0.88) 0%, rgba(143,29,44,0.88) 60%, rgba(122,24,24,0.88) 100%) !important;
   backdrop-filter: blur(16px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 6px 28px rgba(80,10,10,0.4) !important;

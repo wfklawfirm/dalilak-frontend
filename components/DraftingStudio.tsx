@@ -203,24 +203,24 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: 8 }}>
             <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             {isAr ? 'استوديو الصياغة' : 'Drafting Studio'}
           </h2>
-          <p style={{ fontSize: 11.5, color: '#9C8E80', margin: 0 }}>
+          <p style={{ fontSize: 11.5, color: '#918B82', margin: 0 }}>
             {isAr ? 'أنشئ مسودات قانونية أولية عبر دليلك' : 'Generate initial legal drafts with Dalilak'}
           </p>
         </div>
         {onClose && (
           <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
-            style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+            onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
+            style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         )}
       </div>
 
       {/* Stage indicator */}
-      <nav aria-label={isAr ? 'خطوات الإنشاء' : 'Creation steps'} style={{ display: 'flex', gap: 0, marginBottom: 20, background: '#EAE4D9', borderRadius: 10, padding: 4 }}>
+      <nav aria-label={isAr ? 'خطوات الإنشاء' : 'Creation steps'} style={{ display: 'flex', gap: 0, marginBottom: 20, background: '#E6E2DC', borderRadius: 10, padding: 4 }}>
         {stageLabels.map((label, i) => {
           const s = (i + 1) as Stage
           const clickable = stage > s
@@ -238,7 +238,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                 fontSize: 11,
                 fontWeight: 700,
                 background: stage === s ? '#fff' : 'transparent',
-                color: stage === s ? '#8B1A1A' : stage > s ? '#78350F' : '#9C8E80',
+                color: stage === s ? '#8F1D2C' : stage > s ? '#78350F' : '#918B82',
                 boxShadow: stage === s ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
                 cursor: clickable ? 'pointer' : 'default',
                 transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
@@ -253,7 +253,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {/* STAGE 1: Template Picker */}
       {stage === 1 && (
         <div>
-          <p style={{ fontSize: 13, color: '#5C4A3A', marginBottom: 14 }}>
+          <p style={{ fontSize: 13, color: '#69645C', marginBottom: 14 }}>
             {isAr ? 'اختر نوع الوثيقة التي تريد إنشاءها:' : 'Choose the type of document you want to create:'}
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -261,7 +261,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               <button key={tpl.slug} type="button" onClick={() => handleSelectTemplate(tpl.slug)} style={{
                 padding: '14px 12px',
                 background: '#fff',
-                border: '1.5px solid #EAE4D9',
+                border: '1.5px solid #E6E2DC',
                 borderRadius: 14,
                 cursor: 'pointer',
                 textAlign: isAr ? 'right' : 'left',
@@ -270,14 +270,14 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                 animation: 'dsCard 0.22s cubic-bezier(0.22,1,0.36,1) both',
                 animationDelay: `${Math.min(idx, 10) * 0.06}s`,
               }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#8B1A1A'; el.style.background = '#FEF2F2'; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 4px 16px rgba(139,26,26,0.10)' }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#EAE4D9'; el.style.background = '#fff'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none' }}
-              onTouchStart={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
-              onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#8F1D2C'; el.style.background = '#F8EDEF'; el.style.transform = 'translateY(-2px)'; el.style.boxShadow = '0 4px 16px rgba(143,29,44,0.10)' }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#E6E2DC'; el.style.background = '#fff'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none' }}
+              onTouchStart={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.97)' }}
+              onTouchEnd={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
               >
-                <div style={{ marginBottom: 10, width: 42, height: 42, borderRadius: 11, background: 'linear-gradient(135deg, #FEF2F2, #FDE4E4)', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}><TemplateIcon slug={tpl.slug} size={20} /></div>
-                <p style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
-                <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
+                <div style={{ marginBottom: 10, width: 42, height: 42, borderRadius: 11, background: 'linear-gradient(135deg, #F8EDEF, #FDE4E4)', border: '1px solid rgba(143,29,44,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}><TemplateIcon slug={tpl.slug} size={20} /></div>
+                <p style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
+                <p style={{ fontSize: 10.5, color: '#918B82', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
               </button>
             ))}
           </div>
@@ -287,13 +287,13 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {/* STAGE 2: Field Collector */}
       {stage === 2 && selectedTemplate && (
         <div style={{ animation: 'dsFade 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 14px', background: '#FEF2F2', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 14 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 11, background: 'rgba(139,26,26,0.1)', border: '1px solid rgba(139,26,26,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, padding: '12px 14px', background: '#F8EDEF', border: '1.5px solid rgba(143,29,44,0.15)', borderRadius: 14 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 11, background: 'rgba(143,29,44,0.1)', border: '1px solid rgba(143,29,44,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}>
               <TemplateIcon slug={selectedTemplate.slug} size={20} />
             </div>
             <div>
-              <p style={{ fontSize: 13.5, fontWeight: 800, color: '#8B1A1A', margin: '0 0 2px' }}>{isAr ? selectedTemplate.titleAr : selectedTemplate.titleEn}</p>
-              <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>{selectedTemplate.descriptionAr}</p>
+              <p style={{ fontSize: 13.5, fontWeight: 800, color: '#8F1D2C', margin: '0 0 2px' }}>{isAr ? selectedTemplate.titleAr : selectedTemplate.titleEn}</p>
+              <p style={{ fontSize: 10.5, color: '#918B82', margin: 0 }}>{selectedTemplate.descriptionAr}</p>
             </div>
           </div>
 
@@ -302,7 +302,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               <div key={field.key}>
                 <label htmlFor={`ds-field-${field.key}`} style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#2D1B0E', marginBottom: 4 }}>
                   {isAr ? field.labelAr : field.labelEn}
-                  {field.required && <span style={{ color: '#8B1A1A', marginRight: 3 }}>*</span>}
+                  {field.required && <span style={{ color: '#8F1D2C', marginRight: 3 }}>*</span>}
                 </label>
                 {field.type === 'textarea' ? (
                   <textarea
@@ -312,9 +312,9 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                     placeholder={field.placeholder || (isAr ? field.labelAr : field.labelEn)}
                     rows={3}
                     aria-required={field.required}
-                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', resize: 'vertical', color: '#1A1208', direction: 'rtl', transition: 'border-color 0.18s, box-shadow 0.18s' }}
-                    onFocus={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
-                    onBlur={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = 'none' }}
+                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', resize: 'vertical', color: '#191713', direction: 'rtl', transition: 'border-color 0.18s, box-shadow 0.18s' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
+                    onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                   />
                 ) : (
                   <input
@@ -326,13 +326,13 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                     placeholder={field.placeholder || (isAr ? field.labelAr : field.labelEn)}
                     style={{
                       width: '100%', padding: '10px 12px',
-                      border: '1.5px solid #EAE4D9', borderRadius: 10,
+                      border: '1.5px solid #E6E2DC', borderRadius: 10,
                       fontSize: 13, fontFamily: 'inherit', outline: 'none',
-                      color: '#1A1208', background: '#fff',
+                      color: '#191713', background: '#fff',
                       transition: 'border-color 0.18s, box-shadow 0.18s',
                     }}
-                    onFocus={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)'; e.currentTarget.style.background = '#fff' }}
-                    onBlur={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = 'none' }}
+                    onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)'; e.currentTarget.style.background = '#fff' }}
+                    onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                   />
                 )}
               </div>
@@ -344,12 +344,12 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             <button
               type="button"
               onClick={() => setStage(1)}
-              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
-              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
+              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(143,29,44,0.3)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#E6E2DC' }}
               style={{
                 flex: 1, padding: '11px', borderRadius: 12,
-                border: '1.5px solid #EAE4D9', background: '#fff',
-                color: '#5C4A3A', fontSize: 13, fontWeight: 700,
+                border: '1.5px solid #E6E2DC', background: '#fff',
+                color: '#69645C', fontSize: 13, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s, border-color 0.12s',
               }}
             >
@@ -363,10 +363,10 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 flex: 2, padding: '11px', borderRadius: 12,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                 border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit',
-                boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
+                boxShadow: '0 3px 10px rgba(143,29,44,0.3)',
                 opacity: fields.filter(f => f.required).some(f => !fieldValues[f.key]?.trim()) ? 0.5 : 1,
                 transition: 'opacity 0.12s, transform 0.12s',
               }}
@@ -381,11 +381,11 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
       {stage === 3 && (
         <div style={{ animation: 'dsFade 0.22s cubic-bezier(0.22,1,0.36,1) both' }}>
           <div style={{
-            background: '#FAFAF8', border: '1.5px solid #EAE4D9',
+            background: '#FAFAF8', border: '1.5px solid #E6E2DC',
             borderRadius: 14, padding: '16px', marginBottom: 16,
             maxHeight: 280, overflowY: 'auto',
           }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#8F1D2C', margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               {isAr ? 'الطلب المُرسَل للذكاء الاصطناعي' : 'Prompt sent to AI'}
             </p>
             <pre style={{ fontSize: 12, color: '#3D2A1E', margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.7, fontFamily: 'inherit' }}>
@@ -396,12 +396,12 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             <button
               type="button"
               onClick={() => setStage(2)}
-              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(139,26,26,0.3)' }}
-              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#EAE4D9' }}
+              onTouchStart={e => { e.currentTarget.style.background = '#F5F0EA'; e.currentTarget.style.borderColor = 'rgba(143,29,44,0.3)' }}
+              onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#E6E2DC' }}
               style={{
                 flex: 1, padding: '11px', borderRadius: 12,
-                border: '1.5px solid #EAE4D9', background: '#fff',
-                color: '#5C4A3A', fontSize: 13, fontWeight: 700,
+                border: '1.5px solid #E6E2DC', background: '#fff',
+                color: '#69645C', fontSize: 13, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s, border-color 0.12s',
               }}
             >
@@ -414,10 +414,10 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 flex: 2, padding: '11px', borderRadius: 12,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                 border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit',
-                boxShadow: '0 3px 10px rgba(139,26,26,0.3)',
+                boxShadow: '0 3px 10px rgba(143,29,44,0.3)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 transition: 'opacity 0.12s, transform 0.12s',
               }}

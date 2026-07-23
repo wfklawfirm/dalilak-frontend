@@ -22,7 +22,7 @@ export default function Error({
   return (
     <div id="main-content" style={{
       minHeight: '100vh',
-      background: '#F2EDE6',
+      background: '#F8F8F6',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -36,26 +36,26 @@ export default function Error({
       <div style={{
         width: 64, height: 64,
         borderRadius: 18,
-        background: '#FEF2F2',
-        border: '1.5px solid rgba(139,26,26,0.18)',
+        background: '#F8EDEF',
+        border: '1.5px solid rgba(143,29,44,0.18)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 24,
       }}>
-        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.8">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
         </svg>
       </div>
 
       <h1 style={{
         fontSize: 20, fontWeight: 800,
-        color: '#1A1208',
+        color: '#191713',
         margin: '0 0 8px',
       }}>
         {isAr ? 'حدث خطأ غير متوقع' : 'An Unexpected Error Occurred'}
       </h1>
 
       <p style={{
-        fontSize: 14, color: '#5C4A3A',
+        fontSize: 14, color: '#69645C',
         margin: '0 0 24px',
         maxWidth: 340,
         lineHeight: 1.7,
@@ -76,13 +76,13 @@ export default function Error({
             padding: '10px 22px',
             borderRadius: 10,
             border: 'none',
-            background: 'linear-gradient(135deg,#8B1A1A 0%,#6b2737 100%)',
+            background: 'linear-gradient(135deg,#8F1D2C 0%,#741622 100%)',
             color: '#fff',
             fontSize: 14,
             fontWeight: 700,
             fontFamily: 'inherit',
             cursor: 'pointer',
-            boxShadow: '0 3px 12px rgba(139,26,26,0.28)',
+            boxShadow: '0 3px 12px rgba(143,29,44,0.28)',
           }}
         >
           <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -99,9 +99,9 @@ export default function Error({
             gap: 7,
             padding: '10px 22px',
             borderRadius: 10,
-            border: '1.5px solid #EAE4D9',
+            border: '1.5px solid #E6E2DC',
             background: '#fff',
-            color: '#5C4A3A',
+            color: '#69645C',
             fontSize: 14,
             fontWeight: 600,
             fontFamily: 'inherit',

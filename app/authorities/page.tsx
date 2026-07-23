@@ -233,7 +233,7 @@ export default function AuthoritiesPage() {
           ].map((s, i) => (
             <div key={s.label} style={{
               padding: '13px 8px 15px', textAlign: 'center',
-              background: s.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+              background: s.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
               border: s.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
               borderRadius: 12,
               boxShadow: s.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',

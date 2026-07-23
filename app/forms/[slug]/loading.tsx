@@ -7,7 +7,7 @@ export default function FormLoading() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#F2EDE6',
+        background: '#F8F8F6',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -20,15 +20,15 @@ export default function FormLoading() {
           style={{
             width: 36,
             height: 36,
-            border: '3px solid #EAE4D9',
-            borderTopColor: '#8B1A1A',
+            border: '3px solid #E6E2DC',
+            borderTopColor: '#8F1D2C',
             borderRadius: '50%',
             margin: '0 auto 14px',
             animation: 'fl-spin 0.8s linear infinite',
           }}
         />
         <style>{`@keyframes fl-spin { to { transform: rotate(360deg) } }`}</style>
-        <p style={{ color: '#9C8E80', fontSize: 13, margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
+        <p style={{ color: '#918B82', fontSize: 13, margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
       </div>
     </div>
   )

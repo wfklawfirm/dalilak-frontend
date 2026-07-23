@@ -119,11 +119,11 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
                   style={{
                     width: 52, height: 52, borderRadius: 18,
                     background: active
-                      ? 'linear-gradient(135deg,#6b2737 0%,#8B1A1A 100%)'
-                      : 'linear-gradient(135deg,#8B1A1A 0%,#6b2737 100%)',
+                      ? 'linear-gradient(135deg,#741622 0%,#8F1D2C 100%)'
+                      : 'linear-gradient(135deg,#8F1D2C 0%,#741622 100%)',
                     border: 'none', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 4px 16px rgba(139,26,26,0.45), 0 1px 4px rgba(0,0,0,0.12)',
+                    boxShadow: '0 4px 16px rgba(143,29,44,0.45), 0 1px 4px rgba(0,0,0,0.12)',
                     transform: 'translateY(-10px)',
                     transition: 'transform 0.18s cubic-bezier(0.34,1.6,0.64,1), box-shadow 0.18s',
                   }}
@@ -132,7 +132,7 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
                 </button>
                 <span style={{
                   fontSize: 10, fontWeight: active ? 700 : 500,
-                  color: active ? '#8B1A1A' : '#B0A498',
+                  color: active ? '#8F1D2C' : '#B0A498',
                   marginTop: -2,
                 }}>
                   {isAr ? tab.label_ar : tab.label_en}
@@ -153,7 +153,7 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
                 alignItems: 'center', justifyContent: 'center',
                 gap: 3, padding: '7px 4px 5px',
                 border: 'none', background: 'transparent', cursor: 'pointer',
-                color: active ? '#8B1A1A' : '#A89D92',
+                color: active ? '#8F1D2C' : '#A89D92',
                 fontFamily: 'inherit',
                 position: 'relative', borderRadius: 8,
               }}
@@ -162,11 +162,11 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
                 <span style={{
                   position: 'absolute', top: 0, left: '22%', right: '22%',
                   height: 3, borderRadius: '0 0 3px 3px',
-                  background: 'linear-gradient(90deg,#6b2737,#8B1A1A)',
+                  background: 'linear-gradient(90deg,#741622,#8F1D2C)',
                 }} />
               )}
               <span style={{
-                color: active ? '#8B1A1A' : '#B0A498',
+                color: active ? '#8F1D2C' : '#B0A498',
                 transform: active ? 'scale(1.08)' : 'scale(1)',
                 transition: 'color 0.18s, transform 0.2s cubic-bezier(0.34,1.6,0.64,1)',
               }}>

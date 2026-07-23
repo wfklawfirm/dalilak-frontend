@@ -739,7 +739,7 @@ export default function Home() {
         .wlc-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .wlc-nav-chip { }
         .wlc-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-        .wlc-svc-btn:hover { border-color: #8B1A1A !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(139,26,26,0.09) !important; transform: translateY(-2px) !important; }
+        .wlc-svc-btn:hover { border-color: #8F1D2C !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(143,29,44,0.09) !important; transform: translateY(-2px) !important; }
         /* Stagger entrance for service group cards */
         .wlc-svc-grid > :nth-child(1) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.30s; }
         .wlc-svc-grid > :nth-child(2) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.36s; }
@@ -750,9 +750,9 @@ export default function Home() {
         .wlc-svc-grid > :nth-child(7) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.60s; }
         .wlc-svc-grid > :nth-child(8) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.64s; }
         /* Quick-q pill hover lift */
-        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(139,26,26,0.25) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
+        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(143,29,44,0.25) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
         /* Input focused: subtle scale */
-        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; transform: scale(1.004); }
+        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06) !important; transform: scale(1.004); }
         /* Followup chip entrance */
         .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
         @media (min-width: 640px) {
@@ -1196,16 +1196,16 @@ export default function Home() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '6px 14px', borderRadius: 20,
-                    background: '#fff', border: '1.5px solid #EAE4D9',
-                    fontSize: 12, color: '#9C8E80', fontWeight: 600,
+                    background: '#fff', border: '1.5px solid #E6E2DC',
+                    fontSize: 12, color: '#918B82', fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
                     transition: 'border-color 0.15s, color 0.15s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.color = '#9C8E80' }}
-                  onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#8B1A1A' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#9C8E80' }}>
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.color = '#8F1D2C' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = '#918B82' }}
+                  onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.color = '#8F1D2C' }}
+                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#918B82' }}>
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
@@ -1263,7 +1263,7 @@ export default function Home() {
                         {[0, 1, 2].map(j => (
                           <span key={j} style={{
                             width: 7, height: 7, borderRadius: '50%',
-                            background: '#8B1A1A', display: 'inline-block',
+                            background: '#8F1D2C', display: 'inline-block',
                             animation: `typing-dot 1.2s ease-in-out ${j * 0.2}s infinite`,
                           }} />
                         ))}
@@ -1306,9 +1306,9 @@ export default function Home() {
                 aria-label={q}
                 onClick={() => { setInput(q); sendMessage(q) }}
                 style={{
-                  background: '#FFF5F5', border: '1px solid rgba(139,26,26,0.18)',
+                  background: '#FFF5F5', border: '1px solid rgba(143,29,44,0.18)',
                   borderRadius: 20, padding: '6px 14px', fontSize: 12.5,
-                  color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
+                  color: '#8F1D2C', cursor: 'pointer', fontFamily: 'inherit',
                   lineHeight: 1.4, textAlign: 'right', transition: 'background 0.15s, transform 0.15s',
                   display: 'flex', alignItems: 'center', gap: 5,
                   animationDelay: `${i * 0.07}s`,
@@ -1329,11 +1329,11 @@ export default function Home() {
           <div role="alert" style={{
             maxWidth: 720, margin: '0 auto 6px', padding: '8px 14px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            background: '#FEF2F2', border: '1.5px solid #FECACA',
+            background: '#F8EDEF', border: '1.5px solid #FECACA',
             borderRadius: 10, direction: isAr ? 'rtl' : 'ltr',
             animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both',
           }}>
-            <span style={{ fontSize: 12.5, color: '#8B1A1A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ fontSize: 12.5, color: '#8F1D2C', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
               <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/></svg>
               {voiceError}
             </span>
@@ -1351,9 +1351,9 @@ export default function Home() {
               type="button"
               onClick={() => sendMessage(retryMsg!)}
               style={{
-                background: '#fff5f5', border: '1px solid rgba(139,26,26,0.25)',
+                background: '#fff5f5', border: '1px solid rgba(143,29,44,0.25)',
                 borderRadius: 20, padding: '6px 16px', fontSize: 12.5,
-                color: '#8B1A1A', cursor: 'pointer', fontFamily: 'inherit',
+                color: '#8F1D2C', cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 4,
                 animation: 'slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both',
               }}
@@ -1374,7 +1374,7 @@ export default function Home() {
             direction: 'rtl', textAlign: 'right',
           }}>
             <span style={{
-              display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#8B1A1A' : '#92400e',
+              display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#8F1D2C' : '#92400e',
               background: quotaRemaining <= 3 ? '#fef2f2' : '#fffbeb',
               border: `1px solid ${quotaRemaining <= 3 ? '#fecaca' : '#fde68a'}`,
               borderRadius: 20, padding: '2px 10px', fontFamily: 'inherit',
@@ -1403,19 +1403,19 @@ export default function Home() {
             {activeDocumentName && messages.length > 0 && !attachedFile && (
               <div style={{
                 marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8,
-                padding: '6px 10px', background: '#FEF2F2',
-                borderRadius: 10, border: '1px solid rgba(139,26,26,0.2)',
+                padding: '6px 10px', background: '#F8EDEF',
+                borderRadius: 10, border: '1px solid rgba(143,29,44,0.2)',
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
-                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span style={{ fontSize: 10.5, color: '#8B1A1A', fontWeight: 600, flex: 1 }}>
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span style={{ fontSize: 10.5, color: '#8F1D2C', fontWeight: 600, flex: 1 }}>
                   {isAr ? 'يتم تحليل: ' : 'Analyzing: '}{activeDocumentName}
                 </span>
                 <button
                   type="button"
                   onClick={() => { setActiveDocumentName(null) }}
                   aria-label={isAr ? 'مسح المستند النشط' : 'Clear active document'}
-                  style={{ background: 'none', border: 'none', color: '#9C8E80', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
+                  style={{ background: 'none', border: 'none', color: '#918B82', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
                 ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
@@ -1425,7 +1425,7 @@ export default function Home() {
               <div style={{
                 marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 12px', backgroundColor: 'var(--red-light)',
-                borderRadius: 12, border: '1.5px solid rgba(139,26,26,0.15)',
+                borderRadius: 12, border: '1.5px solid rgba(143,29,44,0.15)',
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 {attachedFile.preview ? (
@@ -1434,11 +1434,11 @@ export default function Home() {
                 ) : (
                   <div style={{
                     width: 42, height: 42, borderRadius: 10, background: '#fff',
-                    border: '1.5px solid rgba(139,26,26,0.2)',
+                    border: '1.5px solid rgba(143,29,44,0.2)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 20, flexShrink: 0,
                   }}>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
@@ -1452,7 +1452,7 @@ export default function Home() {
                 </div>
                 <button type="button" onClick={() => setAttachedFile(null)} aria-label={isAr ? 'حذف الملف' : 'Remove file'} style={{
                   width: 24, height: 24, borderRadius: '50%',
-                  backgroundColor: 'rgba(139,26,26,0.1)', border: 'none',
+                  backgroundColor: 'rgba(143,29,44,0.1)', border: 'none',
                   cursor: 'pointer', color: 'var(--red)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   transition: 'background 0.12s',
@@ -1465,25 +1465,25 @@ export default function Home() {
               <div style={{
                 marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 gap: 10, padding: '8px 14px',
-                background: 'linear-gradient(135deg, #FEF2F2 0%, #FDE8E8 100%)',
+                background: 'linear-gradient(135deg, #F8EDEF 0%, #FDE8E8 100%)',
                 borderRadius: 12, border: '1.5px solid #FECACA',
               }}>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[8, 14, 10, 16, 11, 14, 9].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#8B1A1A', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 12, color: '#8B1A1A', fontWeight: 600 }}>
+                <span style={{ fontSize: 12, color: '#8F1D2C', fontWeight: 600 }}>
                   {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
                 </span>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#8B1A1A', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
                       animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
                       display: 'inline-block',
                     }} />
@@ -1564,7 +1564,7 @@ export default function Home() {
                 {showCharCount && (
                   <span style={{
                     flexShrink: 0, fontSize: 11, lineHeight: 1,
-                    color: input.length > 3800 ? '#b91c1c' : '#9C8E80',
+                    color: input.length > 3800 ? '#b91c1c' : '#918B82',
                     fontFamily: 'monospace', padding: '0 2px',
                     alignSelf: 'flex-end', paddingBottom: 10,
                   }}>
@@ -1581,10 +1581,10 @@ export default function Home() {
                     cursor: loading ? 'default' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: recording
-                      ? 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)'
+                      ? 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)'
                       : 'none',
                     color: recording ? '#fff' : 'var(--text-3)',
-                    boxShadow: recording ? '0 2px 8px rgba(139,26,26,0.35)' : 'none',
+                    boxShadow: recording ? '0 2px 8px rgba(143,29,44,0.35)' : 'none',
                     opacity: loading ? 0.4 : 1, transition: 'background 0.15s, box-shadow 0.15s, opacity 0.15s',
                   }}
                   onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
@@ -1607,7 +1607,7 @@ export default function Home() {
                       ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
                       : 'var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: canSend ? '0 3px 10px rgba(139,26,26,0.35)' : 'none',
+                    boxShadow: canSend ? '0 3px 10px rgba(143,29,44,0.35)' : 'none',
                     transition: 'background 0.15s, box-shadow 0.15s',
                   }}
                   onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}

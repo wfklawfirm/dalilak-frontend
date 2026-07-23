@@ -31,7 +31,7 @@ const PACK_SECTIONS: PackSection[] = [
     ),
     titleAr: 'المغتربون',
     titleEn: 'Expat Services',
-    color: '#8B1A1A',
+    color: '#8F1D2C',
     items: EXPAT_ITEMS,
   },
   {
@@ -127,18 +127,18 @@ export default function ExpatPropertyPackPage() {
   const currentSection = PACK_SECTIONS.find(s => s.id === activeSection)!
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={dir}>
+    <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={dir}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #D5CEC4; border-radius: 3px; }
-        .svc-card:hover { border-color: #8B1A1A !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(139,26,26,0.10) !important; }
+        .svc-card:hover { border-color: #8F1D2C !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(143,29,44,0.10) !important; }
         .bottom-nav-padding { padding-bottom: 68px; }
         @keyframes expHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       <header style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
         padding: '14px 16px 18px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 2px 16px rgba(80,10,10,0.3)',
         animation: 'expHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
@@ -210,9 +210,9 @@ export default function ExpatPropertyPackPage() {
 
       <div id="main-content" className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
 
-        <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #EAE4D9', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: '#1A1208', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2">
+        <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E6E2DC', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: '#191713', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
             </svg>
             {isAr ? 'كيف يعمل المسار؟' : 'How does the path work?'}
@@ -222,7 +222,7 @@ export default function ExpatPropertyPackPage() {
               <div key={s.step} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                 <div style={{
                   width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                  background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                  background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                   color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 10.5, fontWeight: 800,
                 }}>{s.step}</div>
@@ -249,10 +249,10 @@ export default function ExpatPropertyPackPage() {
             <span style={{ transform: 'scale(1.5)', display: 'flex' }}>{currentSection.icon}</span>
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: '#1A1208', lineHeight: 1.2 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: '#191713', lineHeight: 1.2 }}>
               {isAr ? currentSection.titleAr : currentSection.titleEn}
             </div>
-            <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 1 }}>
+            <div style={{ fontSize: 10.5, color: '#69645C', marginTop: 1 }}>
               {currentSection.items.length} {isAr ? 'خدمات متاحة' : 'available services'}
             </div>
           </div>
@@ -268,7 +268,7 @@ export default function ExpatPropertyPackPage() {
               onTouchStart={e => (e.currentTarget.style.background = '#F5F0E8')}
               onTouchEnd={e => (e.currentTarget.style.background = '#fff')}
               style={{
-                background: '#fff', border: '1.5px solid #EAE4D9', borderRadius: 14,
+                background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 14,
                 padding: '13px 14px', cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 12,
                 textAlign: isAr ? 'right' : 'left',
@@ -287,11 +287,11 @@ export default function ExpatPropertyPackPage() {
               </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1A1208', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#191713', lineHeight: 1.3 }}>
                   {isAr ? item.titleAr : item.titleEn}
                 </div>
                 {(isAr ? item.descriptionAr : item.descriptionEn) && (
-                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 3, lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 10.5, color: '#69645C', marginTop: 3, lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {isAr ? item.descriptionAr : item.descriptionEn}
                   </div>
                 )}
@@ -301,7 +301,7 @@ export default function ExpatPropertyPackPage() {
                 flexShrink: 0,
                 display: 'flex', alignItems: 'center', gap: 4,
                 padding: '4px 10px', borderRadius: 20,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                 color: '#fff', fontSize: 10, fontWeight: 700,
                 whiteSpace: 'nowrap',
               }}>
@@ -318,7 +318,7 @@ export default function ExpatPropertyPackPage() {
             onTouchStart={e => (e.currentTarget.style.opacity = '0.5')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
             style={{
-              background: 'none', border: 'none', color: '#9C8E80',
+              background: 'none', border: 'none', color: '#918B82',
               fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
               display: 'inline-flex', alignItems: 'center', gap: 5,
             }}

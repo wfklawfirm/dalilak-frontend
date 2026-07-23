@@ -213,13 +213,13 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
         </div>
 
         {/* Header */}
-        <div style={{ padding: '0 18px 12px', borderBottom: '1px solid #EAE4D9', flexShrink: 0 }}>
+        <div style={{ padding: '0 18px 12px', borderBottom: '1px solid #E6E2DC', flexShrink: 0 }}>
           {/* Progress bar */}
           <div style={{ display: 'flex', gap: 4, marginBottom: 10 }}>
             {[0, 1, 2, 3].map(i => (
               <div key={i} style={{
                 flex: 1, height: 3, borderRadius: 2,
-                background: i < progressNumerator / (progressDenominator / 4) ? '#8B1A1A' : '#EAE4D9',
+                background: i < progressNumerator / (progressDenominator / 4) ? '#8F1D2C' : '#E6E2DC',
                 transition: 'background 0.3s',
               }} />
             ))}
@@ -227,38 +227,38 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {phase !== 'pick_category' && (
               <button type="button" onClick={goBack} aria-label={isAr ? 'رجوع' : 'Back'}
-                onTouchStart={e => { e.currentTarget.style.color = '#8B1A1A' }}
-                onTouchEnd={e => { e.currentTarget.style.color = '#9C8E80' }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px 4px 0', color: '#9C8E80', display: 'flex', alignItems: 'center', transition: 'color 0.12s' }}>
+                onTouchStart={e => { e.currentTarget.style.color = '#8F1D2C' }}
+                onTouchEnd={e => { e.currentTarget.style.color = '#918B82' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px 4px 0', color: '#918B82', display: 'flex', alignItems: 'center', transition: 'color 0.12s' }}>
                 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6'} />
                 </svg>
               </button>
             )}
             <div style={{ flex: 1 }}>
-              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>
                 {headerLabel()}
               </h2>
               {phase === 'pick_category' && (
-                <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>
+                <p style={{ fontSize: 11, color: '#918B82', margin: '2px 0 0' }}>
                   {isAr ? `اختر القسم أو ابحث من ${ALL_PROCEDURES.length} خدمة` : `Choose a category or search ${ALL_PROCEDURES.length} services`}
                 </p>
               )}
               {phase === 'pick_procedure' && (
-                <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>
+                <p style={{ fontSize: 11, color: '#918B82', margin: '2px 0 0' }}>
                   {isAr ? `${filtered.length} خدمة — اختر ما تريد` : `${filtered.length} services — choose one`}
                 </p>
               )}
               {phase === 'flow_questions' && currentFlowStep?.hintAr && (
-                <p style={{ fontSize: 11, color: '#9C8E80', margin: '2px 0 0' }}>
+                <p style={{ fontSize: 11, color: '#918B82', margin: '2px 0 0' }}>
                   {isAr ? currentFlowStep.hintAr : currentFlowStep.hintEn}
                 </p>
               )}
             </div>
             <button ref={closeRef} type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
               onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
-              onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
-              style={{ background: '#EAE4D9', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5C4A3A', flexShrink: 0, transition: 'background 0.12s' }}>
+              onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
+              style={{ background: '#E6E2DC', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C', flexShrink: 0, transition: 'background 0.12s' }}>
               <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>
@@ -271,8 +271,8 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           {phase === 'pick_category' && (
             <>
               {/* Global search */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
-                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #E6E2DC', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input
                   value={search}
                   aria-label={isAr ? 'ابحث في كل الخدمات' : 'Search all services'}
@@ -282,7 +282,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   }}
                   placeholder={isAr ? 'ابحث في كل الخدمات...' : 'Search all services...'}
                   dir={isAr ? 'rtl' : 'ltr'}
-                  style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
+                  style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#191713', fontFamily: 'inherit' }}
                 />
               </div>
 
@@ -292,18 +292,18 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   <button key={i} type="button" onClick={() => handleSelectCategory(cat.slug)} style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     padding: '11px 13px', borderRadius: 14,
-                    background: '#fff', border: '1.5px solid #EAE4D9', cursor: 'pointer', fontFamily: 'inherit',
+                    background: '#fff', border: '1.5px solid #E6E2DC', cursor: 'pointer', fontFamily: 'inherit',
                     textAlign: isAr ? 'right' : 'left', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'border-color 0.15s, background 0.15s',
                     animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 10) * 0.04}s`,
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
-                  onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.background = '#FEF9F9' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff' }}
+                  onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.97)' }}
                   onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#1A1208', lineHeight: 1.3, flex: 1, textAlign: isAr ? 'right' : 'left' }}>{cat.label_ar}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#191713', lineHeight: 1.3, flex: 1, textAlign: isAr ? 'right' : 'left' }}>{cat.label_ar}</span>
                     <span style={{
-                      fontSize: 10, fontWeight: 700, color: '#8B1A1A',
-                      background: 'rgba(139,26,26,0.08)', borderRadius: 6,
+                      fontSize: 10, fontWeight: 700, color: '#8F1D2C',
+                      background: 'rgba(143,29,44,0.08)', borderRadius: 6,
                       padding: '2px 6px', flexShrink: 0,
                       marginRight: isAr ? 0 : 0, marginLeft: isAr ? 6 : 0,
                     }}>{cat.count}</span>
@@ -316,8 +316,8 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           {/* ── Phase 1: Pick procedure ── */}
           {phase === 'pick_procedure' && (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #EAE4D9', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
-                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAFAF8', border: '1.5px solid #E6E2DC', borderRadius: 12, padding: '8px 12px', marginBottom: 14 }}>
+                <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -325,10 +325,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   placeholder={isAr ? 'ابحث عن الخدمة...' : 'Search service...'}
                   dir={isAr ? 'rtl' : 'ltr'}
                   autoFocus
-                  style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#1A1208', fontFamily: 'inherit' }}
+                  style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#191713', fontFamily: 'inherit' }}
                 />
                 {search && (
-                  <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex' }}>
+                  <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', padding: 0, display: 'flex' }}>
                     <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
                   </button>
                 )}
@@ -336,7 +336,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
 
               <div aria-live="polite" aria-atomic="false">
               {filtered.length === 0 ? (
-                <div role="status" style={{ textAlign: 'center', padding: '32px 16px', color: '#9C8E80' }}>
+                <div role="status" style={{ textAlign: 'center', padding: '32px 16px', color: '#918B82' }}>
                   <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 8, opacity: 0.5 }}><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                   <p style={{ fontSize: 13, margin: 0 }}>{isAr ? 'لا توجد نتائج' : 'No results found'}</p>
                 </div>
@@ -345,22 +345,22 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   {filtered.map((p, i) => (
                     <button key={i} type="button" onClick={() => handleSelectProc(p)} style={{
                       display: 'flex', flexDirection: 'column', gap: 4, padding: '11px 13px', borderRadius: 14,
-                      background: '#fff', border: '1.5px solid #EAE4D9', cursor: 'pointer', fontFamily: 'inherit',
+                      background: '#fff', border: '1.5px solid #E6E2DC', cursor: 'pointer', fontFamily: 'inherit',
                       textAlign: isAr ? 'right' : 'left', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'border-color 0.15s, background 0.15s',
                       animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 12) * 0.03}s`,
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
-                    onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.background = '#FEF9F9' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff' }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.97)' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7 }}>
-                        <span style={{ display: 'flex', flexShrink: 0, color: '#8B1A1A', marginTop: 1 }}>
+                        <span style={{ display: 'flex', flexShrink: 0, color: '#8F1D2C', marginTop: 1 }}>
                           <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         </span>
-                        <span style={{ fontSize: 11.5, fontWeight: 600, color: '#1A1208', lineHeight: 1.35 }}>{isAr ? p.ar : (p.en || p.ar)}</span>
+                        <span style={{ fontSize: 11.5, fontWeight: 600, color: '#191713', lineHeight: 1.35 }}>{isAr ? p.ar : (p.en || p.ar)}</span>
                       </div>
                       {search.trim() && p.category && (
-                        <span style={{ fontSize: 9.5, color: '#9C8E80', paddingRight: 20 }}>{isAr ? p.category : (p.category_en || p.category)}</span>
+                        <span style={{ fontSize: 9.5, color: '#918B82', paddingRight: 20 }}>{isAr ? p.category : (p.category_en || p.category)}</span>
                       )}
                     </button>
                   ))}
@@ -374,14 +374,14 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
             <div style={{ animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
               {/* Selected procedure label */}
               {selectedProc && (
-                <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div style={{ fontSize: 11, color: '#918B82', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   {isAr ? selectedProc.ar : (selectedProc.en || selectedProc.ar)}
                 </div>
               )}
 
               {/* Question */}
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 18px', lineHeight: 1.4 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: '0 0 18px', lineHeight: 1.4 }}>
                 {isAr ? currentFlowStep.questionAr : currentFlowStep.questionEn}
               </h3>
 
@@ -394,26 +394,26 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                     onClick={() => handleFlowAnswer(opt.value)}
                     style={{
                       width: '100%', padding: '13px 16px', borderRadius: 14,
-                      background: '#fff', border: '1.5px solid #EAE4D9',
+                      background: '#fff', border: '1.5px solid #E6E2DC',
                       cursor: 'pointer', fontFamily: 'inherit',
                       textAlign: isAr ? 'right' : 'left',
-                      fontSize: 13.5, fontWeight: 600, color: '#1A1208',
+                      fontSize: 13.5, fontWeight: 600, color: '#191713',
                       boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                       transition: 'border-color 0.15s, background 0.15s, transform 0.15s',
                       animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
                       animationDelay: `${i * 0.06}s`,
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff' }}
-                    onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.98)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.background = '#FEF9F9' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff' }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.98)' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <span style={{
                         width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                        background: 'rgba(139,26,26,0.08)', border: '1.5px solid rgba(139,26,26,0.18)',
+                        background: 'rgba(143,29,44,0.08)', border: '1.5px solid rgba(143,29,44,0.18)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 10.5, fontWeight: 800, color: '#8B1A1A',
+                        fontSize: 10.5, fontWeight: 800, color: '#8F1D2C',
                       }}>
                         {i + 1}
                       </span>
@@ -431,12 +431,12 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   style={{
                     marginTop: 14, width: '100%', padding: '10px', borderRadius: 12,
                     border: '1px dashed #D5CEC4', background: 'none',
-                    color: '#9C8E80', fontSize: 12, fontWeight: 600,
+                    color: '#918B82', fontSize: 12, fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     transition: 'border-color 0.12s, color 0.12s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.color = '#8B1A1A' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#D5CEC4'; e.currentTarget.style.color = '#9C8E80' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.color = '#8F1D2C' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#D5CEC4'; e.currentTarget.style.color = '#918B82' }}
                 >
                   {isAr ? 'تخطّ هذا السؤال ←' : 'Skip this question →'}
                 </button>
@@ -448,7 +448,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
           {phase === 'legacy_intent' && (
             <div style={{ animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
               {selectedProc && (
-                <div style={{ fontSize: 11, color: '#9C8E80', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div style={{ fontSize: 11, color: '#918B82', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
                   <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   {isAr ? selectedProc.ar : (selectedProc.en || selectedProc.ar)}
                 </div>
@@ -462,7 +462,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                     style={{
                       display: 'flex', flexDirection: 'column', gap: 6,
                       padding: '13px 12px', borderRadius: 14,
-                      background: '#fff', border: '1.5px solid #EAE4D9',
+                      background: '#fff', border: '1.5px solid #E6E2DC',
                       cursor: 'pointer', fontFamily: 'inherit',
                       textAlign: isAr ? 'right' : 'left',
                       boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
@@ -470,18 +470,18 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                       animation: 'gfItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
                       animationDelay: `${Math.min(i, 6) * 0.06}s`,
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.background = '#FEF9F9'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'translateY(0)' }}
-                    onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.transform = 'scale(0.97)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.background = '#FEF9F9'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'translateY(0)' }}
+                    onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.97)' }}
                     onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}
                   >
-                    <span style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FDE4E4)', border: '1px solid rgba(139,26,26,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B1A1A', flexShrink: 0 }}>
+                    <span style={{ width: 38, height: 38, borderRadius: 10, background: 'linear-gradient(135deg, #F8EDEF, #FDE4E4)', border: '1px solid rgba(143,29,44,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}>
                       {INTENT_ICONS[intent.iconKey]}
                     </span>
-                    <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208' }}>
+                    <span style={{ fontSize: 12.5, fontWeight: 800, color: '#191713' }}>
                       {isAr ? intent.ar : intent.en}
                     </span>
-                    <span style={{ fontSize: 10.5, color: '#9C8E80', lineHeight: 1.4 }}>
+                    <span style={{ fontSize: 10.5, color: '#918B82', lineHeight: 1.4 }}>
                       {isAr ? intent.desc_ar : intent.desc_en}
                     </span>
                   </button>

@@ -112,13 +112,13 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
         </div>
         <div style={{ padding: '8px 18px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: 0 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}
           </h2>
           <button ref={closeRef} type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
-            style={{ background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+            onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
+            style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         {submitted ? (
@@ -131,10 +131,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             <p style={{ fontSize: 14, fontWeight: 700, color: '#78350F', margin: '0 0 6px' }}>
               {isAr ? 'تم إرسال طلبك بنجاح' : 'Request sent successfully'}
             </p>
-            <p style={{ fontSize: 12, color: '#5C4A3A', margin: '0 0 20px' }}>
+            <p style={{ fontSize: 12, color: '#69645C', margin: '0 0 20px' }}>
               {isAr ? 'سيتواصل معك أحد المختصين خلال 24 ساعة عمل.' : 'A specialist will contact you within 24 business hours.'}
             </p>
-            <button type="button" onClick={onClose} style={{ padding: '10px 32px', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(139,26,26,0.25)' }}>
+            <button type="button" onClick={onClose} style={{ padding: '10px 32px', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', border: 'none', borderRadius: 14, fontFamily: 'inherit', fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 8px rgba(143,29,44,0.25)' }}>
               {isAr ? 'إغلاق' : 'Close'}
             </button>
           </div>
@@ -143,7 +143,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
             {/* Request type */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
               {REQUEST_TYPES.map((t, i) => (
-                <button key={t.id} type="button" onClick={() => setRequestType(t.id)} aria-pressed={requestType === t.id} aria-label={isAr ? t.ar : t.en} style={{ padding: '10px 8px', border: '1.5px solid', borderColor: requestType === t.id ? '#8B1A1A' : '#EAE4D9', background: requestType === t.id ? '#FEF2F2' : '#FAFAF8', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: requestType === t.id ? '#8B1A1A' : '#4A4035', cursor: 'pointer', textAlign: 'center', animation: 'emItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s` }}>
+                <button key={t.id} type="button" onClick={() => setRequestType(t.id)} aria-pressed={requestType === t.id} aria-label={isAr ? t.ar : t.en} style={{ padding: '10px 8px', border: '1.5px solid', borderColor: requestType === t.id ? '#8F1D2C' : '#E6E2DC', background: requestType === t.id ? '#F8EDEF' : '#FAFAF8', borderRadius: 12, fontFamily: 'inherit', fontSize: 12, fontWeight: 600, color: requestType === t.id ? '#8F1D2C' : '#4A4035', cursor: 'pointer', textAlign: 'center', animation: 'emItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.05}s` }}>
                   <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'center' }}><ReqTypeIcon id={t.id} /></div>
                   {isAr ? t.ar : t.en}
                 </button>
@@ -152,8 +152,8 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
 
             {/* Question preview */}
             {question && (
-              <div style={{ background: '#FAFAF8', border: '1px solid #EAE4D9', borderRadius: 10, padding: '8px 12px', marginBottom: 12, fontSize: 11.5, color: '#5C4A3A', lineHeight: 1.5 }}>
-                <strong style={{ color: '#9C8E80', display: 'block', marginBottom: 2 }}>{isAr ? 'سؤالك:' : 'Your question:'}</strong>
+              <div style={{ background: '#FAFAF8', border: '1px solid #E6E2DC', borderRadius: 10, padding: '8px 12px', marginBottom: 12, fontSize: 11.5, color: '#69645C', lineHeight: 1.5 }}>
+                <strong style={{ color: '#918B82', display: 'block', marginBottom: 2 }}>{isAr ? 'سؤالك:' : 'Your question:'}</strong>
                 {question.slice(0, 150)}{question.length > 150 ? '...' : ''}
               </div>
             )}
@@ -165,15 +165,15 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
               value={note}
               onChange={e => setNote(e.target.value)}
               rows={2}
-              onFocus={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = 'none' }}
-              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #EAE4D9', borderRadius: 12, fontSize: 12.5, fontFamily: 'inherit', color: '#1A1208', resize: 'none', outline: 'none', marginBottom: 10, direction: isAr ? 'rtl' : 'ltr', transition: 'border-color 0.18s, box-shadow 0.18s' }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
+              style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E6E2DC', borderRadius: 12, fontSize: 12.5, fontFamily: 'inherit', color: '#191713', resize: 'none', outline: 'none', marginBottom: 10, direction: isAr ? 'rtl' : 'ltr', transition: 'border-color 0.18s, box-shadow 0.18s' }}
             />
 
             {/* Contact preference */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
               {CONTACT_PREFS.map(p => (
-                <button key={p.id} type="button" onClick={() => setContactPref(p.id)} aria-pressed={contactPref === p.id} aria-label={isAr ? p.ar : p.en} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#8B1A1A' : '#EAE4D9', background: contactPref === p.id ? '#FEF2F2' : '#fff', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: contactPref === p.id ? '#8B1A1A' : '#5C4A3A', textAlign: 'center' }}>
+                <button key={p.id} type="button" onClick={() => setContactPref(p.id)} aria-pressed={contactPref === p.id} aria-label={isAr ? p.ar : p.en} style={{ flex: 1, padding: '6px 4px', border: '1.5px solid', borderColor: contactPref === p.id ? '#8F1D2C' : '#E6E2DC', background: contactPref === p.id ? '#F8EDEF' : '#fff', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit', fontSize: 11.5, fontWeight: 600, color: contactPref === p.id ? '#8F1D2C' : '#69645C', textAlign: 'center' }}>
                   {isAr ? p.ar : p.en}
                 </button>
               ))}
@@ -191,20 +191,20 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
               }
               value={contact}
               onChange={e => { setContact(e.target.value); setError('') }}
-              onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
+              onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
               onBlur={e => { e.currentTarget.style.boxShadow = 'none' }}
               style={{
                 width: '100%', boxSizing: 'border-box',
-                padding: '10px 12px', border: `1.5px solid ${error ? '#8B1A1A' : '#EAE4D9'}`,
+                padding: '10px 12px', border: `1.5px solid ${error ? '#8F1D2C' : '#E6E2DC'}`,
                 borderRadius: 12, fontSize: 13, fontFamily: 'inherit',
-                color: '#1A1208', outline: 'none', marginBottom: 6,
+                color: '#191713', outline: 'none', marginBottom: 6,
                 background: '#FAFAF8', direction: 'ltr', transition: 'box-shadow 0.18s',
               }}
             />
 
             {/* Error */}
             {error && (
-              <p role="alert" style={{ fontSize: 11, color: '#8B1A1A', margin: '0 0 8px', fontWeight: 600 }}>{error}</p>
+              <p role="alert" style={{ fontSize: 11, color: '#8F1D2C', margin: '0 0 8px', fontWeight: 600 }}>{error}</p>
             )}
 
             {/* Submit */}
@@ -217,10 +217,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
                 width: '100%', padding: '12px',
-                background: loading ? '#D4C5B0' : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: loading ? '#D4C5B0' : 'linear-gradient(135deg, #8F1D2C, #741622)',
                 color: '#fff', border: 'none', borderRadius: 14,
                 fontSize: 13.5, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
-                fontFamily: 'inherit', boxShadow: loading ? 'none' : '0 3px 10px rgba(139,26,26,0.28)',
+                fontFamily: 'inherit', boxShadow: loading ? 'none' : '0 3px 10px rgba(143,29,44,0.28)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                 transition: 'opacity 0.12s, transform 0.12s',
               }}

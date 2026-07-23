@@ -38,10 +38,10 @@ export default function ServiceGroupSheet({
     const colors: Record<string, [string, string]> = {
       verified: ['#FFFBEB', '#78350F'],
       partially_verified: ['#FFFBEB', '#B45309'],
-      needs_review: ['#FEF2F2', '#8B1A1A'],
-      draft: ['#EAE4D9', '#5C4A3A'],
+      needs_review: ['#F8EDEF', '#8F1D2C'],
+      draft: ['#E6E2DC', '#69645C'],
     }
-    const [bg, fg] = colors[status] ?? ['#EAE4D9', '#5C4A3A']
+    const [bg, fg] = colors[status] ?? ['#E6E2DC', '#69645C']
     return (
       <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: bg, color: fg, flexShrink: 0 }}>
         {getVerificationLabel(status, isAr)}
@@ -91,7 +91,7 @@ export default function ServiceGroupSheet({
         {/* Group header */}
         <div style={{
           padding: '8px 20px 14px',
-          borderBottom: '1px solid #EAE4D9',
+          borderBottom: '1px solid #E6E2DC',
           flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
@@ -105,10 +105,10 @@ export default function ServiceGroupSheet({
               <span style={{ fontSize: 22, lineHeight: 1 }}>{group.icon}</span>
             </div>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#1A1208' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#191713' }}>
                 {isAr ? group.titleAr : group.titleEn}
               </div>
-              <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 1 }}>
+              <div style={{ fontSize: 10.5, color: '#69645C', marginTop: 1 }}>
                 {isAr ? group.descriptionAr : group.descriptionEn}
               </div>
             </div>
@@ -118,12 +118,12 @@ export default function ServiceGroupSheet({
             onClick={onClose}
             aria-label={T.close}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#EAE4D9' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
             style={{
               width: 32, height: 32, borderRadius: 8,
-              background: '#EAE4D9', border: 'none', cursor: 'pointer',
+              background: '#E6E2DC', border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#5C4A3A', fontSize: 16, flexShrink: 0, transition: 'background 0.12s',
+              color: '#69645C', fontSize: 16, flexShrink: 0, transition: 'background 0.12s',
             }}
           ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
@@ -139,7 +139,7 @@ export default function ServiceGroupSheet({
                 width: '100%', padding: '13px 14px',
                 marginBottom: 8,
                 background: '#fff', borderRadius: 14,
-                border: '1.5px solid #EAE4D9',
+                border: '1.5px solid #E6E2DC',
                 cursor: 'pointer', fontFamily: 'inherit',
                 display: 'flex', alignItems: 'center', gap: 12,
                 textAlign: isAr ? 'right' : 'left',
@@ -147,33 +147,33 @@ export default function ServiceGroupSheet({
                 animation: 'sgItem 0.22s cubic-bezier(0.22,1,0.36,1) both',
                 animationDelay: `${Math.min(i, 12) * 0.04}s`,
               }}
-              onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = '#8B1A1A'; el.style.background = '#FAFAF8'; el.style.transform = 'translateY(-1px)'; el.style.boxShadow = '0 3px 12px rgba(139,26,26,0.08)' }}
-              onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = '#EAE4D9'; el.style.background = '#fff'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none' }}
-              onTouchStart={e => { e.currentTarget.style.background = '#FEF2F2' }}
+              onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = '#8F1D2C'; el.style.background = '#FAFAF8'; el.style.transform = 'translateY(-1px)'; el.style.boxShadow = '0 3px 12px rgba(143,29,44,0.08)' }}
+              onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = '#E6E2DC'; el.style.background = '#fff'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none' }}
+              onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
             >
               {/* Icon */}
               <div style={{
                 width: 38, height: 38, borderRadius: 10,
-                background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.1)',
+                background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0,
               }}>
                 {item.icon
                   ? <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
-                  : <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  : <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 }
               </div>
 
               {/* Text */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1208' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>
                     {isAr ? item.titleAr : item.titleEn}
                   </span>
                 </div>
                 {(isAr ? item.descriptionAr : item.descriptionEn) && (
-                  <div style={{ fontSize: 10.5, color: '#5C4A3A', marginTop: 2, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 10.5, color: '#69645C', marginTop: 2, lineHeight: 1.4 }}>
                     {isAr ? item.descriptionAr : item.descriptionEn}
                   </div>
                 )}
@@ -182,11 +182,11 @@ export default function ServiceGroupSheet({
               {/* CTA */}
               <div style={{
                 padding: '5px 10px', borderRadius: 8,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
+                background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff',
                 fontSize: 10.5, fontWeight: 700,
                 whiteSpace: 'nowrap', flexShrink: 0,
                 display: 'flex', alignItems: 'center', gap: 4,
-                boxShadow: '0 2px 6px rgba(139,26,26,0.2)',
+                boxShadow: '0 2px 6px rgba(143,29,44,0.2)',
               }}>
                 {actionLabel(item)}
               </div>

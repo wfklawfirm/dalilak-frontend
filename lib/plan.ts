@@ -33,8 +33,8 @@ const PLAN_FEATURES: Record<PlanTier, PlanFeatures> = {
     procedureDetailEnabled: true,
     label_ar: 'تجريبي',
     label_en: 'Trial',
-    color: '#5C4A3A',
-    bg: '#EAE4D9',
+    color: '#69645C',
+    bg: '#E6E2DC',
   },
   free: {
     dailyMessageLimit: 5,
@@ -45,8 +45,8 @@ const PLAN_FEATURES: Record<PlanTier, PlanFeatures> = {
     procedureDetailEnabled: true,
     label_ar: 'مجاني',
     label_en: 'Free',
-    color: '#5C4A3A',
-    bg: '#EAE4D9',
+    color: '#69645C',
+    bg: '#E6E2DC',
   },
   paid: {
     dailyMessageLimit: -1,
@@ -69,8 +69,8 @@ const PLAN_FEATURES: Record<PlanTier, PlanFeatures> = {
     procedureDetailEnabled: true,
     label_ar: 'إداري',
     label_en: 'Admin',
-    color: '#8B1A1A',
-    bg: '#FEF2F2',
+    color: '#8F1D2C',
+    bg: '#F8EDEF',
   },
 }
 

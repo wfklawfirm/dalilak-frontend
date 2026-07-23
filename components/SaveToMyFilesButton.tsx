@@ -59,12 +59,12 @@ export default function SaveToMyFilesButton({ slug, titleAr, flowchart, isAr, co
   if (!loggedIn) {
     return (
       <div style={{ ...boxStyle, background: '#FAFAF8', border: '1px dashed #D5CEC4' }}>
-        <span style={{ fontSize: 11.5, color: '#5C4A3A' }}>
+        <span style={{ fontSize: 11.5, color: '#69645C' }}>
           {isAr ? 'سجّل الدخول لحفظ هذه المعاملة ومتابعة تقدّمها في "ملفاتي"' : 'Log in to save this procedure and track it in "My Files"'}
         </span>
         <Link
           href="/login"
-          style={{ fontSize: 11.5, fontWeight: 700, color: '#8B1A1A', textDecoration: 'none', border: '1px solid rgba(139,26,26,0.3)', borderRadius: 8, padding: '4px 12px', whiteSpace: 'nowrap' }}
+          style={{ fontSize: 11.5, fontWeight: 700, color: '#8F1D2C', textDecoration: 'none', border: '1px solid rgba(143,29,44,0.3)', borderRadius: 8, padding: '4px 12px', whiteSpace: 'nowrap' }}
         >
           {isAr ? 'تسجيل الدخول' : 'Log in'}
         </Link>
@@ -90,8 +90,8 @@ export default function SaveToMyFilesButton({ slug, titleAr, flowchart, isAr, co
   }
 
   return (
-    <div style={{ ...boxStyle, background: '#FEF7F7', border: '1px solid rgba(139,26,26,0.15)' }}>
-      <span style={{ fontSize: 11.5, color: '#5C4A3A' }}>
+    <div style={{ ...boxStyle, background: '#FEF7F7', border: '1px solid rgba(143,29,44,0.15)' }}>
+      <span style={{ fontSize: 11.5, color: '#69645C' }}>
         {isAr ? 'احفظ هذه المعاملة في "ملفاتي" لمتابعة تقدّمك من أي جهاز' : 'Save this procedure to "My Files" to track your progress from any device'}
       </span>
       <button
@@ -99,7 +99,7 @@ export default function SaveToMyFilesButton({ slug, titleAr, flowchart, isAr, co
         onClick={handleSave}
         disabled={state === 'saving'}
         style={{
-          fontSize: 11.5, fontWeight: 700, color: '#fff', background: state === 'error' ? '#8B1A1A' : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+          fontSize: 11.5, fontWeight: 700, color: '#fff', background: state === 'error' ? '#8F1D2C' : 'linear-gradient(135deg, #8F1D2C, #741622)',
           border: 'none', borderRadius: 8, padding: '6px 14px', cursor: state === 'saving' ? 'default' : 'pointer',
           fontFamily: 'inherit', whiteSpace: 'nowrap', opacity: state === 'saving' ? 0.7 : 1,
         }}

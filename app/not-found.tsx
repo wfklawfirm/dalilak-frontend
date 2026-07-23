@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <div id="main-content" style={{
       minHeight: '100vh',
-      background: '#F2EDE6',
+      background: '#F8F8F6',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -21,10 +21,10 @@ export default function NotFound() {
       <div style={{
         width: 64, height: 64,
         borderRadius: 18,
-        background: 'linear-gradient(135deg,#8B1A1A 0%,#6b2737 100%)',
+        background: 'linear-gradient(135deg,#8F1D2C 0%,#741622 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 24,
-        boxShadow: '0 4px 20px rgba(139,26,26,0.25)',
+        boxShadow: '0 4px 20px rgba(143,29,44,0.25)',
       }}>
         <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -34,7 +34,7 @@ export default function NotFound() {
       {/* Error code */}
       <div style={{
         fontSize: 72, fontWeight: 900,
-        color: '#8B1A1A',
+        color: '#8F1D2C',
         lineHeight: 1,
         marginBottom: 8,
         letterSpacing: '-2px',
@@ -42,14 +42,14 @@ export default function NotFound() {
 
       <h1 style={{
         fontSize: 20, fontWeight: 800,
-        color: '#1A1208',
+        color: '#191713',
         margin: '0 0 8px',
       }}>
         {isAr ? 'الصفحة غير موجودة' : 'Page Not Found'}
       </h1>
 
       <p style={{
-        fontSize: 14, color: '#5C4A3A',
+        fontSize: 14, color: '#69645C',
         margin: '0 0 28px',
         maxWidth: 320,
         lineHeight: 1.7,
@@ -67,13 +67,13 @@ export default function NotFound() {
           gap: 8,
           padding: '11px 24px',
           borderRadius: 12,
-          background: 'linear-gradient(135deg,#8B1A1A 0%,#6b2737 100%)',
+          background: 'linear-gradient(135deg,#8F1D2C 0%,#741622 100%)',
           color: '#fff',
           fontSize: 14,
           fontWeight: 700,
           fontFamily: 'inherit',
           textDecoration: 'none',
-          boxShadow: '0 3px 12px rgba(139,26,26,0.28)',
+          boxShadow: '0 3px 12px rgba(143,29,44,0.28)',
           transition: 'transform 0.18s,box-shadow 0.18s',
         }}
       >

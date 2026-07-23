@@ -45,11 +45,11 @@ export default function LoginPage() {
         @keyframes authCardIn { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         .auth-input {
           width: 100%; padding: 13px 16px;
-          border: 1.5px solid #EAE4D9; border-radius: 14px;
+          border: 1.5px solid #E6E2DC; border-radius: 14px;
           font-size: 15px; outline: none;
           font-family: inherit; background: #FAFAF8;
           transition: border-color 0.18s, box-shadow 0.18s;
-          color: #1A1208;
+          color: #191713;
         }
         .auth-input:focus {
           border-color: #8F1D2C;
@@ -58,7 +58,7 @@ export default function LoginPage() {
         }
         .auth-btn {
           width: 100%; padding: 14px;
-          background: linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%);
+          background: linear-gradient(135deg, #8F1D2C 0%, #741622 100%);
           color: #fff; border: none; border-radius: 14px;
           font-size: 15px; font-weight: 700; cursor: pointer;
           font-family: inherit;
@@ -98,14 +98,14 @@ export default function LoginPage() {
         boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 20px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 18, fontWeight: 800, color: '#191713', margin: '0 0 20px', textAlign: 'center' }}>
           {isAr ? 'تسجيل الدخول' : 'Login'}
         </h2>
 
         {error && (
           <div id="login-error" role="alert" style={{
             marginBottom: 16, padding: '10px 14px',
-            background: '#FEF2F2', border: '1.5px solid #FECACA',
+            background: '#F8EDEF', border: '1.5px solid #FECACA',
             borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center',
           }}>
             {error}
@@ -154,7 +154,7 @@ export default function LoginPage() {
                 onClick={() => setShowPass(s => !s)}
                 style={{
                   position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0,
+                  background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', padding: 0,
                   display: 'flex', alignItems: 'center',
                 }}>
                 {showPass
@@ -176,7 +176,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: 20, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
+        <div style={{ marginTop: 20, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
           {isAr ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
           <Link href="/register" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الآن — مجاناً لـ 3 أيام' : 'Register now — free for 3 days'}

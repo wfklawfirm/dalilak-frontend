@@ -51,9 +51,9 @@ export default function ChatMessage({
         <div style={{
           flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
           background: '#fff',
-          border: '1.5px solid rgba(139,26,26,0.18)',
+          border: '1.5px solid rgba(143,29,44,0.18)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 8px rgba(139,26,26,0.15)',
+          boxShadow: '0 2px 8px rgba(143,29,44,0.15)',
           overflow: 'hidden',
         }}>
           <img src="/logo-icon.png" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain' }} />
@@ -65,9 +65,9 @@ export default function ChatMessage({
           <div style={{
             padding: '11px 15px', borderRadius: 16,
             borderTopRightRadius: ar ? 4 : 16, borderTopLeftRadius: ar ? 16 : 4,
-            background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+            background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
             color: '#fff', fontSize: 13.5, lineHeight: 1.75,
-            boxShadow: '0 2px 10px rgba(139,26,26,0.2)',
+            boxShadow: '0 2px 10px rgba(143,29,44,0.2)',
           }}>
             <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
               {msg.content.replace(/^\[.*?\]\n?/, '')}

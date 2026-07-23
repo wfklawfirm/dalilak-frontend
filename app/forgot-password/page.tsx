@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(160deg, #6b2737 0%, #8B1A1A 40%, #f7f0eb 100%)',
+      background: 'linear-gradient(160deg, #741622 0%, #8F1D2C 40%, #f7f0eb 100%)',
       padding: '20px 16px',
       fontFamily: "'Cairo','Inter',sans-serif",
     }}>
@@ -40,27 +40,27 @@ export default function ForgotPasswordPage() {
         @keyframes authCardIn { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         .auth-input {
           width: 100%; padding: 12px 16px;
-          border: 1.5px solid #EAE4D9; border-radius: 14px;
+          border: 1.5px solid #E6E2DC; border-radius: 14px;
           font-size: 15px; outline: none;
           font-family: inherit; background: #FAFAF8;
           transition: border-color 0.18s, box-shadow 0.18s;
-          color: #1A1208;
+          color: #191713;
         }
         .auth-input:focus {
-          border-color: #8B1A1A;
-          box-shadow: 0 0 0 3px rgba(139,26,26,0.10);
+          border-color: #8F1D2C;
+          box-shadow: 0 0 0 3px rgba(143,29,44,0.10);
           background: #fff;
         }
         .auth-btn {
           width: 100%; padding: 14px;
-          background: linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%);
+          background: linear-gradient(135deg, #8F1D2C 0%, #741622 100%);
           color: #fff; border: none; border-radius: 14px;
           font-size: 15px; font-weight: 700; cursor: pointer;
           font-family: inherit;
-          box-shadow: 0 4px 16px rgba(139,26,26,0.35);
+          box-shadow: 0 4px 16px rgba(143,29,44,0.35);
           transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s cubic-bezier(0.22,1,0.36,1);
         }
-        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,26,26,0.4); }
+        .auth-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(143,29,44,0.4); }
         .auth-btn:active:not(:disabled) { transform: scale(0.98); }
         .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
       `}</style>
@@ -96,25 +96,25 @@ export default function ForgotPasswordPage() {
         {sent ? (
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}>
-              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="1.5">
+              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
             </div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1A1208', margin: '0 0 10px' }}>{isAr ? 'تم إرسال الطلب' : 'Request sent'}</h2>
-            <p style={{ fontSize: 13, color: '#5C4A3A', lineHeight: 1.6, margin: '0 0 8px' }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#191713', margin: '0 0 10px' }}>{isAr ? 'تم إرسال الطلب' : 'Request sent'}</h2>
+            <p style={{ fontSize: 13, color: '#69645C', lineHeight: 1.6, margin: '0 0 8px' }}>
               {isAr ? 'إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.' : 'If your email is registered, our support team will contact you within 24 hours with your recovery code.'}
             </p>
-            <p style={{ fontSize: 11.5, color: '#9C8E80', margin: '0 0 20px' }}>
+            <p style={{ fontSize: 11.5, color: '#918B82', margin: '0 0 20px' }}>
               {isAr ? 'يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.' : 'You can also contact us directly via WhatsApp or email.'}
             </p>
             <Link
               href="/login"
               style={{
                 display: 'block', padding: '13px',
-                background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+                background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
                 color: '#fff', borderRadius: 14, fontWeight: 700,
                 fontSize: 14, textDecoration: 'none', textAlign: 'center',
-                boxShadow: '0 4px 16px rgba(139,26,26,0.35)',
+                boxShadow: '0 4px 16px rgba(143,29,44,0.35)',
               }}
             >
               {isAr ? 'العودة لتسجيل الدخول' : 'Back to login'}
@@ -122,18 +122,18 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <>
-            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 6px', textAlign: 'center' }}>
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 6px', textAlign: 'center' }}>
               {isAr ? 'استعادة كلمة المرور' : 'Recover password'}
             </h2>
-            <p style={{ fontSize: 12.5, color: '#9C8E80', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: 12.5, color: '#918B82', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
               {isAr ? 'أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة' : 'Enter your email and we will send you a recovery code'}
             </p>
 
             {error && (
               <div role="alert" style={{
                 marginBottom: 14, padding: '10px 14px',
-                background: '#FEF2F2', border: '1.5px solid #FECACA',
-                borderRadius: 12, color: '#8B1A1A', fontSize: 13, textAlign: 'center',
+                background: '#F8EDEF', border: '1.5px solid #FECACA',
+                borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center',
               }}>
                 {error}
               </div>
@@ -141,8 +141,8 @@ export default function ForgotPasswordPage() {
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label htmlFor="fp-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>
-                  {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8B1A1A' }}>*</span>
+                <label htmlFor="fp-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
+                  {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8F1D2C' }}>*</span>
                 </label>
                 <input
                   id="fp-email"
@@ -163,17 +163,17 @@ export default function ForgotPasswordPage() {
               </button>
             </form>
 
-            <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
-              <Link href="/login" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
+            <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
+              <Link href="/login" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
                 {isAr ? 'العودة لتسجيل الدخول' : 'Back to login'}
               </Link>
             </div>
           </>
         )}
 
-        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: '#9C8E80' }}>
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: '#918B82' }}>
           {isAr ? 'لديك رمز الاستعادة بالفعل؟' : 'Already have a recovery code?'}{' '}
-          <Link href="/reset-password" style={{ color: '#8B1A1A', fontWeight: 700, textDecoration: 'none' }}>
+          <Link href="/reset-password" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'أدخله هنا' : 'Enter it here'}
           </Link>
         </div>

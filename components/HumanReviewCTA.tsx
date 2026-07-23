@@ -67,8 +67,8 @@ export default function HumanReviewCTA({
 
   return (
     <div dir="rtl" style={{
-      background: isCritical ? '#FEF2F2' : '#FAFAF8',
-      border: `1.5px solid ${isCritical ? 'rgba(139,26,26,0.3)' : 'rgba(139,26,26,0.15)'}`,
+      background: isCritical ? '#F8EDEF' : '#FAFAF8',
+      border: `1.5px solid ${isCritical ? 'rgba(143,29,44,0.3)' : 'rgba(143,29,44,0.15)'}`,
       borderRadius: 14, padding: '14px 16px',
       fontFamily: "'Cairo','Inter',sans-serif",
       animation: 'fadeUp 0.22s cubic-bezier(0.22,1,0.36,1) both',
@@ -77,20 +77,20 @@ export default function HumanReviewCTA({
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
         <div style={{
           flexShrink: 0, width: 34, height: 34, borderRadius: '50%',
-          background: isCritical ? '#8B1A1A' : 'rgba(139,26,26,0.1)',
-          border: `1.5px solid ${isCritical ? 'transparent' : 'rgba(139,26,26,0.2)'}`,
+          background: isCritical ? '#8F1D2C' : 'rgba(143,29,44,0.1)',
+          border: `1.5px solid ${isCritical ? 'transparent' : 'rgba(143,29,44,0.2)'}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke={isCritical ? '#fff' : '#8B1A1A'} strokeWidth="2.5">
+            stroke={isCritical ? '#fff' : '#8F1D2C'} strokeWidth="2.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
           </svg>
         </div>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: '0 0 3px' }}>
+          <p style={{ fontSize: 13, fontWeight: 800, color: '#191713', margin: '0 0 3px' }}>
             {isAr ? 'هل تحتاج مراجعة قانونية؟' : 'Do you need legal review?'}
           </p>
-          <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.55 }}>
+          <p style={{ fontSize: 11.5, color: '#69645C', margin: 0, lineHeight: 1.55 }}>
             {isCritical
               ? (isAr ? 'هذه المعاملة تنطوي على مخاطر حرجة — يُلزم مراجعة محامٍ أو مختص قبل المضي.' : 'This transaction carries critical risks — a lawyer or specialist review is required before proceeding.')
               : (isAr ? 'المعاملة تنطوي على تعقيدات — يُنصح بمراجعة محامٍ أو مختص لضمان صحة الإجراءات.' : 'The transaction involves complexities — consulting a lawyer or specialist is advised to ensure procedural correctness.')}
@@ -106,31 +106,31 @@ export default function HumanReviewCTA({
           onClick={() => setOpen(true)}
           style={{
             width: '100%', padding: '10px 14px',
-            background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+            background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
             color: '#fff', border: 'none', borderRadius: 11,
             fontSize: 13, fontWeight: 700, cursor: 'pointer',
             fontFamily: 'inherit',
-            boxShadow: '0 3px 10px rgba(139,26,26,0.25)',
+            boxShadow: '0 3px 10px rgba(143,29,44,0.25)',
             transition: 'transform 0.15s, box-shadow 0.15s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 5px 16px rgba(139,26,26,0.35)' }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(139,26,26,0.25)' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 5px 16px rgba(143,29,44,0.35)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 3px 10px rgba(143,29,44,0.25)' }}
         >
           {isAr ? 'اطلب مراجعة بشرية' : 'Request Human Review'}
         </button>
       ) : (
-        <div id="review-form" style={{ borderTop: '1px solid #EAE4D9', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
+        <div id="review-form" style={{ borderTop: '1px solid #E6E2DC', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 10, animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
           <div>
-            <label htmlFor="review-type" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'نوع المراجعة' : 'Review Type'}</label>
+            <label htmlFor="review-type" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'نوع المراجعة' : 'Review Type'}</label>
             <select
               id="review-type"
               aria-label={isAr ? 'نوع المراجعة' : 'Review type'}
               value={type}
               onChange={e => setType(e.target.value)}
               style={{
-                width: '100%', fontSize: 13, border: '1.5px solid #EAE4D9',
+                width: '100%', fontSize: 13, border: '1.5px solid #E6E2DC',
                 borderRadius: 10, padding: '9px 12px', background: '#FAFAF8',
-                outline: 'none', fontFamily: 'inherit', color: '#1A1208',
+                outline: 'none', fontFamily: 'inherit', color: '#191713',
               }}
             >
               <option value="legal">{isAr ? 'استشارة قانونية' : 'Legal Consultation'}</option>
@@ -140,7 +140,7 @@ export default function HumanReviewCTA({
           </div>
 
           <div>
-            <label htmlFor="review-summary" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'وصف الحالة' : 'Case Description'}</label>
+            <label htmlFor="review-summary" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'وصف الحالة' : 'Case Description'}</label>
             <textarea
               id="review-summary"
               value={summary}
@@ -148,27 +148,27 @@ export default function HumanReviewCTA({
               placeholder={isAr ? 'اشرح بإيجاز ما تحتاج المساعدة فيه...' : 'Briefly describe what you need help with...'}
               rows={3}
               style={{
-                width: '100%', fontSize: 13, border: '1.5px solid #EAE4D9',
+                width: '100%', fontSize: 13, border: '1.5px solid #E6E2DC',
                 borderRadius: 10, padding: '9px 12px', background: '#FAFAF8',
-                outline: 'none', fontFamily: 'inherit', resize: 'none', color: '#1A1208',
+                outline: 'none', fontFamily: 'inherit', resize: 'none', color: '#191713',
                 lineHeight: 1.5, transition: 'border-color 0.18s, box-shadow 0.18s',
               }}
-              onFocus={e => { e.currentTarget.style.borderColor = '#8B1A1A'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(139,26,26,0.08)' }}
-              onBlur={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = 'none' }}
+              onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
+              onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
             />
           </div>
 
           <div>
-            <label htmlFor="review-urgency" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#5C4A3A', marginBottom: 5 }}>{isAr ? 'الأولوية' : 'Priority'}</label>
+            <label htmlFor="review-urgency" style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'الأولوية' : 'Priority'}</label>
             <select
               id="review-urgency"
               aria-label={isAr ? 'الأولوية' : 'Priority'}
               value={urgency}
               onChange={e => setUrgency(e.target.value)}
               style={{
-                width: '100%', fontSize: 13, border: '1.5px solid #EAE4D9',
+                width: '100%', fontSize: 13, border: '1.5px solid #E6E2DC',
                 borderRadius: 10, padding: '9px 12px', background: '#FAFAF8',
-                outline: 'none', fontFamily: 'inherit', color: '#1A1208',
+                outline: 'none', fontFamily: 'inherit', color: '#191713',
               }}
             >
               <option value="normal">{isAr ? 'عادي' : 'Normal'}</option>
@@ -184,7 +184,7 @@ export default function HumanReviewCTA({
               disabled={!summary.trim()}
               style={{
                 flex: 1, padding: '10px',
-                background: !summary.trim() ? '#D4C5B0' : 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+                background: !summary.trim() ? '#D4C5B0' : 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
                 color: '#fff', border: 'none', borderRadius: 10,
                 fontSize: 13, fontWeight: 700, cursor: summary.trim() ? 'pointer' : 'not-allowed',
                 fontFamily: 'inherit',
@@ -197,8 +197,8 @@ export default function HumanReviewCTA({
               onClick={() => setOpen(false)}
               style={{
                 padding: '10px 16px',
-                border: '1.5px solid #EAE4D9', background: '#fff',
-                color: '#5C4A3A', borderRadius: 10,
+                border: '1.5px solid #E6E2DC', background: '#fff',
+                color: '#69645C', borderRadius: 10,
                 fontSize: 13, cursor: 'pointer', fontFamily: 'inherit',
               }}
             >

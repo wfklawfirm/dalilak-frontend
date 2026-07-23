@@ -58,11 +58,11 @@ export default function RegisterPage() {
         @keyframes authCardIn { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         .auth-input {
           width: 100%; padding: 12px 16px;
-          border: 1.5px solid #EAE4D9; border-radius: 14px;
+          border: 1.5px solid #E6E2DC; border-radius: 14px;
           font-size: 15px; outline: none;
           font-family: inherit; background: #FAFAF8;
           transition: border-color 0.18s, box-shadow 0.18s;
-          color: #1A1208;
+          color: #191713;
         }
         .auth-input:focus {
           border-color: #8F1D2C;
@@ -71,7 +71,7 @@ export default function RegisterPage() {
         }
         .auth-btn {
           width: 100%; padding: 14px;
-          background: linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%);
+          background: linear-gradient(135deg, #8F1D2C 0%, #741622 100%);
           color: #fff; border: none; border-radius: 14px;
           font-size: 15px; font-weight: 700; cursor: pointer;
           font-family: inherit;
@@ -111,7 +111,7 @@ export default function RegisterPage() {
         boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
-        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#1A1208', margin: '0 0 4px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 4px', textAlign: 'center' }}>
           {isAr ? 'إنشاء حساب جديد' : 'Create a new account'}
         </h2>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
         {error && (
           <div id="reg-error" role="alert" style={{
             marginBottom: 14, padding: '10px 14px',
-            background: '#FEF2F2', border: '1.5px solid #FECACA',
+            background: '#F8EDEF', border: '1.5px solid #FECACA',
             borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center',
           }}>
             {error}
@@ -180,7 +180,7 @@ export default function RegisterPage() {
               <button type="button" tabIndex={-1}
                 aria-label={showPass ? (isAr ? 'إخفاء كلمة المرور' : 'Hide password') : (isAr ? 'إظهار كلمة المرور' : 'Show password')}
                 onClick={() => setShowPass(s => !s)}
-                style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9C8E80', padding: 0, display: 'flex', alignItems: 'center' }}>
+                style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', padding: 0, display: 'flex', alignItems: 'center' }}>
                 {showPass
                   ? <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
                   : <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -213,7 +213,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: 16, textAlign: 'center', fontSize: 13, color: '#9C8E80' }}>
+        <div style={{ marginTop: 16, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
           {isAr ? 'لديك حساب بالفعل؟' : 'Already have an account?'}{' '}
           <Link href="/login" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الدخول' : 'Log in'}

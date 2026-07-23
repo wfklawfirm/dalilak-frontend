@@ -113,7 +113,7 @@ export default function FAQPage() {
           ].map(({ labelAr, labelEn, value, featured }, i) => (
             <div key={labelAr} style={{
               padding: '14px 8px 16px', textAlign: 'center',
-              background: featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+              background: featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
               border: featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
               borderRadius: 12,
               boxShadow: featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',

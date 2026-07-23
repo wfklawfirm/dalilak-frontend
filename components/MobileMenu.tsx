@@ -335,7 +335,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
             <span style={{ marginRight: 'auto', marginLeft: 'auto' }} />
             <span style={{
               fontSize: 11, fontWeight: 700, color: '#8F1D2C',
-              background: '#FEF2F2', border: '1px solid rgba(143,29,44,0.2)',
+              background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
               borderRadius: 20, padding: '2px 10px',
             }}>
               {isAr ? 'EN' : 'AR'}
@@ -365,10 +365,10 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
             type="button"
             onClick={handleLogout}
             onTouchStart={e => { e.currentTarget.style.background = '#FEE2E2' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
+            onTouchEnd={e => { e.currentTarget.style.background = '#F8EDEF' }}
             style={{
               width: '100%', padding: '12px', borderRadius: 12,
-              background: '#FEF2F2', border: '1.5px solid #FECACA',
+              background: '#F8EDEF', border: '1.5px solid #FECACA',
               color: '#8F1D2C', fontSize: 13, fontWeight: 700,
               cursor: 'pointer', fontFamily: 'inherit',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,

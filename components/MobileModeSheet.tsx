@@ -94,8 +94,8 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         </div>
 
         {/* Title */}
-        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #EAE4D9' }}>
-          <h3 style={{ fontSize: 14, fontWeight: 800, color: '#1A1208', margin: 0 }}>
+        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #E6E2DC' }}>
+          <h3 style={{ fontSize: 14, fontWeight: 800, color: '#191713', margin: 0 }}>
             {isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'}
           </h3>
         </div>
@@ -113,8 +113,8 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
                 style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '13px 16px', borderRadius: 14,
-                  border: `1.5px solid ${active ? '#8B1A1A' : '#EAE4D9'}`,
-                  background: active ? 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)' : '#fff',
+                  border: `1.5px solid ${active ? '#8F1D2C' : '#E6E2DC'}`,
+                  background: active ? 'linear-gradient(135deg, #F8EDEF 0%, #FEE2E2 100%)' : '#fff',
                   cursor: 'pointer', fontFamily: 'inherit',
                   textAlign: isAr ? 'right' : 'left',
                   transition: 'border-color 0.15s, background 0.15s',
@@ -126,22 +126,22 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                  background: active ? 'linear-gradient(135deg, rgba(139,26,26,0.14), rgba(107,39,55,0.08))' : '#EAE4D9',
+                  background: active ? 'linear-gradient(135deg, rgba(143,29,44,0.14), rgba(107,39,55,0.08))' : '#E6E2DC',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: active ? '#8B1A1A' : '#5C4A3A',
+                  color: active ? '#8F1D2C' : '#69645C',
                 }}>
                   <ModeIcon id={m.id} size={20} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#8B1A1A' : '#1A1208' }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#8F1D2C' : '#191713' }}>
                     {isAr ? m.label_ar : m.label_en}
                   </div>
-                  <div style={{ fontSize: 11, color: '#9C8E80', marginTop: 2, lineHeight: 1.45 }}>
+                  <div style={{ fontSize: 11, color: '#918B82', marginTop: 2, lineHeight: 1.45 }}>
                     {isAr ? m.hint_ar : m.hint_en}
                   </div>
                 </div>
                 {active && (
-                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2.5" style={{ flexShrink: 0 }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                   </svg>
                 )}
@@ -165,7 +165,7 @@ export function DesktopModeSelector({
   return (
     <div style={{
       display: 'inline-flex', alignItems: 'center',
-      background: '#EAE4D9', borderRadius: 999, padding: '3px', gap: 2,
+      background: '#E6E2DC', borderRadius: 999, padding: '3px', gap: 2,
     }}>
       {MODES.map(m => {
         const active = mode === m.id
@@ -178,13 +178,13 @@ export function DesktopModeSelector({
               padding: '6px 14px', borderRadius: 999, fontSize: 12,
               fontWeight: 600, cursor: 'pointer', border: 'none',
               background: active ? '#fff' : 'transparent',
-              color: active ? '#8B1A1A' : '#9C8E80',
-              boxShadow: active ? '0 1px 6px rgba(139,26,26,0.18)' : 'none',
+              color: active ? '#8F1D2C' : '#918B82',
+              boxShadow: active ? '0 1px 6px rgba(143,29,44,0.18)' : 'none',
               fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
               whiteSpace: 'nowrap',
             }}
           >
-            <span style={{ display: 'flex', color: active ? '#8B1A1A' : '#9C8E80' }}>
+            <span style={{ display: 'flex', color: active ? '#8F1D2C' : '#918B82' }}>
               <ModeIcon id={m.id} size={13} />
             </span>
             <span>{isAr ? m.label_ar : m.label_en}</span>
@@ -219,21 +219,21 @@ export default function ModeSelector({
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '7px 12px', borderRadius: 10,
-            border: '1.5px solid #EAE4D9', background: '#fff',
+            border: '1.5px solid #E6E2DC', background: '#fff',
             cursor: 'pointer', fontFamily: 'inherit',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             transition: 'border-color 0.15s',
           }}
-          onTouchStart={e => (e.currentTarget.style.borderColor = '#8B1A1A')}
-          onTouchEnd={e => (e.currentTarget.style.borderColor = '#EAE4D9')}
+          onTouchStart={e => (e.currentTarget.style.borderColor = '#8F1D2C')}
+          onTouchEnd={e => (e.currentTarget.style.borderColor = '#E6E2DC')}
         >
-          <span style={{ color: '#8B1A1A', display: 'flex', alignItems: 'center' }}>
+          <span style={{ color: '#8F1D2C', display: 'flex', alignItems: 'center' }}>
             <ModeIcon id={current.id} size={15} />
           </span>
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#1A1208' }}>
+          <span style={{ fontSize: 12.5, fontWeight: 700, color: '#191713' }}>
             {isAr ? current.label_ar : current.label_en}
           </span>
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9C8E80" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>

@@ -223,7 +223,7 @@ export default function MultiDocumentConsistencyPanel({ data, isAr = true, onReq
         {(criticalConflicts.length > 0 || data.readinessStatus !== 'ready_to_submit') && onRequestReview && (
           <button onClick={onRequestReview} style={{
             width: '100%', padding: '11px 16px', marginTop: 4,
-            background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+            background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
             color: '#fff', border: 'none', borderRadius: 12,
             fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
           }}>

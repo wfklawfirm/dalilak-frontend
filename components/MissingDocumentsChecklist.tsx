@@ -19,10 +19,10 @@ interface Props {
 }
 
 const PRIORITY_STYLE: Record<string, React.CSSProperties> = {
-  critical: { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.25)' },
+  critical: { background: '#F8EDEF', color: '#8F1D2C', border: '1px solid rgba(143,29,44,0.25)' },
   high:     { background: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A' },
   medium:   { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
-  low:      { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
+  low:      { background: '#E6E2DC', color: '#69645C', border: '1px solid #D5CEC4' },
 }
 
 const PRIORITY_AR: Record<string, string> = {
@@ -58,7 +58,7 @@ export default function MissingDocumentsChecklist({
 
   if (total === 0) {
     return (
-      <div dir={isAr ? 'rtl' : 'ltr'} style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#9C8E80', fontFamily: "'Cairo','Inter',sans-serif" }}>
+      <div dir={isAr ? 'rtl' : 'ltr'} style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#918B82', fontFamily: "'Cairo','Inter',sans-serif" }}>
         {isAr ? 'لا توجد وثائق مطلوبة' : 'No required documents'}
       </div>
     )
@@ -72,20 +72,20 @@ export default function MissingDocumentsChecklist({
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', gap: 10, fontFamily: "'Cairo','Inter',sans-serif", animation: 'fadeUp 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
       {/* Summary row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: '#1A1208', margin: 0 }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#191713', margin: 0 }}>
           {isAr ? `${uploaded} من ${total} وثائق مكتملة` : `${uploaded} of ${total} documents complete`}
         </p>
-        <div style={{ width: 120, background: '#EAE4D9', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
+        <div style={{ width: 120, background: '#E6E2DC', borderRadius: 99, height: 5, overflow: 'hidden', flexShrink: 0 }}>
           <div style={{
             width: `${pct}%`, height: 5, borderRadius: 99,
-            background: pct === 100 ? 'linear-gradient(90deg, #78350F, #B45309)' : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+            background: pct === 100 ? 'linear-gradient(90deg, #78350F, #B45309)' : 'linear-gradient(90deg, #8F1D2C, #741622)',
             transition: 'width 0.5s ease',
           }} />
         </div>
       </div>
 
       {/* Document list */}
-      <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+      <div style={{ borderRadius: 12, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
         {allDocs.map((doc, i) => {
           const isMissing = doc.missing && doc.missing.status !== 'uploaded'
           const isUploaded = !isMissing
@@ -98,7 +98,7 @@ export default function MissingDocumentsChecklist({
                 display: 'flex', alignItems: 'center', gap: 10,
                 padding: '10px 14px',
                 background: isUploaded ? 'rgba(255,251,235,0.4)' : '#fff',
-                borderBottom: i < allDocs.length - 1 ? '1px solid #EAE4D9' : 'none',
+                borderBottom: i < allDocs.length - 1 ? '1px solid #E6E2DC' : 'none',
                 animation: 'mdcFade 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 15) * 0.04}s`,
               }}
             >
@@ -106,7 +106,7 @@ export default function MissingDocumentsChecklist({
               <span style={{
                 flexShrink: 0, width: 22, height: 22, borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: isUploaded ? '#B45309' : needsReview ? '#B8860B' : '#8B1A1A',
+                background: isUploaded ? '#B45309' : needsReview ? '#B8860B' : '#8F1D2C',
               }}>
                 {isUploaded
                   ? <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -117,17 +117,17 @@ export default function MissingDocumentsChecklist({
 
               {/* Title + notes */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 12.5, fontWeight: 600, color: isUploaded ? '#5C4A3A' : '#1A1208', margin: '0 0 1px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontSize: 12.5, fontWeight: 600, color: isUploaded ? '#69645C' : '#191713', margin: '0 0 1px', display: 'flex', alignItems: 'center', gap: 4 }}>
                   {doc.title}
                   {doc.required && !isUploaded && (
-                    <span style={{ color: '#8B1A1A', fontSize: 11, fontWeight: 800 }}>*</span>
+                    <span style={{ color: '#8F1D2C', fontSize: 11, fontWeight: 800 }}>*</span>
                   )}
                 </p>
                 {doc.missing?.reason && !isUploaded && (
-                  <p style={{ fontSize: 11, color: '#9C8E80', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.missing.reason}</p>
+                  <p style={{ fontSize: 11, color: '#918B82', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.missing.reason}</p>
                 )}
                 {doc.notes && (
-                  <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{doc.notes}</p>
+                  <p style={{ fontSize: 11, color: '#918B82', margin: 0 }}>{doc.notes}</p>
                 )}
               </div>
 
@@ -149,7 +149,7 @@ export default function MissingDocumentsChecklist({
                   onClick={() => onUpload(doc.title)}
                   style={{
                     flexShrink: 0, fontSize: 10.5, padding: '4px 10px',
-                    background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                    background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                     color: '#fff', border: 'none', borderRadius: 8,
                     cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s',
                   }}

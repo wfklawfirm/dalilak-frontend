@@ -46,7 +46,7 @@ const CONF_STYLE: Record<string, React.CSSProperties> = {
   high:    { color: '#78350F', background: '#FFFBEB', border: '1px solid #FDE68A' },
   medium:  { color: '#B8860B', background: '#FFFBEB', border: '1px solid #FDE68A' },
   low:     { color: '#B45309', background: '#FFFBEB', border: '1px solid #FDE68A' },
-  unknown: { color: '#5C4A3A', background: '#EAE4D9', border: '1px solid #D5CEC4' },
+  unknown: { color: '#69645C', background: '#E6E2DC', border: '1px solid #D5CEC4' },
 }
 
 const CONF_AR: Record<string, string> = {
@@ -58,16 +58,16 @@ const CONF_EN: Record<string, string> = {
 }
 
 const WARN_CSS: Record<string, React.CSSProperties> = {
-  critical: { background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.3)', color: '#8B1A1A' },
+  critical: { background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.3)', color: '#8F1D2C' },
   warning:  { background: '#FFFBEB', border: '1px solid rgba(184,134,11,0.3)', color: '#92400E' },
-  info:     { background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.2)', color: '#8B1A1A' },
+  info:     { background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)', color: '#8F1D2C' },
 }
 
 const RISK_CLAUSE_STYLE: Record<string, React.CSSProperties> = {
-  critical: { color: '#8B1A1A', background: '#FEF2F2' },
+  critical: { color: '#8F1D2C', background: '#F8EDEF' },
   high:     { color: '#92400E', background: '#FFFBEB' },
   medium:   { color: '#B8860B', background: '#FFFBEB' },
-  low:      { color: '#5C4A3A', background: '#EAE4D9' },
+  low:      { color: '#69645C', background: '#E6E2DC' },
 }
 
 const RISK_AR: Record<string, string> = {
@@ -80,10 +80,10 @@ const RISK_EN: Record<string, string> = {
 
 const STRENGTH_STYLE: Record<string, React.CSSProperties> = {
   strong:     { color: '#78350F' },
-  acceptable: { color: '#8B1A1A' },
+  acceptable: { color: '#8F1D2C' },
   weak:       { color: '#B8860B' },
-  missing:    { color: '#8B1A1A' },
-  unclear:    { color: '#5C4A3A' },
+  missing:    { color: '#8F1D2C' },
+  unclear:    { color: '#69645C' },
 }
 
 const STRENGTH_AR: Record<string, string> = {
@@ -117,7 +117,7 @@ function actionLabel(type: ActionType, isAr: boolean): string {
 }
 
 const ROW_S: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8 }
-const LABEL_S: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: '#9C8E80', marginBottom: 6 }
+const LABEL_S: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: '#918B82', marginBottom: 6 }
 
 export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName, onRequestReview }: Props) {
   const { isAr } = useLanguage()
@@ -132,21 +132,21 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#6b2737' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#741622' }}>
               {(isAr ? DOC_TYPE_AR[analysis.document_type] : DOC_TYPE_EN[analysis.document_type]) || analysis.document_type}
             </span>
             {analysis.detected_country && analysis.detected_country !== 'unknown' && (
-              <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
+              <span style={{ fontSize: 11, background: '#E6E2DC', color: '#69645C', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_country === 'lebanon' ? (isAr ? 'لبنان' : 'Lebanon') : analysis.detected_country}
               </span>
             )}
             {analysis.detected_language && (
-              <span style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '2px 8px', borderRadius: 99 }}>
+              <span style={{ fontSize: 11, background: '#E6E2DC', color: '#69645C', padding: '2px 8px', borderRadius: 99 }}>
                 {analysis.detected_language === 'ar' ? (isAr ? 'عربي' : 'Arabic') : analysis.detected_language === 'en' ? (isAr ? 'إنجليزي' : 'English') : analysis.detected_language}
               </span>
             )}
           </div>
-          {fileName && <p style={{ fontSize: 11, color: '#9C8E80', margin: '3px 0 0' }}>{fileName}</p>}
+          {fileName && <p style={{ fontSize: 11, color: '#918B82', margin: '3px 0 0' }}>{fileName}</p>}
         </div>
         <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, fontWeight: 600, whiteSpace: 'nowrap', ...CONF_STYLE[confLevel] }}>
           {isAr ? `دقة ${CONF_AR[confLevel]}` : `${CONF_EN[confLevel]} accuracy`}
@@ -155,9 +155,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
 
       {/* Summary */}
       {analysis.summary && (
-        <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
+        <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #E6E2DC' }}>
           <p style={LABEL_S}>{isAr ? 'الملخص' : 'Summary'}</p>
-          <p style={{ fontSize: 13, color: '#1A1208', lineHeight: 1.7, margin: 0 }}>{analysis.summary}</p>
+          <p style={{ fontSize: 13, color: '#191713', lineHeight: 1.7, margin: 0 }}>{analysis.summary}</p>
         </div>
       )}
 
@@ -181,17 +181,17 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
       {analysis.extracted_fields?.length > 0 && (
         <div>
           <p style={LABEL_S}>{isAr ? 'البيانات المستخرجة' : 'Extracted Data'}</p>
-          <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+          <div style={{ borderRadius: 12, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
             {analysis.extracted_fields.map((f, i) => (
-              <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < analysis.extracted_fields.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
-                <span style={{ fontSize: 11, color: '#9C8E80', width: 110, flexShrink: 0 }}>{f.label}</span>
-                <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{f.value}</span>
+              <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < analysis.extracted_fields.length - 1 ? '1px solid #E6E2DC' : 'none' }}>
+                <span style={{ fontSize: 11, color: '#918B82', width: 110, flexShrink: 0 }}>{f.label}</span>
+                <span style={{ fontSize: 13, color: '#191713', flex: 1 }}>{f.value}</span>
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                   {f.confidence === 'high'
                     ? <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#B45309"/></svg>
                     : f.confidence === 'medium'
                     ? <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#CA8A04"/></svg>
-                    : <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#9C8E80" strokeWidth="1.5"/></svg>}
+                    : <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="#918B82" strokeWidth="1.5"/></svg>}
                 </span>
               </div>
             ))}
@@ -205,9 +205,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           <p style={LABEL_S}>{isAr ? 'الأطراف' : 'Parties'}</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {analysis.parties.map((p, i) => (
-              <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 10, padding: '6px 12px', animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
-                <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{p.role}</p>
-                <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: 0 }}>{p.name || '—'}</p>
+              <div key={i} style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 10, padding: '6px 12px', animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.06}s` }}>
+                <p style={{ fontSize: 11, color: '#918B82', margin: 0 }}>{p.role}</p>
+                <p style={{ fontSize: 13, fontWeight: 600, color: '#191713', margin: 0 }}>{p.name || '—'}</p>
               </div>
             ))}
           </div>
@@ -252,7 +252,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.14)'; e.currentTarget.style.borderColor = 'rgba(107,39,55,0.35)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(107,39,55,0.08)'; e.currentTarget.style.borderColor = 'rgba(107,39,55,0.2)' }}
                 style={{
-                  fontSize: 13, background: 'rgba(107,39,55,0.08)', color: '#6b2737',
+                  fontSize: 13, background: 'rgba(107,39,55,0.08)', color: '#741622',
                   border: '1px solid rgba(107,39,55,0.2)', padding: '6px 12px', borderRadius: 10,
                   cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.14s, border-color 0.14s',
                   animation: 'dapItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s`,
@@ -267,8 +267,8 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
 
       {/* ── Contract Review Section ── */}
       {reviewResult && (
-        <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <p style={{ fontSize: 14, fontWeight: 700, color: '#6b2737', margin: 0 }}>{isAr ? 'مراجعة العقد' : 'Contract Review'}</p>
+        <div style={{ borderTop: '1px solid #E6E2DC', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#741622', margin: 0 }}>{isAr ? 'مراجعة العقد' : 'Contract Review'}</p>
 
           {/* Risk score */}
           {reviewResult.risk_score && (
@@ -286,7 +286,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {reviewResult.extracted_facts && Object.values(reviewResult.extracted_facts).some(Boolean) && (
             <div>
               <p style={LABEL_S}>{isAr ? 'بيانات العقد' : 'Contract Data'}</p>
-              <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+              <div style={{ borderRadius: 12, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
                 {(Object.entries(reviewResult.extracted_facts) as [string, string | string[] | null | undefined][]).map(([k, v], idx, arr) => {
                   if (!v) return null
                   const label: Record<string, string> = isAr ? {
@@ -300,9 +300,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                   }
                   const display = Array.isArray(v) ? v.join('، ') : String(v)
                   return (
-                    <div key={k} style={{ display: 'flex', gap: 10, padding: '9px 14px', borderBottom: idx < arr.length - 1 ? '1px solid #EAE4D9' : 'none' }}>
-                      <span style={{ fontSize: 11, color: '#9C8E80', width: 100, flexShrink: 0 }}>{label[k] || k}</span>
-                      <span style={{ fontSize: 13, color: '#1A1208' }}>{display}</span>
+                    <div key={k} style={{ display: 'flex', gap: 10, padding: '9px 14px', borderBottom: idx < arr.length - 1 ? '1px solid #E6E2DC' : 'none' }}>
+                      <span style={{ fontSize: 11, color: '#918B82', width: 100, flexShrink: 0 }}>{label[k] || k}</span>
+                      <span style={{ fontSize: 13, color: '#191713' }}>{display}</span>
                     </div>
                   )
                 })}
@@ -312,9 +312,9 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
 
           {/* Party risk balance */}
           {reviewResult.party_risk_balance?.favors && (
-            <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
+            <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #E6E2DC' }}>
               <p style={LABEL_S}>{isAr ? 'توازن العقد' : 'Contract Balance'}</p>
-              <p style={{ fontSize: 13, color: '#1A1208', margin: 0 }}>
+              <p style={{ fontSize: 13, color: '#191713', margin: 0 }}>
                 {reviewResult.party_risk_balance.favors === 'balanced'
                   ? (isAr ? 'العقد متوازن بين الطرفين' : 'The contract is balanced between both parties')
                   : reviewResult.party_risk_balance.favors === 'party_one'
@@ -324,7 +324,7 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
                   : (isAr ? 'التوازن غير واضح' : 'Balance unclear')}
               </p>
               {reviewResult.party_risk_balance.notes && (
-                <p style={{ fontSize: 11, color: '#9C8E80', margin: '4px 0 0' }}>{reviewResult.party_risk_balance.notes}</p>
+                <p style={{ fontSize: 11, color: '#918B82', margin: '4px 0 0' }}>{reviewResult.party_risk_balance.notes}</p>
               )}
             </div>
           )}
@@ -333,19 +333,19 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {reviewResult.key_clauses_found?.length > 0 && (
             <div>
               <p style={LABEL_S}>{isAr ? 'البنود الأساسية' : 'Key Clauses'}</p>
-              <div style={{ borderRadius: 12, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+              <div style={{ borderRadius: 12, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
                 {reviewResult.key_clauses_found.slice(0, 10).map((c, i) => (
-                  <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < Math.min(reviewResult.key_clauses_found.length, 10) - 1 ? '1px solid #EAE4D9' : 'none' }}>
+                  <div key={i} style={{ ...ROW_S, padding: '9px 14px', borderBottom: i < Math.min(reviewResult.key_clauses_found.length, 10) - 1 ? '1px solid #E6E2DC' : 'none' }}>
                     <span style={{
                       flexShrink: 0, width: 16, height: 16, borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: c.found ? '#B45309' : '#FEF2F2', color: c.found ? '#fff' : '#8B1A1A',
+                      background: c.found ? '#B45309' : '#F8EDEF', color: c.found ? '#fff' : '#8F1D2C',
                     }}>
                       {c.found
                         ? <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                         : <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>}
                     </span>
-                    <span style={{ fontSize: 13, color: '#1A1208', flex: 1 }}>{c.clause}</span>
+                    <span style={{ fontSize: 13, color: '#191713', flex: 1 }}>{c.clause}</span>
                     <span style={{ fontSize: 11, fontWeight: 600, ...(STRENGTH_STYLE[c.strength] || {}) }}>
                       {(isAr ? STRENGTH_AR[c.strength] : STRENGTH_EN[c.strength]) || c.strength}
                     </span>
@@ -361,17 +361,17 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
               <p style={LABEL_S}>{isAr ? `بنود ناقصة أو ضعيفة (${reviewResult.missing_or_weak_clauses.length})` : `Missing or Weak Clauses (${reviewResult.missing_or_weak_clauses.length})`}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {reviewResult.missing_or_weak_clauses.map((c, i) => (
-                  <div key={i} style={{ background: '#fff', border: '1px solid #EAE4D9', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8, animation: 'dapItem 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
+                  <div key={i} style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 8, animation: 'dapItem 0.2s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 8) * 0.05}s` }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                      <p style={{ fontWeight: 700, fontSize: 13, color: '#1A1208', margin: 0 }}>{c.clause}</p>
+                      <p style={{ fontWeight: 700, fontSize: 13, color: '#191713', margin: 0 }}>{c.clause}</p>
                       <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: 700, whiteSpace: 'nowrap', ...(RISK_CLAUSE_STYLE[c.risk_level] || {}) }}>
                         {(isAr ? RISK_AR[c.risk_level] : RISK_EN[c.risk_level]) || c.risk_level}
                       </span>
                     </div>
-                    <p style={{ fontSize: 12, color: '#5C4A3A', margin: 0 }}>{c.why_it_matters}</p>
-                    <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '10px 12px' }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8B1A1A', margin: '0 0 3px' }}>{isAr ? 'التوصية' : 'Recommendation'}</p>
-                      <p style={{ fontSize: 11.5, color: '#5C4A3A', margin: 0, lineHeight: 1.5 }}>{c.recommendation}</p>
+                    <p style={{ fontSize: 12, color: '#69645C', margin: 0 }}>{c.why_it_matters}</p>
+                    <div style={{ background: '#F8EDEF', borderRadius: 10, padding: '10px 12px' }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#8F1D2C', margin: '0 0 3px' }}>{isAr ? 'التوصية' : 'Recommendation'}</p>
+                      <p style={{ fontSize: 11.5, color: '#69645C', margin: 0, lineHeight: 1.5 }}>{c.recommendation}</p>
                     </div>
                   </div>
                 ))}
@@ -382,14 +382,14 @@ export default function DocumentAnalysisPanel({ analysis, reviewResult, fileName
           {/* Overall recommendation */}
           {reviewResult.overall_recommendation && (
             <div style={{ background: 'rgba(107,39,55,0.06)', border: '1.5px solid rgba(107,39,55,0.2)', borderRadius: 14, padding: '14px 16px' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#6b2737', margin: '0 0 6px' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#741622', margin: '0 0 6px' }}>
                 {reviewResult.overall_verdict === 'safe'
                   ? (isAr ? 'العقد آمن للمراجعة' : 'Contract is safe to review')
                   : reviewResult.overall_verdict === 'caution'
                   ? (isAr ? 'يحتاج تعديلات' : 'Needs amendments')
                   : (isAr ? 'مخاطر عالية' : 'High risk')}
               </p>
-              <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 12.5, color: '#69645C', margin: 0, lineHeight: 1.6 }}>
                 {reviewResult.overall_recommendation}
               </p>
             </div>

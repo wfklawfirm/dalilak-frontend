@@ -1817,7 +1817,7 @@ export function getComplexityColor(complexity: string): string {
 export function getComplexityBg(complexity: string): string {
   if (complexity === 'easy') return '#FEF9F0'
   if (complexity === 'medium') return '#FFFBEB'
-  return '#FEF2F2'
+  return '#F8EDEF'
 }
 
 export function getComplexityLabel(complexity: string, isAr: boolean): string {

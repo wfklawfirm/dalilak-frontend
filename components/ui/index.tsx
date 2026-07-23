@@ -19,7 +19,7 @@ export function PageHeader({ icon: _icon, titleAr, titleEn, subtitleAr, subtitle
     <>
     <style>{`@keyframes uiHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
     <header style={{
-      background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+      background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
       padding: '13px 16px',
       position: 'sticky', top: 0, zIndex: 50,
       boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
@@ -80,7 +80,7 @@ interface SectionCardProps {
   icon?: React.ReactNode
 }
 
-export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', collapsible = false, defaultOpen = true, icon }: SectionCardProps) {
+export function SectionCard({ title, children, bg = '#fff', border = '#E6E2DC', collapsible = false, defaultOpen = true, icon }: SectionCardProps) {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
@@ -104,12 +104,12 @@ export function SectionCard({ title, children, bg = '#fff', border = '#EAE4D9', 
         onTouchStart={collapsible ? (e => { e.currentTarget.style.background = '#F5F0EA' }) : undefined}
         onTouchEnd={collapsible ? (e => { e.currentTarget.style.background = '' }) : undefined}
       >
-        <h3 style={{ fontSize: 13, fontWeight: 800, color: '#1A1208', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <h3 style={{ fontSize: 13, fontWeight: 800, color: '#191713', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
           {icon && <span>{icon}</span>}
           {title}
         </h3>
         {collapsible && (
-          <span style={{ display:'inline-flex', alignItems:'center', color: '#9C8E80', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
+          <span style={{ display:'inline-flex', alignItems:'center', color: '#918B82', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
         )}
       </div>
       {open && (
@@ -128,19 +128,19 @@ interface StatusBadgeProps {
 }
 
 const STATUS_MAP: Record<string, { labelAr: string; labelEn: string; color: string; bg: string }> = {
-  draft: { labelAr: 'مسودة', labelEn: 'Draft', color: '#5C4A3A', bg: '#EAE4D9' },
+  draft: { labelAr: 'مسودة', labelEn: 'Draft', color: '#69645C', bg: '#E6E2DC' },
   in_progress: { labelAr: 'قيد التنفيذ', labelEn: 'In Progress', color: '#B8860B', bg: '#FFFBEB' },
   ready: { labelAr: 'جاهزة', labelEn: 'Ready', color: '#78350F', bg: '#FFFBEB' },
   needs_review: { labelAr: 'تحتاج مراجعة', labelEn: 'Needs Review', color: '#CA8A04', bg: '#FFFBEB' },
   completed: { labelAr: 'مكتملة', labelEn: 'Completed', color: '#78350F', bg: '#FFFBEB' },
-  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#9C8E80', bg: '#EAE4D9' },
+  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#918B82', bg: '#E6E2DC' },
   pending: { labelAr: 'معلّق', labelEn: 'Pending', color: '#B8860B', bg: '#FFFBEB' },
   verified: { labelAr: 'موثّق', labelEn: 'Verified', color: '#78350F', bg: '#FFFBEB' },
   partially_verified: { labelAr: 'موثّق جزئياً', labelEn: 'Partially Verified', color: '#B8860B', bg: '#FFFBEB' },
 }
 
 export function StatusBadge({ status, isAr = true }: StatusBadgeProps) {
-  const info = STATUS_MAP[status] || { labelAr: status, labelEn: status, color: '#5C4A3A', bg: '#EAE4D9' }
+  const info = STATUS_MAP[status] || { labelAr: status, labelEn: status, color: '#69645C', bg: '#E6E2DC' }
   return (
     <span style={{ fontSize: 10.5, fontWeight: 700, color: info.color, background: info.bg, borderRadius: 8, padding: '2px 9px' }}>
       {isAr ? info.labelAr : info.labelEn}
@@ -158,7 +158,7 @@ export function ConfidenceBadge({ level, isAr = true }: ConfidenceBadgeProps) {
   const map = {
     high: { ar: 'ثقة عالية', en: 'High Confidence', color: '#78350F', bg: '#FFFBEB' },
     medium: { ar: 'ثقة متوسطة', en: 'Medium Confidence', color: '#B8860B', bg: '#FFFBEB' },
-    low: { ar: 'ثقة منخفضة', en: 'Low Confidence', color: '#8B1A1A', bg: '#FEF2F2' },
+    low: { ar: 'ثقة منخفضة', en: 'Low Confidence', color: '#8F1D2C', bg: '#F8EDEF' },
   }
   const info = map[level]
   return (
@@ -179,7 +179,7 @@ export function RiskBadge({ level, isAr = true }: RiskBadgeProps) {
     low:      { ar: 'خطر منخفض', en: 'Low Risk',      color: '#78350F', bg: '#FFFBEB' },
     medium:   { ar: 'خطر متوسط', en: 'Medium Risk',    color: '#B8860B', bg: '#FFFBEB' },
     high:     { ar: 'خطر عالٍ',  en: 'High Risk',      color: '#B45309', bg: '#FFFBEB' },
-    critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#8B1A1A', bg: '#FEF2F2' },
+    critical: { ar: 'خطر حرج',  en: 'Critical Risk',  color: '#8F1D2C', bg: '#F8EDEF' },
   }
   const info = map[level]
   return (
@@ -212,7 +212,7 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
         {isAr ? titleAr : (titleEn || titleAr)}
       </p>
       {(subtitleAr || subtitleEn) && (
-        <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>
+        <p style={{ fontSize: 12, color: '#918B82', margin: '0 0 16px' }}>
           {isAr ? subtitleAr : (subtitleEn || subtitleAr)}
         </p>
       )}
@@ -222,10 +222,10 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
           onClick={action}
           style={{
             padding: '9px 20px', borderRadius: 12,
-            background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+            background: 'linear-gradient(135deg, #8F1D2C, #741622)',
             border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
             cursor: 'pointer', fontFamily: 'inherit',
-            boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+            boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
           }}
         >
           {actionLabel}
@@ -252,7 +252,7 @@ export function LoadingSkeleton({ lines = 3, height = 60, gap = 10 }: LoadingSke
         }
         .skeleton-line {
           border-radius: 10px;
-          background: linear-gradient(90deg, #EAE4D9 25%, #FAFAF8 50%, #EAE4D9 75%);
+          background: linear-gradient(90deg, #E6E2DC 25%, #FAFAF8 50%, #E6E2DC 75%);
           background-size: 800px 100%;
           animation: shimmer 1.4s infinite linear;
         }

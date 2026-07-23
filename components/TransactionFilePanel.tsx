@@ -32,12 +32,12 @@ const STATUS_LABEL_EN: Record<TransactionStatus, string> = {
 }
 
 const STATUS_STYLE: Record<TransactionStatus, React.CSSProperties> = {
-  draft:        { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
-  in_progress:  { background: '#FEF2F2', color: '#8B1A1A', border: '1px solid rgba(139,26,26,0.2)' },
+  draft:        { background: '#E6E2DC', color: '#69645C', border: '1px solid #D5CEC4' },
+  in_progress:  { background: '#F8EDEF', color: '#8F1D2C', border: '1px solid rgba(143,29,44,0.2)' },
   ready:        { background: '#FFFBEB', color: '#78350F', border: '1px solid #FDE68A' },
   needs_review: { background: '#FFFBEB', color: '#B8860B', border: '1px solid #FDE68A' },
-  completed:    { background: 'rgba(107,39,55,0.08)', color: '#6b2737', border: '1px solid rgba(107,39,55,0.2)' },
-  archived:     { background: '#EAE4D9', color: '#5C4A3A', border: '1px solid #D5CEC4' },
+  completed:    { background: 'rgba(107,39,55,0.08)', color: '#741622', border: '1px solid rgba(107,39,55,0.2)' },
+  archived:     { background: '#E6E2DC', color: '#69645C', border: '1px solid #D5CEC4' },
 }
 
 const RISK_LABEL_AR: Record<RiskLevel, string> = {
@@ -60,8 +60,8 @@ const RISK_DOT_COLOR: Record<RiskLevel, string> = {
   low:     '#B45309',
   medium:  '#B8860B',
   high:    '#B45309',
-  critical:'#8B1A1A',
-  unknown: '#9C8E80',
+  critical:'#8F1D2C',
+  unknown: '#918B82',
 }
 
 function formatDate(iso?: string) {
@@ -99,7 +99,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
     }}>
       {/* Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
+        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 100%)',
         color: '#fff', padding: '16px 20px',
         display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12,
       }}>
@@ -138,9 +138,9 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
 
         {/* Summary */}
         {tx.summary && (
-          <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #EAE4D9' }}>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 4px' }}>{isAr ? 'الملخص' : 'Summary'}</p>
-            <p style={{ fontSize: 13, color: '#1A1208', lineHeight: 1.6, margin: 0 }}>{tx.summary}</p>
+          <div style={{ background: '#FAFAF8', borderRadius: 12, padding: '12px 14px', border: '1px solid #E6E2DC' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#918B82', margin: '0 0 4px' }}>{isAr ? 'الملخص' : 'Summary'}</p>
+            <p style={{ fontSize: 13, color: '#191713', lineHeight: 1.6, margin: 0 }}>{tx.summary}</p>
           </div>
         )}
 
@@ -149,22 +149,22 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
           <StatCard label={isAr ? 'الخطوات' : 'Steps'} value={stepsCount} />
           <StatCard label={isAr ? 'الوثائق المطلوبة' : 'Required Docs'} value={requiredCount} />
           <StatCard label={isAr ? 'الوثائق المرفوعة' : 'Uploaded'} value={uploadedCount} valueColor="#78350F" />
-          <StatCard label={isAr ? 'الناقص' : 'Missing'} value={missingCount} valueColor={missingCount > 0 ? '#8B1A1A' : '#1A1208'} />
+          <StatCard label={isAr ? 'الناقص' : 'Missing'} value={missingCount} valueColor={missingCount > 0 ? '#8F1D2C' : '#191713'} />
         </div>
 
         {/* Progress bar */}
         {requiredCount > 0 && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#9C8E80', marginBottom: 5 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#918B82', marginBottom: 5 }}>
               <span>{isAr ? 'تقدم المستندات' : 'Document Progress'}</span>
-              <span style={{ fontWeight: 700, color: progressPct === 100 ? '#78350F' : '#8B1A1A' }}>{progressPct}%</span>
+              <span style={{ fontWeight: 700, color: progressPct === 100 ? '#78350F' : '#8F1D2C' }}>{progressPct}%</span>
             </div>
-            <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 99, height: 6, overflow: 'hidden' }}>
+            <div style={{ width: '100%', background: '#E6E2DC', borderRadius: 99, height: 6, overflow: 'hidden' }}>
               <div style={{
                 width: `${progressPct}%`, height: 6, borderRadius: 99,
                 background: progressPct === 100
                   ? 'linear-gradient(90deg, #78350F, #B45309)'
-                  : 'linear-gradient(90deg, #8B1A1A, #6b2737)',
+                  : 'linear-gradient(90deg, #8F1D2C, #741622)',
                 transition: 'width 0.5s ease',
               }} />
             </div>
@@ -174,7 +174,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Risk score */}
         {tx.risk_level && tx.risk_level !== 'unknown' ? (
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>{isAr ? 'تقييم المخاطر' : 'Risk Assessment'}</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#918B82', margin: '0 0 8px' }}>{isAr ? 'تقييم المخاطر' : 'Risk Assessment'}</p>
             <RiskScoreCard
               risk={{
                 level: riskLevel,
@@ -188,8 +188,8 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: RISK_DOT_COLOR[riskLevel], flexShrink: 0 }} />
-            <p style={{ fontSize: 13, color: '#5C4A3A', margin: 0 }}>
-              {isAr ? 'مستوى المخاطرة:' : 'Risk Level:'} <span style={{ fontWeight: 700, color: '#1A1208' }}>{isAr ? RISK_LABEL_AR[riskLevel] : RISK_LABEL_EN[riskLevel]}</span>
+            <p style={{ fontSize: 13, color: '#69645C', margin: 0 }}>
+              {isAr ? 'مستوى المخاطرة:' : 'Risk Level:'} <span style={{ fontWeight: 700, color: '#191713' }}>{isAr ? RISK_LABEL_AR[riskLevel] : RISK_LABEL_EN[riskLevel]}</span>
             </p>
           </div>
         )}
@@ -197,7 +197,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Missing documents */}
         {missingCount > 0 && !compact && (
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>{isAr ? 'الوثائق الناقصة' : 'Missing Documents'}</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#918B82', margin: '0 0 8px' }}>{isAr ? 'الوثائق الناقصة' : 'Missing Documents'}</p>
             <MissingDocumentsChecklist
               missingDocs={tx.missing_documents}
               requiredDocs={tx.required_documents}
@@ -209,7 +209,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Steps preview */}
         {tx.steps && tx.steps.length > 0 && !compact && (
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 8px' }}>{isAr ? 'الخطوات' : 'Steps'}</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#918B82', margin: '0 0 8px' }}>{isAr ? 'الخطوات' : 'Steps'}</p>
             <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
               {tx.steps.slice(0, 4).map((s, i) => {
                 const visibleCount = Math.min(tx.steps.length, 4)
@@ -219,21 +219,21 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                       <span style={{
                         width: 24, height: 24, borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff',
+                        background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff',
                         fontSize: 10, fontWeight: 800,
                         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                        boxShadow: '0 2px 6px rgba(139,26,26,0.22)',
+                        boxShadow: '0 2px 6px rgba(143,29,44,0.22)',
                       }}>
                         {(s.order ?? i) + 1}
                       </span>
                       {!isLast && (
-                        <div style={{ width: 1.5, flex: 1, background: 'linear-gradient(to bottom, rgba(139,26,26,0.22), rgba(139,26,26,0.05))', marginTop: 4, borderRadius: 1 }} />
+                        <div style={{ width: 1.5, flex: 1, background: 'linear-gradient(to bottom, rgba(143,29,44,0.22), rgba(143,29,44,0.05))', marginTop: 4, borderRadius: 1 }} />
                       )}
                     </div>
                     <div style={{ paddingTop: 3 }}>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: '#1A1208', margin: '0 0 2px' }}>{s.title}</p>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#191713', margin: '0 0 2px' }}>{s.title}</p>
                       {s.authority && (
-                        <p style={{ fontSize: 11, color: '#9C8E80', margin: 0 }}>{s.authority}</p>
+                        <p style={{ fontSize: 11, color: '#918B82', margin: 0 }}>{s.authority}</p>
                       )}
                     </div>
                   </li>
@@ -241,7 +241,7 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
               })}
             </ol>
             {tx.steps.length > 4 && (
-              <p style={{ fontSize: 11, color: '#9C8E80', marginTop: 6, textAlign: 'center' }}>
+              <p style={{ fontSize: 11, color: '#918B82', marginTop: 6, textAlign: 'center' }}>
                 {isAr ? `+${tx.steps.length - 4} خطوات أخرى` : `+${tx.steps.length - 4} more steps`}
               </p>
             )}
@@ -251,12 +251,12 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {/* Sources */}
         {sourcesCount > 0 && !compact && (
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#9C8E80', margin: '0 0 6px' }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: '#918B82', margin: '0 0 6px' }}>
               {isAr ? `المستندات المرجعية (${sourcesCount})` : `Reference Documents (${sourcesCount})`}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {tx.sources?.slice(0, 5).map((src, i) => (
-                <span key={i} style={{ fontSize: 11, background: '#EAE4D9', color: '#5C4A3A', padding: '3px 10px', borderRadius: 99 }}>
+                <span key={i} style={{ fontSize: 11, background: '#E6E2DC', color: '#69645C', padding: '3px 10px', borderRadius: 99 }}>
                   {typeof src === 'string' ? src : JSON.stringify(src)}
                 </span>
               ))}
@@ -266,15 +266,15 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
 
         {/* Dates */}
         {(tx.created_at || tx.updated_at) && (
-          <div style={{ display: 'flex', gap: 16, paddingTop: 8, borderTop: '1px solid #EAE4D9' }}>
+          <div style={{ display: 'flex', gap: 16, paddingTop: 8, borderTop: '1px solid #E6E2DC' }}>
             {tx.created_at && (
-              <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>
-                {isAr ? 'الإنشاء:' : 'Created:'} <span style={{ color: '#5C4A3A' }}>{formatDate(tx.created_at)}</span>
+              <p style={{ fontSize: 10.5, color: '#918B82', margin: 0 }}>
+                {isAr ? 'الإنشاء:' : 'Created:'} <span style={{ color: '#69645C' }}>{formatDate(tx.created_at)}</span>
               </p>
             )}
             {tx.updated_at && (
-              <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>
-                {isAr ? 'آخر تحديث:' : 'Last updated:'} <span style={{ color: '#5C4A3A' }}>{formatDate(tx.updated_at)}</span>
+              <p style={{ fontSize: 10.5, color: '#918B82', margin: 0 }}>
+                {isAr ? 'آخر تحديث:' : 'Last updated:'} <span style={{ color: '#69645C' }}>{formatDate(tx.updated_at)}</span>
               </p>
             )}
           </div>
@@ -285,12 +285,12 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
   )
 }
 
-function StatCard({ label, value, valueColor = '#1A1208' }: { label:
+function StatCard({ label, value, valueColor = '#191713' }: { label:
 string; value: string | number; valueColor?: string }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: 15, fontWeight: 800, color: valueColor, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 10, color: '#9C8E80', marginTop: 2, fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: 10, color: '#918B82', marginTop: 2, fontWeight: 500 }}>{label}</div>
     </div>
   )
 }

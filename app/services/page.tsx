@@ -69,7 +69,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #E6E2DC' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
             <div style={{
-              width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #FEF2F2, #FDE8E8)',
+              width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #F8EDEF, #FDE8E8)',
               border: '1px solid rgba(143,29,44,0.1)', display: 'flex', alignItems: 'center',
               justifyContent: 'center', fontSize: 22, flexShrink: 0,
             }}>
@@ -513,7 +513,7 @@ export default function ServicesPage() {
           ].map((stat, i) => (
             <div key={stat.label} style={{
               padding: '14px 8px 16px', textAlign: 'center',
-              background: stat.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
+              background: stat.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
               border: stat.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
               borderRadius: 12,
               boxShadow: stat.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
@@ -710,7 +710,7 @@ export default function ServicesPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
                   <div style={{
                     width: 38, height: 38, borderRadius: 11,
-                    background: 'linear-gradient(135deg, #FEF2F2, #FCE8E8)',
+                    background: 'linear-gradient(135deg, #F8EDEF, #FCE8E8)',
                     border: '1px solid rgba(143,29,44,0.12)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0,

@@ -205,14 +205,14 @@ export interface DocCategoryMeta {
 export const DOC_CATEGORY_META: DocCategoryMeta[] = [
   { category: 'contract',        titleAr: 'عقد',                   titleEn: 'Contract',           icon: '📝', color: '#6B4226', subtypes: ['عقد إيجار','عقد بيع','عقد خدمات','عقد عمل','عقد شراكة','اتفاقية تسوية','وعد بالبيع'] },
   { category: 'property',        titleAr: 'مستند عقاري',           titleEn: 'Property Document',  icon: '🏛️', color: '#854D0E', subtypes: ['سند ملكية','إفادة عقارية','كشف مساحي','ملف بيع','ضريبة عقارية','براءة ذمة','رخصة بناء'] },
-  { category: 'civil_status',    titleAr: 'قيد مدني',              titleEn: 'Civil Status',        icon: '👤', color: '#8B1A1A', subtypes: ['إخراج قيد فردي','إخراج قيد عائلي','شهادة ميلاد','عقد زواج','شهادة وفاة','طلاق','حصر إرث'] },
+  { category: 'civil_status',    titleAr: 'قيد مدني',              titleEn: 'Civil Status',        icon: '👤', color: '#8F1D2C', subtypes: ['إخراج قيد فردي','إخراج قيد عائلي','شهادة ميلاد','عقد زواج','شهادة وفاة','طلاق','حصر إرث'] },
   { category: 'notarial',        titleAr: 'وثيقة كتابة عدل',      titleEn: 'Notarial Document',   icon: '⚖️', color: '#B8860B', subtypes: ['وكالة عامة','وكالة خاصة','وكالة بيع','إقرار','تعهد','توكيل','وكالة من الخارج'] },
   { category: 'company',         titleAr: 'مستند شركة',            titleEn: 'Company Document',    icon: '🏢', color: '#9D174D', subtypes: ['سجل تجاري','عقد تأسيس','نظام داخلي','تسجيل ضريبي','قرار مجلس إدارة','شهادة تسجيل'] },
   { category: 'tax',             titleAr: 'مستند ضريبي',           titleEn: 'Tax Document',        icon: '💰', color: '#5F3A2E', subtypes: ['براءة ذمة ضريبية','ضريبة عقارية','ضريبة دخل','ضريبة قيمة مضافة','اعتراض ضريبي'] },
-  { category: 'judicial',        titleAr: 'مستند قضائي',           titleEn: 'Judicial Document',   icon: '🔨', color: '#8B1A1A', subtypes: ['إنذار قضائي','لائحة دعوى','حكم','أمر تنفيذ','إعلام','تبليغ','وثيقة تسوية'] },
+  { category: 'judicial',        titleAr: 'مستند قضائي',           titleEn: 'Judicial Document',   icon: '🔨', color: '#8F1D2C', subtypes: ['إنذار قضائي','لائحة دعوى','حكم','أمر تنفيذ','إعلام','تبليغ','وثيقة تسوية'] },
   { category: 'administrative',  titleAr: 'مستند إداري',           titleEn: 'Administrative',      icon: '📋', color: '#2D1B0E', subtypes: ['طلب وزارة','طلب بلدية','رخصة','شكوى','اعتراض','رسالة رسمية','قرار إداري'] },
-  { category: 'expat_consular',  titleAr: 'مستند مغترب/قنصلي',    titleEn: 'Expat / Consular',   icon: '✈️', color: '#8B1A1A', subtypes: ['وكالة من الخارج','تصديق','تسجيل واقعة','ترجمة معتمدة','وثيقة سفارة'] },
-  { category: 'unknown',         titleAr: 'غير محدد',              titleEn: 'Unknown',             icon: '❓', color: '#5C4A3A', subtypes: [] },
+  { category: 'expat_consular',  titleAr: 'مستند مغترب/قنصلي',    titleEn: 'Expat / Consular',   icon: '✈️', color: '#8F1D2C', subtypes: ['وكالة من الخارج','تصديق','تسجيل واقعة','ترجمة معتمدة','وثيقة سفارة'] },
+  { category: 'unknown',         titleAr: 'غير محدد',              titleEn: 'Unknown',             icon: '❓', color: '#69645C', subtypes: [] },
 ]
 
 // ── Configurable Draft Templates Map ──────────────────────────────────────────
@@ -336,11 +336,11 @@ export function summarizeRiskLevel(risks: DocumentRisk[]): 'low' | 'medium' | 'h
 /** Risk level → badge colors */
 export function riskColors(level: string): [string, string] {
   const map: Record<string, [string, string]> = {
-    critical: ['#FEF2F2', '#8B1A1A'],
-    high:     ['#FEF2F2', '#8B1A1A'],
+    critical: ['#F8EDEF', '#8F1D2C'],
+    high:     ['#F8EDEF', '#8F1D2C'],
     medium:   ['#FFFBEB', '#B45309'],
     low:      ['#FFFBEB', '#78350F'],
-    unknown:  ['#EAE4D9', '#5C4A3A'],
+    unknown:  ['#E6E2DC', '#69645C'],
   }
   return map[level] ?? map.unknown
 }

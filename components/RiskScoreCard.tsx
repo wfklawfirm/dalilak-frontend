@@ -41,16 +41,16 @@ const LEVEL_CONFIG: Record<string, {
   low:      { bg: '#FFFBEB', text: '#78350F', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
   medium:   { bg: '#FFFBEB', text: '#B8860B', border: '#FDE68A', barColor: '#B8860B', iconBg: '#B8860B' },
   high:     { bg: '#FFFBEB', text: '#B45309', border: '#FDE68A', barColor: '#B45309', iconBg: '#B45309' },
-  critical: { bg: '#FEF2F2', text: '#8B1A1A', border: '#FECACA', barColor: '#8B1A1A', iconBg: '#8B1A1A' },
-  unknown:  { bg: '#EAE4D9', text: '#5C4A3A', border: '#D5CEC4', barColor: '#9C8E80', iconBg: '#9C8E80' },
+  critical: { bg: '#F8EDEF', text: '#8F1D2C', border: '#FECACA', barColor: '#8F1D2C', iconBg: '#8F1D2C' },
+  unknown:  { bg: '#E6E2DC', text: '#69645C', border: '#D5CEC4', barColor: '#918B82', iconBg: '#918B82' },
 }
 
 const ACTION_COLORS: Record<string, string> = {
   continue:      '#78350F',
   verify:        '#B8860B',
   lawyer_review: '#B45309',
-  admin_review:  '#8B1A1A',
-  human_support: '#8B1A1A',
+  admin_review:  '#8F1D2C',
+  human_support: '#8F1D2C',
 }
 const ACTION_LABELS_AR: Record<string, string> = {
   continue:      'استمر في المعاملة',
@@ -113,13 +113,13 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
             {icon}
           </span>
           <div>
-            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0, lineHeight: 1 }}>{isAr ? 'مستوى المخاطرة' : 'Risk Level'}</p>
+            <p style={{ fontSize: 10.5, color: '#918B82', margin: 0, lineHeight: 1 }}>{isAr ? 'مستوى المخاطرة' : 'Risk Level'}</p>
             <p style={{ fontSize: 15, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{levelLabel}</p>
           </div>
         </div>
         {score !== null && (
           <div style={{ textAlign: 'left' }}>
-            <p style={{ fontSize: 10.5, color: '#9C8E80', margin: 0 }}>{isAr ? 'النقاط' : 'Score'}</p>
+            <p style={{ fontSize: 10.5, color: '#918B82', margin: 0 }}>{isAr ? 'النقاط' : 'Score'}</p>
             <p style={{ fontSize: 18, fontWeight: 800, color: cfg.text, margin: '2px 0 0' }}>{score}</p>
           </div>
         )}
@@ -127,19 +127,19 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
 
       {/* Score bar */}
       {score !== null && !compact && (
-        <div style={{ width: '100%', background: '#EAE4D9', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+        <div style={{ width: '100%', background: '#E6E2DC', borderRadius: 4, height: 8, overflow: 'hidden' }}>
           <div style={{
             height: '100%',
             width: `${Math.min(100, score)}%`,
             background: level === 'critical'
-              ? 'linear-gradient(90deg, #6b2737, #8B1A1A)'
+              ? 'linear-gradient(90deg, #741622, #8F1D2C)'
               : level === 'high'
               ? 'linear-gradient(90deg, #92400E, #B45309)'
               : level === 'medium'
               ? 'linear-gradient(90deg, #B8860B, #CA8A04)'
               : 'linear-gradient(90deg, #78350F, #B45309)',
             boxShadow: level === 'critical'
-              ? '0 0 6px rgba(139,26,26,0.35)'
+              ? '0 0 6px rgba(143,29,44,0.35)'
               : level === 'high'
               ? '0 0 6px rgba(234,88,12,0.35)'
               : '0 0 6px rgba(184,134,11,0.3)',
@@ -172,7 +172,7 @@ export default function RiskScoreCard({ risk, onRequestReview, compact = false }
           onClick={onRequestReview}
           style={{
             width: '100%', padding: '10px 16px', borderRadius: 12,
-            background: ACTION_COLORS[action] ? `linear-gradient(135deg, ${ACTION_COLORS[action]}, ${cfg.text})` : 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+            background: ACTION_COLORS[action] ? `linear-gradient(135deg, ${ACTION_COLORS[action]}, ${cfg.text})` : 'linear-gradient(135deg, #8F1D2C, #741622)',
             color: '#fff', border: 'none',
             fontSize: 12.5, fontWeight: 700,
             cursor: 'pointer', fontFamily: 'inherit',
