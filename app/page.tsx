@@ -83,6 +83,7 @@ import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatInputCharCounter from '@/components/ChatInputCharCounter'
 import ChatKeyboardSendHint from '@/components/ChatKeyboardSendHint'
 import ChatDraftAutosave from '@/components/ChatDraftAutosave'
+import ChatMessageSearchInThread from '@/components/ChatMessageSearchInThread'
 import ChatContextBar from '@/components/ChatContextBar'
 import ChatResponseLength, { useResponseLength } from '@/components/ChatResponseLength'
 import ModeSelector from '@/components/MobileModeSheet'
@@ -2008,8 +2009,9 @@ Question: ${text}`
 
               {/* Session timer — shown above message list */}
               {messages.length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, paddingBottom: 6 }}>
                   <ChatSessionTimer messageCount={messages.length} isAr={isAr} />
+                  <ChatMessageSearchInThread messages={messages} isAr={isAr} />
                 </div>
               )}
 
@@ -2065,7 +2067,7 @@ Question: ${text}`
                   )
                 }
                 return (
-                  <div key={i} className="msg-in">
+                  <div key={i} id={`msg-${i}`} className="msg-in">
                     <ChatMessage
                       msg={msg}
                       isAr={isAr}
