@@ -97,6 +97,16 @@
 #   GlobalLangSwitch, so it stays in sync — nothing removed or replaced,
 #   just an easier-to-find home for the same settings. Linked from
 #   MobileMenu ("الإعدادات") and TopNav's account dropdown.
+#
+#   NEW: app/robots.ts — was completely missing (only sitemap.ts existed),
+#   so crawlers had no explicit policy. Allows all public pages, disallows
+#   /admin + auth flows, points to /sitemap.xml. Does not touch any
+#   existing metadata.
+#   NEW: JSON-LD (HowTo schema) on procedure detail pages
+#   (app/procedures/[slug]/page.tsx) — built only from real fields already
+#   in PROCEDURES_DATA (title, description, ministry, steps), no invented
+#   content. Invisible to users, helps search engines show step-by-step
+#   rich results.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
