@@ -756,7 +756,12 @@ export default function Home() {
         .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
         @media (min-width: 640px) {
           .wlc-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
-          .wlc-svc-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+          .wlc-svc-grid   { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        }
+        /* How-it-works: 3 cols always, tighter on narrow screens */
+        @media (max-width: 400px) {
+          .wlc-how-grid > div { padding: 10px 6px 8px !important; }
+          .wlc-how-grid > div > div:last-child { display: none; } /* hide description on very small */
         }
       `}</style>
 
@@ -986,18 +991,18 @@ export default function Home() {
                   <span style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase', display:'block', marginBottom:10 }}>
                     {isAr ? 'كيف يعمل دليلك؟' : 'HOW IT WORKS'}
                   </span>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+                  <div className="wlc-how-grid" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
                     {[
-                      { num:'١', numEn:'1', ar:'اكتب سؤالك', en:'Ask', descAr:'اكتب اسم المعاملة أو صف حالتك بكلماتك', descEn:'Type a transaction name or describe your case' },
-                      { num:'٢', numEn:'2', ar:'راجع الخطوات', en:'Review', descAr:'خطوات واضحة ومستندات مطلوبة والجهة المختصة', descEn:'Clear steps, required documents, and the authority' },
-                      { num:'٣', numEn:'3', ar:'تابع بثقة', en:'Proceed', descAr:'معلومات من المصادر الرسمية اللبنانية', descEn:'Backed by official Lebanese government sources' },
+                      { num:'١', numEn:'1', ar:'اكتب سؤالك', en:'اسأل', descAr:'اكتب اسم المعاملة أو صف حالتك', descEn:'Type the transaction or describe your case' },
+                      { num:'٢', numEn:'2', ar:'راجع الخطوات', en:'راجع', descAr:'خطوات واضحة والمستندات المطلوبة', descEn:'Clear steps & required documents' },
+                      { num:'٣', numEn:'3', ar:'تابع بثقة', en:'تابع', descAr:'مصادر رسمية لبنانية', descEn:'Official Lebanese sources' },
                     ].map(s => (
-                      <div key={s.num} style={{ background:'#fff', border:'1px solid rgba(210,195,178,0.35)', borderRadius:12, padding:'12px 10px 10px', textAlign:'center' }}>
+                      <div key={s.num} style={{ background:'#fff', border:'1px solid rgba(210,195,178,0.35)', borderRadius:12, padding:'12px 8px 10px', textAlign:'center' }}>
                         <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(139,26,26,0.07)', color:'#8B1A1A', fontSize:13, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
                           {isAr ? s.num : s.numEn}
                         </div>
-                        <div style={{ fontSize:11, fontWeight:800, color:'#1A1208', marginBottom:4, lineHeight:1.3 }}>{isAr ? s.ar : s.en}</div>
-                        <div style={{ fontSize:9.5, color:'#A89480', lineHeight:1.5 }}>{isAr ? s.descAr : s.descEn}</div>
+                        <div style={{ fontSize:11, fontWeight:800, color:'#1A1208', marginBottom:3, lineHeight:1.3 }}>{isAr ? s.ar : s.en}</div>
+                        <div style={{ fontSize:9, color:'#A89480', lineHeight:1.45 }}>{isAr ? s.descAr : s.descEn}</div>
                       </div>
                     ))}
                   </div>
