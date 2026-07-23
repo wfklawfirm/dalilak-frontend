@@ -22,13 +22,13 @@ export default function Error({
   return (
     <div id="main-content" style={{
       minHeight: '100vh',
-      background: '#FAFAF8',
+      background: '#F2EDE6',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       fontFamily: "'Cairo','Tajawal',system-ui,sans-serif",
-      direction: 'rtl',
+      direction: isAr ? 'rtl' : 'ltr',
       padding: '24px',
       textAlign: 'center',
     }}>

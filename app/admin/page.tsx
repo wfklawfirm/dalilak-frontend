@@ -200,7 +200,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', fontFamily: "'Cairo','Inter',sans-serif" }}>
+    <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 4px; }

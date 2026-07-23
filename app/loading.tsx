@@ -15,7 +15,7 @@ export default function Loading() {
       aria-label={isAr ? 'جارٍ التحميل' : 'Loading'}
       style={{
         minHeight: '100vh',
-        background: '#FAFAF8',
+        background: '#F2EDE6',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
