@@ -53,6 +53,19 @@ const NODE_LABELS_AR: Record<NodeType, string> = {
   warning: 'تحذير',
 }
 
+const NODE_LABELS_EN: Record<NodeType, string> = {
+  start: 'Start',
+  question: 'Question',
+  document: 'Document',
+  action: 'Action',
+  authority: 'Authority',
+  risk: 'Risk',
+  draft: 'Draft',
+  human_review: 'Review',
+  completion: 'Complete',
+  warning: 'Warning',
+}
+
 const STATUS_COLORS: Record<NonNullable<NodeStatus>, string> = {
   not_started: '#9C8E80',
   current: '#B8860B',
@@ -70,11 +83,11 @@ const STATUS_LABELS_AR: Record<NonNullable<NodeStatus>, string> = {
 }
 
 const STATUS_LABELS_EN: Record<NonNullable<NodeStatus>, string> = {
-  not_started: 'Not Started',
-  current: 'In Progress',
+  not_started: 'Not started',
+  current: 'In progress',
   completed: 'Completed',
   blocked: 'Blocked',
-  needs_review: 'Needs Review',
+  needs_review: 'Needs review',
 }
 
 const CONFIDENCE_COLORS: Record<'low' | 'medium' | 'high', string> = {
@@ -238,7 +251,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                   {/* Type label + status badge */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 3 }}>
                     <span style={{ fontSize: 9.5, fontWeight: 700, color: nodeColor, background: `${nodeColor}18`, borderRadius: 6, padding: '1px 7px' }}>
-                      {isAr ? NODE_LABELS_AR[node.type] : node.type.replace('_', ' ')}
+                      {isAr ? NODE_LABELS_AR[node.type] : NODE_LABELS_EN[node.type]}
                     </span>
                     <span style={{ fontSize: 9.5, fontWeight: 700, color: statusColor, background: `${statusColor}15`, borderRadius: 6, padding: '1px 7px' }}>
                       {isAr ? STATUS_LABELS_AR[effectiveStatus] : STATUS_LABELS_EN[effectiveStatus]}
