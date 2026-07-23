@@ -199,6 +199,70 @@ function shufflePick<T>(arr: T[], n: number): T[] {
   return copy.slice(0, n)
 }
 
+
+const HERO_CARDS = [
+  { titleAr:'استخراج جواز السفر', titleEn:'Passport Application',
+    authAr:'الأمن العام', authEn:'General Security',
+    cntAr:'4 خطوات', cntEn:'4 Steps', icon:'passport',
+    steps:[
+      {ar:'تجهيز المستندات المطلوبة',en:'Prepare required documents',s:'done'},
+      {ar:'تقديم الطلب في الأمن العام',en:'Submit at General Security',s:'done'},
+      {ar:'دفع الرسوم',en:'Pay the fees',s:'active'},
+      {ar:'استلام جواز السفر',en:'Receive passport',s:'pending'},
+    ],
+    pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟',
+    pEn:'How do I get or renew my Lebanese passport?',
+  },
+  { titleAr:'إخراج قيد عائلي', titleEn:'Family Registry Extract',
+    authAr:'السجل المدني', authEn:'Civil Registry',
+    cntAr:'3 خطوات', cntEn:'3 Steps', icon:'document',
+    steps:[
+      {ar:'تحديد مركز السجل المدني',en:'Locate Civil Registry center',s:'done'},
+      {ar:'تقديم الطلب مع الهوية',en:'Submit request with ID',s:'done'},
+      {ar:'استلام الوثيقة',en:'Receive document',s:'active'},
+    ],
+    pAr:'كيف أستخرج إخراج قيد من السجل المدني؟',
+    pEn:'How do I get a civil registry extract?',
+  },
+  { titleAr:'تسجيل شركة', titleEn:'Company Registration',
+    authAr:'وزارة الاقتصاد', authEn:'Ministry of Economy',
+    cntAr:'7 خطوات', cntEn:'7 Steps', icon:'company',
+    steps:[
+      {ar:'تحديد نوع الشركة',en:'Choose company type',s:'done'},
+      {ar:'إعداد عقد التأسيس',en:'Prepare founding contract',s:'done'},
+      {ar:'التوثيق لدى الكاتب العدل',en:'Notarize the contract',s:'active'},
+      {ar:'التسجيل في الوزارة',en:'Register with Ministry',s:'pending'},
+    ],
+    pAr:'كيف أسجّل شركة في لبنان؟',
+    pEn:'How do I register a company in Lebanon?',
+  },
+  { titleAr:'تجديد رخصة القيادة', titleEn:"Driver's License Renewal",
+    authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration',
+    cntAr:'4 خطوات', cntEn:'4 Steps', icon:'license',
+    steps:[
+      {ar:'فحص طبي للرؤية',en:'Eye exam at clinic',s:'done'},
+      {ar:'دفع الرسوم في المالية',en:'Pay fees at Treasury',s:'done'},
+      {ar:'تقديم طلب التجديد',en:'Submit renewal request',s:'active'},
+      {ar:'استلام الرخصة',en:'Receive license',s:'pending'},
+    ],
+    pAr:'كيف أجدد رخصة القيادة اللبنانية؟',
+    pEn:"How do I renew my Lebanese driver's license?",
+  },
+  { titleAr:'تجديد إقامة أجنبي', titleEn:'Residency Renewal',
+    authAr:'الأمن العام', authEn:'General Security',
+    cntAr:'5 خطوات', cntEn:'5 Steps', icon:'residency',
+    steps:[
+      {ar:'جمع المستندات المطلوبة',en:'Gather required documents',s:'done'},
+      {ar:'دفع الرسوم',en:'Pay the fees',s:'done'},
+      {ar:'تقديم الطلب في الأمن العام',en:'Submit at General Security',s:'active'},
+      {ar:'انتظار الموافقة',en:'Await approval',s:'pending'},
+    ],
+    pAr:'كيف أجدد إقامة أجنبي في لبنان؟',
+    pEn:"How do I renew a foreigner's residency permit?",
+  },
+] as const
+type HeroCard = (typeof HERO_CARDS)[number]
+
 export default function Home() {
   const router = useRouter()
   const { lang, isAr, toggleLang } = useLanguage()
@@ -229,8 +293,15 @@ export default function Home() {
   const [heroInput, setHeroInput] = useState('')
   // Inline error for voice/file (replaces browser alert)
   const [voiceError, setVoiceError] = useState<string | null>(null)
+  const [activeCard, setActiveCard] = useState(0)
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
+  // Auto-rotate hero preview card
+  useEffect(() => {
+    if (messages.length > 0) return
+    const t = setInterval(() => setActiveCard(c => (c + 1) % HERO_CARDS.length), 4000)
+    return () => clearInterval(t)
+  }, [messages.length])
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -911,55 +982,82 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* ── Right Column — UI Preview (desktop only) ── */}
+                    {/* ── Right Column — Rotating Procedure Preview (desktop only) ── */}
                     <div className="hp" style={{ display:'none' }}>
-                      <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:20, overflow:'hidden', boxShadow:'var(--shadow-lg)' }}>
-                        {/* Card header */}
-                        <div style={{ background:'var(--brand)', padding:'14px 18px', display:'flex', alignItems:'center', gap:10 }}>
-                          <div style={{ width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg>
-                          </div>
-                          <div>
-                            <div style={{ fontSize:13.5, fontWeight:800, color:'#fff', lineHeight:1.2 }}>{isAr ? 'استخراج جواز السفر' : 'Passport Application'}</div>
-                            <div style={{ fontSize:10.5, color:'rgba(255,255,255,0.65)', marginTop:2 }}>{isAr ? 'الأمن العام — 4 خطوات' : 'General Security — 4 Steps'}</div>
-                          </div>
-                        </div>
-                        {/* Steps timeline */}
-                        <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:0 }}>
-                          {([
-                            { ar:'تجهيز المستندات المطلوبة', en:'Prepare required documents', done:true },
-                            { ar:'تقديم الطلب في الأمن العام', en:'Submit at General Security', done:true },
-                            { ar:'دفع الرسوم', en:'Pay the fees', done:false, active:true },
-                            { ar:'استلام جواز السفر', en:'Receive passport', done:false },
-                          ] as {ar:string;en:string;done:boolean;active?:boolean}[]).map((step, i) => (
-                            <div key={i} style={{ display:'flex', gap:12, paddingBottom: i < 3 ? 16 : 0, position:'relative' }}>
-                              {i < 3 && <div style={{ position:'absolute', [isAr ? 'right' : 'left']: 11, top:24, bottom:0, width:1.5, background: step.done ? 'var(--brand)' : 'var(--border)', borderRadius:2 }} />}
-                              <div style={{ width:24, height:24, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', background: step.done ? 'var(--brand)' : step.active ? 'var(--brand-soft)' : 'var(--surface-2)', border: step.active ? '2px solid var(--brand)' : 'none', zIndex:1 }}>
-                                {step.done
-                                  ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                  : <span style={{ width:7, height:7, borderRadius:'50%', background: step.active ? 'var(--brand)' : 'var(--border-strong)', display:'block' }} />
-                                }
-                              </div>
-                              <div style={{ flex:1, paddingTop:3 }}>
-                                <div style={{ fontSize:12.5, fontWeight: step.active ? 700 : 500, color: step.done ? 'var(--text-4)' : step.active ? 'var(--text-1)' : 'var(--text-2)', textDecoration: step.done ? 'line-through' : 'none' }}>
-                                  {isAr ? step.ar : step.en}
+                      <style>{`
+                        @keyframes hpCardIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+                        .hp-icon-passport path { stroke-linecap:round; stroke-linejoin:round; }
+                      `}</style>
+                      {(() => {
+                        const card = HERO_CARDS[activeCard] as HeroCard
+                        const getIcon = (id: string) => {
+                          const p = { fill:'none', stroke:'#fff', strokeWidth:2, width:18, height:18 }
+                          if (id==='passport') return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg>
+                          if (id==='document') return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                          if (id==='company') return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                          if (id==='license') return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                          return <svg aria-hidden="true" viewBox="0 0 24 24" {...p}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        }
+                        return (
+                          <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:20, overflow:'hidden', boxShadow:'var(--shadow-lg)' }}>
+                            {/* Animated card body — key change triggers entry animation */}
+                            <div key={activeCard} style={{ animation:'hpCardIn 0.38s cubic-bezier(0.22,1,0.36,1) both' }}>
+                              {/* Card header */}
+                              <div style={{ background:'var(--brand)', padding:'14px 18px', display:'flex', alignItems:'center', gap:10 }}>
+                                <div style={{ width:36, height:36, borderRadius:9, background:'rgba(255,255,255,0.15)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                                  {getIcon(card.icon)}
+                                </div>
+                                <div>
+                                  <div style={{ fontSize:13.5, fontWeight:800, color:'#fff', lineHeight:1.2 }}>{isAr ? card.titleAr : card.titleEn}</div>
+                                  <div style={{ fontSize:10.5, color:'rgba(255,255,255,0.65)', marginTop:2 }}>
+                                    {isAr ? `${card.authAr} — ${card.cntAr}` : `${card.authEn} — ${card.cntEn}`}
+                                  </div>
                                 </div>
                               </div>
+                              {/* Steps timeline */}
+                              <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:0 }}>
+                                {(card.steps as readonly {ar:string;en:string;s:string}[]).map((step, i, arr) => (
+                                  <div key={i} style={{ display:'flex', gap:12, paddingBottom: i < arr.length-1 ? 16 : 0, position:'relative' }}>
+                                    {i < arr.length-1 && <div style={{ position:'absolute', [isAr ? 'right' : 'left']:11, top:24, bottom:0, width:1.5, background: step.s==='done' ? 'var(--brand)' : 'var(--border)', borderRadius:2 }} />}
+                                    <div style={{ width:24, height:24, borderRadius:'50%', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', background: step.s==='done' ? 'var(--brand)' : step.s==='active' ? 'var(--brand-soft)' : 'var(--surface-2)', border: step.s==='active' ? '2px solid var(--brand)' : 'none', zIndex:1 }}>
+                                      {step.s==='done'
+                                        ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        : <span style={{ width:7, height:7, borderRadius:'50%', background: step.s==='active' ? 'var(--brand)' : 'var(--border)', display:'block' }} />
+                                      }
+                                    </div>
+                                    <div style={{ flex:1, paddingTop:3 }}>
+                                      <div style={{ fontSize:12.5, fontWeight: step.s==='active' ? 700 : 500, color: step.s==='done' ? 'var(--text-3)' : step.s==='active' ? 'var(--text-1)' : 'var(--text-2)', textDecoration: step.s==='done' ? 'line-through' : 'none' }}>
+                                        {isAr ? step.ar : step.en}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              {/* Card footer */}
+                              <div style={{ padding:'12px 18px', borderTop:'1px solid var(--border)', background:'var(--surface-muted)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                                <span style={{ fontSize:11, color:'var(--text-3)', display:'flex', alignItems:'center', gap:4 }}>
+                                  <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                  {isAr ? 'مصادر رسمية' : 'Official sources'}
+                                </span>
+                                <button type="button" onClick={() => sendMessage(isAr ? card.pAr : card.pEn)}
+                                  style={{ fontSize:11.5, fontWeight:700, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>
+                                  {isAr ? 'ابدأ الآن ←' : '→ Start Now'}
+                                </button>
+                              </div>
                             </div>
-                          ))}
-                        </div>
-                        {/* Card footer */}
-                        <div style={{ padding:'12px 18px', borderTop:'1px solid var(--border)', background:'var(--surface-muted)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                          <span style={{ fontSize:11, color:'var(--text-3)', display:'flex', alignItems:'center', gap:4 }}>
-                            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            {isAr ? 'مصادر رسمية' : 'Official sources'}
-                          </span>
-                          <button type="button" onClick={() => sendMessage(isAr ? 'كيف أستخرج أو أجدد جواز سفري اللبناني؟' : 'How do I get or renew my Lebanese passport?')}
-                            style={{ fontSize:11.5, fontWeight:700, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>
-                            {isAr ? 'ابدأ الآن ←' : '→ Start Now'}
-                          </button>
-                        </div>
-                      </div>
+                            {/* Navigation dots */}
+                            <div style={{ padding:'10px 18px', display:'flex', alignItems:'center', justifyContent:'center', gap:6, borderTop:'1px solid var(--border)' }}>
+                              {HERO_CARDS.map((_, idx) => (
+                                <button key={idx} type="button"
+                                  aria-label={`Procedure ${idx + 1}`}
+                                  onClick={() => setActiveCard(idx)}
+                                  style={{ width: idx===activeCard ? 18 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.25s cubic-bezier(0.22,1,0.36,1)', background: idx===activeCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      })()}
                     </div>
 
                   </div>{/* .hl */}
