@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { isAdmin, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
@@ -38,6 +38,13 @@ export default function TopNav({
   const { isAr, toggleLang } = useLanguage()
   const onLangToggle = onLangToggleProp ?? toggleLang
 
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <>
       <style>{`
@@ -71,11 +78,14 @@ export default function TopNav({
         }
       `}</style>
 
-      <header dir={isAr ? 'rtl' : 'ltr'} style={{
+      <header dir={isAr ? 'rtl' : 'ltr'} className={scrolled ? 'tn-scrolled' : ''} style={{
         flexShrink: 0,
+        position: 'sticky',
+        top: 0,
         background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.35)',
         zIndex: 50,
+        transition: 'background 0.22s ease, box-shadow 0.22s ease',
         animation: 'tn-drop 0.28s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{

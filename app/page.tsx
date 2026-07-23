@@ -749,7 +749,7 @@ export default function Home() {
         .wlc-svc-grid > :nth-child(7) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.60s; }
         .wlc-svc-grid > :nth-child(8) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.64s; }
         /* Quick-q pill hover lift */
-        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(255,255,255,0.3) !important; }
+        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(139,26,26,0.25) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
         /* Input focused: subtle scale */
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06) !important; transform: scale(1.004); }
         /* Followup chip entrance */
@@ -792,37 +792,39 @@ export default function Home() {
             /* ══ Welcome Screen — Elegant & Professional ══ */
             <div style={{ minHeight:'100%', background:'#F2EDE6', direction: isAr ? 'rtl' : 'ltr' }}>
 
-              {/* ══ HERO — compact & focused ══════════════════════════ */}
+              {/* ══ HERO — light, professional ══════════════════════════ */}
               <div style={{
-                background:'linear-gradient(160deg, #3d1018 0%, #6b1515 35%, #8B1A1A 65%, #5c1a28 100%)',
-                padding:'clamp(22px,4vw,36px) clamp(20px,5vw,32px) clamp(44px,8vw,60px)',
+                background:'linear-gradient(180deg, #FFFFFF 0%, #FAF7F4 60%, #F5EFE8 100%)',
+                padding:'clamp(28px,5vw,48px) clamp(20px,5vw,32px) clamp(40px,7vw,56px)',
                 position:'relative', overflow:'hidden',
+                borderBottom:'1px solid rgba(210,195,178,0.5)',
+                boxShadow:'0 4px 32px rgba(0,0,0,0.05)',
               }}>
-                <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize:'32px 32px', pointerEvents:'none' }} />
-                <div style={{ position:'absolute', bottom:0, left:0, right:0, height:1, background:'rgba(255,255,255,0.08)', pointerEvents:'none' }} />
+                {/* Subtle dot pattern — red tinted */}
+                <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(rgba(139,26,26,0.028) 1px, transparent 1px)', backgroundSize:'28px 28px', pointerEvents:'none' }} />
 
                 <div style={{ maxWidth:560, margin:'0 auto', position:'relative', textAlign:'center' }}>
 
-                  {/* Brand pill */}
-                  <div className="wlc-hero-band" style={{ display:'inline-flex', alignItems:'center', gap:6, marginBottom:16,
-                    background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.14)',
+                  {/* Brand badge — red accent on white */}
+                  <div className="wlc-hero-band" style={{ display:'inline-flex', alignItems:'center', gap:6, marginBottom:18,
+                    background:'rgba(139,26,26,0.05)', border:'1.5px solid rgba(139,26,26,0.12)',
                     borderRadius:20, padding:'5px 14px 5px 9px' }}>
                     <img src="/logo-icon.png" alt="" style={{ width:18, height:18, objectFit:'contain', borderRadius:4 }} />
-                    <span style={{ color:'rgba(255,255,255,0.92)', fontSize:11, fontWeight:700, letterSpacing:'0.3px' }}>
+                    <span style={{ color:'#8B1A1A', fontSize:11, fontWeight:700, letterSpacing:'0.3px' }}>
                       {isAr ? 'دليلك' : 'Dalilak'}
                     </span>
-                    <span style={{ color:'rgba(255,255,255,0.25)', fontSize:10 }}>·</span>
-                    <span style={{ color:'rgba(255,255,255,0.45)', fontSize:10 }}>
+                    <span style={{ color:'#C8B8A4', fontSize:10 }}>·</span>
+                    <span style={{ color:'#8C7D6E', fontSize:10 }}>
                       {isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}
                     </span>
                   </div>
 
-                  {/* Headline */}
-                  <h1 style={{ fontSize:'clamp(24px,6vw,38px)', fontWeight:900, color:'#fff', margin:'0 0 10px', lineHeight:1.08, letterSpacing:'-1px', textShadow:'0 2px 16px rgba(0,0,0,0.18)', whiteSpace:'pre-line' }}>
+                  {/* Headline — dark on light */}
+                  <h1 style={{ fontSize:'clamp(26px,6.5vw,42px)', fontWeight:900, color:'#1A1208', margin:'0 0 12px', lineHeight:1.08, letterSpacing:'-1.5px', whiteSpace:'pre-line' }}>
                     {isAr ? 'أنجز معاملتك الحكومية\nبخطوات واضحة' : 'Navigate government\ntransactions with ease'}
                   </h1>
-                  <p style={{ fontSize:12.5, color:'rgba(255,255,255,0.40)', margin:'0 0 20px', lineHeight:1.6 }}>
-                    {isAr ? 'اسأل بالعربية أو الإنجليزية — دليلك يوجّهك خطوة بخطوة' : 'Ask in Arabic or English — step-by-step guidance'}
+                  <p style={{ fontSize:13, color:'#6B5A4A', margin:'0 0 24px', lineHeight:1.65 }}>
+                    {isAr ? 'اسأل عن أي معاملة — دليلك يوجّهك خطوة بخطوة بمصادر رسمية' : 'Ask in Arabic or English — step-by-step guidance from official sources'}
                   </p>
 
                   {/* ── SEARCH ── */}
@@ -837,31 +839,31 @@ export default function Home() {
                       placeholder={isAr ? 'مثلاً: استخراج جواز سفر، تسجيل شركة...' : 'e.g. passport renewal, company registration...'}
                       dir={isAr ? 'rtl' : 'ltr'}
                       style={{
-                        width:'100%', height:52, boxSizing:'border-box',
-                        padding: isAr ? '0 20px 0 54px' : '0 54px 0 20px',
-                        borderRadius:14,
-                        background:'rgba(255,255,255,0.97)',
-                        border:'1.5px solid rgba(255,255,255,0.15)',
-                        fontSize:13.5, fontFamily:'inherit', fontWeight:500,
+                        width:'100%', height:54, boxSizing:'border-box',
+                        padding: isAr ? '0 22px 0 58px' : '0 58px 0 22px',
+                        borderRadius:16,
+                        background:'#fff',
+                        border:'2px solid rgba(139,26,26,0.10)',
+                        fontSize:14, fontFamily:'inherit', fontWeight:500,
                         color:'#1A1208', outline:'none',
-                        boxShadow:'0 6px 32px rgba(0,0,0,0.24)',
-                        transition:'border-color 0.15s',
+                        boxShadow:'0 4px 20px rgba(0,0,0,0.07)',
+                        transition:'border-color 0.15s, box-shadow 0.15s',
                       }}
-                      onFocus={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.45)' }}
-                      onBlur={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.15)' }}
+                      onFocus={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.35)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.07), 0 0 0 3px rgba(139,26,26,0.07)' }}
+                      onBlur={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.10)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)' }}
                     />
                     <button type="submit" aria-label={isAr ? 'بحث' : 'Search'}
                       style={{
                         position:'absolute', top:'50%', transform:'translateY(-50%)',
-                        [isAr ? 'left' : 'right']: 8,
-                        width:36, height:36, borderRadius:10,
-                        background: heroInput.trim() ? 'linear-gradient(135deg,#8B1A1A,#6b2737)' : 'rgba(139,26,26,0.20)',
+                        [isAr ? 'left' : 'right']: 9,
+                        width:38, height:38, borderRadius:12,
+                        background: heroInput.trim() ? 'linear-gradient(135deg,#8B1A1A,#6b2737)' : 'rgba(139,26,26,0.12)',
                         border:'none', cursor:'pointer',
                         display:'flex', alignItems:'center', justifyContent:'center',
-                        boxShadow: heroInput.trim() ? '0 3px 10px rgba(139,26,26,0.4)' : 'none',
+                        boxShadow: heroInput.trim() ? '0 3px 14px rgba(139,26,26,0.38)' : 'none',
                         transition:'all 0.15s',
                       }}>
-                      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={heroInput.trim() ? '#fff' : '#8B1A1A'} strokeWidth="2.5">
                         <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
                       </svg>
                     </button>
@@ -874,7 +876,7 @@ export default function Home() {
               <div style={{ maxWidth:640, margin:'0 auto', padding:'20px 16px 100px' }}>
 
                 {/* ── Suggestion chips — below hero ── */}
-                <div style={{ marginBottom:20, display:'flex', gap:6, justifyContent:'center', flexWrap:'nowrap', overflow:'hidden', animation:'fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
+                <div style={{ marginBottom:24, display:'flex', gap:6, justifyContent:'center', flexWrap:'nowrap', overflow:'hidden', animation:'fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
                   {visibleQ.slice(0, 2).map((q, i) => {
                     const short = q.length > 30 ? q.slice(0, 28) + '…' : q
                     return (
