@@ -1,12 +1,12 @@
 'use client'
 
 /**
- * ProcedureStepTimer — per-step countdown timer for procedure execution.
+ * ProcedureStepTimer — per-step countdown timers for a procedure.
  *
- * Each step shows a small ▶ button. Clicking starts a countdown (user-set minutes).
- * Active step pulses amber. Timer persists across short page visits via LS.
+ * Renders one collapsible timer row per step. User can set a wait countdown
+ * (1h / 6h / 1d / 3d / 7d / custom days) for any step independently.
  *
- * LS key: dalilak_step_timer_{code} → { stepIdx, endsAt: ISO string }
+ * LS keys: dalilak_step_timer_{code}_{stepIndex} → epoch ms target
  *
  * Props: { code: string; steps: string[]; isAr: boolean }
  */
@@ -19,208 +19,207 @@ interface Props {
   isAr: boolean
 }
 
-interface TimerState {
-  stepIdx: number
-  endsAt: string  // ISO
+const lsKey = (code: string, i: number) => `dalilak_step_timer_${code}_${i}`
+
+function loadTarget(code: string, i: number): number | null {
+  try { const v = localStorage.getItem(lsKey(code, i)); return v ? parseInt(v, 10) : null }
+  catch { return null }
+}
+function saveTarget(code: string, i: number, ts: number) {
+  try { localStorage.setItem(lsKey(code, i), String(ts)) } catch {}
+}
+function clearTarget(code: string, i: number) {
+  try { localStorage.removeItem(lsKey(code, i)) } catch {}
+}
+function fmt(ms: number) {
+  if (ms <= 0) return '00:00:00'
+  const s = Math.floor(ms / 1000)
+  const h = Math.floor(s / 3600)
+  return [h, Math.floor((s % 3600) / 60), s % 60].map(n => String(n).padStart(2, '0')).join(':')
 }
 
-function loadTimer(code: string): TimerState | null {
-  try {
-    const raw = localStorage.getItem(`dalilak_step_timer_${code}`)
-    if (!raw) return null
-    const parsed: TimerState = JSON.parse(raw)
-    if (new Date(parsed.endsAt) < new Date()) return null
-    return parsed
-  } catch { return null }
-}
+const PRESETS = [
+  { ar: 'ساعة',    en: '1h',    ms: 3_600_000 },
+  { ar: '٦ ساعات', en: '6h',   ms: 21_600_000 },
+  { ar: 'يوم',     en: '1d',   ms: 86_400_000 },
+  { ar: '٣ أيام',  en: '3d',   ms: 259_200_000 },
+  { ar: 'أسبوع',   en: '1w',   ms: 604_800_000 },
+]
 
-function saveTimer(code: string, state: TimerState) {
-  try { localStorage.setItem(`dalilak_step_timer_${code}`, JSON.stringify(state)) } catch {}
-}
+function StepTimer({ code, idx, label, isAr }: { code: string; idx: number; label: string; isAr: boolean }) {
+  const [target, setTarget]       = useState<number | null>(null)
+  const [remaining, setRemaining] = useState(0)
+  const [done, setDone]           = useState(false)
+  const [open, setOpen]           = useState(false)
+  const [custom, setCustom]       = useState('')
+  const tick = useRef<ReturnType<typeof setInterval> | null>(null)
 
-function clearTimer(code: string) {
-  try { localStorage.removeItem(`dalilak_step_timer_${code}`) } catch {}
-}
+  useEffect(() => {
+    const t = loadTarget(code, idx)
+    if (!t) return
+    const diff = t - Date.now()
+    if (diff <= 0) { setDone(true) } else { setTarget(t); setRemaining(diff) }
+  }, [code, idx])
 
-function fmtSecs(s: number): string {
-  const m = Math.floor(s / 60)
-  const sec = s % 60
-  return `${m}:${String(sec).padStart(2, '0')}`
+  useEffect(() => {
+    if (!target || done) return
+    tick.current = setInterval(() => {
+      const d = target - Date.now()
+      if (d <= 0) { setRemaining(0); setDone(true); clearInterval(tick.current!) }
+      else setRemaining(d)
+    }, 1000)
+    return () => { if (tick.current) clearInterval(tick.current) }
+  }, [target, done])
+
+  function start(ms: number) {
+    const t = Date.now() + ms
+    saveTarget(code, idx, t)
+    setTarget(t); setRemaining(ms); setDone(false); setOpen(false)
+  }
+  function cancel() {
+    clearTarget(code, idx)
+    setTarget(null); setRemaining(0); setDone(false)
+    if (tick.current) clearInterval(tick.current)
+  }
+
+  // Active countdown
+  if (target && !done) return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+      <span style={{ fontSize: 9, color: '#78716C', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {idx + 1}. {label}
+      </span>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        padding: '3px 9px', borderRadius: 14,
+        background: '#EFF6FF', border: '1.5px solid #BFDBFE',
+      }}>
+        <span>⏳</span>
+        <span style={{ fontSize: 11, fontWeight: 800, color: '#1E40AF', fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
+          {fmt(remaining)}
+        </span>
+        <button type="button" onClick={cancel} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#93C5FD', padding: 0 }}>✕</button>
+      </div>
+    </div>
+  )
+
+  // Done
+  if (done) return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <span style={{ fontSize: 9, color: '#78716C', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {idx + 1}. {label}
+      </span>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        padding: '3px 9px', borderRadius: 14,
+        background: '#FEF2F2', border: '1.5px solid #FECACA',
+      }}>
+        <span>⏰</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: '#991B1B' }}>
+          {isAr ? 'انتهى!' : 'Done!'}
+        </span>
+        <button type="button" onClick={cancel} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#EF4444', padding: 0 }}>✕</button>
+      </div>
+    </div>
+  )
+
+  // Idle
+  return (
+    <div style={{ position: 'relative' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <span style={{ fontSize: 9, color: '#A8A29E', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {idx + 1}. {label}
+        </span>
+        <button type="button" onClick={() => setOpen(v => !v)}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 3,
+            padding: '2px 7px', borderRadius: 12,
+            background: '#F5F3EE', border: '1.5px solid #E5E0D8',
+            fontSize: 9, fontWeight: 700, color: '#78716C',
+            cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+          }}>
+          ⏱ {isAr ? 'مؤقّت' : 'Timer'}
+        </button>
+      </div>
+
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 4px)',
+          [isAr ? 'right' : 'left']: 0,
+          background: '#fff', border: '1.5px solid #E5E0D8',
+          borderRadius: 10, padding: '8px 10px', zIndex: 40,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+          display: 'flex', flexWrap: 'wrap', gap: 5, minWidth: 200,
+        }}>
+          {PRESETS.map(p => (
+            <button key={p.en} type="button" onClick={() => start(p.ms)}
+              style={{
+                padding: '3px 9px', borderRadius: 16,
+                background: '#F5F3EE', border: '1.5px solid #E5E0D8',
+                fontSize: 9, fontWeight: 700, color: '#44403C',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+              {isAr ? p.ar : p.en}
+            </button>
+          ))}
+          <div style={{ width: '100%', display: 'flex', gap: 5, marginTop: 2 }}>
+            <input type="number" min="1" max="365" value={custom}
+              onChange={e => setCustom(e.target.value)}
+              placeholder={isAr ? 'أيام' : 'days'}
+              style={{
+                width: 50, padding: '3px 6px', borderRadius: 7,
+                border: '1.5px solid #D1CBC4', fontSize: 9,
+                fontFamily: 'inherit', outline: 'none',
+              }}
+            />
+            <button type="button"
+              onClick={() => { const d = parseInt(custom); if (d > 0) start(d * 86_400_000) }}
+              style={{
+                padding: '3px 9px', borderRadius: 16,
+                background: '#8F1D2C', color: '#fff',
+                border: 'none', fontSize: 9, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+              {isAr ? 'ابدأ' : 'Go'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function ProcedureStepTimer({ code, steps, isAr }: Props) {
-  const [activeIdx, setActiveIdx]   = useState<number | null>(null)
-  const [remaining, setRemaining]   = useState(0)
-  const [mounted, setMounted]       = useState(false)
-  const [inputMins, setInputMins]   = useState<Record<number, string>>({})
-  const [picking, setPicking]       = useState<number | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const pickRef = useRef<HTMLDivElement | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
-  const tick = useCallback(() => {
-    if (activeIdx === null) return
-    const saved = loadTimer(code)
-    if (!saved) { setActiveIdx(null); setRemaining(0); return }
-    const secs = Math.max(0, Math.round((new Date(saved.endsAt).getTime() - Date.now()) / 1000))
-    setRemaining(secs)
-    if (secs === 0) {
-      clearTimer(code)
-      setActiveIdx(null)
-    }
-  }, [activeIdx, code])
-
-  useEffect(() => {
-    setMounted(true)
-    const saved = loadTimer(code)
-    if (saved) {
-      setActiveIdx(saved.stepIdx)
-      const secs = Math.max(0, Math.round((new Date(saved.endsAt).getTime() - Date.now()) / 1000))
-      setRemaining(secs)
-    }
-  }, [code])
-
-  useEffect(() => {
-    if (activeIdx !== null) {
-      intervalRef.current = setInterval(tick, 1000)
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [activeIdx, tick])
-
-  // Close picker on outside click
-  useEffect(() => {
-    if (picking === null) return
-    function handler(e: MouseEvent) {
-      if (pickRef.current && !pickRef.current.contains(e.target as Node)) setPicking(null)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [picking])
-
-  function startTimer(idx: number, mins: number) {
-    const endsAt = new Date(Date.now() + mins * 60 * 1000).toISOString()
-    const state: TimerState = { stepIdx: idx, endsAt }
-    saveTimer(code, state)
-    setActiveIdx(idx)
-    setRemaining(mins * 60)
-    setPicking(null)
-  }
-
-  function stopTimer() {
-    clearTimer(code)
-    setActiveIdx(null)
-    setRemaining(0)
-    setPicking(null)
-  }
-
+  useEffect(() => { setMounted(true) }, [])
   if (!mounted || steps.length === 0) return null
 
-  const PRESET_MINS = [5, 10, 15, 30, 60]
-
   return (
-    <div dir={isAr ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {steps.map((step, idx) => {
-        const isActive = activeIdx === idx
-        const mins = parseInt(inputMins[idx] || '', 10)
+    <div dir={isAr ? 'rtl' : 'ltr'} style={{ marginTop: 6 }}>
+      <button type="button" onClick={() => setExpanded(v => !v)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 5,
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontFamily: 'inherit', padding: '3px 0', marginBottom: expanded ? 6 : 0,
+        }}>
+        <span style={{ fontSize: 13 }}>⏱</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: '#78716C' }}>
+          {isAr ? 'مؤقّتات الخطوات' : 'Step timers'}
+        </span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A8A29E" strokeWidth="2.5"
+          style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
 
-        return (
-          <div key={idx} style={{
-            display: 'flex', alignItems: 'flex-start', gap: 7,
-            padding: '6px 8px', borderRadius: 8,
-            background: isActive ? 'rgba(245,158,11,0.07)' : 'transparent',
-            border: `1px solid ${isActive ? 'rgba(245,158,11,0.3)' : 'transparent'}`,
-            transition: 'background 0.2s, border 0.2s',
-            animation: isActive ? 'stepPulse 2s ease infinite' : 'none',
-            position: 'relative',
-          }}>
-            {/* Step number */}
-            <span style={{
-              minWidth: 22, height: 22, borderRadius: '50%',
-              background: isActive ? '#F59E0B' : '#E6E2DC',
-              color: isActive ? '#fff' : '#6B5A4A',
-              fontSize: 10, fontWeight: 800,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0, marginTop: 1,
-            }}>{idx + 1}</span>
-
-            {/* Step text */}
-            <span style={{ flex: 1, fontSize: 11.5, color: '#191713', lineHeight: 1.4, fontWeight: isActive ? 700 : 500 }}>
-              {step}
-            </span>
-
-            {/* Timer controls */}
-            <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
-              {isActive ? (
-                <>
-                  <span style={{ fontSize: 11, fontWeight: 800, color: remaining < 60 ? '#DC2626' : '#D97706', fontVariantNumeric: 'tabular-nums' }}>
-                    ⏱ {fmtSecs(remaining)}
-                  </span>
-                  <button type="button" onClick={stopTimer}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#918B82', padding: 0 }}
-                    title={isAr ? 'إيقاف' : 'Stop'}
-                  >⏹</button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setPicking(p => p === idx ? null : idx)}
-                  title={isAr ? 'ابدأ مؤقتاً' : 'Start timer'}
-                  style={{
-                    background: 'none', border: '1px solid #D1CBC4', borderRadius: 5,
-                    cursor: 'pointer', fontSize: 10, color: '#918B82', padding: '1px 5px',
-                    fontFamily: 'inherit',
-                  }}
-                >▶</button>
-              )}
-            </div>
-
-            {/* Duration picker */}
-            {picking === idx && (
-              <div ref={pickRef} dir={isAr ? 'rtl' : 'ltr'} style={{
-                position: 'absolute', top: '100%', [isAr ? 'left' : 'right']: 0, zIndex: 200,
-                background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 10,
-                boxShadow: '0 4px 16px rgba(0,0,0,0.12)', padding: 10, minWidth: 160,
-              }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#918B82', marginBottom: 6 }}>
-                  {isAr ? 'مدة الخطوة (دقائق)' : 'Step duration (min)'}
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
-                  {PRESET_MINS.map(m => (
-                    <button key={m} type="button" onClick={() => startTimer(idx, m)}
-                      style={{
-                        padding: '3px 8px', background: '#F5F3EE', border: '1px solid #D1CBC4',
-                        borderRadius: 6, cursor: 'pointer', fontSize: 10, fontWeight: 700,
-                        color: '#191713', fontFamily: 'inherit',
-                      }}
-                    >{m}</button>
-                  ))}
-                </div>
-                <div style={{ display: 'flex', gap: 4 }}>
-                  <input
-                    type="number" min="1" max="240"
-                    placeholder={isAr ? 'دقيقة' : 'min'}
-                    value={inputMins[idx] || ''}
-                    onChange={e => setInputMins(p => ({ ...p, [idx]: e.target.value }))}
-                    style={{ flex: 1, padding: '3px 6px', border: '1px solid #D1CBC4', borderRadius: 6, fontSize: 10, fontFamily: 'inherit', color: '#191713' }}
-                  />
-                  <button type="button"
-                    onClick={() => { if (!isNaN(mins) && mins > 0) startTimer(idx, mins) }}
-                    style={{ padding: '3px 8px', background: '#8F1D2C', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 10, fontWeight: 700, fontFamily: 'inherit' }}
-                  >▶</button>
-                </div>
-              </div>
-            )}
-          </div>
-        )
-      })}
-
-      <style>{`
-        @keyframes stepPulse {
-          0%,100% { border-color: rgba(245,158,11,0.3); }
-          50%       { border-color: rgba(245,158,11,0.7); }
-        }
-      `}</style>
+      {expanded && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {steps.map((s, i) => (
+            <StepTimer key={i} code={code} idx={i} label={s} isAr={isAr} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

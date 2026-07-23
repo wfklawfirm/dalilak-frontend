@@ -13,6 +13,8 @@ import SaveButton from '@/components/SaveButton'
 import CostEstimator from '@/components/CostEstimator'
 import { trackView } from '@/lib/savedItems'
 import ProcedureTimeline from '@/components/ProcedureTimeline'
+import ProcedureCopyableSteps from '@/components/ProcedureCopyableSteps'
+import ProcedureStepHighlight from '@/components/ProcedureStepHighlight'
 import PrintProcedureModal from '@/components/PrintProcedureModal'
 import ProcedureSearchModal from '@/components/ProcedureSearchModal'
 import ProcedureRelatedSuggestions from '@/components/ProcedureRelatedSuggestions'
@@ -25,6 +27,7 @@ import ProcedureStartButton from '@/components/ProcedureStartButton'
 import ProcedureCompletionBadge from '@/components/ProcedureCompletionBadge'
 import ProcedureEstimatedCompletion from '@/components/ProcedureEstimatedCompletion'
 import ProcedureShareViaEmail from '@/components/ProcedureShareViaEmail'
+import ProcedureHelpRequest from '@/components/ProcedureHelpRequest'
 import ProcedureQRShare from '@/components/ProcedureQRShare'
 import ProcedureQuickAskChips from '@/components/ProcedureQuickAskChips'
 import ProcedureExternalLinks from '@/components/ProcedureExternalLinks'
@@ -37,7 +40,16 @@ import ProcedureDocumentChecklist from '@/components/ProcedureDocumentChecklist'
 import ProcedureCostBreakdown from '@/components/ProcedureCostBreakdown'
 import ProcedureAIAssistButton from '@/components/ProcedureAIAssistButton'
 import ProcedureRemindMeLater from '@/components/ProcedureRemindMeLater'
+import ProcedureDocumentShare from '@/components/ProcedureDocumentShare'
+import ProcedureDocumentStatus from '@/components/ProcedureDocumentStatus'
+import ProcedureChecklistExport from '@/components/ProcedureChecklistExport'
+import ProcedureFeeHistory from '@/components/ProcedureFeeHistory'
 import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
+import ProcedureViewCount from '@/components/ProcedureViewCount'
+import ProcedureLastUpdatedBadge from '@/components/ProcedureLastUpdatedBadge'
+import ProcedureCountdownTimer from '@/components/ProcedureCountdownTimer'
+import ProcedureAlternativeOffices from '@/components/ProcedureAlternativeOffices'
+import ProcedurePriorityTag from '@/components/ProcedurePriorityTag'
 import ProcedureStepProgress from '@/components/ProcedureStepProgress'
 import ProcedureDocReadinessBar from '@/components/ProcedureDocReadinessBar'
 import ProcedurePrintSummary from '@/components/ProcedurePrintSummary'
@@ -644,6 +656,8 @@ export default function ProceduresPage() {
                       {displayDocs.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
                       {displaySteps.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
                       <ProcedureDifficultyBadge stepCount={proc.steps.length} docCount={proc.requiredDocuments.length} isAr={isAr} />
+                      <ProcedurePriorityTag code={proc.code} isAr={isAr} />
+                      <ProcedureViewCount code={proc.code} isAr={isAr} />
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
                       {displayFees && (() => {
                         const isFree = displayFees.includes('مجان') || displayFees.toLowerCase().includes('free') || displayFees === '0'
@@ -732,6 +746,8 @@ export default function ProceduresPage() {
 
                     {/* Ministry contact strip */}
                     <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
+                    {/* Alternative submission offices */}
+                    <ProcedureAlternativeOffices ministrySlug={proc.ministrySlug} isAr={isAr} />
 
                     {/* Ministry map placeholder */}
                     <div style={{ marginBottom: 8 }}>
@@ -781,11 +797,33 @@ export default function ProceduresPage() {
 
                     {/* Document checklist with progress */}
                     {proc.requiredDocuments.length > 0 && (
-                      <ProcedureDocumentChecklist
-                        code={proc.code}
-                        docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
-                        isAr={isAr}
-                      />
+                      <>
+                        <ProcedureDocumentChecklist
+                          code={proc.code}
+                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
+                          isAr={isAr}
+                        />
+                        <ProcedureDocumentShare
+                          code={proc.code}
+                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          isAr={isAr}
+                        />
+                        <ProcedureDocumentStatus
+                          code={proc.code}
+                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
+                          isAr={isAr}
+                        />
+                        <ProcedureChecklistExport
+                          code={proc.code}
+                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          isAr={isAr}
+                        />
+                        <ProcedureFeeHistory code={proc.code} fees={isAr ? proc.fees : proc.fees_en} isAr={isAr} />
+                      </>
                     )}
 
                     {/* Steps — interactive timeline */}
@@ -798,6 +836,17 @@ export default function ProceduresPage() {
                           titleAr={proc.title}
                           titleEn={proc.title_en}
                           onAsk={handleAsk}
+                        />
+                        <ProcedureCopyableSteps
+                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                          titleAr={proc.title}
+                          titleEn={proc.title_en}
+                          isAr={isAr}
+                        />
+                        <ProcedureStepHighlight
+                          code={proc.code}
+                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                          isAr={isAr}
                         />
                       </div>
                     )}
@@ -860,6 +909,14 @@ export default function ProceduresPage() {
                         ))}
                       </div>
                     )}
+
+                    {/* Last reviewed date */}
+                    <div style={{ marginBottom: 8 }}>
+                      <ProcedureLastUpdatedBadge code={proc.code} isAr={isAr} />
+                    </div>
+
+                    {/* Global procedure deadline countdown */}
+                    <ProcedureCountdownTimer code={proc.code} titleAr={proc.title} isAr={isAr} />
 
                     {/* Started / completed markers */}
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
@@ -1039,6 +1096,8 @@ export default function ProceduresPage() {
                       </button>
                       {/* Share via Email */}
                       <ProcedureShareViaEmail proc={proc} isAr={isAr} />
+                      {/* Human help via WhatsApp */}
+                      <ProcedureHelpRequest code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
                       {/* QR Share */}
                       <ProcedureQRShare code={proc.code} titleAr={proc.title} titleEn={proc.title_en} />
                       {/* Printable card */}

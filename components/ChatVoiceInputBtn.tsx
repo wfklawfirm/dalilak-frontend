@@ -29,23 +29,37 @@ type AnySpeechRecognition = any
 
 export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }: Props) {
   const [supported, setSupported] = useState(false)
+  const [mounted,   setMounted]   = useState(false)
   const [listening, setListening] = useState(false)
   const [pulse, setPulse]         = useState(0)
+  const [toast, setToast]         = useState('')
   const recRef = useRef<AnySpeechRecognition>(null)
   const pulseTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
+    setMounted(true)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     setSupported(!!SR)
   }, [])
+
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(''), 3000)
+  }
 
   function startListening() {
     if (listening) { stopListening(); return }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (!SR) return
+    if (!SR) {
+      // Fallback: guide user to use native keyboard mic
+      showToast(isAr
+        ? '🎤 افتح لوحة المفاتيح واضغط على رمز الميكروفون لإدخال الصوت'
+        : '🎤 Use your keyboard\'s microphone button to input voice')
+      return
+    }
 
     const rec = new SR()
     rec.lang          = lang === 'ar' ? 'ar-LB' : 'en-US'
@@ -82,13 +96,30 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
   // Cleanup on unmount
   useEffect(() => () => stopListening(), [])
 
-  if (!supported) return null
+  // Always render after mount; on unsupported browsers we show a fallback toast
+  if (!mounted) return null
 
   const ariaLabel = listening
     ? (isAr ? 'إيقاف الاستماع' : 'Stop listening')
     : (isAr ? 'تحدّث لإدخال النص' : 'Speak to input text')
 
   return (
+    <span style={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
+      {/* Fallback toast for unsupported browsers */}
+      {toast && (
+        <div style={{
+          position: 'absolute', bottom: 'calc(100% + 8px)',
+          right: 0, left: 'auto',
+          background: '#1C1917', color: '#fff',
+          borderRadius: 9, padding: '7px 11px',
+          fontSize: 11, fontWeight: 600, lineHeight: 1.4,
+          maxWidth: 260, whiteSpace: 'pre-wrap' as React.CSSProperties['whiteSpace'],
+          zIndex: 100, boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+          animation: 'fadeUp 0.15s ease both',
+        }}>
+          {toast}
+        </div>
+      )}
     <button
       type="button"
       onClick={startListening}
@@ -148,5 +179,6 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
         }
       `}</style>
     </button>
+    </span>
   )
 }

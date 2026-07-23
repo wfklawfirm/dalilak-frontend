@@ -21,6 +21,7 @@ import UserOnboarding from '@/components/UserOnboarding'
 import LanguagePreferenceCard from '@/components/LanguagePreferenceCard'
 import WelcomeBackBanner from '@/components/WelcomeBackBanner'
 import SearchHistoryPanel from '@/components/SearchHistoryPanel'
+import HomepageRecentMinistries from '@/components/HomepageRecentMinistries'
 import ChatSummaryCard from '@/components/ChatSummaryCard'
 import DocChecklistBuilder from '@/components/DocChecklistBuilder'
 import ProcedureComparator from '@/components/ProcedureComparator'
@@ -39,8 +40,16 @@ import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
 import HomepageProgressRing from '@/components/HomepageProgressRing'
 import ChatTypingIndicator from '@/components/ChatTypingIndicator'
 import ChatMessageActions from '@/components/ChatMessageActions'
+import ChatPinButton, { ChatPinnedBanner } from '@/components/ChatPinnedMessage'
+import ChatVoicePlayback from '@/components/ChatVoicePlayback'
+import ChatEmojiReactions from '@/components/ChatEmojiReactions'
+import ChatSaveToNotes from '@/components/ChatSaveToNotes'
+import ChatAIBadge from '@/components/ChatAIBadge'
 import ProcedureOfTheWeek from '@/components/ProcedureOfTheWeek'
 import LiveBeirutClock from '@/components/LiveBeirutClock'
+import HomepageWeatherWidget from '@/components/HomepageWeatherWidget'
+import HomepageMotivationalQuote from '@/components/HomepageMotivationalQuote'
+import HomepageUserStats from '@/components/HomepageUserStats'
 import ProcedureBookmarks from '@/components/ProcedureBookmarks'
 import ProcedureStatusBoard from '@/components/ProcedureStatusBoard'
 import SmartReminder from '@/components/SmartReminder'
@@ -64,9 +73,14 @@ import HomepageProcedureOfTheDay from '@/components/HomepageProcedureOfTheDay'
 import ChatLanguageToggleChip from '@/components/ChatLanguageToggleChip'
 import HomepageChatSuggestionsBar from '@/components/HomepageChatSuggestionsBar'
 import HomepageLiveStats from '@/components/HomepageLiveStats'
+import HomepageMinistrySpotlight from '@/components/HomepageMinistrySpotlight'
+import HomepageTodaysTasks from '@/components/HomepageTodaysTasks'
+import HomepageFeaturedFAQ from '@/components/HomepageFeaturedFAQ'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
+import ChatInputCharCounter from '@/components/ChatInputCharCounter'
 import ChatContextBar from '@/components/ChatContextBar'
+import ChatResponseLength, { useResponseLength } from '@/components/ChatResponseLength'
 import ModeSelector from '@/components/MobileModeSheet'
 import TopNav from '@/components/TopNav'
 import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
@@ -601,6 +615,8 @@ export default function Home() {
   const [restoredCount, setRestoredCount] = useState(0)
 
   // ── Smart input suggestions autocomplete ──────────────────────────────────
+  const { getPrefix: getLengthPrefix } = useResponseLength()
+
   const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(
     input, isAr, (s) => { setInput(s); textareaRef.current?.focus() }
   )
@@ -980,7 +996,8 @@ Question: ${text}`
     setVoiceJustEnded(false)
 
     // ── Sanitize input ────────────────────────────────────────
-    const { clean: cleanText, flagged } = sanitizeInput(text)
+    const lengthPrefix = getLengthPrefix(isAr)
+    const { clean: cleanText, flagged } = sanitizeInput(lengthPrefix + text)
     if (flagged) {
       setMessages(prev => [...prev,
         { role: 'user', content: cleanText },
@@ -1894,8 +1911,10 @@ Question: ${text}`
                   <WelcomeBackBanner userName={currentUser?.full_name} />
                   <HomepageStreakCounter />
                   <LiveBeirutClock />
+                  <HomepageWeatherWidget isAr={isAr} />
                   <HomepageWeatherBanner />
                   <HomepageProgressRing />
+                  <HomepageUserStats isAr={isAr} />
                   <GovHolidayAlert />
                   <SmartHomeBanner onAsk={q => sendMessage(q)} />
                   <StatsBadgeStrip />
@@ -1908,6 +1927,7 @@ Question: ${text}`
                   <ProcedureBookmarks onAsk={q => sendMessage(q)} />
                   <ChatHistoryPanel onRestore={msgs => setMessages(msgs.map(m => ({ role: m.role, content: m.content, streaming: false })))} />
                   <SearchHistoryPanel onAsk={q => sendMessage(q)} />
+                  <HomepageRecentMinistries isAr={isAr} />
                   <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
                     <DocExpiryBanner onAsk={q => sendMessage(q)} />
                     <DocExpiryCalendar onAsk={q => sendMessage(q)} />
@@ -1929,7 +1949,11 @@ Question: ${text}`
                   <HomepageCalendarWidget />
                   <HomepageCompletionCTA />
                   <HomepageWeeklyGoalWidget />
+                  <HomepageTodaysTasks isAr={isAr} />
                   <ProcedureAlertSummary />
+                  <HomepageMinistrySpotlight isAr={isAr} />
+                  <HomepageFeaturedFAQ isAr={isAr} onAsk={q => sendMessage(q)} />
+                  <HomepageMotivationalQuote isAr={isAr} />
                   <HomepageProcedureStats />
                   <SmartReminder />
                   <ProcedureStatusBoard />
@@ -1995,6 +2019,9 @@ Question: ${text}`
                 onAsk={q => sendMessage(q)}
               />
 
+              {/* Pinned message banner */}
+              <ChatPinnedBanner isAr={isAr} />
+
               {/* Language toggle chip — one-time prompt to switch AI reply language */}
               <ChatLanguageToggleChip
                 messageCount={messages.length}
@@ -2044,8 +2071,13 @@ Question: ${text}`
                         : undefined}
                     />
                     {msg.role === 'assistant' && !msg.streaming && msg.content.length > 10 && (
-                      <div style={{ paddingInlineStart: isAr ? 0 : 10, paddingInlineEnd: isAr ? 10 : 0 }}>
+                      <div style={{ paddingInlineStart: isAr ? 0 : 10, paddingInlineEnd: isAr ? 10 : 0, display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                         <ChatMessageActions text={msg.content} isAr={isAr} />
+                        <ChatPinButton text={msg.content} isAr={isAr} />
+                        <ChatVoicePlayback text={msg.content} isAr={isAr} />
+                        <ChatEmojiReactions msgId={String(i)} isAr={isAr} />
+                        <ChatSaveToNotes text={msg.content} isAr={isAr} />
+                        <ChatAIBadge isAr={isAr} messageIndex={i} />
                       </div>
                     )}
                   </div>
@@ -2361,6 +2393,14 @@ Question: ${text}`
               modeAr={mode === 'detailed' ? 'وضع مفصّل' : mode === 'research' ? 'وضع بحثي' : undefined}
               modeEn={mode === 'detailed' ? 'Detailed mode' : mode === 'research' ? 'Research mode' : undefined}
             />
+
+            {/* ── Response length toggle ── */}
+            <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', marginBottom: 4 }}>
+              <ChatResponseLength isAr={isAr} />
+            </div>
+
+            {/* ── Char counter ── */}
+            <ChatInputCharCounter text={input} isAr={isAr} />
 
             {/* ── Quick reply chips (after assistant message, when input is empty) ── */}
             {messages.length > 0 && !input.trim() && !loading && (() => {
