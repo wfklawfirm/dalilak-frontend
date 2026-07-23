@@ -75,11 +75,24 @@
 #   reported again in a later screenshot — that screenshot was still
 #   showing the OLD deployed frontend because this push.sh hadn't been
 #   run since the earlier fix. Running this script now makes both live.
+#
+#   DECLUTTER PASS 2 — homepage (app/page.tsx):
+#   44 homepage widgets (weather x2, stats x5, "today's tasks" x2,
+#   "procedure of the day/week" x2, saved/favorites x4, etc.) were
+#   rendered flat back-to-back above the chat box. Regrouped into 9
+#   new labeled SectionCollapseToggle sections (reusing the existing
+#   component already used elsewhere in this file) — Alerts & reminders,
+#   Today's tasks, At a glance (stats), Suggestions for you, Saved &
+#   favorites, Search & chat history, Extra tools — plus the 4 groups
+#   that already existed. Only welcome banner + quick-actions bar stay
+#   always visible; secondary groups (stats, suggestions, saved,
+#   history, extra tools) start collapsed. No widget removed — same
+#   pattern as the procedures-page fix above.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls and procedures page into labeled sections"
+git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls, procedures page, and homepage into labeled sections"
 git push origin main
 echo "✅ Done"

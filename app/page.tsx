@@ -1913,30 +1913,30 @@ Question: ${text}`
                 </div>
               )}
 
-              {/* ── Document Expiry Banner + Saved Items ── */}
+              {/* ── Homepage widgets — grouped into labeled collapsible sections ── */}
+              {/* Primary, always visible: welcome + quick actions */}
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
                   <HomepageQuickActionsBar isAr={isAr} />
-                  <HomepageStreakCounter />
-                  <LiveBeirutClock />
-                  <HomepageWeatherWidget isAr={isAr} />
-                  <HomepageWeatherBanner />
-                  <HomepageProgressRing />
-                  <HomepageUserStats isAr={isAr} />
-                  <GovHolidayAlert />
-                  <SmartHomeBanner onAsk={q => sendMessage(q)} />
-                  <StatsBadgeStrip />
-                  <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
-                  <LanguagePreferenceCard />
-                  <HomepageNewProceduresBadge />
-                  <DailyTip onAsk={q => sendMessage(q)} />
-                  <ProcedureOfTheWeek onAsk={q => sendMessage(q)} />
-                  <SmartSuggestions onAsk={q => sendMessage(q)} />
-                  <ProcedureBookmarks onAsk={q => sendMessage(q)} />
-                  <ChatHistoryPanel onRestore={msgs => setMessages(msgs.map(m => ({ role: m.role, content: m.content, streaming: false })))} />
-                  <SearchHistoryPanel onAsk={q => sendMessage(q)} />
-                  <HomepageRecentMinistries isAr={isAr} />
+
+                  <SectionCollapseToggle titleAr="تنبيهات وتذكيرات" titleEn="Alerts & reminders" icon="🔔" storageKey="dalilak_sec_alerts" defaultOpen={true}>
+                    <GovHolidayAlert />
+                    <SmartHomeBanner onAsk={q => sendMessage(q)} />
+                    <ProcedureAlertSummary />
+                    <SmartReminder />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="مهامي اليوم" titleEn="Today's tasks" icon="📅" storageKey="dalilak_sec_tasks" defaultOpen={true}>
+                    <HomepageTodayTasks />
+                    <HomepageTodaysTasks isAr={isAr} />
+                    <HomepageCalendarWidget />
+                    <HomepageCompletionCTA />
+                    <HomepageWeeklyGoalWidget />
+                    <GovCalendar onAsk={q => sendMessage(q)} />
+                    <ProcedureStatusBoard />
+                  </SectionCollapseToggle>
+
                   <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
                     <DocExpiryBanner onAsk={q => sendMessage(q)} />
                     <DocExpiryCalendar onAsk={q => sendMessage(q)} />
@@ -1946,33 +1946,49 @@ Question: ${text}`
                     <AppointmentTracker onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 
-                  <HomepageLiveStats
-                    totalProcedures={TX_ALL.length + ENRICHED_PROCEDURES.length}
-                    ministriesCount={TX_MINISTRIES.length}
-                    formsCount={TX_WITH_FORMS.length}
-                    isAr={isAr}
-                  />
-                  <HomepageMiniStats />
-                  <HomepageProcedureOfTheDay />
-                  <HomepageTodayTasks />
-                  <HomepageCalendarWidget />
-                  <HomepageCompletionCTA />
-                  <HomepageWeeklyGoalWidget />
-                  <HomepageTodaysTasks isAr={isAr} />
-                  <ProcedureAlertSummary />
-                  <HomepageMinistrySpotlight isAr={isAr} />
-                  <HomepageFeaturedFAQ isAr={isAr} onAsk={q => sendMessage(q)} />
-                  <HomepageMotivationalQuote isAr={isAr} />
-                  <HomepageProcedureStats />
-                  <SmartReminder />
-                  <ProcedureStatusBoard />
-                  <SavedItemsPanel onAsk={q => sendMessage(q)} />
-                  <SavedCostSummary />
-                  <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
-                  <DocChecklistBuilder onAsk={q => sendMessage(q)} />
-                  <ProcedureComparator onAsk={q => sendMessage(q)} />
-                  <QuickContacts onAsk={q => sendMessage(q)} />
-                  <GovCalendar onAsk={q => sendMessage(q)} />
+                  <SectionCollapseToggle titleAr="لمحة سريعة" titleEn="At a glance" icon="📊" storageKey="dalilak_sec_stats" defaultOpen={false}>
+                    <HomepageStreakCounter />
+                    <LiveBeirutClock />
+                    <HomepageWeatherWidget isAr={isAr} />
+                    <HomepageWeatherBanner />
+                    <HomepageProgressRing />
+                    <HomepageUserStats isAr={isAr} />
+                    <StatsBadgeStrip />
+                    <HomepageLiveStats
+                      totalProcedures={TX_ALL.length + ENRICHED_PROCEDURES.length}
+                      ministriesCount={TX_MINISTRIES.length}
+                      formsCount={TX_WITH_FORMS.length}
+                      isAr={isAr}
+                    />
+                    <HomepageMiniStats />
+                    <HomepageProcedureStats />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="اقتراحات لك" titleEn="Suggestions for you" icon="💡" storageKey="dalilak_sec_suggestions" defaultOpen={false}>
+                    <LanguagePreferenceCard />
+                    <HomepageNewProceduresBadge />
+                    <DailyTip onAsk={q => sendMessage(q)} />
+                    <ProcedureOfTheWeek onAsk={q => sendMessage(q)} />
+                    <HomepageProcedureOfTheDay />
+                    <SmartSuggestions onAsk={q => sendMessage(q)} />
+                    <HomepageMinistrySpotlight isAr={isAr} />
+                    <HomepageRecentMinistries isAr={isAr} />
+                    <HomepageFeaturedFAQ isAr={isAr} onAsk={q => sendMessage(q)} />
+                    <HomepageMotivationalQuote isAr={isAr} />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="المفضلة والمحفوظات" titleEn="Saved & favorites" icon="⭐" storageKey="dalilak_sec_saved" defaultOpen={false}>
+                    <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
+                    <ProcedureBookmarks onAsk={q => sendMessage(q)} />
+                    <SavedItemsPanel onAsk={q => sendMessage(q)} />
+                    <SavedCostSummary />
+                    <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
+
+                  <SectionCollapseToggle titleAr="سجل البحث والمحادثات" titleEn="Search & chat history" icon="🕐" storageKey="dalilak_sec_history" defaultOpen={false}>
+                    <ChatHistoryPanel onRestore={msgs => setMessages(msgs.map(m => ({ role: m.role, content: m.content, streaming: false })))} />
+                    <SearchHistoryPanel onAsk={q => sendMessage(q)} />
+                  </SectionCollapseToggle>
 
                   <SectionCollapseToggle titleAr="تقدمي في المعاملات" titleEn="My Procedure Progress" icon="📊" storageKey="dalilak_sec_progress" defaultOpen={true}>
                     <ProcedureProgressTracker onAsk={q => sendMessage(q)} />
@@ -1982,7 +1998,12 @@ Question: ${text}`
                     <RecentActivityFeed onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 
-                  <QuickNotepad />
+                  <SectionCollapseToggle titleAr="أدوات إضافية" titleEn="Extra tools" icon="🧰" storageKey="dalilak_sec_tools" defaultOpen={false}>
+                    <DocChecklistBuilder onAsk={q => sendMessage(q)} />
+                    <ProcedureComparator onAsk={q => sendMessage(q)} />
+                    <QuickContacts onAsk={q => sendMessage(q)} />
+                    <QuickNotepad />
+                  </SectionCollapseToggle>
                 </>
               )}
 
