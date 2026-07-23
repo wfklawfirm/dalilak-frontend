@@ -356,7 +356,7 @@ export default function Home() {
           body: JSON.stringify({ question: improved, answer: '', lang: isAr ? 'ar' : 'en' }),
         })
           .then(r => r.ok ? r.json() : null)
-          .then(d => { if (d?.questions?.length >= 2) setVisibleQ(d.questions.slice(0, 4)) })
+          .then(d => { if (d?.questions?.length >= 2) { chipsLockedRef.current = true; setVisibleQ(d.questions.slice(0, 4)) } })
           .catch(() => {})
       }
     } catch { /* silent */ } finally {
@@ -387,6 +387,8 @@ export default function Home() {
   const recognitionRef = useRef<any>(null)
   const mainRef = useRef<HTMLDivElement>(null)
   const historyLoaded = useRef(false)
+  // Prevents 8-second auto-rotate from overwriting enhance-generated chips
+  const chipsLockedRef = useRef(false)
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
 
@@ -479,7 +481,8 @@ export default function Home() {
 
   // ── Auto-rotate quick questions in hero ──────────────────
   useEffect(() => {
-    const refresh = () => setVisibleQ(shufflePick(pool, 3))
+    chipsLockedRef.current = false  // unlock on lang change
+    const refresh = () => { if (!chipsLockedRef.current) setVisibleQ(shufflePick(pool, 3)) }
     refresh()
     const interval = setInterval(refresh, 8000)
     return () => clearInterval(interval)
@@ -1031,7 +1034,7 @@ export default function Home() {
                         <input
                           type="text"
                           value={heroInput}
-                          onChange={e => setHeroInput(e.target.value)}
+                          onChange={e => { setHeroInput(e.target.value); if (!e.target.value.trim()) chipsLockedRef.current = false }}
                           placeholder={isAr ? 'اكتب اسم المعاملة أو سؤالك...' : 'Type a procedure or ask a question...'}
                           dir={isAr ? 'rtl' : 'ltr'}
                           style={{ flex:1, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:14.5, fontFamily:'inherit', fontWeight:500, color:'var(--text-1)' }}
