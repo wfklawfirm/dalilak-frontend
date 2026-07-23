@@ -763,7 +763,7 @@ export default function Home() {
         position: 'fixed', top: 0, left: 0, right: 0,
         bottom: footerBottom,
         display: 'flex', flexDirection: 'column',
-        backgroundColor: '#FAFAF8',
+        backgroundColor: '#F2EDE6',
         paddingTop: 'var(--safe-top)',
       }}>
 
@@ -1635,7 +1635,7 @@ export default function Home() {
         onClose={() => setMobileMenuOpen(false)}
         isAr={isAr}
         lang={lang}
-        onLangToggle={() => setLang(l => l === 'ar' ? 'en' : 'ar')}
+        onLangToggle={toggleLang}
         onHome={() => setMessages([])}
         currentUser={currentUser}
       />
