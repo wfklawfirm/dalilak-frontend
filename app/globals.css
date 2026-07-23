@@ -889,3 +889,53 @@ input:focus {
   -webkit-backdrop-filter: none !important;
   box-shadow: 0 2px 16px rgba(0,0,0,0.09) !important;
 }
+
+/* ── Homepage v3 layout grids ────────────────────────────────────────────── */
+
+/* Hero two-column layout */
+.hl { display: grid; gap: clamp(32px, 5vw, 48px); }
+@media (min-width: 900px) { .hl { grid-template-columns: 1fr 420px; align-items: center; } }
+
+/* Hero right column — desktop only */
+.hp { display: none !important; }
+@media (min-width: 900px) { .hp { display: block !important; } }
+
+/* Hero search bar focus ring */
+.hsearch:focus-within {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 3px var(--brand-ring) !important;
+}
+
+/* Procedures grid */
+.pgrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 640px)  { .pgrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .pgrid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Procedure card */
+.pcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  width: 100%;
+}
+.pcard:hover  { border-color: var(--border-brand); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.pcard:active { transform: scale(0.98) !important; }
+
+/* How-it-works grid */
+.hwgrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 640px) { .hwgrid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+
+/* Trust grid */
+.tgrid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px)  { .tgrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .tgrid { grid-template-columns: repeat(4, 1fr); } }
+
+/* Footer grid */
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+@media (min-width: 768px) { .fgrid { grid-template-columns: 2fr 1fr 1fr; } }

@@ -844,18 +844,10 @@ export default function Home() {
         :root {
           --safe-top: env(safe-area-inset-top, 0px);
           --safe-bottom: env(safe-area-inset-bottom, 0px);
+          /* Legacy aliases used in chat section */
           --red: #8F1D2C;
           --red-dark: #741622;
           --red-light: #F8EDEF;
-          --gold: #B76B00;
-          --gold-light: #FFFBEB;
-          --bg: #F8F8F6;
-          --card: #FFFFFF;
-          --border: #E6E2DC;
-          --border-strong: #D5D0C8;
-          --text: #191713;
-          --text-2: #69645C;
-          --text-3: #918B82;
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
@@ -871,71 +863,16 @@ export default function Home() {
           from { opacity: 0; transform: translateY(6px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes heroIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
         .msg-in { animation: fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both; }
         .quick-btn { animation: slideQ 0.28s cubic-bezier(0.22,1,0.36,1) both; }
-        .wlc-hero-band { animation: heroIn 0.35s cubic-bezier(0.22,1,0.36,1) both; }
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
-        /* quick-btn hover is handled via inline onMouseEnter/Leave */
+        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(143,29,44,0.25) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
+        .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
         .mode-btn { transition: background 0.15s, color 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1); }
         .mode-btn:hover { background: rgba(255,255,255,0.22) !important; }
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
-
-        /* ── Welcome screen responsive layout ─────────────────────── */
-        .wlc-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .wlc-nav-chip { }
-        .wlc-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-        .wlc-svc-btn:hover { border-color: #8F1D2C !important; background: #FEF7F7 !important; box-shadow: 0 4px 14px rgba(143,29,44,0.09) !important; transform: translateY(-2px) !important; }
-        /* Stagger entrance for service group cards */
-        .wlc-svc-grid > :nth-child(1) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.30s; }
-        .wlc-svc-grid > :nth-child(2) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.36s; }
-        .wlc-svc-grid > :nth-child(3) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.42s; }
-        .wlc-svc-grid > :nth-child(4) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.47s; }
-        .wlc-svc-grid > :nth-child(5) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.52s; }
-        .wlc-svc-grid > :nth-child(6) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.56s; }
-        .wlc-svc-grid > :nth-child(7) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.60s; }
-        .wlc-svc-grid > :nth-child(8) { animation: fadeUp 0.32s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.64s; }
-        /* Quick-q pill hover lift */
-        .quick-btn:hover { transform: translateY(-1px) !important; border-color: rgba(143,29,44,0.25) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
-        /* Input focused: subtle scale */
         .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06) !important; transform: scale(1.004); }
-        /* Followup chip entrance */
-        .followup-chip { animation: slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both; }
-        @media (min-width: 640px) {
-          .wlc-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
-          .wlc-svc-grid   { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        }
-        /* How-it-works: 3 cols always, tighter on narrow screens */
-        @media (max-width: 400px) {
-          .wlc-how-grid > div { padding: 10px 6px 8px !important; }
-          .wlc-how-grid > div > div:last-child { display: none; }
-        }
-        /* ── Homepage v3 grid classes ── */
-        .hl { display:grid; gap:clamp(32px,5vw,48px); }
-        @media (min-width:900px) { .hl { grid-template-columns:1fr 420px; align-items:center; } }
-        .hp { display:none !important; }
-        @media (min-width:900px) { .hp { display:block !important; } }
-        .pgrid { display:grid; grid-template-columns:1fr; gap:16px; }
-        @media (min-width:640px) { .pgrid { grid-template-columns:repeat(2,1fr); } }
-        @media (min-width:1024px) { .pgrid { grid-template-columns:repeat(3,1fr); } }
-        .pcard { background:var(--surface,#fff); border:1px solid var(--border,#E6E2DC); border-radius:14px; padding:20px; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; transition:border-color 0.15s, box-shadow 0.15s, transform 0.15s; width:100%; }
-        .pcard:hover { border-color:rgba(143,29,44,0.20); box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-2px); }
-        .pcard:active { transform:scale(0.98) !important; }
-        .hwgrid { display:grid; grid-template-columns:1fr; gap:16px; }
-        @media (min-width:640px) { .hwgrid { grid-template-columns:repeat(3,1fr); gap:24px; } }
-        .tgrid { display:grid; grid-template-columns:1fr; gap:12px; }
-        @media (min-width:640px) { .tgrid { grid-template-columns:repeat(2,1fr); } }
-        @media (min-width:1024px) { .tgrid { grid-template-columns:repeat(4,1fr); } }
-        .fgrid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
-        @media (min-width:768px) { .fgrid { grid-template-columns:2fr 1fr 1fr; } }
-        .hsearch:focus-within { border-color:var(--brand,#8F1D2C) !important; box-shadow:0 0 0 3px rgba(143,29,44,0.12) !important; }
       `}</style>
 
       <div style={{
