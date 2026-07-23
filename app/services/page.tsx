@@ -292,7 +292,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         <div style={{ padding: '12px 20px 28px', borderTop: '1px solid #EAE4D9', display: 'flex', gap: 10 }}>
           <button
             type="button"
-            onClick={() => onAsk(service.chatPrompt_ar || service.name_ar)}
+            onClick={() => onAsk(isAr ? (service.chatPrompt_ar || service.name_ar) : `What are the requirements and steps for: ${service.name_en || service.name_ar}?`)}
             onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
             onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
             style={{

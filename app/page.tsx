@@ -586,7 +586,7 @@ export default function Home() {
               if (Array.isArray(p.sources)) {
                 const seen = new Set<string>()
                 metaSources = p.sources
-                  .map((s: { title?: string; ministry?: string; law?: string; snippet?: string; url?: string }) => ({
+                  .map((s: { title?: string; ministry?: string; law?: string; snippet?: string; url?: string; score?: number }) => ({
                     title: s.title || s.ministry || (isAr ? 'مصدر' : 'Source'),
                     type: 'official' as const,
                     ministry: s.ministry,

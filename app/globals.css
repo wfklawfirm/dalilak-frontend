@@ -49,9 +49,9 @@
   --info-fg:          #1e3a8a;
 
   /* ── Backgrounds & Surfaces ───────────────────────── */
-  --bg:               #F8F4EF;   /* الخلفية العامة — بيج دافئ فاتح */
-  --bg-page:          #F8F4EF;
-  --bg-hero:          #F5EFE8;   /* خلفية أقسام الصفحة الرئيسية */
+  --bg:               #F2EDE6;   /* الخلفية العامة — رمل دافئ */
+  --bg-page:          #F2EDE6;
+  --bg-hero:          #EDE6DC;   /* خلفية أقسام الصفحة الرئيسية */
   --surface:          #FFFFFF;   /* البطاقات والأسطح الرئيسية */
   --surface-2:        #F0EBE3;   /* أسطح ثانوية */
   --surface-3:        #EAE4D9;   /* حدود وخلفيات خافتة */
@@ -291,6 +291,10 @@ a { color: inherit; text-decoration: none; }
 @keyframes sheetIn {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
+}
+@keyframes divSection {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Entrance classes */
