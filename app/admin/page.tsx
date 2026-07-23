@@ -41,8 +41,11 @@ const PLAN_STYLE: Record<string, React.CSSProperties> = {
   expired:   { background: '#E6E2DC', color: '#69645C' },
 }
 
-const PLAN_LABELS: Record<string, string> = {
+const PLAN_LABELS_AR: Record<string, string> = {
   paid: 'مدفوع', trial: 'تجريبي', admin: 'مشرف', suspended: 'موقوف', expired: 'منتهي'
+}
+const PLAN_LABELS_EN: Record<string, string> = {
+  paid: 'Paid', trial: 'Trial', admin: 'Admin', suspended: 'Suspended', expired: 'Expired'
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -83,15 +86,15 @@ export default function AdminPage() {
   }, [])
 
   async function loadStats() {
-    try { setStats(await adminGetStats()) } catch (e) { flash(e instanceof Error ? e.message : 'خطأ في تحميل الإحصائيات', true) }
+    try { setStats(await adminGetStats()) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ في تحميل الإحصائيات' : 'Failed to load stats'), true) }
   }
 
   async function loadUsers() {
-    try { setUsers((await adminListUsers()).users) } catch (e) { flash(e instanceof Error ? e.message : 'خطأ في تحميل المستخدمين', true) }
+    try { setUsers((await adminListUsers()).users) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ في تحميل المستخدمين' : 'Failed to load users'), true) }
   }
 
   async function loadResets() {
-    try { setResets((await adminGetResets()).reset_codes) } catch (e) { flash(e instanceof Error ? e.message : 'خطأ', true) }
+    try { setResets((await adminGetResets()).reset_codes) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
   async function loadFeedback() {
@@ -99,7 +102,7 @@ export default function AdminPage() {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/feedback?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
       setFeedback((await res.json()).feedback || [])
-    } catch (e) { flash(e instanceof Error ? e.message : 'خطأ', true) }
+    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
   async function loadEscalations() {
@@ -107,7 +110,7 @@ export default function AdminPage() {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/escalations?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
       setEscalations((await res.json()).escalations || [])
-    } catch (e) { flash(e instanceof Error ? e.message : 'خطأ', true) }
+    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
   async function loadContentGaps(status?: string) {
@@ -116,21 +119,23 @@ export default function AdminPage() {
       const data = await adminGetContentGaps(status ?? gapFilter)
       setContentGaps(data.gaps || [])
       setGapStats(data.stats || null)
-    } catch (e) { flash(e instanceof Error ? e.message : 'خطأ', true) }
+    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
     finally { setLoading(false) }
   }
 
   async function handleGapUpdate(gapId: string, status: string, notes?: string) {
     try {
       await adminUpdateContentGap(gapId, status, notes)
-      flash('تم التحديث'); loadContentGaps(gapFilter)
-    } catch (e) { flash(e instanceof Error ? e.message : 'خطأ', true) }
+      flash(isAr ? 'تم التحديث' : 'Updated'); loadContentGaps(gapFilter)
+    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
   function fmtTs(ts?: number) {
     if (!ts) return '—'
-    return new Date(ts * 1000).toLocaleString('ar-LB')
+    return new Date(ts * 1000).toLocaleString(isAr ? 'ar-LB' : 'en-US')
   }
+
+  const PLAN_LABELS = isAr ? PLAN_LABELS_AR : PLAN_LABELS_EN
 
   async function refreshAll() {
     setLoading(true)
@@ -147,10 +152,10 @@ export default function AdminPage() {
     e.preventDefault(); setLoading(true)
     try {
       await adminCreateUser(newUser)
-      flash('تم إنشاء المستخدم بنجاح')
+      flash(isAr ? 'تم إنشاء المستخدم بنجاح' : 'User created successfully')
       setNewUser({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
       loadUsers(); loadStats()
-    } catch (err) { flash(err instanceof Error ? err.message : 'خطأ', true) }
+    } catch (err) { flash(err instanceof Error ? err.message : (isAr ? 'خطأ' : 'Error'), true) }
     finally { setLoading(false) }
   }
 
@@ -160,18 +165,18 @@ export default function AdminPage() {
       const payload: Record<string, string> = { plan: editPlan }
       if (editPaidUntil) payload.paid_until = editPaidUntil
       await adminUpdateUser(editUser.username, payload)
-      flash('تم التحديث بنجاح'); setEditUser(null)
+      flash(isAr ? 'تم التحديث بنجاح' : 'Updated successfully'); setEditUser(null)
       loadUsers(); loadStats()
-    } catch (err) { flash(err instanceof Error ? err.message : 'خطأ', true) }
+    } catch (err) { flash(err instanceof Error ? err.message : (isAr ? 'خطأ' : 'Error'), true) }
     finally { setLoading(false) }
   }
 
   async function handleDeactivate(username: string) {
-    if (!confirm(`تعطيل حساب ${username}؟`)) return
+    if (!confirm(isAr ? `تعطيل حساب ${username}؟` : `Deactivate account ${username}?`)) return
     try {
       await adminDeactivateUser(username)
-      flash('تم تعطيل الحساب'); loadUsers(); loadStats()
-    } catch (err) { flash(err instanceof Error ? err.message : 'خطأ', true) }
+      flash(isAr ? 'تم تعطيل الحساب' : 'Account deactivated'); loadUsers(); loadStats()
+    } catch (err) { flash(err instanceof Error ? err.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
   const filtered = users.filter(u =>

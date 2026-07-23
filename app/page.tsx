@@ -580,11 +580,11 @@ export default function Home() {
     const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
     const modePrefix = lang === 'en' ? activeMode.prefix_en : activeMode.prefix
     const prefixedMessage = file
-      ? cleanText || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
+      ? cleanText || (lang === 'en' ? 'Analyze this document and suggest relevant procedures' : 'حلل هذه الوثيقة واقترح الإجراءات المناسبة')
       : modePrefix + cleanText
 
     const displayText = file
-      ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
+      ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — ${isAr ? 'طلب تحليل الوثيقة' : 'Document analysis request'}`)
       : cleanText
 
     // ── Check localStorage cache (text-only, no file) ─────
@@ -643,7 +643,7 @@ export default function Home() {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', ...authHeaders() },
               body: JSON.stringify({
-                document_text: `[File: ${file.name}, Type: ${file.type}] — تحليل المستند المرفوع`,
+                document_text: `[File: ${file.name}, Type: ${file.type}] — ${isAr ? 'تحليل المستند المرفوع' : 'Uploaded document analysis'}`,
                 filename: file.name,
                 document_id: Date.now().toString(36),
               }),

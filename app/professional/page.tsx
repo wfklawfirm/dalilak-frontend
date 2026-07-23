@@ -39,8 +39,8 @@ function StatCard({ icon, value, labelAr, labelEn, color, isAr }: {
 }
 
 // ── Coming Soon Panel ──────────────────────────────────────────────────────────
-function ComingSoon({ titleAr, titleEn, descAr, icon, isAr }: {
-  titleAr: string; titleEn: string; descAr: string; icon: string; isAr: boolean
+function ComingSoon({ titleAr, titleEn, descAr, descEn, icon, isAr }: {
+  titleAr: string; titleEn: string; descAr: string; descEn: string; icon: string; isAr: boolean
 }) {
   return (
     <div style={{
@@ -52,7 +52,7 @@ function ComingSoon({ titleAr, titleEn, descAr, icon, isAr }: {
         {isAr ? titleAr : titleEn}
       </div>
       <div style={{ fontSize: 12.5, color: '#6b7280', lineHeight: 1.7, maxWidth: 340, margin: '0 auto' }}>
-        {isAr ? descAr : descAr}
+        {isAr ? descAr : descEn}
       </div>
       <div style={{
         display: 'inline-block', marginTop: 16, padding: '5px 16px',
@@ -302,6 +302,7 @@ export default function ProfessionalWorkspacePage() {
           <ComingSoon
             titleAr="إدارة الموكّلين" titleEn="Client Management"
             descAr="ستتمكن قريباً من إضافة موكّليك، متابعة ملفاتهم، وإرسال روابط الاستمارة مباشرة."
+            descEn="Soon you'll be able to add clients, track their files, and send intake links directly."
             icon="👥" isAr={isAr}
           />
         )}
@@ -355,6 +356,7 @@ export default function ProfessionalWorkspacePage() {
           <ComingSoon
             titleAr="طلبات المراجعة البشرية" titleEn="Human Review Requests"
             descAr="تتبّع طلبات مراجعة الملفات والمستندات من الخبراء القانونيين."
+            descEn="Track file and document review requests from legal experts."
             icon="👨‍⚖️" isAr={isAr}
           />
         )}
