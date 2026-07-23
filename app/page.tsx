@@ -328,9 +328,13 @@ export default function Home() {
         const chunk = decoder.decode(value, { stream: true })
         for (const line of chunk.split('\n')) {
           if (!line.startsWith('data: ')) continue
+          const payload = line.slice(6)
+          if (payload === '[DONE]') break outer
           try {
-            const json = JSON.parse(line.slice(6))
-            if (json.token) accumulated += json.token
+            const json = JSON.parse(payload)
+            // backend sends {type:'token', text:...} — also handle legacy {token:...}
+            const tok = json.text ?? json.token ?? ''
+            if (tok && json.type !== 'meta' && json.type !== 'error') accumulated += tok
             if (json.done) break outer
           } catch { /* skip malformed */ }
         }
