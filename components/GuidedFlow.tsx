@@ -182,7 +182,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
     if (phase === 'pick_category') return isAr ? 'ما هي معاملتك؟' : 'What is your procedure?'
     if (phase === 'pick_procedure') {
       const cat = SERVICE_CATEGORIES.find(c => c.slug === selectedCategory)
-      return cat ? cat.label_ar : (isAr ? 'اختر الخدمة' : 'Select Service')
+      return cat ? (isAr ? cat.label_ar : cat.label_en) : (isAr ? 'اختر الخدمة' : 'Select Service')
     }
     if (phase === 'flow_questions') {
       return isAr
@@ -300,7 +300,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.background = '#fff' }}
                   onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.transform = 'scale(0.97)' }}
                   onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1)' }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#191713', lineHeight: 1.3, flex: 1, textAlign: isAr ? 'right' : 'left' }}>{cat.label_ar}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#191713', lineHeight: 1.3, flex: 1, textAlign: isAr ? 'right' : 'left' }}>{isAr ? cat.label_ar : cat.label_en}</span>
                     <span style={{
                       fontSize: 10, fontWeight: 700, color: '#8F1D2C',
                       background: 'rgba(143,29,44,0.08)', borderRadius: 6,
