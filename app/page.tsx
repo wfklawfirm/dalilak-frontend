@@ -33,6 +33,9 @@ import FeedbackWidget from '@/components/FeedbackWidget'
 import FloatingHelpButton from '@/components/FloatingHelpButton'
 import StatsBadgeStrip from '@/components/StatsBadgeStrip'
 import SmartHomeBanner from '@/components/SmartHomeBanner'
+import GovHolidayAlert from '@/components/GovHolidayAlert'
+import SavedCostSummary from '@/components/SavedCostSummary'
+import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -1852,6 +1855,7 @@ Question: ${text}`
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <GovHolidayAlert />
                   <SmartHomeBanner onAsk={q => sendMessage(q)} />
                   <StatsBadgeStrip />
                   <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
@@ -1869,6 +1873,7 @@ Question: ${text}`
                   </SectionCollapseToggle>
 
                   <SavedItemsPanel onAsk={q => sendMessage(q)} />
+                  <SavedCostSummary />
                   <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
                   <DocChecklistBuilder onAsk={q => sendMessage(q)} />
                   <ProcedureComparator onAsk={q => sendMessage(q)} />
@@ -1885,6 +1890,14 @@ Question: ${text}`
 
                   <QuickNotepad />
                 </>
+              )}
+
+              {/* Welcome screen — shown when chat is empty */}
+              {messages.length === 0 && !loading && (
+                <ChatWelcomeMessage
+                  onSelect={q => sendMessage(q)}
+                  isAr={isAr}
+                />
               )}
 
               {/* Chat summary card — appears after 5+ messages */}

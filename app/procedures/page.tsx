@@ -19,6 +19,9 @@ import ProcedureRelatedSuggestions from '@/components/ProcedureRelatedSuggestion
 import ProcedureProgressBadge from '@/components/ProcedureProgressBadge'
 import ProcedureFilterDrawer, { type ProcFilters, DEFAULT_FILTERS, hasActiveFilters } from '@/components/ProcedureFilterDrawer'
 import ProcedureDeadlineAlert, { setDeadline, clearDeadline } from '@/components/ProcedureDeadlineAlert'
+import ProcedureNotesPanel from '@/components/ProcedureNotesPanel'
+import GovHolidayAlert from '@/components/GovHolidayAlert'
+import ProcedureStartButton from '@/components/ProcedureStartButton'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -219,6 +222,9 @@ export default function ProceduresPage() {
       </header>
 
       <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
+
+        {/* Holiday alert — when tomorrow is a public holiday or weekend */}
+        <GovHolidayAlert />
 
         {/* Deadline alerts — shown when any procedure has a deadline within 7 days */}
         <ProcedureDeadlineAlert
@@ -738,6 +744,14 @@ export default function ProceduresPage() {
                         ))}
                       </div>
                     )}
+
+                    {/* Started / in-progress marker */}
+                    <div style={{ marginBottom: 10 }}>
+                      <ProcedureStartButton code={proc.code} isAr={isAr} />
+                    </div>
+
+                    {/* Personal notes */}
+                    <ProcedureNotesPanel code={proc.code} isAr={isAr} />
 
                     {/* Set deadline — personal deadline reminder for this procedure */}
                     {(() => {
