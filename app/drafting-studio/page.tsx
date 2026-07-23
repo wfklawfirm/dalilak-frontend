@@ -18,12 +18,12 @@ export default function DraftingStudioPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
-      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #EAE4D9; }`}</style>
+    <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+      <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #E6E2DC; }`}</style>
 
       {/* Header */}
       <header style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
         padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
         animation: 'dsHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
@@ -51,20 +51,20 @@ export default function DraftingStudioPage() {
         @keyframes dsHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes dsIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
         .ds-tag { transition: background 0.14s, border-color 0.14s; cursor: default; }
-        .ds-tag:hover { background: rgba(139,26,26,0.12) !important; border-color: rgba(139,26,26,0.35) !important; }
+        .ds-tag:hover { background: rgba(143,29,44,0.12) !important; border-color: rgba(143,29,44,0.35) !important; }
       `}</style>
 
       <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
 
         {/* Intro card */}
-        <div style={{ background: '#FEF2F2', border: '1.5px solid rgba(139,26,26,0.15)', borderRadius: 16, padding: '16px', marginBottom: 18, animation: 'dsIn 0.3s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.05s' }}>
-          <h2 style={{ fontSize: 15, fontWeight: 800, color: '#1A1208', margin: '0 0 7px', display: 'flex', alignItems: 'center', gap: 7 }}>
-            <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ background: '#F8EDEF', border: '1.5px solid rgba(143,29,44,0.15)', borderRadius: 16, padding: '16px', marginBottom: 18, animation: 'dsIn 0.3s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.05s' }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: '0 0 7px', display: 'flex', alignItems: 'center', gap: 7 }}>
+            <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #8F1D2C, #741622)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </span>
             {isAr ? 'ما هو استوديو الصياغة؟' : 'What is the Drafting Studio?'}
           </h2>
-          <p style={{ fontSize: 12.5, color: '#5C4A3A', margin: '0 0 12px', lineHeight: 1.65 }}>
+          <p style={{ fontSize: 12.5, color: '#69645C', margin: '0 0 12px', lineHeight: 1.65 }}>
             {isAr
               ? 'استوديو الصياغة يساعدك على إنشاء مسودات أولية للوثائق القانونية اللبنانية. اختر نوع الوثيقة، أدخل البيانات، وسيولّد دليلك مسودة منسقة.'
               : 'The Drafting Studio helps you create initial drafts of Lebanese legal documents. Choose a document type, enter your data, and Dalilak will generate a formatted draft.'}
@@ -74,7 +74,7 @@ export default function DraftingStudioPage() {
               ? ['إنذارات الإخلاء', 'عقود التمديد', 'رسائل الاعتراض', 'الوكالات القانونية', 'الطلبات الإدارية']
               : ['Eviction Notices', 'Contract Extensions', 'Objection Letters', 'Powers of Attorney', 'Administrative Requests']
             ).map((tag, i) => (
-              <span key={tag} className="ds-tag" style={{ fontSize: 10.5, color: '#8B1A1A', background: 'rgba(139,26,26,0.07)', border: '1px solid rgba(139,26,26,0.18)', borderRadius: 20, padding: '3px 11px', fontWeight: 700, animation: 'dsIn 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${0.12 + i * 0.05}s` }}>{tag}</span>
+              <span key={tag} className="ds-tag" style={{ fontSize: 10.5, color: '#8F1D2C', background: 'rgba(143,29,44,0.07)', border: '1px solid rgba(143,29,44,0.18)', borderRadius: 20, padding: '3px 11px', fontWeight: 700, animation: 'dsIn 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${0.12 + i * 0.05}s` }}>{tag}</span>
             ))}
           </div>
         </div>

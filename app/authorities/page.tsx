@@ -79,13 +79,13 @@ const TYPE_FILTERS = [
 
 const TYPE_COLORS: Record<string, { color: string; bg: string; border: string }> = {
   ministry:     { color: '#78350F', bg: '#FFFBEB', border: '#FDE68A' },
-  council:      { color: '#8B1A1A', bg: '#FEF2F2', border: '#FECACA' },
-  municipality: { color: '#5C4A3A', bg: '#F5F0EB', border: '#D5CEC4' },
+  council:      { color: '#8F1D2C', bg: '#F8EDEF', border: '#FECACA' },
+  municipality: { color: '#69645C', bg: '#F5F0EB', border: '#D5CEC4' },
   court:        { color: '#713F12', bg: '#FEF9EE', border: '#FDE68A' },
   union:        { color: '#92400E', bg: '#FFFBEB', border: '#FDE68A' },
   bank:         { color: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
   security:     { color: '#44403C', bg: '#F5F5F4', border: '#D4D0CA' },
-  other:        { color: '#5C4A3A', bg: '#FAFAF8', border: '#EAE4D9' },
+  other:        { color: '#69645C', bg: '#FAFAF8', border: '#E6E2DC' },
 }
 
 function TypeIcon({ type, size = 20 }: { type: string; size?: number }) {
@@ -163,13 +163,13 @@ export default function AuthoritiesPage() {
     router.push(`/?q=${encodeURIComponent(isAr ? `ما هي خدمات ${name} وكيف أتواصل معها؟` : `What services does ${name} provide and how to contact them?`)}`)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-thumb { background: #EAE4D9; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: #E6E2DC; border-radius: 2px; }
         .auth-card { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; cursor: pointer; }
-        .auth-card:hover { border-color: #8B1A1A !important; box-shadow: 0 4px 20px rgba(139,26,26,0.12) !important; transform: translateY(-2px); }
+        .auth-card:hover { border-color: #8F1D2C !important; box-shadow: 0 4px 20px rgba(143,29,44,0.12) !important; transform: translateY(-2px); }
         .type-chip:hover { opacity: 0.85; }
         .type-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .type-chip-row::-webkit-scrollbar { display: none; }
@@ -181,7 +181,7 @@ export default function AuthoritiesPage() {
 
       {/* Header */}
       <header style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)',
+        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
         padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
         animation: 'authHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
@@ -234,15 +234,15 @@ export default function AuthoritiesPage() {
             <div key={s.label} style={{
               padding: '13px 8px 15px', textAlign: 'center',
               background: s.featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
-              border: s.featured ? '1.5px solid rgba(139,26,26,0.18)' : '1.5px solid #EAE4D9',
+              border: s.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
               borderRadius: 12,
-              boxShadow: s.featured ? '0 2px 10px rgba(139,26,26,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+              boxShadow: s.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               animation: 'authEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
               animationDelay: `${0.05 + i * 0.06}s`,
             }}>
-              <div style={{ fontSize: 'clamp(17px,5vw,21px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 4, fontWeight: 500 }}>{s.label}</div>
+              <div style={{ fontSize: 'clamp(17px,5vw,21px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -251,13 +251,13 @@ export default function AuthoritiesPage() {
         <div className="search-wrap" style={{
           position: 'relative', marginBottom: 12,
           background: '#fff', borderRadius: 14,
-          border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`,
-          boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : '0 1px 6px rgba(0,0,0,0.04)',
+          border: `1.5px solid ${searchFocused ? '#8F1D2C' : '#E6E2DC'}`,
+          boxShadow: searchFocused ? '0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06)' : '0 1px 6px rgba(0,0,0,0.04)',
           transition: 'border-color 0.18s, box-shadow 0.18s',
         }}>
           <span style={{
             position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-            right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s',
+            right: 14, color: searchFocused ? '#8F1D2C' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s',
           }}>
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
@@ -275,14 +275,14 @@ export default function AuthoritiesPage() {
               width: '100%', padding: '11px 42px 11px 14px',
               border: 'none', borderRadius: 14, fontSize: 13.5,
               background: 'transparent', outline: 'none',
-              fontFamily: 'inherit', color: '#1A1208',
+              fontFamily: 'inherit', color: '#191713',
             }}
           />
           {search && (
             <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{
               position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-              left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%',
-              width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A',
+              left: 12, background: '#E6E2DC', border: 'none', borderRadius: '50%',
+              width: 20, height: 20, cursor: 'pointer', color: '#69645C',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
 <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -300,19 +300,19 @@ export default function AuthoritiesPage() {
               <button type="button" key={f.key} aria-pressed={active} onClick={() => setTypeFilter(f.key)} className="type-chip"
                 onTouchStart={e => {
                   e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
-                  e.currentTarget.style.borderColor = active ? '#8B1A1A' : 'rgba(139,26,26,0.3)'
+                  e.currentTarget.style.borderColor = active ? '#8F1D2C' : 'rgba(143,29,44,0.3)'
                 }}
                 onTouchEnd={e => {
-                  e.currentTarget.style.background = active ? '#FEF2F2' : '#fff'
-                  e.currentTarget.style.borderColor = active ? '#8B1A1A' : '#EAE4D9'
+                  e.currentTarget.style.background = active ? '#F8EDEF' : '#fff'
+                  e.currentTarget.style.borderColor = active ? '#8F1D2C' : '#E6E2DC'
                 }}
                 style={{
                 padding: '6px 14px', borderRadius: 20, border: '1.5px solid',
                 fontSize: 11.5, fontWeight: 700, cursor: 'pointer',
                 fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
-                borderColor: active ? '#8B1A1A' : '#EAE4D9',
-                background: active ? '#FEF2F2' : '#fff',
-                color: active ? '#8B1A1A' : '#5C4A3A',
+                borderColor: active ? '#8F1D2C' : '#E6E2DC',
+                background: active ? '#F8EDEF' : '#fff',
+                color: active ? '#8F1D2C' : '#69645C',
                 transition: 'border-color 0.15s, background 0.15s, color 0.15s',
               }}>
                 {isAr ? f.labelAr : f.labelEn}
@@ -323,25 +323,25 @@ export default function AuthoritiesPage() {
 
         {/* Results count — section header with accent */}
         <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-          <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
-          <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+          <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8F1D2C, #741622)', flexShrink: 0 }} />
+          <span style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', letterSpacing: '-0.2px' }}>
             {filtered.length === ALL_AUTHORITIES.length
               ? (isAr ? 'الجهات الرسمية' : 'Official Authorities')
               : (isAr ? `${filtered.length} جهة رسمية` : `${filtered.length} authorities`)}
           </span>
-          {search && <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>}
+          {search && <span style={{ fontSize: 11, color: '#8F1D2C', fontWeight: 600 }}>— &quot;{search}&quot;</span>}
         </div>
 
         {/* Empty state */}
         {filtered.length === 0 && (
-          <div role="status" style={{ textAlign: 'center', padding: '48px 16px', color: '#9C8E80' }}>
+          <div role="status" style={{ textAlign: 'center', padding: '48px 16px', color: '#918B82' }}>
             <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
               <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
               </svg>
             </div>
-            <p style={{ fontSize: 13.5, fontWeight: 700, color: '#5C4A3A', margin: '0 0 6px' }}>{isAr ? 'لا توجد جهات مطابقة' : 'No matching authorities'}</p>
-            <p style={{ fontSize: 12, color: '#9C8E80', margin: '0 0 16px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
+            <p style={{ fontSize: 13.5, fontWeight: 700, color: '#69645C', margin: '0 0 6px' }}>{isAr ? 'لا توجد جهات مطابقة' : 'No matching authorities'}</p>
+            <p style={{ fontSize: 12, color: '#918B82', margin: '0 0 16px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
             <button type="button"
               onClick={() => router.push(`/?q=${encodeURIComponent(isAr ? `ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟` : `What are the ${search || typeFilter !== 'all' ? `${typeFilter} type` : 'official'} authorities in Lebanon?`)}`)}
               onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
@@ -349,10 +349,10 @@ export default function AuthoritiesPage() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '9px 22px', borderRadius: 12,
-                background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                 border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'inherit',
-                boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+                boxShadow: '0 2px 8px rgba(143,29,44,0.28)',
                 transition: 'opacity 0.12s, transform 0.12s',
               }}>
               <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -372,10 +372,10 @@ export default function AuthoritiesPage() {
               : (TYPE_FILTERS.find(f => f.key === auth.type)?.labelEn || 'Other')
             return (
               <div key={auth.name_ar} className="auth-card"
-                onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(139,26,26,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(139,26,26,0.10)'; e.currentTarget.style.transform = 'scale(0.985)' }}
-                onTouchEnd={e => { e.currentTarget.style.borderColor = '#EAE4D9'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'scale(1)' }}
+                onTouchStart={e => { e.currentTarget.style.borderColor = 'rgba(143,29,44,0.4)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(143,29,44,0.10)'; e.currentTarget.style.transform = 'scale(0.985)' }}
+                onTouchEnd={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{
-                background: '#fff', border: '1.5px solid #EAE4D9',
+                background: '#fff', border: '1.5px solid #E6E2DC',
                 borderRadius: 18, padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                 display: 'flex', flexDirection: 'column', gap: 0,
                 animation: 'authEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
@@ -392,7 +392,7 @@ export default function AuthoritiesPage() {
                     <TypeIcon type={auth.type} size={20} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: '#1A1208', lineHeight: 1.35 }}>
+                    <p style={{ margin: 0, fontSize: 12.5, fontWeight: 800, color: '#191713', lineHeight: 1.35 }}>
                       {isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}
                     </p>
                     <span style={{
@@ -409,7 +409,7 @@ export default function AuthoritiesPage() {
                 <div style={{ marginBottom: 10 }}>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
                     <span style={{
-                      fontSize: 10.5, color: '#5C4A3A', background: '#F5F0EB',
+                      fontSize: 10.5, color: '#69645C', background: '#F5F0EB',
                       borderRadius: 8, padding: '3px 9px', display: 'inline-flex', alignItems: 'center', gap: 4,
                     }}>
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -439,7 +439,7 @@ export default function AuthoritiesPage() {
                       }}>{cat}</span>
                     ))}
                     {auth.categories.length > 2 && (
-                      <span style={{ fontSize: 9.5, color: '#9C8E80' }}>+{auth.categories.length - 2}</span>
+                      <span style={{ fontSize: 9.5, color: '#918B82' }}>+{auth.categories.length - 2}</span>
                     )}
                   </div>
                 </div>
@@ -449,7 +449,7 @@ export default function AuthoritiesPage() {
                   <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {auth.phone && (
                       <a href={`tel:${auth.phone}`} style={{
-                        fontSize: 11, color: '#8B1A1A', textDecoration: 'none',
+                        fontSize: 11, color: '#8F1D2C', textDecoration: 'none',
                         display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
                       }}>
 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -459,7 +459,7 @@ export default function AuthoritiesPage() {
                       </a>
                     )}
                     {auth.working_hours && (
-                      <span style={{ fontSize: 11, color: '#5C4A3A', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{ fontSize: 11, color: '#69645C', display: 'flex', alignItems: 'center', gap: 5 }}>
 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/>
                         </svg>
@@ -470,10 +470,10 @@ export default function AuthoritiesPage() {
                 )}
 
                 {/* Footer: website + ask AI */}
-                <div style={{ borderTop: '1px solid #EAE4D9', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+                <div style={{ borderTop: '1px solid #E6E2DC', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
                   {auth.website ? (
                     <a href={auth.website} target="_blank" rel="noopener noreferrer" style={{
-                      fontSize: 10.5, color: '#8B1A1A', fontWeight: 700, textDecoration: 'none',
+                      fontSize: 10.5, color: '#8F1D2C', fontWeight: 700, textDecoration: 'none',
                       display: 'inline-flex', alignItems: 'center', gap: 4,
                     }}>
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -486,10 +486,10 @@ export default function AuthoritiesPage() {
                   )}
                   <button type="button" aria-label={`اسأل دليلك عن: ${isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}`} onClick={() => askAI(auth.name_ar)}
                     onTouchStart={e => { e.currentTarget.style.background = '#FECACA' }}
-                    onTouchEnd={e => { e.currentTarget.style.background = '#FEF2F2' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = '#F8EDEF' }}
                     style={{
-                    fontSize: 10.5, color: '#8B1A1A', fontWeight: 700,
-                    background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)',
+                    fontSize: 10.5, color: '#8F1D2C', fontWeight: 700,
+                    background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.15)',
                     borderRadius: 8, padding: '4px 10px', cursor: 'pointer',
                     fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4,
                   }}>

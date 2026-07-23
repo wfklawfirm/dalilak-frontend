@@ -94,7 +94,7 @@ function IntakeLinkCreator({ isAr }: { isAr: boolean }) {
         }}>{link}</div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={handleCopy} style={{
-            flex: 1, padding: '9px 16px', background: '#8B1A1A', color: '#fff',
+            flex: 1, padding: '9px 16px', background: '#8F1D2C', color: '#fff',
             border: 'none', borderRadius: 10, fontSize: 12.5, fontWeight: 700,
             cursor: 'pointer', fontFamily: 'inherit',
           }}>
@@ -153,7 +153,7 @@ function IntakeLinkCreator({ isAr }: { isAr: boolean }) {
         onClick={handleCreate}
         disabled={!clientName.trim()}
         style={{
-          padding: '11px 20px', background: clientName.trim() ? '#8B1A1A' : '#d1d5db',
+          padding: '11px 20px', background: clientName.trim() ? '#8F1D2C' : '#d1d5db',
           color: '#fff', border: 'none', borderRadius: 12, fontSize: 13,
           fontWeight: 700, cursor: clientName.trim() ? 'pointer' : 'default',
           fontFamily: 'inherit',
@@ -190,7 +190,7 @@ export default function ProfessionalWorkspacePage() {
     }}>
       {/* Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 100%)',
+        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 100%)',
         padding: '20px 20px 24px',
       }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
@@ -246,7 +246,7 @@ export default function ProfessionalWorkspacePage() {
         {activeSection === 'overview' && (
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-              <StatCard icon="👥" value="0" labelAr="موكّلون نشطون" labelEn="Active Clients" color="#8B1A1A" isAr={isAr} />
+              <StatCard icon="👥" value="0" labelAr="موكّلون نشطون" labelEn="Active Clients" color="#8F1D2C" isAr={isAr} />
               <StatCard icon="📂" value="0" labelAr="ملفات مفتوحة" labelEn="Open Files" color="#B8860B" isAr={isAr} />
               <StatCard icon="✍️" value="0" labelAr="مسودات محفوظة" labelEn="Saved Drafts" color="#6366f1" isAr={isAr} />
               <StatCard icon="👨‍⚖️" value="0" labelAr="طلبات مراجعة" labelEn="Review Requests" color="#22c55e" isAr={isAr} />
@@ -319,7 +319,7 @@ export default function ProfessionalWorkspacePage() {
             </div>
             <button onClick={() => router.push('/my-files')} style={{
               width: '100%', padding: '12px 20px',
-              background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+              background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
               color: '#fff', border: 'none', borderRadius: 12,
               fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
             }}>
@@ -341,7 +341,7 @@ export default function ProfessionalWorkspacePage() {
             </div>
             <button onClick={() => router.push('/drafting-studio')} style={{
               width: '100%', padding: '12px 20px',
-              background: 'linear-gradient(135deg, #8B1A1A 0%, #6b2737 100%)',
+              background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
               color: '#fff', border: 'none', borderRadius: 12,
               fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
             }}>

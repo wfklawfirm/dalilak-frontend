@@ -65,12 +65,12 @@ export default function FAQPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2EDE6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+    <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
-        ::-webkit-scrollbar-thumb { background: #EAE4D9; }
-        .faq-card:hover { border-color: #8B1A1A !important; }
+        ::-webkit-scrollbar-thumb { background: #E6E2DC; }
+        .faq-card:hover { border-color: #8F1D2C !important; }
         .faq-chip-row { -ms-overflow-style: none; scrollbar-width: none; }
         .faq-chip-row::-webkit-scrollbar { display: none; }
         @keyframes faqHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
@@ -79,7 +79,7 @@ export default function FAQPage() {
       `}</style>
 
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #6b2737 0%, #8B1A1A 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'faqHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
+      <header style={{ background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)', padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.3)', animation: 'faqHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
             onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
@@ -114,22 +114,22 @@ export default function FAQPage() {
             <div key={labelAr} style={{
               padding: '14px 8px 16px', textAlign: 'center',
               background: featured ? 'linear-gradient(135deg, #FEF2F2 0%, #FDE4E4 100%)' : '#fff',
-              border: featured ? '1.5px solid rgba(139,26,26,0.18)' : '1.5px solid #EAE4D9',
+              border: featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
               borderRadius: 12,
-              boxShadow: featured ? '0 2px 10px rgba(139,26,26,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+              boxShadow: featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
               display: 'flex', flexDirection: 'column', alignItems: 'center',
               animation: 'faqEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
               animationDelay: `${0.06 + i * 0.07}s`,
             }}>
-              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8B1A1A', lineHeight: 1 }}>{value}</div>
-              <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 4, fontWeight: 500 }}>{isAr ? labelAr : labelEn}</div>
+              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{value}</div>
+              <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{isAr ? labelAr : labelEn}</div>
             </div>
           ))}
         </div>
 
         {/* Search */}
-        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: `1.5px solid ${searchFocused ? '#8B1A1A' : '#EAE4D9'}`, borderRadius: 14, background: '#fff', transition: 'border-color 0.18s, box-shadow 0.18s', boxShadow: searchFocused ? '0 0 0 3px rgba(139,26,26,0.08), 0 2px 12px rgba(139,26,26,0.06)' : 'none' }}>
-          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: searchFocused ? '#8B1A1A' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s' }}>
+        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: `1.5px solid ${searchFocused ? '#8F1D2C' : '#E6E2DC'}`, borderRadius: 14, background: '#fff', transition: 'border-color 0.18s, box-shadow 0.18s', boxShadow: searchFocused ? '0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06)' : 'none' }}>
+          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: searchFocused ? '#8F1D2C' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s' }}>
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
           </span>
           <input type="text"
@@ -138,9 +138,9 @@ export default function FAQPage() {
             value={search} onChange={e => setSearch(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
-            style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#1A1208', direction: isAr ? 'rtl' : 'ltr' }}
+            style={{ width: '100%', padding: '11px 42px 11px 14px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: '#191713', direction: isAr ? 'rtl' : 'ltr' }}
           />
-          {search && <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#EAE4D9', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#5C4A3A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
+          {search && <button type="button" aria-label="مسح البحث" onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 12, background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
         </div>
 
         {/* Category filters */}
@@ -152,9 +152,9 @@ export default function FAQPage() {
               padding: '5px 13px', borderRadius: 20, border: '1.5px solid', whiteSpace: 'nowrap',
               fontSize: 10.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
               transition: 'transform 0.12s, opacity 0.12s',
-              borderColor: catFilter === 'all' ? '#8B1A1A' : '#EAE4D9',
-              background: catFilter === 'all' ? '#FEF2F2' : '#fff',
-              color: catFilter === 'all' ? '#8B1A1A' : '#5C4A3A',
+              borderColor: catFilter === 'all' ? '#8F1D2C' : '#E6E2DC',
+              background: catFilter === 'all' ? '#F8EDEF' : '#fff',
+              color: catFilter === 'all' ? '#8F1D2C' : '#69645C',
           }}>
             {isAr ? `الكل (${SERVICE_FAQ.length})` : `All (${SERVICE_FAQ.length})`}
           </button>
@@ -167,9 +167,9 @@ export default function FAQPage() {
                 fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
                 display: 'inline-flex', alignItems: 'center', gap: 4,
                 transition: 'transform 0.12s, opacity 0.12s',
-                borderColor: catFilter === cat ? '#8B1A1A' : '#EAE4D9',
-                background: catFilter === cat ? '#FEF2F2' : '#fff',
-                color: catFilter === cat ? '#8B1A1A' : '#5C4A3A',
+                borderColor: catFilter === cat ? '#8F1D2C' : '#E6E2DC',
+                background: catFilter === cat ? '#F8EDEF' : '#fff',
+                color: catFilter === cat ? '#8F1D2C' : '#69645C',
               }}>
               <FaqCatIcon cat={cat} size={11} />
               {(() => { const label = isAr ? cat : (CAT_EN[cat] || cat); return label.length > 20 ? label.slice(0, 20) + '…' : label })()}
@@ -180,24 +180,24 @@ export default function FAQPage() {
         {/* Results count */}
         <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8B1A1A, #6b2737)', flexShrink: 0 }} />
-            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#1A1208', letterSpacing: '-0.2px' }}>
+            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8F1D2C, #741622)', flexShrink: 0 }} />
+            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', letterSpacing: '-0.2px' }}>
               {filtered.length === SERVICE_FAQ.length
                 ? (isAr ? 'الأسئلة الشائعة' : 'FAQ')
                 : `${filtered.length} ${isAr ? 'سؤال' : 'questions'}`}
             </span>
           </div>
           {catFilter !== 'all' && (
-            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— {isAr ? catFilter : (CAT_EN[catFilter] || catFilter)}</span>
+            <span style={{ fontSize: 11, color: '#8F1D2C', fontWeight: 600 }}>— {isAr ? catFilter : (CAT_EN[catFilter] || catFilter)}</span>
           )}
           {search && (
-            <span style={{ fontSize: 11, color: '#8B1A1A', fontWeight: 600 }}>— &quot;{search}&quot;</span>
+            <span style={{ fontSize: 11, color: '#8F1D2C', fontWeight: 600 }}>— &quot;{search}&quot;</span>
           )}
         </div>
 
         {/* FAQ Accordion */}
         {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 20px', color: '#9C8E80' }}>
+          <div style={{ textAlign: 'center', padding: '48px 20px', color: '#918B82' }}>
             <div style={{ marginBottom: 12, color: '#C4B5A5' }}>
               <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
@@ -210,9 +210,9 @@ export default function FAQPage() {
               onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
               style={{
               padding: '10px 22px', borderRadius: 12,
-              background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+              background: 'linear-gradient(135deg, #8F1D2C, #741622)',
               border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
-              cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 8px rgba(139,26,26,0.28)',
+              cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 2px 8px rgba(143,29,44,0.28)',
               transition: 'opacity 0.12s, transform 0.12s',
               display: 'inline-flex', alignItems: 'center', gap: 7,
             }}>
@@ -227,9 +227,9 @@ export default function FAQPage() {
               return (
                 <div key={item.id} className="faq-card" style={{
                   background: '#fff',
-                  border: `1.5px solid ${isOpen ? '#8B1A1A' : '#EAE4D9'}`,
+                  border: `1.5px solid ${isOpen ? '#8F1D2C' : '#E6E2DC'}`,
                   borderRadius: 14, overflow: 'hidden',
-                  boxShadow: isOpen ? '0 4px 16px rgba(139,26,26,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
+                  boxShadow: isOpen ? '0 4px 16px rgba(143,29,44,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
                   transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
                   animation: 'faqEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
                   animationDelay: `${Math.min(idx, 14) * 0.03}s`,
@@ -249,20 +249,20 @@ export default function FAQPage() {
                   >
                     <div style={{
                       width: 34, height: 34, borderRadius: 10, flexShrink: 0,
-                      background: isOpen ? 'rgba(139,26,26,0.1)' : '#EAE4D9',
+                      background: isOpen ? 'rgba(143,29,44,0.1)' : '#E6E2DC',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: isOpen ? '#8B1A1A' : '#5C4A3A', transition: 'background 0.15s, color 0.15s',
+                      color: isOpen ? '#8F1D2C' : '#69645C', transition: 'background 0.15s, color 0.15s',
                     }}>
                       <FaqCatIcon cat={item.category} size={16} />
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8B1A1A' : '#1A1208', lineHeight: 1.5 }}>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: isOpen ? '#8F1D2C' : '#191713', lineHeight: 1.5 }}>
                         {item.title}
                       </div>
-                      <div style={{ fontSize: 9.5, color: '#9C8E80', marginTop: 2 }}>{isAr ? item.category : (CAT_EN[item.category] || item.category)}</div>
+                      <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 2 }}>{isAr ? item.category : (CAT_EN[item.category] || item.category)}</div>
                     </div>
                     <span style={{
-                      color: isOpen ? '#8B1A1A' : '#9C8E80',
+                      color: isOpen ? '#8F1D2C' : '#918B82',
                       transform: isOpen ? 'rotate(180deg)' : 'none',
                       transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex',
                     }}>
@@ -274,18 +274,18 @@ export default function FAQPage() {
 
                   {/* Answer */}
                   {isOpen && (
-                    <div style={{ padding: '0 14px 14px', borderTop: '1px solid #EAE4D9' }}>
+                    <div style={{ padding: '0 14px 14px', borderTop: '1px solid #E6E2DC' }}>
                       {/* Summary */}
                       {item.summary && (
-                        <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.8, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #EAE4D9' }}>
+                        <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.8, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #E6E2DC' }}>
                           {item.summary}
                         </p>
                       )}
                       {/* Steps */}
                       {item.steps && item.steps.length > 0 && (
                         <div style={{ marginBottom: 12 }}>
-                          <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
-<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
                             {isAr ? 'الخطوات:' : 'Steps:'}
                           </div>
                           {item.steps.map((step, si) => {
@@ -293,8 +293,8 @@ export default function FAQPage() {
                             return (
                               <div key={si} style={{ display: 'flex', gap: 9, paddingBottom: isLast ? 0 : 8, alignItems: 'stretch' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                  <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'linear-gradient(135deg, #8B1A1A, #6b2737)', color: '#fff', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(139,26,26,0.2)' }}>{si + 1}</span>
-                                  {!isLast && <div style={{ width: 1.5, flex: 1, background: 'rgba(139,26,26,0.15)', marginTop: 3, borderRadius: 1 }} />}
+                                  <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(143,29,44,0.2)' }}>{si + 1}</span>
+                                  {!isLast && <div style={{ width: 1.5, flex: 1, background: 'rgba(143,29,44,0.15)', marginTop: 3, borderRadius: 1 }} />}
                                 </div>
                                 <div style={{ paddingTop: 2 }}>
                                   <span style={{ fontSize: 11.5, color: '#2D1B0E', lineHeight: 1.6 }}>{step}</span>
@@ -307,14 +307,14 @@ export default function FAQPage() {
                       {/* Required docs */}
                       {item.requiredDocuments && item.requiredDocuments.length > 0 && (
                         <div style={{ marginBottom: 12 }}>
-                          <div style={{ fontSize: 11, fontWeight: 800, color: '#1A1208', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}>
-<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}>
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                             {isAr ? 'الوثائق المطلوبة:' : 'Required documents:'}
                           </div>
-                          <div style={{ borderRadius: 9, border: '1px solid #EAE4D9', overflow: 'hidden' }}>
+                          <div style={{ borderRadius: 9, border: '1px solid #E6E2DC', overflow: 'hidden' }}>
                             {item.requiredDocuments.map((doc, di) => (
-                              <div key={di} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '6px 12px', background: di % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: di < (item.requiredDocuments?.length ?? 0) - 1 ? '1px solid #EAE4D9' : 'none', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
-                                <span style={{ color: '#8B1A1A', flexShrink: 0, marginTop: 5 }}><svg aria-hidden="true" width="4" height="4" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8B1A1A" opacity="0.7"/></svg></span>
+                              <div key={di} style={{ fontSize: 11.5, color: '#2D1B0E', padding: '6px 12px', background: di % 2 === 0 ? '#FAFAF8' : '#fff', borderBottom: di < (item.requiredDocuments?.length ?? 0) - 1 ? '1px solid #E6E2DC' : 'none', display: 'flex', gap: 7, alignItems: 'flex-start' }}>
+                                <span style={{ color: '#8F1D2C', flexShrink: 0, marginTop: 5 }}><svg aria-hidden="true" width="4" height="4" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#8F1D2C" opacity="0.7"/></svg></span>
                                 <span style={{ lineHeight: 1.5 }}>{doc}</span>
                               </div>
                             ))}
@@ -337,8 +337,8 @@ export default function FAQPage() {
                             </div>
                           )}
                           {item.authority && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FEF2F2', border: '1px solid rgba(139,26,26,0.15)', borderRadius: 9, padding: '5px 10px' }}>
-                              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.15)', borderRadius: 9, padding: '5px 10px' }}>
+                              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                               <span style={{ fontSize: 10.5, color: '#5C1A1A', fontWeight: 600 }}>{item.authority.length > 50 ? item.authority.slice(0, 50) + '…' : item.authority}</span>
                             </div>
                           )}
@@ -351,11 +351,11 @@ export default function FAQPage() {
                         onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                         style={{
                           width: '100%', padding: '10px 18px', borderRadius: 11,
-                          background: 'linear-gradient(135deg, #8B1A1A, #6b2737)',
+                          background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                           border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
                           cursor: 'pointer', fontFamily: 'inherit',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                          boxShadow: '0 2px 8px rgba(139,26,26,0.25)',
+                          boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
                           transition: 'opacity 0.12s, transform 0.12s',
                         }}
                       >
