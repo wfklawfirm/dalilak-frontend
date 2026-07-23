@@ -37,6 +37,7 @@ import GovHolidayAlert from '@/components/GovHolidayAlert'
 import SavedCostSummary from '@/components/SavedCostSummary'
 import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
 import HomepageProgressRing from '@/components/HomepageProgressRing'
+import ChatTypingIndicator from '@/components/ChatTypingIndicator'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -1954,6 +1955,11 @@ Question: ${text}`
                   </div>
                 )
               })}
+              {/* Pre-stream typing indicator — shown while waiting for first token */}
+              {loading && messages.length > 0 && messages[messages.length - 1]?.role === 'user' && (
+                <ChatTypingIndicator isAr={isAr} />
+              )}
+
               <div ref={bottomRef} style={{ height: 8 }} />
             </div>
           )}

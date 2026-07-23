@@ -25,6 +25,9 @@ import ProcedureStartButton from '@/components/ProcedureStartButton'
 import ProcedureCompletionBadge from '@/components/ProcedureCompletionBadge'
 import ProcedureEstimatedCompletion from '@/components/ProcedureEstimatedCompletion'
 import ProcedureShareViaEmail from '@/components/ProcedureShareViaEmail'
+import ProcedureQuickAskChips from '@/components/ProcedureQuickAskChips'
+import ProcedureExternalLinks from '@/components/ProcedureExternalLinks'
+import ProcedureRelatedMinistries from '@/components/ProcedureRelatedMinistries'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -676,6 +679,12 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
+                    {/* Ministry contact strip */}
+                    <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
+
+                    {/* Official portal links */}
+                    <ProcedureExternalLinks ministrySlug={proc.ministrySlug} isAr={isAr} />
+
                     {/* Cost estimator */}
                     {displayFees && (
                       <div style={{ marginBottom: 12 }}>
@@ -812,6 +821,15 @@ export default function ProceduresPage() {
                         </div>
                       )
                     })()}
+
+                    {/* Quick-ask chips */}
+                    <ProcedureQuickAskChips
+                      code={proc.code}
+                      titleAr={proc.title}
+                      titleEn={proc.title_en}
+                      isAr={isAr}
+                      onAsk={handleAsk}
+                    />
 
                     {/* CTA row: Ask + Save */}
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>

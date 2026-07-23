@@ -1,16 +1,15 @@
 #!/bin/bash
 # ================================================================
-# Batch #209-213 — Procedure tracking + sharing enhancements
-#   #209 ProcedureCompletionBadge       — "أنهيت هذه المعاملة"
-#   #210 MinistryQuickDial              — phone FAB + bottom sheet
-#   #211 ProcedureEstimatedCompletion   — expected finish date
-#   #212 HomepageProgressRing           — SVG completion ring
-#   #213 ProcedureShareViaEmail         — mailto: share button
+# Batch #215-218 — Procedure UX enhancements + chat improvements
+#   #215 ProcedureQuickAskChips     — 4 pre-composed question chips
+#   #216 ProcedureExternalLinks     — gov portal links by ministry
+#   #217 ChatTypingIndicator        — pre-stream animated dots
+#   #218 ProcedureRelatedMinistries — ministry contact strip
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #209-213 — completion badge, ministry dial, estimated completion, progress ring, email share"
+git diff --cached --quiet || git commit -m "feat: batch #215-218 — quick ask chips, portal links, typing indicator, ministry contact strip"
 git push origin main
 echo "✅ Done"
