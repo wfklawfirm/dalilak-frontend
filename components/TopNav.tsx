@@ -309,7 +309,7 @@ export default function TopNav({
               className="tn-ibtn"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                height: 34, minWidth: 46, padding: '0 12px', borderRadius: 9,
+                height: 40, minWidth: 46, padding: '0 12px', borderRadius: 9,
                 border: '1.5px solid var(--border)',
                 background: 'transparent',
                 color: 'var(--text-2)', fontSize: 11.5, fontWeight: 700,
@@ -473,7 +473,7 @@ export default function TopNav({
               style={{
                 display: 'none', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', gap: 4.5,
-                height: 34, width: 36, borderRadius: 9,
+                height: 44, width: 44, borderRadius: 9,
                 border: '1.5px solid var(--border)',
                 background: 'transparent',
                 cursor: 'pointer', transition: 'background 0.12s',

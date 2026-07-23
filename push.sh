@@ -139,6 +139,24 @@
 #   var(--text-3) (was --text-4, even lower contrast). Affects every
 #   section built with this component, old and new — pure color fix, no
 #   layout/behavior change.
+#
+#   MOBILE TOUCH-TARGET PASS (site-wide, per user request for a full
+#   professional mobile pass): found and fixed several controls sized
+#   well under the ~40-44px comfortable tap-target minimum, and two
+#   sheets/menus whose bottom padding didn't account for the iPhone
+#   home-indicator safe area:
+#   - TopNav.tsx: mobile hamburger 34x36 -> 44x44; language toggle
+#     height 34 -> 40.
+#   - MobileMenu.tsx: drawer close button 32x32 -> 40x40; logout button
+#     row now uses paddingBottom: max(24px, env(safe-area-inset-bottom)).
+#   - services/page.tsx: search-clear button 22x22 -> 36x36; detail
+#     modal footer now uses env(safe-area-inset-bottom).
+#   - authorities/page.tsx: search-clear button 20x20 -> 36x36.
+#   - app/page.tsx: voice-banner dismiss button 20x20 -> 36x36 (+ added
+#     missing aria-label); "clear active document" chip's hit area
+#     enlarged via padding (was ~15x15 effective).
+#   Desktop layout unaffected — all changes are to already-mobile-only
+#   or size-only properties, no breakpoints removed.
 # ================================================================
 set -e
 cd "$(dirname "$0")"

@@ -281,8 +281,8 @@ export default function AuthoritiesPage() {
           {search && (
             <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{
               position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-              left: 12, background: '#E6E2DC', border: 'none', borderRadius: '50%',
-              width: 20, height: 20, cursor: 'pointer', color: '#69645C',
+              left: 4, background: '#E6E2DC', border: 'none', borderRadius: '50%',
+              width: 36, height: 36, cursor: 'pointer', color: '#69645C',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
 <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

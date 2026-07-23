@@ -2262,7 +2262,7 @@ Question: ${text}`
                   type="button"
                   onClick={() => { setActiveDocumentName(null) }}
                   aria-label={isAr ? 'مسح المستند النشط' : 'Clear active document'}
-                  style={{ background: 'none', border: 'none', color: '#918B82', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center' }}
+                  style={{ background: 'none', border: 'none', color: '#918B82', cursor: 'pointer', padding: 8, display: 'flex', alignItems: 'center', flexShrink: 0 }}
                 ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}
@@ -2418,8 +2418,9 @@ Question: ${text}`
                   {isAr ? 'حسّن' : 'Enhance'}
                 </button>
                 <button type="button" onClick={() => setVoiceJustEnded(false)}
+                  aria-label={isAr ? 'إغلاق' : 'Dismiss'}
                   style={{
-                    width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.06)',
+                    width: 36, height: 36, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.06)',
                     cursor: 'pointer', color: '#92400E', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0,
                   }}>

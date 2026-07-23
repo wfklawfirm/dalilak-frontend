@@ -239,7 +239,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
               onTouchStart={e => { e.currentTarget.style.background = '#F3F1EE' }}
               onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
               style={{
-                width: 32, height: 32, borderRadius: '50%',
+                width: 40, height: 40, borderRadius: '50%',
                 background: 'transparent', border: '1.5px solid #E6E2DC',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: '#69645C', flexShrink: 0, transition: 'background 0.12s',
@@ -371,7 +371,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
         </div>
 
         {/* Logout */}
-        <div style={{ padding: '12px 16px 24px', borderTop: '1px solid #E6E2DC' }}>
+        <div style={{ padding: '12px 16px', paddingBottom: 'max(24px, env(safe-area-inset-bottom, 0px))', borderTop: '1px solid #E6E2DC' }}>
           <button
             type="button"
             onClick={handleLogout}

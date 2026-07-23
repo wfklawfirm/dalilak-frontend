@@ -287,7 +287,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '12px 20px 28px', borderTop: '1px solid #E6E2DC', display: 'flex', gap: 10 }}>
+        <div style={{ padding: '12px 20px', paddingBottom: 'max(28px, env(safe-area-inset-bottom, 0px))', borderTop: '1px solid #E6E2DC', display: 'flex', gap: 10 }}>
           <button
             type="button"
             onClick={() => onAsk(isAr ? (service.chatPrompt_ar || service.name_ar) : `What are the requirements and steps for: ${service.name_en || service.name_ar}?`)}
@@ -560,9 +560,9 @@ export default function ServicesPage() {
               aria-label={isAr ? 'مسح البحث' : 'Clear search'}
               onClick={() => setSearch('')}
               style={{
-                position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)',
                 background: '#E6E2DC', border: 'none', borderRadius: '50%',
-                width: 22, height: 22, cursor: 'pointer', color: '#69645C',
+                width: 36, height: 36, cursor: 'pointer', color: '#69645C',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
