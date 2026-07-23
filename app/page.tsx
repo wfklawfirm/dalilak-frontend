@@ -30,24 +30,27 @@ interface AttachedFile {
 type ResponseMode = 'quick' | 'detailed' | 'research'
 type Lang = 'ar' | 'en'
 
-const MODES: { id: ResponseMode; label_ar: string; label_en: string; hint_ar: string; hint_en: string; prefix: string }[] = [
+const MODES: { id: ResponseMode; label_ar: string; label_en: string; hint_ar: string; hint_en: string; prefix: string; prefix_en: string }[] = [
   {
     id: 'quick',
     label_ar: 'سريع', label_en: 'Quick',
     hint_ar: 'إجابة مختصرة في ثوانٍ', hint_en: 'Short answer in seconds',
     prefix: '[أجب بإيجاز واضح في 4-6 أسطر فقط دون تفاصيل زائدة] ',
+    prefix_en: '[Answer concisely in 4-6 lines only, no extra details.] ',
   },
   {
     id: 'detailed',
     label_ar: 'مفصّل', label_en: 'Detailed',
     hint_ar: 'خطوات وتفاصيل كاملة', hint_en: 'Full steps and details',
     prefix: '[أجب بتنسيق منظّم مع عناوين ## واضحة: ## الخلاصة | ## المستندات المطلوبة | ## الخطوات | ## الجهة المختصة | ## الرسوم | ## تنبيه مهم] ',
+    prefix_en: '[Answer with clear ## headings: ## Summary | ## Required Documents | ## Steps | ## Authority | ## Fees | ## Important Note] ',
   },
   {
     id: 'research',
     label_ar: 'بحث وافٍ', label_en: 'Research',
     hint_ar: 'تقرير شامل مع أدلة ونماذج', hint_en: 'Full report with evidence',
     prefix: '[أجب بتقرير شامل: تحليل كامل، جميع الخيارات المتاحة، الأدلة الرسمية، المراجع القانونية، نموذج جاهز للاستخدام إن وجد، وتنبيهات العطل الرسمية] ',
+    prefix_en: '[Answer with a full report: complete analysis, all available options, official sources, legal references, a ready-to-use template if applicable, and any public holiday warnings.] ',
   },
 ]
 
@@ -422,12 +425,10 @@ export default function Home() {
     }
 
     const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
-    const langInstruction = lang === 'en'
-      ? '[IMPORTANT: The user is writing in English. You MUST respond entirely in English. Do not use Arabic at all.] '
-      : ''
+    const modePrefix = lang === 'en' ? activeMode.prefix_en : activeMode.prefix
     const prefixedMessage = file
       ? cleanText || 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'
-      : langInstruction + activeMode.prefix + cleanText
+      : modePrefix + cleanText
 
     const displayText = file
       ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — طلب تحليل الوثيقة`)
