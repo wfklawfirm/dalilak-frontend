@@ -1,19 +1,20 @@
 #!/bin/bash
 # ================================================================
-# Batch #215-223 — Procedure UX + chat improvements + homepage
-#   #215 ProcedureQuickAskChips     — 4 pre-composed question chips
-#   #216 ProcedureExternalLinks     — gov portal links by ministry
-#   #217 ChatTypingIndicator        — pre-stream animated dots
-#   #218 ProcedureRelatedMinistries — ministry contact strip
-#   #220 ChatMessageActions         — copy / share / bookmark bar
-#   #221 ProcedureOfTheWeek        — featured procedure card
-#   #222 LiveBeirutClock            — live Lebanon time + gov open/closed
-#   #223 ProcedureBookmarks         — panel of saved AI answer snippets
+# Batch #257-263 — Step timer, ministry map, weekly goal, printable
+#                  card, history log, mini stats, tag search
+#   #257 ProcedureStepTimer          — per-step countdown timers
+#   #258 ProcedureMinistryMap        — static ministry location visual
+#   #259 HomepageWeeklyGoalWidget    — "هدف الأسبوع" weekly goal tracker
+#   #260 ProcedurePrintableCard      — print-ready card via window.open
+#   #261 ProcedureHistoryLog         — per-procedure activity event log
+#   #262 HomepageMiniStats           — 4-stat completed/started/reminders/saved strip
+#   #263 ProcedureTagSearch          — enriched ministry label tag cloud filter
+#   #264 TSC clean (0 errors) + push
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #215-223 — quick ask chips, portal links, typing indicator, ministry strip, message actions, proc of week, Beirut clock, bookmarks"
+git diff --cached --quiet || git commit -m "feat: batch #257-263 — step timer, ministry map, weekly goal, printable card, history log, mini stats, tag search"
 git push origin main
 echo "✅ Done"

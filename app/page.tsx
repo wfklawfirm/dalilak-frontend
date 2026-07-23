@@ -42,6 +42,24 @@ import ChatMessageActions from '@/components/ChatMessageActions'
 import ProcedureOfTheWeek from '@/components/ProcedureOfTheWeek'
 import LiveBeirutClock from '@/components/LiveBeirutClock'
 import ProcedureBookmarks from '@/components/ProcedureBookmarks'
+import ProcedureStatusBoard from '@/components/ProcedureStatusBoard'
+import SmartReminder from '@/components/SmartReminder'
+import ChatHistoryPanel, { saveChatSession } from '@/components/ChatHistoryPanel'
+import HomepageProcedureStats from '@/components/HomepageProcedureStats'
+import ProcedureAlertSummary from '@/components/ProcedureAlertSummary'
+import ProcedureCompletionCelebration from '@/components/ProcedureCompletionCelebration'
+import HomepageWeatherBanner from '@/components/HomepageWeatherBanner'
+import ChatSessionTimer from '@/components/ChatSessionTimer'
+import HomepageNewProceduresBadge from '@/components/HomepageNewProceduresBadge'
+import ProcedureChatContext from '@/components/ProcedureChatContext'
+import HomepageTodayTasks from '@/components/HomepageTodayTasks'
+import ChatVoiceInputBtn from '@/components/ChatVoiceInputBtn'
+import HomepageStreakCounter from '@/components/HomepageStreakCounter'
+import HomepageCalendarWidget from '@/components/HomepageCalendarWidget'
+import ChatSessionSummaryChip from '@/components/ChatSessionSummaryChip'
+import HomepageCompletionCTA from '@/components/HomepageCompletionCTA'
+import HomepageWeeklyGoalWidget from '@/components/HomepageWeeklyGoalWidget'
+import HomepageMiniStats from '@/components/HomepageMiniStats'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatContextBar from '@/components/ChatContextBar'
@@ -1278,7 +1296,7 @@ Question: ${text}`
           currentUser={currentUser}
           messages={messages}
           onLangToggle={toggleLang}
-          onNewChat={() => { setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
+          onNewChat={() => { saveChatSession(messages); setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
           onMenuOpen={() => setMobileMenuOpen(true)}
           onStartGuide={() => setShowGuide(true)}
           showGuideBtn={messages.length === 0}
@@ -1386,6 +1404,14 @@ Question: ${text}`
                             {isAr ? 'حسّن' : 'Enhance'}
                           </button>
                         )}
+                        {/* Voice input for hero search */}
+                        <span style={{ display:'flex', alignItems:'center', paddingInlineEnd:6, borderInlineStart:'1.5px solid var(--border)', height:'100%', paddingInlineStart:6 }}>
+                          <ChatVoiceInputBtn
+                            onTranscript={t => setHeroInput(v => v ? v + ' ' + t : t)}
+                            isAr={isAr}
+                            lang={lang}
+                          />
+                        </span>
                         <button type="submit" disabled={!heroInput.trim()}
                           style={{ flexShrink:0, height:'100%', padding:'0 18px', border:'none', borderInlineStart:'1.5px solid var(--border)', background: heroInput.trim() ? 'var(--brand)' : 'var(--surface-2)', color: heroInput.trim() ? '#fff' : 'var(--text-3)', fontSize:13, fontWeight:700, cursor: heroInput.trim() ? 'pointer' : 'default', fontFamily:'inherit', transition:'background 0.14s, color 0.14s', whiteSpace:'nowrap' }}>
                           {isAr ? 'بحث' : 'Search'}
@@ -1861,17 +1887,21 @@ Question: ${text}`
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <HomepageStreakCounter />
                   <LiveBeirutClock />
+                  <HomepageWeatherBanner />
                   <HomepageProgressRing />
                   <GovHolidayAlert />
                   <SmartHomeBanner onAsk={q => sendMessage(q)} />
                   <StatsBadgeStrip />
                   <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
                   <LanguagePreferenceCard />
+                  <HomepageNewProceduresBadge />
                   <DailyTip onAsk={q => sendMessage(q)} />
                   <ProcedureOfTheWeek onAsk={q => sendMessage(q)} />
                   <SmartSuggestions onAsk={q => sendMessage(q)} />
                   <ProcedureBookmarks onAsk={q => sendMessage(q)} />
+                  <ChatHistoryPanel onRestore={msgs => setMessages(msgs.map(m => ({ role: m.role, content: m.content, streaming: false })))} />
                   <SearchHistoryPanel onAsk={q => sendMessage(q)} />
                   <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
                     <DocExpiryBanner onAsk={q => sendMessage(q)} />
@@ -1882,6 +1912,15 @@ Question: ${text}`
                     <AppointmentTracker onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 
+                  <HomepageMiniStats />
+                  <HomepageTodayTasks />
+                  <HomepageCalendarWidget />
+                  <HomepageCompletionCTA />
+                  <HomepageWeeklyGoalWidget />
+                  <ProcedureAlertSummary />
+                  <HomepageProcedureStats />
+                  <SmartReminder />
+                  <ProcedureStatusBoard />
                   <SavedItemsPanel onAsk={q => sendMessage(q)} />
                   <SavedCostSummary />
                   <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
@@ -1902,6 +1941,11 @@ Question: ${text}`
                 </>
               )}
 
+              {/* Procedure context chip — when navigated from a procedure page */}
+              {messages.length === 0 && (
+                <ProcedureChatContext isAr={isAr} onAsk={q => sendMessage(q)} />
+              )}
+
               {/* Welcome screen — shown when chat is empty */}
               {messages.length === 0 && !loading && (
                 <ChatWelcomeMessage
@@ -1917,6 +1961,20 @@ Question: ${text}`
                   onAsk={q => sendMessage(q)}
                 />
               )}
+
+              {/* Session timer — shown above message list */}
+              {messages.length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 6 }}>
+                  <ChatSessionTimer messageCount={messages.length} isAr={isAr} />
+                </div>
+              )}
+
+              {/* Session summary chip — appears at 10+ messages */}
+              <ChatSessionSummaryChip
+                messageCount={messages.length}
+                isAr={isAr}
+                onAsk={q => sendMessage(q)}
+              />
 
               {messages.map((msg, i) => {
                 /* ── Typing indicator: empty streaming assistant message ── */
@@ -2475,6 +2533,9 @@ Question: ${text}`
 
         {/* Floating emergency help button */}
         <FloatingHelpButton onAsk={q => sendMessage(q)} />
+
+        {/* Celebration overlay — shows when all started procedures are completed */}
+        <ProcedureCompletionCelebration />
 
         {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
         <div className="bottom-nav-wrapper">

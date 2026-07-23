@@ -25,9 +25,26 @@ import ProcedureStartButton from '@/components/ProcedureStartButton'
 import ProcedureCompletionBadge from '@/components/ProcedureCompletionBadge'
 import ProcedureEstimatedCompletion from '@/components/ProcedureEstimatedCompletion'
 import ProcedureShareViaEmail from '@/components/ProcedureShareViaEmail'
+import ProcedureQRShare from '@/components/ProcedureQRShare'
 import ProcedureQuickAskChips from '@/components/ProcedureQuickAskChips'
 import ProcedureExternalLinks from '@/components/ProcedureExternalLinks'
 import ProcedureRelatedMinistries from '@/components/ProcedureRelatedMinistries'
+import ProcedureMinistryMap from '@/components/ProcedureMinistryMap'
+import ProcedurePrintableCard from '@/components/ProcedurePrintableCard'
+import ProcedureHistoryLog from '@/components/ProcedureHistoryLog'
+import ProcedureTagSearch from '@/components/ProcedureTagSearch'
+import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
+import ProcedureStepProgress from '@/components/ProcedureStepProgress'
+import ProcedureDocReadinessBar from '@/components/ProcedureDocReadinessBar'
+import ProcedurePrintSummary from '@/components/ProcedurePrintSummary'
+import ProcedureMiniMap from '@/components/ProcedureMiniMap'
+import ProcedureVersionTag from '@/components/ProcedureVersionTag'
+import ProcedureHashtagChips from '@/components/ProcedureHashtagChips'
+import ProcedureApprovalTracker from '@/components/ProcedureApprovalTracker'
+import ProcedureFAQChips from '@/components/ProcedureFAQChips'
+import ProcedureReminderBell from '@/components/ProcedureReminderBell'
+import ProcedureEstimatedFeeChip from '@/components/ProcedureEstimatedFeeChip'
+import ProcedureStepTimer from '@/components/ProcedureStepTimer'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
@@ -118,6 +135,7 @@ export default function ProceduresPage() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [ministryFilter, setMinistryFilter] = useState('all')
+  const [enrichedMinistryLabel, setEnrichedMinistryLabel] = useState('')
   const [printProc, setPrintProc] = useState<EnrichedProcedure | null>(null)
   const [searchModalOpen, setSearchModalOpen] = useState(false)
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
@@ -145,6 +163,12 @@ export default function ProceduresPage() {
     if (ministryFilter !== 'all') {
       list = list.filter(p => p.ministrySlug === ministryFilter)
     }
+    if (enrichedMinistryLabel) {
+      list = list.filter(p =>
+        p.ministry === enrichedMinistryLabel ||
+        p.ministry_en === enrichedMinistryLabel
+      )
+    }
     // Advanced filters
     if (advFilters.hasForm !== 'any') {
       list = list.filter(p => advFilters.hasForm === 'yes' ? !!p.hasForm : !p.hasForm)
@@ -171,7 +195,7 @@ export default function ProceduresPage() {
       } catch { /* skip in SSR */ }
     }
     return list
-  }, [search, ministryFilter, advFilters])
+  }, [search, ministryFilter, enrichedMinistryLabel, advFilters])
 
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
@@ -551,6 +575,17 @@ export default function ProceduresPage() {
               </div>
             )}
 
+            {/* Enriched ministry tag search */}
+            {filteredEnriched.length > 0 && (
+              <div style={{ marginBottom: 6 }}>
+                <ProcedureTagSearch
+                  onSelect={setEnrichedMinistryLabel}
+                  selectedMinistry={enrichedMinistryLabel}
+                  isAr={isAr}
+                />
+              </div>
+            )}
+
             {/* Enriched procedures */}
             {filteredEnriched.map((proc: EnrichedProcedure, idx) => {
               const displayTitle = isAr ? proc.title : (proc.title_en || proc.title)
@@ -604,6 +639,7 @@ export default function ProceduresPage() {
                       </span>
                       {displayDocs.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
                       {displaySteps.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
+                      <ProcedureDifficultyBadge stepCount={proc.steps.length} docCount={proc.requiredDocuments.length} isAr={isAr} />
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
                       {displayFees && (() => {
                         const isFree = displayFees.includes('مجان') || displayFees.toLowerCase().includes('free') || displayFees === '0'
@@ -625,9 +661,20 @@ export default function ProceduresPage() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>{displayTitle}</div>
+                      <ProcedureVersionTag code={proc.code} isAr={isAr} compact />
+                      <ProcedureReminderBell code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
                       <ProcedureProgressBadge code={proc.code} total={proc.requiredDocuments.length} compact />
                     </div>
                     <div style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, marginTop: 2 }}>{displayMinistry}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', marginTop: 3 }}>
+                      <ProcedureEstimatedFeeChip fees={proc.fees} fees_en={proc.fees_en} isAr={isAr} />
+                    </div>
+                    <ProcedureHashtagChips
+                      code={proc.code}
+                      ministry={proc.ministry}
+                      ministry_en={proc.ministry_en}
+                      isAr={isAr}
+                    />
                     {displayDescription && expandedProc !== proc.code && (
                       <div style={{ fontSize: 10.5, color: '#6B5A4A', marginTop: 3, lineHeight: 1.5, opacity: 0.85 }}>
                         {displayDescription.length > 90 ? displayDescription.slice(0, 90) + '…' : displayDescription}
@@ -682,6 +729,11 @@ export default function ProceduresPage() {
                     {/* Ministry contact strip */}
                     <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
 
+                    {/* Ministry map placeholder */}
+                    <div style={{ marginBottom: 8 }}>
+                      <ProcedureMinistryMap ministry={proc.ministry} ministry_en={proc.ministry_en} isAr={isAr} />
+                    </div>
+
                     {/* Official portal links */}
                     <ProcedureExternalLinks ministrySlug={proc.ministrySlug} isAr={isAr} />
 
@@ -712,6 +764,17 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
+                    {/* Doc readiness chip bar */}
+                    {proc.requiredDocuments.length > 0 && (
+                      <div id={`proc-${proc.code}-docs`}>
+                        <ProcedureDocReadinessBar
+                          code={proc.code}
+                          docs={isAr ? proc.requiredDocuments : (proc.requiredDocuments_en ?? proc.requiredDocuments)}
+                          isAr={isAr}
+                        />
+                      </div>
+                    )}
+
                     {/* Steps — interactive timeline */}
                     {proc.steps.length > 0 && (
                       <div style={{ marginBottom: 12 }}>
@@ -726,9 +789,37 @@ export default function ProceduresPage() {
                       </div>
                     )}
 
+                    {/* Mini map — section navigation */}
+                    <ProcedureMiniMap anchorPrefix={`proc-${proc.code}`} isAr={isAr} />
+
+                    {/* Interactive step checklist */}
+                    {proc.steps.length > 0 && (
+                      <div id={`proc-${proc.code}-steps`}>
+                        <ProcedureStepProgress
+                          code={proc.code}
+                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                          isAr={isAr}
+                        />
+                      </div>
+                    )}
+
+                    {/* Per-step countdown timers */}
+                    {proc.steps.length > 0 && (
+                      <div style={{ marginBottom: 12 }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: '#918B82', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          ⏱ {isAr ? 'مؤقّت الخطوات' : 'Step timers'}
+                        </div>
+                        <ProcedureStepTimer
+                          code={proc.code}
+                          steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
+                          isAr={isAr}
+                        />
+                      </div>
+                    )}
+
                     {/* Fees */}
                     {displayFees && (
-                      <div style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '9px 12px', marginBottom: 12 }}>
+                      <div id={`proc-${proc.code}-fees`} style={{ background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '9px 12px', marginBottom: 12 }}>
                         <div style={{ fontSize: 9, fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                           <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                           {isAr ? 'الرسوم والتكاليف' : 'Fees & Costs'}
@@ -769,6 +860,12 @@ export default function ProceduresPage() {
                       processingTime={proc.processingTime}
                       processingTimeEn={proc.processingTime_en}
                     />
+
+                    {/* Application stage tracker */}
+                    <ProcedureApprovalTracker code={proc.code} isAr={isAr} />
+
+                    {/* Activity history log */}
+                    <ProcedureHistoryLog code={proc.code} isAr={isAr} />
 
                     {/* Personal notes */}
                     <ProcedureNotesPanel code={proc.code} isAr={isAr} />
@@ -821,6 +918,14 @@ export default function ProceduresPage() {
                         </div>
                       )
                     })()}
+
+                    {/* Related FAQ chips */}
+                    <ProcedureFAQChips
+                      ministry={proc.ministry}
+                      title={proc.title}
+                      isAr={isAr}
+                      onAsk={handleAsk}
+                    />
 
                     {/* Quick-ask chips */}
                     <ProcedureQuickAskChips
@@ -904,6 +1009,27 @@ export default function ProceduresPage() {
                       </button>
                       {/* Share via Email */}
                       <ProcedureShareViaEmail proc={proc} isAr={isAr} />
+                      {/* QR Share */}
+                      <ProcedureQRShare code={proc.code} titleAr={proc.title} titleEn={proc.title_en} />
+                      {/* Printable card */}
+                      <ProcedurePrintableCard proc={proc} isAr={isAr} />
+                      {/* Print summary */}
+                      <ProcedurePrintSummary
+                        code={proc.code}
+                        title={proc.title}
+                        title_en={proc.title_en}
+                        ministry={proc.ministry}
+                        ministry_en={proc.ministry_en}
+                        steps={proc.steps}
+                        steps_en={proc.steps_en}
+                        requiredDocuments={proc.requiredDocuments}
+                        requiredDocuments_en={proc.requiredDocuments_en}
+                        fees={proc.fees}
+                        fees_en={proc.fees_en}
+                        processingTime={proc.processingTime}
+                        processingTime_en={proc.processingTime_en}
+                        isAr={isAr}
+                      />
                       {/* Print button */}
                       <button
                         type="button"
