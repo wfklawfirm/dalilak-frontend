@@ -124,6 +124,7 @@ export default function ProcedureRemindMeLater({ code, titleAr, titleEn, isAr }:
               type="button"
               onClick={cancel}
               title={isAr ? 'إلغاء التذكير' : 'Cancel reminder'}
+              aria-label={isAr ? 'إلغاء التذكير' : 'Cancel reminder'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#93C5FD', fontSize: 11, lineHeight: 1, padding: '0 0 0 3px' }}
             >✕</button>
           )}

@@ -97,7 +97,7 @@ function StepTimer({ code, idx, label, isAr }: { code: string; idx: number; labe
         <span style={{ fontSize: 11, fontWeight: 800, color: '#1E40AF', fontFamily: 'monospace', fontVariantNumeric: 'tabular-nums' }}>
           {fmt(remaining)}
         </span>
-        <button type="button" onClick={cancel} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#93C5FD', padding: 0 }}>✕</button>
+        <button type="button" onClick={cancel} aria-label={isAr ? 'إلغاء المؤقت' : 'Cancel timer'} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#93C5FD', padding: 0 }}>✕</button>
       </div>
     </div>
   )
@@ -117,7 +117,7 @@ function StepTimer({ code, idx, label, isAr }: { code: string; idx: number; labe
         <span style={{ fontSize: 10, fontWeight: 800, color: '#991B1B' }}>
           {isAr ? 'انتهى!' : 'Done!'}
         </span>
-        <button type="button" onClick={cancel} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#EF4444', padding: 0 }}>✕</button>
+        <button type="button" onClick={cancel} aria-label={isAr ? 'إغلاق التنبيه' : 'Dismiss alert'} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: '#EF4444', padding: 0 }}>✕</button>
       </div>
     </div>
   )

@@ -124,6 +124,7 @@ export function ChatPinnedBanner({ isAr }: { isAr: boolean }) {
       {/* Unpin */}
       <button type="button" onClick={unpin}
         title={isAr ? 'إلغاء التثبيت' : 'Unpin'}
+        aria-label={isAr ? 'إلغاء تثبيت الرسالة' : 'Unpin message'}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
           fontSize: 14, color: '#D97706', padding: 0, flexShrink: 0,

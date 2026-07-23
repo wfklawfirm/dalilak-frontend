@@ -152,6 +152,7 @@ export default function ProcedureFilterDrawer({ filters, onChange, onClose, tota
           <button
             type="button"
             onClick={onClose}
+            aria-label={isAr ? 'إغلاق الفلاتر' : 'Close filters'}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--text-3)', padding: 4 }}
           >
             ×

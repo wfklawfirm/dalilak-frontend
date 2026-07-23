@@ -94,6 +94,7 @@ export default function ProcedureCountdownTimer({ code, titleAr, isAr }: Props) 
           <button
             type="button"
             onClick={clear}
+            aria-label={isAr ? 'مسح العداد' : 'Clear countdown'}
             style={{ fontSize: 10, color: '#9CA3AF', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             ✕

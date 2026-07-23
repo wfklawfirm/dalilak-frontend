@@ -98,6 +98,7 @@ export default function ProcedureOfTheWeek({ onAsk }: Props) {
           onClick={handleDismiss}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 14, padding: 0 }}
           title={isAr ? 'إغلاق' : 'Dismiss'}
+          aria-label={isAr ? 'إغلاق إجراء الأسبوع' : 'Dismiss procedure of the week'}
         >✕</button>
       </div>
 

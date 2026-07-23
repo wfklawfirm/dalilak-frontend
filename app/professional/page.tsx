@@ -196,9 +196,9 @@ export default function ProfessionalWorkspacePage() {
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>
+              <h1 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'inherit' }}>
                 {isAr ? '⚖️ مساحة العمل المهنية' : '⚖️ Professional Workspace'}
-              </div>
+              </h1>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 3 }}>
                 {isAr ? 'للمحامين ومكاتب الخدمات' : 'For Lawyers & Service Offices'}
               </div>

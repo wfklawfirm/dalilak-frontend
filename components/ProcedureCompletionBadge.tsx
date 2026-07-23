@@ -120,6 +120,7 @@ export default function ProcedureCompletionBadge({ code, isAr }: Props) {
             type="button"
             onClick={handleUndo}
             title={isAr ? 'إلغاء' : 'Undo'}
+            aria-label={isAr ? 'إلغاء الإنجاز' : 'Undo completion'}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               color: '#059669', fontSize: 11, padding: 0,

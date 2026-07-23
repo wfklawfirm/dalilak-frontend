@@ -79,6 +79,8 @@ export default function AdminPage() {
   const [editUser, setEditUser] = useState<UserRow | null>(null)
   const [editPlan, setEditPlan] = useState('')
   const [editPaidUntil, setEditPaidUntil] = useState('')
+  const [deactivating, setDeactivating] = useState<string | null>(null)
+  const [gapUpdating, setGapUpdating] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isAdmin()) { router.push('/login'); return }
@@ -124,10 +126,13 @@ export default function AdminPage() {
   }
 
   async function handleGapUpdate(gapId: string, status: string, notes?: string) {
+    if (gapUpdating) return
+    setGapUpdating(gapId)
     try {
       await adminUpdateContentGap(gapId, status, notes)
-      flash(isAr ? 'تم التحديث' : 'Updated'); loadContentGaps(gapFilter)
+      flash(isAr ? 'تم التحديث' : 'Updated'); await loadContentGaps(gapFilter)
     } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
+    finally { setGapUpdating(null) }
   }
 
   function fmtTs(ts?: number) {
@@ -172,11 +177,14 @@ export default function AdminPage() {
   }
 
   async function handleDeactivate(username: string) {
+    if (deactivating) return
     if (!confirm(isAr ? `تعطيل حساب ${username}؟` : `Deactivate account ${username}?`)) return
+    setDeactivating(username)
     try {
       await adminDeactivateUser(username)
-      flash(isAr ? 'تم تعطيل الحساب' : 'Account deactivated'); loadUsers(); loadStats()
+      flash(isAr ? 'تم تعطيل الحساب' : 'Account deactivated'); await loadUsers(); await loadStats()
     } catch (err) { flash(err instanceof Error ? err.message : (isAr ? 'خطأ' : 'Error'), true) }
+    finally { setDeactivating(null) }
   }
 
   const filtered = users.filter(u =>
@@ -364,10 +372,10 @@ export default function AdminPage() {
                               {isAr ? 'تعديل' : 'Edit'}
                             </button>
                             {u.active && (
-                              <button type="button" onClick={() => handleDeactivate(u.username)}
+                              <button type="button" disabled={deactivating === u.username} onClick={() => handleDeactivate(u.username)}
                                 className="adm-btn"
-                                style={{ fontSize: 11, background: '#F8EDEF', color: '#8F1D2C', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
-                                {isAr ? 'تعطيل' : 'Deactivate'}
+                                style={{ fontSize: 11, background: '#F8EDEF', color: '#8F1D2C', padding: '4px 10px', borderRadius: 8, border: 'none', cursor: deactivating === u.username ? 'default' : 'pointer', fontFamily: 'inherit', fontWeight: 700, opacity: deactivating === u.username ? 0.6 : 1 }}>
+                                {deactivating === u.username ? (isAr ? 'جارٍ...' : 'Working...') : (isAr ? 'تعطيل' : 'Deactivate')}
                               </button>
                             )}
                           </div>
@@ -603,12 +611,14 @@ export default function AdminPage() {
                           <button
                             type="button"
                             key={s}
+                            disabled={gapUpdating === gap.id}
                             onClick={() => handleGapUpdate(gap.id, s)}
                             style={{
-                              fontSize: 10, padding: '3px 8px', borderRadius: 7, border: 'none', cursor: 'pointer',
+                              fontSize: 10, padding: '3px 8px', borderRadius: 7, border: 'none', cursor: gapUpdating === gap.id ? 'default' : 'pointer',
                               fontFamily: 'inherit', fontWeight: 700,
                               background: s === 'resolved' ? '#FFFBEB' : s === 'ignored' ? '#E6E2DC' : '#FFFBEB',
                               color: s === 'resolved' ? '#78350F' : s === 'ignored' ? '#69645C' : '#CA8A04',
+                              opacity: gapUpdating === gap.id ? 0.6 : 1,
                             }}
                           >
                             {s === 'in_review' ? 'مراجعة' : s === 'resolved' ? 'محلول' : 'تجاهل'}

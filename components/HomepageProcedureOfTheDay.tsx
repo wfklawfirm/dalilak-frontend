@@ -69,6 +69,7 @@ export default function HomepageProcedureOfTheDay() {
       {/* Dismiss */}
       <button
         type="button" onClick={dismiss}
+        aria-label={isAr ? 'إغلاق' : 'Dismiss'}
         style={{ position: 'absolute', top: 7, [isAr ? 'left' : 'right']: 9, background: 'none', border: 'none', cursor: 'pointer', color: '#D1CBC4', fontSize: 13, lineHeight: 1 }}
       >✕</button>
 

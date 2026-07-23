@@ -108,14 +108,17 @@ export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
         </span>
       )}
       <button type="button" onClick={goPrev} disabled={matches.length === 0}
+        aria-label={isAr ? 'النتيجة السابقة' : 'Previous match'}
         style={{ background: 'none', border: 'none', cursor: matches.length ? 'pointer' : 'default', fontSize: 12, color: '#6B7280', padding: '2px 4px' }}>
         ↑
       </button>
       <button type="button" onClick={goNext} disabled={matches.length === 0}
+        aria-label={isAr ? 'النتيجة التالية' : 'Next match'}
         style={{ background: 'none', border: 'none', cursor: matches.length ? 'pointer' : 'default', fontSize: 12, color: '#6B7280', padding: '2px 4px' }}>
         ↓
       </button>
       <button type="button" onClick={() => { setOpen(false); setQuery('') }}
+        aria-label={isAr ? 'إغلاق البحث' : 'Close search'}
         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#9CA3AF', padding: '2px 4px' }}>
         ✕
       </button>

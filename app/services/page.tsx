@@ -510,7 +510,7 @@ export default function ServicesPage() {
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</div>
+              <h1 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, fontFamily: 'inherit' }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</h1>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>
                 {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
               </div>

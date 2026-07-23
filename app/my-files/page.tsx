@@ -404,10 +404,11 @@ export default function MyFilesPage() {
                           <span style={{ fontSize: 11, color: '#918B82' }}>{isAr ? 'تأكيد الحذف؟' : 'Confirm delete?'}</span>
                           <button
                             type="button"
+                            disabled={saving}
                             onClick={() => deleteProc(selected.id)}
-                            style={{ background: '#F8EDEF', border: '1px solid #FECACA', cursor: 'pointer', color: '#8F1D2C', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700 }}
+                            style={{ background: '#F8EDEF', border: '1px solid #FECACA', cursor: saving ? 'default' : 'pointer', color: '#8F1D2C', fontSize: 11, padding: '4px 10px', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700, opacity: saving ? 0.6 : 1 }}
                           >
-                            {isAr ? 'نعم' : 'Yes'}
+                            {saving ? (isAr ? 'جارٍ الحذف...' : 'Deleting...') : (isAr ? 'نعم' : 'Yes')}
                           </button>
                           <button
                             type="button"
@@ -422,8 +423,9 @@ export default function MyFilesPage() {
                           {selected.status === 'cancelled' ? (
                             <button
                               type="button"
+                              disabled={saving}
                               onClick={() => updateStatus(selected, 'active')}
-                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: 'pointer', color: '#69645C', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: saving ? 'default' : 'pointer', color: '#69645C', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}
                             >
                               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M4 9a9 9 0 1013.5-7.5"/></svg>
                               {isAr ? 'استئناف' : 'Resume'}
@@ -431,8 +433,9 @@ export default function MyFilesPage() {
                           ) : selected.status !== 'completed' && (
                             <button
                               type="button"
+                              disabled={saving}
                               onClick={() => updateStatus(selected, 'cancelled')}
-                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: 'pointer', color: '#918B82', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: saving ? 'default' : 'pointer', color: '#918B82', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}
                             >
                               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6"/></svg>
                               {isAr ? 'إلغاء' : 'Cancel'}

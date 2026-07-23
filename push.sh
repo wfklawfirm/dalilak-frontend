@@ -186,11 +186,40 @@
 #     sat centered in a narrow column.
 #   All mobile behavior unchanged — these are additive desktop-only
 #   hover affordances plus one header-alignment fix.
+#
+#   RELIABILITY + SEO PASS (batch #315-316):
+#   - admin/page.tsx: "Deactivate" user button and content-gap status
+#     buttons (مراجعة/محلول/تجاهل) had no pending/disabled state — a
+#     fast admin could double-click and fire the same DELETE/UPDATE
+#     request twice. Added deactivating/gapUpdating state trackers so
+#     the specific row's button disables + shows "جارٍ..." while its
+#     own request is in flight (other rows stay clickable).
+#   - my-files/page.tsx: delete-confirmation "نعم" button and the
+#     Resume/Cancel status buttons now use the page's existing `saving`
+#     flag to disable themselves and show "جارٍ الحذف..." during the
+#     fetch, preventing duplicate DELETE/PUT calls on a slow connection.
+#   - services/page.tsx, professional/page.tsx, settings/page.tsx: page
+#     titles were plain <div>s with zero <h1> anywhere on the page
+#     (bad for SEO + screen-reader page structure). Changed to <h1> with
+#     margin:0 + fontFamily:inherit so there is zero visual change —
+#     purely a semantic fix.
+#   No backend, route, or visual/behavioral change beyond disabling a
+#   button during its own in-flight request.
+#
+#   ACCESSIBILITY PASS (batch #317): 12 icon-only glyph buttons (✕ / ↑ / ↓
+#   close-dismiss-cancel controls) across ProcedureCompletionBadge,
+#   ProcedureFilterDrawer, ChatPinnedMessage, ProcedureOfTheWeek,
+#   ProcedureRemindMeLater, ChatMessageSearchInThread (3 buttons),
+#   ProcedureStepTimer (2 buttons), HomepageProcedureOfTheDay,
+#   ProcedureQRShare, and ProcedureCountdownTimer had no aria-label —
+#   screen readers announced them as unlabeled "button". Added bilingual
+#   aria-label matching each button's action (kept existing title where
+#   present). Purely additive attribute, zero visual change.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls, procedures page, and homepage into labeled sections + new /settings page"
+git diff --cached --quiet || git commit -m "feat: batch #284-317 — 31 new components + mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes (double-submit guards) + h1 semantic fixes + aria-label pass on 12 icon-only buttons"
 git push origin main
 echo "✅ Done"

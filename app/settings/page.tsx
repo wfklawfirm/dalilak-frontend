@@ -139,9 +139,9 @@ export default function SettingsPage() {
             </svg>
           </button>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: '#191713' }}>
+            <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#191713', fontFamily: 'inherit' }}>
               ⚙️ {isAr ? 'الإعدادات' : 'Settings'}
-            </div>
+            </h1>
             <div style={{ fontSize: 11, color: '#918B82' }}>
               {isAr ? 'تفضيلاتك في مكان واحد' : 'All your preferences in one place'}
             </div>
