@@ -799,7 +799,7 @@ export default function Home() {
                 position:'relative', overflow:'hidden',
               }}>
                 <div style={{ position:'absolute', inset:0, backgroundImage:'radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize:'32px 32px', pointerEvents:'none' }} />
-                <div style={{ position:'absolute', bottom:-1, left:0, right:0, height:32, background:'#F2EDE6', borderRadius:'55% 55% 0 0 / 100% 100% 0 0', pointerEvents:'none' }} />
+                <div style={{ position:'absolute', bottom:0, left:0, right:0, height:1, background:'rgba(255,255,255,0.08)', pointerEvents:'none' }} />
 
                 <div style={{ maxWidth:560, margin:'0 auto', position:'relative', textAlign:'center' }}>
 
@@ -817,15 +817,6 @@ export default function Home() {
                     </span>
                   </div>
 
-                  {/* Greeting */}
-                  {currentUser && (
-                    <p style={{ fontSize:11, color:'rgba(255,255,255,0.42)', margin:'-8px 0 12px', fontWeight:500 }}>
-                      {isAr
-                        ? <span>مرحباً <strong style={{ color:'rgba(255,255,255,0.85)' }}>{currentUser.full_name || currentUser.username}</strong></span>
-                        : <span>Hello <strong style={{ color:'rgba(255,255,255,0.85)' }}>{currentUser.full_name || currentUser.username}</strong></span>}
-                    </p>
-                  )}
-
                   {/* Headline */}
                   <h1 style={{ fontSize:'clamp(24px,6vw,38px)', fontWeight:900, color:'#fff', margin:'0 0 10px', lineHeight:1.08, letterSpacing:'-1px', textShadow:'0 2px 16px rgba(0,0,0,0.18)', whiteSpace:'pre-line' }}>
                     {isAr ? 'أنجز معاملتك الحكومية\nبخطوات واضحة' : 'Navigate government\ntransactions with ease'}
@@ -837,7 +828,7 @@ export default function Home() {
                   {/* ── SEARCH ── */}
                   <form
                     onSubmit={e => { e.preventDefault(); if (heroInput.trim()) { sendMessage(heroInput); setHeroInput('') } }}
-                    style={{ position:'relative', maxWidth:520, margin:'0 auto 14px' }}
+                    style={{ position:'relative', maxWidth:520, margin:'0 auto' }}
                   >
                     <input
                       type="text"
@@ -876,37 +867,142 @@ export default function Home() {
                     </button>
                   </form>
 
-                  {/* 2 suggestion pills — single row, short */}
-                  <div style={{ display:'flex', gap:6, justifyContent:'center', flexWrap:'nowrap', overflow:'hidden' }}>
-                    {visibleQ.slice(0, 2).map((q, i) => {
-                      const short = q.length > 26 ? q.slice(0, 24) + '…' : q
-                      return (
-                        <button type="button" key={q} className="quick-btn"
-                          onClick={() => sendMessage(q)}
-                          style={{
-                            padding:'5px 12px', borderRadius:20, flexShrink:1, minWidth:0,
-                            background:'rgba(255,255,255,0.07)',
-                            border:'1px solid rgba(255,255,255,0.11)',
-                            color:'rgba(255,255,255,0.62)', fontSize:11,
-                            cursor:'pointer', fontFamily:'inherit', fontWeight:500,
-                            animationDelay:`${i*0.08}s`, animationFillMode:'both',
-                            whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
-                          }}
-                          onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.14)'; e.currentTarget.style.color='#fff' }}
-                          onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='rgba(255,255,255,0.62)' }}
-                        >{short}</button>
-                      )
-                    })}
-                  </div>
-
                 </div>
               </div>
 
               {/* ══ CONTENT ══════════════════════════════════════════ */}
               <div style={{ maxWidth:640, margin:'0 auto', padding:'20px 16px 100px' }}>
 
+                {/* ── Suggestion chips — below hero ── */}
+                <div style={{ marginBottom:20, display:'flex', gap:6, justifyContent:'center', flexWrap:'nowrap', overflow:'hidden', animation:'fadeUp 0.25s cubic-bezier(0.22,1,0.36,1) both' }}>
+                  {visibleQ.slice(0, 2).map((q, i) => {
+                    const short = q.length > 30 ? q.slice(0, 28) + '…' : q
+                    return (
+                      <button type="button" key={q} className="quick-btn"
+                        onClick={() => sendMessage(q)}
+                        style={{
+                          padding:'6px 14px', borderRadius:20, flexShrink:1, minWidth:0,
+                          background:'#fff', border:'1px solid rgba(210,195,178,0.5)',
+                          color:'#5C4A3A', fontSize:11.5, cursor:'pointer', fontFamily:'inherit',
+                          fontWeight:500, animationDelay:`${i*0.08}s`, animationFillMode:'both',
+                          whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+                          boxShadow:'0 1px 4px rgba(0,0,0,0.05)',
+                          display:'flex', alignItems:'center', gap:5,
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.25)'; e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(210,195,178,0.5)'; e.currentTarget.style.boxShadow='0 1px 4px rgba(0,0,0,0.05)' }}
+                      >
+                        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.5" style={{ flexShrink:0 }}><circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                        {short}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* ── Popular Procedures ── */}
+                <div style={{ marginBottom:20, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.06s' }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
+                    <span style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase' }}>
+                      {isAr ? 'الأكثر طلباً' : 'MOST REQUESTED'}
+                    </span>
+                    <button type="button" onClick={() => router.push('/procedures')}
+                      style={{ background:'none', border:'none', cursor:'pointer', fontSize:11, color:'#8B1A1A', fontWeight:600, fontFamily:'inherit', display:'flex', alignItems:'center', gap:3, opacity:0.7 }}
+                      onMouseEnter={e => e.currentTarget.style.opacity='1'}
+                      onMouseLeave={e => e.currentTarget.style.opacity='0.7'}>
+                      {isAr ? 'كل المعاملات' : 'All procedures'}
+                      <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
+                    </button>
+                  </div>
+                  <div className="wlc-svc-grid">
+                    {[
+                      {
+                        ar:'استخراج جواز السفر', en:'Passport',
+                        pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟', pEn:'How do I get or renew my Lebanese passport?',
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0M9 21v-2m6 2v-2"/></svg>,
+                      },
+                      {
+                        ar:'شهادة حسن السيرة', en:'Good Conduct',
+                        pAr:'كيف أستخرج شهادة حسن السيرة والسلوك من وزارة العدل؟', pEn:'How do I get a good conduct certificate in Lebanon?',
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>,
+                      },
+                      {
+                        ar:'إخراج قيد نفوس', en:'Civil Registry',
+                        pAr:'كيف أستخرج إخراج قيد نفوس من السجل المدني؟', pEn:'How do I get a civil registry extract?',
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+                      },
+                      {
+                        ar:'تسجيل شركة', en:'Company Reg.',
+                        pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?',
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
+                      },
+                      {
+                        ar:'رخصة القيادة', en:"Driver's License",
+                        pAr:'كيف أجدد رخصة القيادة في لبنان وما هي الوثائق المطلوبة؟', pEn:"How do I renew my driver's license in Lebanon?",
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>,
+                      },
+                      {
+                        ar:'تجديد إقامة الأجانب', en:'Residency Renewal',
+                        pAr:'كيف أجدد إقامة أجنبي في لبنان عبر الأمن العام؟', pEn:"How do I renew a foreigner's residency in Lebanon?",
+                        icon: <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+                      },
+                    ].map(p => (
+                      <button type="button" key={p.en} onClick={() => sendMessage(isAr ? p.pAr : p.pEn)}
+                        className="wlc-svc-btn"
+                        style={{
+                          display:'flex', alignItems:'center', gap:10, padding:'11px 12px',
+                          background:'#fff', border:'1px solid rgba(210,195,178,0.4)',
+                          borderRadius:12, cursor:'pointer', fontFamily:'inherit',
+                          transition:'border-color 0.14s, background 0.14s, transform 0.14s, box-shadow 0.14s',
+                          boxShadow:'0 1px 3px rgba(100,60,20,0.04)', textAlign:isAr?'right':'left', width:'100%',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.22)'; e.currentTarget.style.background='#FEFCFA'; e.currentTarget.style.boxShadow='0 3px 14px rgba(0,0,0,0.07)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(210,195,178,0.4)'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 3px rgba(100,60,20,0.04)'; e.currentTarget.style.transform='' }}
+                        onTouchStart={e => { e.currentTarget.style.background='#FEF6F3'; e.currentTarget.style.transform='scale(0.97)' }}
+                        onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='' }}
+                      >
+                        <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, background:'rgba(139,26,26,0.06)', border:'1px solid rgba(139,26,26,0.10)', display:'flex', alignItems:'center', justifyContent:'center', color:'#8B1A1A' }}>
+                          {p.icon}
+                        </div>
+                        <div style={{ minWidth:0, flex:1 }}>
+                          <div style={{ fontSize:12, fontWeight:700, color:'#1A1208', lineHeight:1.25, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                            {isAr ? p.ar : p.en}
+                          </div>
+                          <div style={{ fontSize:9.5, color:'#B0A090', marginTop:1, fontWeight:500 }}>
+                            {isAr ? 'اضغط للبدء' : 'Tap to start'}
+                          </div>
+                        </div>
+                        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#CCC0B0" strokeWidth="2.5" style={{ flexShrink:0 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── How it works — 3 steps ── */}
+                <div style={{ marginBottom:16, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.12s' }}>
+                  <span style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase', display:'block', marginBottom:10 }}>
+                    {isAr ? 'كيف يعمل دليلك؟' : 'HOW IT WORKS'}
+                  </span>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+                    {[
+                      { num:'١', numEn:'1', ar:'اكتب سؤالك', en:'Ask', descAr:'اكتب اسم المعاملة أو صف حالتك بكلماتك', descEn:'Type a transaction name or describe your case' },
+                      { num:'٢', numEn:'2', ar:'راجع الخطوات', en:'Review', descAr:'خطوات واضحة ومستندات مطلوبة والجهة المختصة', descEn:'Clear steps, required documents, and the authority' },
+                      { num:'٣', numEn:'3', ar:'تابع بثقة', en:'Proceed', descAr:'معلومات من المصادر الرسمية اللبنانية', descEn:'Backed by official Lebanese government sources' },
+                    ].map(s => (
+                      <div key={s.num} style={{ background:'#fff', border:'1px solid rgba(210,195,178,0.35)', borderRadius:12, padding:'12px 10px 10px', textAlign:'center' }}>
+                        <div style={{ width:28, height:28, borderRadius:'50%', background:'rgba(139,26,26,0.07)', color:'#8B1A1A', fontSize:13, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
+                          {isAr ? s.num : s.numEn}
+                        </div>
+                        <div style={{ fontSize:11, fontWeight:800, color:'#1A1208', marginBottom:4, lineHeight:1.3 }}>{isAr ? s.ar : s.en}</div>
+                        <div style={{ fontSize:9.5, color:'#A89480', lineHeight:1.5 }}>{isAr ? s.descAr : s.descEn}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* ── Quick actions — horizontal row ── */}
-                <div style={{ marginBottom:20, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.07s' }}>
+                <div style={{ marginBottom:16, animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.18s' }}>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
                     {[
                       {
@@ -958,75 +1054,9 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* ── Service domain section ── */}
-                <div style={{ animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both', animationDelay:'0.14s' }}>
-                  <div style={{ marginBottom:10, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                    <p style={{ fontSize:10.5, fontWeight:700, color:'#A89C8E', letterSpacing:'0.8px', textTransform:'uppercase', margin:0 }}>
-                      {isAr ? 'تصفّح حسب المجال' : 'BROWSE BY DOMAIN'}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => router.push('/services')}
-                      style={{ background:'none', border:'none', cursor:'pointer', fontSize:11, color:'#8B1A1A', fontWeight:600, fontFamily:'inherit', display:'flex', alignItems:'center', gap:3, opacity:0.7, transition:'opacity 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.opacity='1'}
-                      onMouseLeave={e => e.currentTarget.style.opacity='0.7'}
-                    >
-                      {isAr ? 'كل الخدمات' : 'All services'}
-                      <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
-                    </button>
-                  </div>
-
-                  {/* Service group grid */}
-                  <div className="wlc-svc-grid">
-                    {SERVICE_GROUPS.map(group => (
-                      <button
-                        type="button"
-                        key={group.slug}
-                        className="wlc-svc-btn"
-                        aria-label={isAr ? group.titleAr : group.titleEn}
-                        onClick={() => setActiveServiceGroup(group)}
-                        style={{
-                          display:'flex', alignItems:'center', gap:10,
-                          padding:'11px 12px', borderRadius:12, cursor:'pointer',
-                          background:'#fff',
-                          border:'1px solid rgba(210,195,178,0.4)',
-                          fontFamily:'inherit', textAlign:isAr?'right':'left',
-                          transition:'border-color 0.14s, background 0.14s, transform 0.14s, box-shadow 0.14s',
-                          boxShadow:'0 1px 3px rgba(100,60,20,0.04)', width:'100%',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(139,26,26,0.22)'; e.currentTarget.style.background='#FEFCFA'; e.currentTarget.style.boxShadow='0 3px 14px rgba(0,0,0,0.07)'; e.currentTarget.style.transform='translateY(-1px)' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(210,195,178,0.4)'; e.currentTarget.style.background='#fff'; e.currentTarget.style.boxShadow='0 1px 3px rgba(100,60,20,0.04)'; e.currentTarget.style.transform='' }}
-                        onTouchStart={e => { e.currentTarget.style.background='#FEF6F3'; e.currentTarget.style.transform='scale(0.97)' }}
-                        onTouchEnd={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.transform='' }}
-                      >
-                        <div style={{
-                          width:34, height:34, borderRadius:9, flexShrink:0,
-                          background:`${group.color}0c`,
-                          border:`1px solid ${group.color}18`,
-                          display:'flex', alignItems:'center', justifyContent:'center',
-                          color:group.color,
-                        }}>
-                          <ServiceGroupIcon slug={group.slug} />
-                        </div>
-                        <div style={{ minWidth:0, flex:1 }}>
-                          <div style={{ fontSize:12, fontWeight:700, color:'#1A1208', lineHeight:1.25, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                            {isAr ? group.titleAr : group.titleEn}
-                          </div>
-                          <div style={{ fontSize:9.5, color:'#B0A090', marginTop:1, fontWeight:500 }}>
-                            {group.services.length}{isAr ? ' خدمة' : ' svcs'}
-                          </div>
-                        </div>
-                        <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#CCC0B0" strokeWidth="2.5" style={{ flexShrink:0 }}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {/* ── Trust strip ── */}
                 <div style={{
-                  marginTop:24, paddingTop:16,
+                  paddingTop:16,
                   borderTop:'1px solid rgba(210,195,178,0.25)',
                   display:'flex', flexWrap:'wrap', gap:5, justifyContent:'center',
                   animation:'fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both',
@@ -1264,11 +1294,11 @@ export default function Home() {
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
           flexShrink: 0,
-          background: 'linear-gradient(to top, rgba(242,237,230,1) 0%, rgba(242,237,230,0.96) 70%, rgba(242,237,230,0) 100%)',
-          paddingTop: 8,
-          paddingBottom: footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
+          background: messages.length > 0 ? 'linear-gradient(to top, rgba(242,237,230,1) 0%, rgba(242,237,230,0.96) 70%, rgba(242,237,230,0) 100%)' : 'transparent',
+          paddingTop: messages.length > 0 ? 8 : 0,
+          paddingBottom: messages.length > 0 && footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
         }}>
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 10px' }}>
+          {messages.length > 0 && <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 10px' }}>
 
             {/* ── Active Document Context Chip (Phase 9) ── */}
             {activeDocumentName && messages.length > 0 && !attachedFile && (
@@ -1499,7 +1529,7 @@ export default function Home() {
               </div>
             </form>
 
-          </div>
+          </div>}
         </footer>
 
         {/* ══════════════ BOTTOM NAV (mobile) ══════════════ */}
