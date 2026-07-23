@@ -298,17 +298,33 @@ export default function Home() {
   const [cardVisible, setCardVisible] = useState(true)
   const [enhancing, setEnhancing] = useState(false)
   const [heroEnhancing, setHeroEnhancing] = useState(false)
+  // Voice enhance suggestion — shows improved text before replacing
+  const [enhanceSuggestion, setEnhanceSuggestion] = useState<string | null>(null)
+  // True for 4s after voice ends with text — shows auto-enhance hint
+  const [voiceJustEnded, setVoiceJustEnded] = useState(false)
   // Session restore — number of messages reloaded from localStorage
   const [restoredCount, setRestoredCount] = useState(0)
 
   // ── Enhance prompt via AI — reads /chat/stream, updates chips after ──
-  const enhancePrompt = useCallback(async (text: string, setter: (v: string) => void, setLoading: (v: boolean) => void) => {
+  const enhancePrompt = useCallback(async (
+    text: string,
+    setter: (v: string) => void,
+    setLoadingFlag: (v: boolean) => void,
+    showSuggestion = false,
+  ) => {
     if (!text.trim() || text.trim().length < 4) return
-    setLoading(true)
+    setLoadingFlag(true)
+    if (showSuggestion) setEnhanceSuggestion(null)
     try {
-      const enhanceMsg = isAr
-        ? `حسّن هذا السؤال فقط — اكتب نسخة أوضح وأدق للسؤال التالي مع ذكر اسم المعاملة الحكومية إن كانت واضحة، بدون أي شرح أو مقدمة، السؤال المحسّن فقط:\n"${text}"`
-        : `Improve this question only — rewrite it as a clearer, more specific Lebanese government procedure question. No explanation or preamble, just the improved question:\n"${text}"`
+      // Language-agnostic prompt — AI detects language from the text itself
+      const enhanceMsg = `You are a bilingual government-services assistant for Lebanon.
+Detect the language of the question below (Arabic or English) and rewrite it in the SAME language as a clearer, more specific, professional question about Lebanese government procedures.
+Rules:
+- Keep the SAME language as the input (Arabic stays Arabic, English stays English)
+- Name the specific procedure if it can be inferred
+- Remove filler words and dialect expressions while preserving the meaning
+- Output ONLY the improved question — no explanation, no preamble, no quotes
+Question: ${text}`
 
       const res = await fetch(`${API_URL}/chat/stream`, {
         method: 'POST',
@@ -317,7 +333,6 @@ export default function Home() {
       })
       if (!res.ok || !res.body) return
 
-      // Read streaming response chunks
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let accumulated = ''
@@ -332,7 +347,6 @@ export default function Home() {
           if (payload === '[DONE]') break outer
           try {
             const json = JSON.parse(payload)
-            // backend sends {type:'token', text:...} — also handle legacy {token:...}
             const tok = json.text ?? json.token ?? ''
             if (tok && json.type !== 'meta' && json.type !== 'error') accumulated += tok
             if (json.done) break outer
@@ -343,24 +357,29 @@ export default function Home() {
       // Clean: strip quotes, bold, markdown, take first non-empty line
       const improved = accumulated
         .split('\n')
-        .map(l => l.trim().replace(/^[\*\#"«»""]+|[\*\#"«»""]+$/g, '').trim())
+        .map(l => l.trim().replace(/^[\*\#"«»""'`]+|[\*\#"«»""'`]+$/g, '').trim())
         .find(l => l.length > 5) || ''
 
-      if (improved && improved.length < 400) {
-        setter(improved)
-
-        // ── Fetch contextual chips from /suggest_followup ──
-        fetch(`${API_URL}/suggest_followup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...authHeaders() },
-          body: JSON.stringify({ question: improved, answer: '', lang: isAr ? 'ar' : 'en' }),
-        })
-          .then(r => r.ok ? r.json() : null)
-          .then(d => { if (d?.questions?.length >= 2) { chipsLockedRef.current = true; setVisibleQ(d.questions.slice(0, 4)) } })
-          .catch(() => {})
+      if (improved && improved.length < 400 && improved !== text.trim()) {
+        if (showSuggestion) {
+          // Show as suggestion chip — user accepts/dismisses
+          setEnhanceSuggestion(improved)
+          setVoiceJustEnded(false)
+        } else {
+          setter(improved)
+          // Fetch contextual chips
+          fetch(`${API_URL}/suggest_followup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeaders() },
+            body: JSON.stringify({ question: improved, answer: '', lang: isAr ? 'ar' : 'en' }),
+          })
+            .then(r => r.ok ? r.json() : null)
+            .then(d => { if (d?.questions?.length >= 2) { chipsLockedRef.current = true; setVisibleQ(d.questions.slice(0, 4)) } })
+            .catch(() => {})
+        }
       }
     } catch { /* silent */ } finally {
-      setLoading(false)
+      setLoadingFlag(false)
     }
   }, [isAr]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -518,21 +537,42 @@ export default function Home() {
   // ── Voice ─────────────────────────────────────────────────
   const startRecording = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-    if (!SR) { setVoiceError(isAr ? 'التعرف على الصوت غير مدعوم في هذا المتصفح.' : 'Voice input not supported. Use Chrome or Edge.'); return }
+    if (!SR) { setVoiceError(isAr ? 'التعرف على الصوت غير مدعوم في هذا المتصفح. استخدم Chrome أو Edge.' : 'Voice input not supported. Use Chrome or Edge.'); return }
     const recognition = new SR()
-    recognition.lang = lang === 'ar' ? 'ar-LB' : 'en-US'
+    // ar-SA has the broadest Arabic browser support (covers Lebanese dialect input too)
+    recognition.lang = lang === 'ar' ? 'ar-SA' : 'en-US'
     recognition.continuous = false
     recognition.interimResults = true
+    recognition.maxAlternatives = 1
     recognition.onresult = (e: Event & { results: SpeechRecognitionResultList }) => {
       const results = Array.from(e.results)
-      setInput(results.map(r => r[0].transcript).join(''))
+      const transcript = results.map(r => r[0].transcript).join('')
+      setInput(transcript)
     }
-    recognition.onerror = () => setRecording(false)
-    recognition.onend = () => setRecording(false)
+    recognition.onerror = (e: Event & { error: string }) => {
+      setRecording(false)
+      if ((e as any).error === 'no-speech') {
+        setVoiceError(isAr ? 'لم يُكتشف صوت. حاول مرة أخرى.' : 'No speech detected. Please try again.')
+        setTimeout(() => setVoiceError(null), 3000)
+      }
+    }
+    recognition.onend = () => {
+      setRecording(false)
+      // If we captured text, offer auto-enhance for 5 seconds
+      setInput(prev => {
+        if (prev.trim().length > 4) {
+          setVoiceJustEnded(true)
+          setTimeout(() => setVoiceJustEnded(false), 5000)
+        }
+        return prev
+      })
+    }
     recognition.start()
     recognitionRef.current = recognition
+    setVoiceJustEnded(false)
+    setEnhanceSuggestion(null)
     setRecording(true)
-  }, [lang])
+  }, [lang, isAr])
 
   const stopRecording = useCallback(() => {
     recognitionRef.current?.stop()
@@ -566,6 +606,8 @@ export default function Home() {
     if (!hasContent || loading) return
     setFollowupQuestions([])
     setRetryMsg(null)
+    setEnhanceSuggestion(null)
+    setVoiceJustEnded(false)
 
     // ── Sanitize input ────────────────────────────────────────
     const { clean: cleanText, flagged } = sanitizeInput(text)
@@ -1596,31 +1638,120 @@ export default function Home() {
             {recording && (
               <div style={{
                 marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 10, padding: '8px 14px',
+                gap: 10, padding: '9px 16px',
                 background: 'linear-gradient(135deg, #F8EDEF 0%, #FDE8E8 100%)',
-                borderRadius: 12, border: '1.5px solid #FECACA',
+                borderRadius: 14, border: '1.5px solid #FECACA',
+                animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
-                  {[8, 14, 10, 16, 11, 14, 9].map((h, n) => (
+                  {[7, 13, 9, 15, 10, 13, 8].map((h, n) => (
                     <span key={n} style={{
                       width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
-                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.08}s`,
+                      animation: `pulse 0.75s ease-in-out infinite`, animationDelay: `${n * 0.07}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 12, color: '#8F1D2C', fontWeight: 600 }}>
-                  {isAr ? 'جاري الاستماع... تحدث الآن' : 'Listening... speak now'}
+                <span style={{ fontSize: 12.5, color: '#8F1D2C', fontWeight: 700 }}>
+                  {isAr ? '🎙 جاري الاستماع... تكلّم الآن' : '🎙 Listening... speak now'}
                 </span>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
-                  {[9, 14, 11, 16, 10, 14, 8].map((h, n) => (
+                  {[8, 13, 10, 15, 9, 13, 7].map((h, n) => (
                     <span key={n} style={{
                       width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
-                      animation: `pulse 0.9s infinite`, animationDelay: `${n * 0.1}s`,
+                      animation: `pulse 0.75s ease-in-out infinite`, animationDelay: `${n * 0.09}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
+                <button type="button" onClick={stopRecording}
+                  aria-label={isAr ? 'إيقاف التسجيل' : 'Stop recording'}
+                  style={{
+                    marginInlineStart: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700,
+                    background: '#8F1D2C', color: '#fff', border: 'none', borderRadius: 8,
+                    cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                  }}>
+                  {isAr ? 'إيقاف' : 'Stop'}
+                </button>
+              </div>
+            )}
+
+            {/* Enhance suggestion chip — appears after enhance or voice */}
+            {enhanceSuggestion && !recording && (
+              <div style={{
+                marginBottom: 8, padding: '10px 14px',
+                background: 'linear-gradient(135deg, #F0F7FF 0%, #E8F4FF 100%)',
+                borderRadius: 14, border: '1.5px solid #BAD7F8',
+                animation: 'slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both',
+              }}>
+                <div style={{ fontSize: 10.5, color: '#2563EB', fontWeight: 700, marginBottom: 5, letterSpacing: 0.3 }}>
+                  ✨ {isAr ? 'اقتراح التحسين' : 'Enhancement suggestion'}
+                </div>
+                <div style={{ fontSize: 12.5, color: '#1e3a5f', lineHeight: 1.6, direction: isAr ? 'rtl' : 'ltr', marginBottom: 8 }}>
+                  {enhanceSuggestion}
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button type="button"
+                    onClick={() => {
+                      setInput(enhanceSuggestion)
+                      setEnhanceSuggestion(null)
+                      fetch(`${API_URL}/suggest_followup`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                        body: JSON.stringify({ question: enhanceSuggestion, answer: '', lang: isAr ? 'ar' : 'en' }),
+                      }).then(r => r.ok ? r.json() : null)
+                        .then(d => { if (d?.questions?.length >= 2) { chipsLockedRef.current = true; setVisibleQ(d.questions.slice(0, 4)) } })
+                        .catch(() => {})
+                    }}
+                    style={{
+                      padding: '5px 14px', fontSize: 12, fontWeight: 700,
+                      background: '#2563EB', color: '#fff', border: 'none', borderRadius: 9,
+                      cursor: 'pointer', fontFamily: 'inherit',
+                    }}>
+                    {isAr ? '✓ قبول' : '✓ Accept'}
+                  </button>
+                  <button type="button" onClick={() => setEnhanceSuggestion(null)}
+                    style={{
+                      padding: '5px 12px', fontSize: 12, fontWeight: 600,
+                      background: 'rgba(37,99,235,0.08)', color: '#2563EB',
+                      border: '1px solid rgba(37,99,235,0.2)', borderRadius: 9,
+                      cursor: 'pointer', fontFamily: 'inherit',
+                    }}>
+                    {isAr ? 'تجاهل' : 'Dismiss'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Voice just-ended → offer enhance */}
+            {voiceJustEnded && !recording && !enhanceSuggestion && !enhancing && input.trim().length > 4 && (
+              <div style={{
+                marginBottom: 8, padding: '8px 14px',
+                background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E6 100%)',
+                borderRadius: 12, border: '1.5px solid #FDE68A',
+                display: 'flex', alignItems: 'center', gap: 10,
+                animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
+              }}>
+                <span style={{ fontSize: 14 }}>✨</span>
+                <span style={{ fontSize: 12, color: '#92400E', fontWeight: 600, flex: 1 }}>
+                  {isAr ? 'هل تريد تحسين السؤال المُسجَّل؟' : 'Want to enhance your voice input?'}
+                </span>
+                <button type="button"
+                  onClick={() => { setVoiceJustEnded(false); enhancePrompt(input, setInput, setEnhancing, true) }}
+                  style={{
+                    padding: '4px 12px', fontSize: 11.5, fontWeight: 700,
+                    background: '#F59E0B', color: '#fff', border: 'none', borderRadius: 8,
+                    cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                  }}>
+                  {isAr ? 'حسّن' : 'Enhance'}
+                </button>
+                <button type="button" onClick={() => setVoiceJustEnded(false)}
+                  style={{
+                    width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.06)',
+                    cursor: 'pointer', color: '#92400E', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
               </div>
             )}
 
@@ -1668,7 +1799,7 @@ export default function Home() {
                 <textarea
                   ref={textareaRef}
                   value={input}
-                  onChange={e => setInput(e.target.value.slice(0, MAX_INPUT))}
+                  onChange={e => { setInput(e.target.value.slice(0, MAX_INPUT)); setEnhanceSuggestion(null); setVoiceJustEnded(false) }}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
