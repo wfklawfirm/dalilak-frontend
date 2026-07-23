@@ -399,6 +399,7 @@ export default function TopNav({
                     {[
                       { href: '/my-files', ar: '📁 ملفاتي', en: '📁 My Files' },
                       { href: '/procedures', ar: '📋 المعاملات', en: '📋 Procedures' },
+                      { href: '/settings', ar: '⚙️ الإعدادات', en: '⚙️ Settings' },
                     ].map(item => (
                       <button
                         key={item.href}

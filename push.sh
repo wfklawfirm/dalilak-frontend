@@ -88,11 +88,20 @@
 #   always visible; secondary groups (stats, suggestions, saved,
 #   history, extra tools) start collapsed. No widget removed — same
 #   pattern as the procedures-page fix above.
+#
+#   NEW: /settings page — centralizes preference toggles that were
+#   previously only reachable via scattered floating widgets: language,
+#   accessibility (high contrast / large text / reduce motion), default
+#   chat response length, plus an About block. Reads/writes the SAME
+#   localStorage keys as AccessibilityBar/ChatResponseLength/
+#   GlobalLangSwitch, so it stays in sync — nothing removed or replaced,
+#   just an easier-to-find home for the same settings. Linked from
+#   MobileMenu ("الإعدادات") and TopNav's account dropdown.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls, procedures page, and homepage into labeled sections"
+git diff --cached --quiet || git commit -m "feat: batch #284-315 — 31 new components + fix mobile FAB overlap + fix broken flowchart generation + reduce-motion toggle + dynamic forgot-password messaging + declutter chat controls, procedures page, and homepage into labeled sections + new /settings page"
 git push origin main
 echo "✅ Done"
