@@ -50,6 +50,8 @@ import LiveBeirutClock from '@/components/LiveBeirutClock'
 import HomepageWeatherWidget from '@/components/HomepageWeatherWidget'
 import HomepageMotivationalQuote from '@/components/HomepageMotivationalQuote'
 import HomepageUserStats from '@/components/HomepageUserStats'
+import HomepageQuickActionsBar from '@/components/HomepageQuickActionsBar'
+import ChatScrollToBottomButton from '@/components/ChatScrollToBottomButton'
 import ProcedureBookmarks from '@/components/ProcedureBookmarks'
 import ProcedureStatusBoard from '@/components/ProcedureStatusBoard'
 import SmartReminder from '@/components/SmartReminder'
@@ -1336,6 +1338,9 @@ Question: ${text}`
           overscrollBehavior: 'contain',
           WebkitOverflowScrolling: 'touch' as any,
         }}>
+          {messages.length > 0 && (
+            <ChatScrollToBottomButton containerId="main-content" isAr={isAr} />
+          )}
           {messages.length === 0 ? (
 
             /* ══ Welcome Screen v3 ══ */
@@ -1909,6 +1914,7 @@ Question: ${text}`
               {messages.length === 0 && (
                 <>
                   <WelcomeBackBanner userName={currentUser?.full_name} />
+                  <HomepageQuickActionsBar isAr={isAr} />
                   <HomepageStreakCounter />
                   <LiveBeirutClock />
                   <HomepageWeatherWidget isAr={isAr} />

@@ -15,6 +15,7 @@ import { trackView } from '@/lib/savedItems'
 import ProcedureTimeline from '@/components/ProcedureTimeline'
 import ProcedureCopyableSteps from '@/components/ProcedureCopyableSteps'
 import ProcedureStepHighlight from '@/components/ProcedureStepHighlight'
+import ProcedureNeedHelpToggle from '@/components/ProcedureNeedHelpToggle'
 import PrintProcedureModal from '@/components/PrintProcedureModal'
 import ProcedureSearchModal from '@/components/ProcedureSearchModal'
 import ProcedureRelatedSuggestions from '@/components/ProcedureRelatedSuggestions'
@@ -47,8 +48,10 @@ import ProcedureFeeHistory from '@/components/ProcedureFeeHistory'
 import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
 import ProcedureViewCount from '@/components/ProcedureViewCount'
 import ProcedureLastUpdatedBadge from '@/components/ProcedureLastUpdatedBadge'
+import ProcedureLanguageToggleHint from '@/components/ProcedureLanguageToggleHint'
 import ProcedureCountdownTimer from '@/components/ProcedureCountdownTimer'
 import ProcedureAlternativeOffices from '@/components/ProcedureAlternativeOffices'
+import ProcedureOfficeMap from '@/components/ProcedureOfficeMap'
 import ProcedurePriorityTag from '@/components/ProcedurePriorityTag'
 import ProcedureStepProgress from '@/components/ProcedureStepProgress'
 import ProcedureDocReadinessBar from '@/components/ProcedureDocReadinessBar'
@@ -748,6 +751,7 @@ export default function ProceduresPage() {
                     <ProcedureRelatedMinistries ministrySlug={proc.ministrySlug} isAr={isAr} />
                     {/* Alternative submission offices */}
                     <ProcedureAlternativeOffices ministrySlug={proc.ministrySlug} isAr={isAr} />
+                    <ProcedureOfficeMap ministrySlug={proc.ministrySlug} isAr={isAr} />
 
                     {/* Ministry map placeholder */}
                     <div style={{ marginBottom: 8 }}>
@@ -848,6 +852,9 @@ export default function ProceduresPage() {
                           steps={isAr ? proc.steps : (proc.steps_en ?? proc.steps)}
                           isAr={isAr}
                         />
+                        <div style={{ marginTop: 8 }}>
+                          <ProcedureNeedHelpToggle code={proc.code} isAr={isAr} />
+                        </div>
                       </div>
                     )}
 
@@ -913,6 +920,7 @@ export default function ProceduresPage() {
                     {/* Last reviewed date */}
                     <div style={{ marginBottom: 8 }}>
                       <ProcedureLastUpdatedBadge code={proc.code} isAr={isAr} />
+                      <ProcedureLanguageToggleHint isAr={isAr} />
                     </div>
 
                     {/* Global procedure deadline countdown */}
