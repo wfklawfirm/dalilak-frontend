@@ -1,9 +1,16 @@
 'use client'
 
 /**
- * FeedbackWidget — floating site-level feedback button.
- * Appears as a small 💬 button fixed bottom-right, above the BottomNav.
- * On click, opens a mini panel with 1–5 star rating + optional comment.
+ * FeedbackWidget — inline site-level feedback card, shown within the chat
+ * message flow (same placement pattern as ChatSummaryCard). Collapsed by
+ * default to a single compact row; tapping it expands a 1–5 star rating +
+ * optional comment inline, in place — no floating popover.
+ *
+ * Was previously a fixed-position floating FAB in the corner. Converted to
+ * an inline card as the last step of the UX consolidation pass
+ * (UX_AUDIT.md — "one floating button app-wide", now fully satisfied
+ * app-wide with zero exceptions). Same trigger logic, same data, only the
+ * container changed from position:fixed to a normal block element.
  * Stores in localStorage: dalilak_site_feedback = { rating, comment, ts }
  *
  * Only renders after:
@@ -102,144 +109,121 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
 
   if (!visible) return null
 
+  // Submitted state auto-hides the whole card after 2s (see handleSubmit's
+  // setVisible(false) timeout) — while it's showing, replace the card
+  // content with a brief thank-you instead of the rating form.
+  if (submitted) {
+    return (
+      <div
+        dir={isAr ? 'rtl' : 'ltr'}
+        style={{
+          margin: '12px 0', background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 14, overflow: 'hidden', animation: 'fadeUp 0.22s ease both',
+          padding: '16px 14px', textAlign: 'center',
+        }}
+      >
+        <div style={{ fontSize: 24, marginBottom: 6 }}>🙏</div>
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
+          {isAr ? 'شكراً على تقييمك!' : 'Thanks for your feedback!'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
-        position: 'fixed',
-        // The always-on MinistryQuickDial/AccessibilityBar/GlobalLangSwitch FAB
-        // stack this used to clear was removed in the UX consolidation pass
-        // (see UX_AUDIT.md) — this is now the only conditional floating widget
-        // on this side, so it sits at the same base offset the other FABs used.
-        bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
-        [isAr ? 'left' : 'right']: 14,
-        zIndex: 9950,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: isAr ? 'flex-start' : 'flex-end',
-        gap: 8,
+        margin: '12px 0',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 14,
+        overflow: 'hidden',
+        animation: 'fadeUp 0.22s ease both',
       }}
     >
-      {/* Floating panel */}
-      {open && (
-        <div style={{
-          background: 'var(--bg)',
-          border: '1px solid var(--border)',
-          borderRadius: 16,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
-          width: 260,
-          overflow: 'hidden',
-          animation: 'fadeUp 0.18s ease both',
-        }}>
-          {/* Header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '11px 14px', borderBottom: '1px solid var(--border)',
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2)' }}>
-              {isAr ? 'شاركنا رأيك 💬' : 'Share Your Feedback 💬'}
-            </span>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label={isAr ? 'إغلاق' : 'Close'}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-4)', fontSize: 16, padding: '0 2px' }}
-            >×</button>
-          </div>
-
-          {submitted ? (
-            <div style={{ padding: '20px 14px', textAlign: 'center' }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>🙏</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-1)' }}>
-                {isAr ? 'شكراً على تقييمك!' : 'Thanks for your feedback!'}
-              </div>
-            </div>
-          ) : (
-            <div style={{ padding: '14px' }}>
-              {/* Star rating */}
-              <div style={{ fontSize: 11, color: 'var(--text-4)', marginBottom: 8 }}>
-                {isAr ? 'كيف تُقيّم تجربتك مع دليلك؟' : 'How would you rate your experience?'}
-              </div>
-              <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 12 }}>
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button
-                    key={star}
-                    type="button"
-                    onMouseEnter={() => setHover(star)}
-                    onMouseLeave={() => setHover(0)}
-                    onClick={() => setRating(star)}
-                    style={{
-                      background: 'none', border: 'none', cursor: 'pointer',
-                      fontSize: 26, padding: '0 2px',
-                      color: star <= (hover || rating) ? '#f59e0b' : '#d1d5db',
-                      transition: 'color 0.1s, transform 0.1s',
-                      transform: star <= (hover || rating) ? 'scale(1.15)' : 'scale(1)',
-                    }}
-                  >★</button>
-                ))}
-              </div>
-
-              {/* Optional comment */}
-              {rating > 0 && (
-                <textarea
-                  dir={isAr ? 'rtl' : 'ltr'}
-                  value={comment}
-                  onChange={e => setComment(e.target.value)}
-                  placeholder={isAr ? 'أي اقتراحات؟ (اختياري)' : 'Any suggestions? (optional)'}
-                  aria-label={isAr ? 'تعليق اختياري على تقييمك' : 'Optional comment on your rating'}
-                  rows={2}
-                  style={{
-                    width: '100%', resize: 'none', padding: '7px 9px',
-                    border: '1px solid var(--border)', borderRadius: 8,
-                    fontSize: 12, lineHeight: 1.6,
-                    color: 'var(--text-1)', background: 'var(--surface)',
-                    outline: 'none', fontFamily: 'inherit',
-                    boxSizing: 'border-box', marginBottom: 10,
-                  }}
-                />
-              )}
-
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={rating === 0}
-                style={{
-                  width: '100%', padding: '8px 0', borderRadius: 9,
-                  background: rating > 0 ? '#8F1D2C' : 'var(--surface)',
-                  color: rating > 0 ? '#fff' : 'var(--text-4)',
-                  border: '1px solid var(--border)',
-                  fontSize: 12.5, fontWeight: 700, cursor: rating > 0 ? 'pointer' : 'default',
-                  fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
-                }}
-              >
-                {isAr ? 'إرسال التقييم' : 'Submit Feedback'}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Toggle button */}
+      {/* Collapsed row — tap to expand inline (no floating popover) */}
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        aria-label={isAr ? 'شاركنا رأيك' : 'Give feedback'}
-        title={isAr ? 'شاركنا رأيك' : 'Give feedback'}
+        aria-expanded={open}
         className="tap-hit-1"
         style={{
-          position: 'relative',
-          width: 42, height: 42, borderRadius: 13,
-          background: open ? '#8F1D2C' : 'var(--bg)',
-          border: `1.5px solid ${open ? '#8F1D2C' : 'var(--border)'}`,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-          cursor: 'pointer', fontSize: 19,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'background 0.18s, border-color 0.18s',
-          color: open ? '#fff' : 'var(--text-2)',
+          width: '100%', display: 'flex', alignItems: 'center', gap: 8,
+          padding: '11px 14px', border: 'none', background: 'none',
+          cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
         }}
       >
-        {open ? '×' : '💬'}
+        <span style={{ fontSize: 16, flexShrink: 0 }}>💬</span>
+        <span style={{ flex: 1, fontSize: 12.5, fontWeight: 700, color: 'var(--text-2)' }}>
+          {isAr ? 'شاركنا رأيك' : 'Share Your Feedback'}
+        </span>
+        <span aria-hidden="true" style={{ color: 'var(--text-4)', fontSize: 12, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
       </button>
+
+      {open && (
+        <div style={{ padding: '4px 14px 14px', borderTop: '1px solid var(--border)' }}>
+          {/* Star rating */}
+          <div style={{ fontSize: 11, color: 'var(--text-4)', margin: '10px 0 8px' }}>
+            {isAr ? 'كيف تُقيّم تجربتك مع دليلك؟' : 'How would you rate your experience?'}
+          </div>
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 12 }}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <button
+                key={star}
+                type="button"
+                onMouseEnter={() => setHover(star)}
+                onMouseLeave={() => setHover(0)}
+                onClick={() => setRating(star)}
+                aria-label={isAr ? `${star} من 5 نجوم` : `${star} out of 5 stars`}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 26, padding: '0 2px',
+                  color: star <= (hover || rating) ? '#f59e0b' : '#d1d5db',
+                  transition: 'color 0.1s, transform 0.1s',
+                  transform: star <= (hover || rating) ? 'scale(1.15)' : 'scale(1)',
+                }}
+              >★</button>
+            ))}
+          </div>
+
+          {/* Optional comment */}
+          {rating > 0 && (
+            <textarea
+              dir={isAr ? 'rtl' : 'ltr'}
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              placeholder={isAr ? 'أي اقتراحات؟ (اختياري)' : 'Any suggestions? (optional)'}
+              aria-label={isAr ? 'تعليق اختياري على تقييمك' : 'Optional comment on your rating'}
+              rows={2}
+              style={{
+                width: '100%', resize: 'none', padding: '7px 9px',
+                border: '1px solid var(--border)', borderRadius: 8,
+                fontSize: 12, lineHeight: 1.6,
+                color: 'var(--text-1)', background: 'var(--bg)',
+                outline: 'none', fontFamily: 'inherit',
+                boxSizing: 'border-box', marginBottom: 10,
+              }}
+            />
+          )}
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={rating === 0}
+            style={{
+              width: '100%', padding: '8px 0', borderRadius: 9,
+              background: rating > 0 ? '#8F1D2C' : 'var(--bg)',
+              color: rating > 0 ? '#fff' : 'var(--text-4)',
+              border: '1px solid var(--border)',
+              fontSize: 12.5, fontWeight: 700, cursor: rating > 0 ? 'pointer' : 'default',
+              fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
+            }}
+          >
+            {isAr ? 'إرسال التقييم' : 'Submit Feedback'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

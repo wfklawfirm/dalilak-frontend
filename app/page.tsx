@@ -1894,6 +1894,13 @@ Question: ${text}`
                 />
               )}
 
+              {/* Site feedback card — inline, not floating (UX_AUDIT.md: "one
+                  floating button app-wide" now has zero exceptions app-wide).
+                  Same appear-after-real-usage trigger as before (3+ messages
+                  or 5+ min session), just rendered in the message flow like
+                  ChatSummaryCard instead of as a fixed-position corner FAB. */}
+              <FeedbackWidget messageCount={messages.length} />
+
               {/* Session timer — shown above message list */}
               {messages.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, paddingBottom: 6 }}>
@@ -2495,8 +2502,8 @@ Question: ${text}`
         {/* 24h appointment reminder toast */}
         <AppointmentReminder onAsk={q => sendMessage(q)} />
 
-        {/* Floating site feedback widget */}
-        <FeedbackWidget messageCount={messages.length} />
+        {/* FeedbackWidget now renders inline within the chat message flow
+            (see near ChatSummaryCard above) instead of here as a floating FAB. */}
 
         {/* FloatingHelpButton removed from the global floating stack (UX_AUDIT.md —
             "one floating button app-wide"). Its emergency numbers + FAQ link are
