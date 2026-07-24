@@ -362,11 +362,29 @@
 #   Since it's now used on 6+ pages, bumped padding to 11px top/bottom +
 #   minHeight:44 so every instance gets a properly sized tap target at
 #   once. Purely a hit-area change — visual text size unchanged.
+#
+#   MOBILE HINT CLEANUP (batch #329): found via direct screenshot
+#   comparison against the live mobile site. GlobalSearch's closed-state
+#   search button showed a "⌘K" keyboard-shortcut badge even on phones,
+#   where there's no physical keyboard and the hint is meaningless clutter
+#   (its sibling "Search..." text label was already correctly hidden below
+#   640px, but the ⌘K badge wasn't). Added a matching .gs-search-kbd
+#   responsive class so it's hidden on mobile and shown ≥640px, same
+#   treatment already used for KeyboardShortcutsHelp's FAB. Everything
+#   else checked against the screenshot (floating "?" quick-help button,
+#   hero, search bar, chips, bottom nav) matches the current deployed
+#   code correctly — confirmed the earlier "site looks old on Vercel"
+#   concern was a stale cached fetch on my end, not a real deployment
+#   gap (Vercel Deployments dashboard confirms every push went live
+#   within minutes). Also checked TopNav for other desktop-only elements
+#   that might leak onto mobile — Online dot / Trial badge / Start-guide
+#   CTA are correctly gated behind .tn-desk-only; NotificationBell and
+#   GlobalSearch are intentionally shown on both (functional, not hints).
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-328 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-329 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd)"
 git push origin main
 echo "✅ Done"

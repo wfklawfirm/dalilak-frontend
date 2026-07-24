@@ -253,8 +253,10 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
           <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
         </svg>
         <span className="gs-search-label">{isAr ? 'بحث...' : 'Search...'}</span>
-        <kbd style={{
-          display: 'flex', alignItems: 'center', gap: 1,
+        {/* ⌘K hint is meaningless on a touchscreen (no physical keyboard) —
+            hidden on mobile, same treatment as KeyboardShortcutsHelp's FAB. */}
+        <kbd className="gs-search-kbd" style={{
+          alignItems: 'center', gap: 1,
           padding: '1px 5px', borderRadius: 4,
           border: '1px solid var(--border)', background: 'var(--surface)',
           fontSize: 9.5, fontFamily: 'inherit', color: 'var(--text-4)',
@@ -262,7 +264,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
         }}>
           ⌘K
         </kbd>
-        <style>{`.gs-search-label { display: none; } @media (min-width: 640px) { .gs-search-label { display: inline; } }`}</style>
+        <style>{`.gs-search-label { display: none; } @media (min-width: 640px) { .gs-search-label { display: inline; } } .gs-search-kbd { display: none; } @media (min-width: 640px) { .gs-search-kbd { display: flex; } }`}</style>
       </button>
     )
   }
