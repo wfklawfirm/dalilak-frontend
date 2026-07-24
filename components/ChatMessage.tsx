@@ -166,7 +166,7 @@ function FeedbackBar({ msgId, isAr }: { msgId: string; isAr: boolean }) {
 
   const btnBase: React.CSSProperties = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    width: 26, height: 26, borderRadius: 6,
+    width: 26, height: 26, borderRadius: 6, position: 'relative',
     border: '1px solid var(--border)', background: 'transparent',
     cursor: 'pointer', fontSize: 13, transition: 'border-color 0.12s, background 0.12s',
   }
@@ -183,6 +183,7 @@ function FeedbackBar({ msgId, isAr }: { msgId: string; isAr: boolean }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginInlineStart: 2 }}>
       <button
         type="button"
+        className="tap-hit-9"
         aria-label={isAr ? 'جيد' : 'Good response'}
         title={isAr ? 'رد جيد' : 'Good response'}
         onClick={() => handleVote('up')}
@@ -198,6 +199,7 @@ function FeedbackBar({ msgId, isAr }: { msgId: string; isAr: boolean }) {
       </button>
       <button
         type="button"
+        className="tap-hit-9"
         aria-label={isAr ? 'سيئ' : 'Poor response'}
         title={isAr ? 'رد سيئ' : 'Poor response'}
         onClick={() => handleVote('down')}

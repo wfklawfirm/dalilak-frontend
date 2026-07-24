@@ -202,10 +202,11 @@ export default function CostEstimator({
         </div>
         <button
           type="button"
+          className="tap-hit-11"
           onClick={() => setExpanded(false)}
           aria-label={isAr ? 'إغلاق' : 'Close'}
           style={{
-            width: 22, height: 22, borderRadius: 5,
+            width: 22, height: 22, borderRadius: 5, position: 'relative',
             border: '1px solid var(--border)', background: 'transparent',
             color: 'var(--text-3)', fontSize: 13, fontWeight: 700,
             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',

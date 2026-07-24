@@ -104,6 +104,7 @@ export default function ProcedureReminderBell({ code, titleAr, titleEn, isAr }: 
     <span style={{ position: 'relative', display: 'inline-flex' }}>
       <button
         type="button"
+        className="tap-hit-9"
         onClick={() => { setOpen(v => !v); setAdded(false) }}
         aria-label={isAr ? 'إضافة تذكير' : 'Add reminder'}
         title={isAr ? 'إضافة تذكير' : 'Add reminder'}

@@ -328,10 +328,11 @@ export default function ProcedureQRShare({ code, titleAr, titleEn }: Props) {
               </div>
               <button
                 type="button"
+                className="tap-hit-8"
                 onClick={handleClose}
                 aria-label={isAr ? 'إغلاق' : 'Close'}
                 style={{
-                  width: 28, height: 28, borderRadius: '50%', border: 'none',
+                  width: 28, height: 28, borderRadius: '50%', border: 'none', position: 'relative',
                   background: '#F3F4F6', cursor: 'pointer', fontSize: 14, color: '#6B7280',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}

@@ -408,11 +408,37 @@
 #   (see #267-272, #328). Expanded its actual hit area via an invisible
 #   ::before pseudo-element (inset:-12px, touch devices only) instead of
 #   growing the visible button and disrupting the compact card layout.
+#
+#   TOUCH TARGET SWEEP (batch #332): ran a targeted search for every
+#   remaining <button>/onClick element under ~40px across components/,
+#   ranked by how often a mobile user would realistically hit it. Added
+#   reusable .tap-hit-N utility classes to globals.css (N = px inset
+#   needed to bring that button up to ~44px on touch devices only,
+#   generalizing the one-off fix from #331) and applied them to:
+#   - ChatMessage.tsx: thumbs-up/down feedback buttons (26px, hit on
+#     nearly every AI response if a user rates it)
+#   - AgentResponseRenderer.tsx: inline citation badge/superscript
+#     (16px, appears constantly in chat answers with sources)
+#   - EscalationModal, GuidedFlow, ProcedureQRShare, TransactionFilePanel:
+#     modal close (X) buttons (28-32px) — same class of bug as earlier
+#     close-button fixes, these four were missed in that sweep
+#   - ProcedureReminderBell, DocExpiryBanner (x2): reminder/snooze/close
+#     buttons (26px)
+#   - CostEstimator: collapse/close button (22px)
+#   - PrintProcedureModal: close button (34px)
+#   - MissingDocumentsChecklist: per-document "Upload" button — fixed
+#     with minHeight:44 directly (padding-based sizing, not fixed
+#     width/height, so no pseudo-element needed)
+#   Skipped HomepageMinistrySpotlight's prev/next carousel buttons: they're
+#   stacked with only 4px gap, and a uniform hit-area expansion would make
+#   the two invisible tap zones overlap and risk mis-taps between them —
+#   needs a custom asymmetric fix, left for a future batch rather than
+#   introducing a new bug while fixing this one.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-331 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion"
+git diff --cached --quiet || git commit -m "feat: batch #284-332 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components"
 git push origin main
 echo "✅ Done"

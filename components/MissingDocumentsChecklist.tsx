@@ -148,7 +148,7 @@ export default function MissingDocumentsChecklist({
                   type="button"
                   onClick={() => onUpload(doc.title)}
                   style={{
-                    flexShrink: 0, fontSize: 10.5, padding: '4px 10px',
+                    flexShrink: 0, fontSize: 10.5, padding: '4px 10px', minHeight: 44,
                     background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                     color: '#fff', border: 'none', borderRadius: 8,
                     cursor: 'pointer', fontFamily: 'inherit', transition: 'opacity 0.12s',

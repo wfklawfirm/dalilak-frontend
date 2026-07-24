@@ -90,11 +90,12 @@ function getSectionStyle(header: string) {
 function CiteBadge({ n, active, onClick }: { n: number; active: boolean; onClick: () => void }) {
   return (
     <sup
+      className="tap-hit-14"
       onClick={(e) => { e.stopPropagation(); onClick() }}
       title={`المصدر [${n}]`}
       style={{
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        width: 16, height: 16, borderRadius: '50%',
+        width: 16, height: 16, borderRadius: '50%', position: 'relative',
         background: active ? '#8F1D2C' : '#F8EDEF',
         color: active ? '#fff' : '#8F1D2C',
         fontSize: 9, fontWeight: 800, cursor: 'pointer',

@@ -120,10 +120,11 @@ export default function TransactionFilePanel({ transaction: tx, onClose, compact
         {onClose && (
           <button
             type="button"
+            className="tap-hit-6"
             onClick={onClose}
             aria-label={isAr ? 'إغلاق' : 'Close'}
             style={{
-              flexShrink: 0, width: 32, height: 32, borderRadius: '50%',
+              flexShrink: 0, width: 32, height: 32, borderRadius: '50%', position: 'relative',
               background: 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
             }}

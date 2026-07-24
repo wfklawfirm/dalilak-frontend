@@ -719,6 +719,37 @@ input:focus {
   .kbd-shortcuts-fab { display: none !important; }
 }
 
+/* Touch hit-area expansion utilities.
+   Several small icon/close buttons across the app (chat feedback, citation
+   badges, modal close buttons) are sized correctly for a precise mouse
+   cursor (16-34px) but sit under the 44px minimum touch target. Rather than
+   growing the visible button (which would disrupt compact layouts), these
+   classes add an invisible ::before overlay that only appears on touch
+   devices, expanding the actual tappable area to ~44px without changing
+   how anything looks. The element using one of these classes must have
+   `position: relative` (or another explicit position) set inline so the
+   ::before anchors to it correctly. Numbers are the inset needed to bring
+   that specific button size up to ~44px: inset = (44 - buttonSize) / 2. */
+@media (pointer: coarse) {
+  .tap-hit-5::before,
+  .tap-hit-6::before,
+  .tap-hit-7::before,
+  .tap-hit-8::before,
+  .tap-hit-9::before,
+  .tap-hit-11::before,
+  .tap-hit-14::before {
+    content: '';
+    position: absolute;
+  }
+  .tap-hit-5::before  { inset: -5px; }
+  .tap-hit-6::before  { inset: -6px; }
+  .tap-hit-7::before  { inset: -7px; }
+  .tap-hit-8::before  { inset: -8px; }
+  .tap-hit-9::before  { inset: -9px; }
+  .tap-hit-11::before { inset: -11px; }
+  .tap-hit-14::before { inset: -14px; }
+}
+
 @media (min-width: 640px) {
   .mode-mobile  { display: none; }
   .mode-desktop { display: flex; }

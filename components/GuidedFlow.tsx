@@ -255,10 +255,10 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
                 </p>
               )}
             </div>
-            <button ref={closeRef} type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
+            <button ref={closeRef} type="button" className="tap-hit-7" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
               onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
               onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
-              style={{ background: '#E6E2DC', border: 'none', cursor: 'pointer', width: 30, height: 30, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C', flexShrink: 0, transition: 'background 0.12s' }}>
+              style={{ background: '#E6E2DC', border: 'none', cursor: 'pointer', width: 30, height: 30, position: 'relative', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C', flexShrink: 0, transition: 'background 0.12s' }}>
               <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>

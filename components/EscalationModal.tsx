@@ -115,10 +115,10 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}
           </h2>
-          <button ref={closeRef} type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
+          <button ref={closeRef} type="button" className="tap-hit-8" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'}
             onTouchStart={e => { e.currentTarget.style.background = '#D5CEC4' }}
             onTouchEnd={e => { e.currentTarget.style.background = '#E6E2DC' }}
-            style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
+            style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 28, height: 28, position: 'relative', cursor: 'pointer', color: '#69645C', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.12s' }}><svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
         </div>
 
         {submitted ? (

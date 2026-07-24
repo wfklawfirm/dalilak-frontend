@@ -208,11 +208,12 @@ export default function DocExpiryBanner({ onAsk }: Props) {
           </button>
           <button
             type="button"
+            className="tap-hit-9"
             onClick={snooze}
             aria-label={isAr ? 'تذكير لاحقاً' : 'Remind me later'}
             title={isAr ? 'تذكير بعد 3 أيام' : 'Remind me in 3 days'}
             style={{
-              width: 26, height: 26, borderRadius: 6,
+              width: 26, height: 26, borderRadius: 6, position: 'relative',
               border: `1px solid ${col.border}`, background: 'transparent',
               color: col.text, fontSize: 13, fontWeight: 700,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -252,11 +253,12 @@ export default function DocExpiryBanner({ onAsk }: Props) {
         </div>
         <button
           type="button"
+          className="tap-hit-9"
           onClick={() => setExpanded(false)}
           aria-label={isAr ? 'إغلاق' : 'Close'}
           style={{
             width: 26, height: 26, borderRadius: 6, border: '1px solid var(--border)',
-            background: 'transparent', color: 'var(--text-3)',
+            background: 'transparent', color: 'var(--text-3)', position: 'relative',
             fontSize: 15, fontWeight: 700, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}

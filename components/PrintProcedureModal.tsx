@@ -123,10 +123,11 @@ export default function PrintProcedureModal({ procedure: proc, onClose }: Props)
               </button>
               <button
                 type="button"
+                className="tap-hit-5"
                 onClick={onClose}
                 aria-label={isAr ? 'إغلاق' : 'Close'}
                 style={{
-                  width: 34, height: 34, borderRadius: 8, border: '1px solid #e6e2dc',
+                  width: 34, height: 34, borderRadius: 8, border: '1px solid #e6e2dc', position: 'relative',
                   background: 'none', cursor: 'pointer', fontSize: 18, color: '#6b7280',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
