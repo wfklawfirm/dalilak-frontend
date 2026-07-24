@@ -87,7 +87,12 @@ export default function SavedItemsPanel({ onAsk }: Props) {
         </svg>
       </button>
 
-      {/* Items grid */}
+      {/* Items grid.
+          Remove button and "Ask Dalilak" CTA are hover-revealed for
+          pointer/mouse devices to keep cards calm, but touch devices have
+          no hover state — force them visible there so the affordance isn't
+          permanently invisible on mobile. */}
+      <style>{`@media (pointer: coarse) { .saved-remove-btn { opacity: 1 !important; background: var(--surface) !important; } .saved-ask-cta { opacity: 1 !important; } }`}</style>
       {!collapsed && (
         <div style={{
           display: 'grid',
@@ -140,9 +145,12 @@ function SavedCard({
       onMouseLeave={() => setHovered(false)}
       onClick={handleClick}
     >
-      {/* Remove button */}
+      {/* Remove button — always visible on touch devices (no hover state
+          to reveal it there), hover-revealed on pointer/mouse devices to
+          keep the card visually calm. */}
       <button
         type="button"
+        className="saved-remove-btn"
         onClick={e => { e.stopPropagation(); onRemove() }}
         aria-label={isAr ? 'إزالة من المحفوظات' : 'Remove from saved'}
         style={{
@@ -191,7 +199,7 @@ function SavedCard({
 
       {/* Ask CTA */}
       {item.aiPrompt && (
-        <div style={{
+        <div className="saved-ask-cta" style={{
           display: 'flex', alignItems: 'center', gap: 3,
           fontSize: 10.5, color: 'var(--brand)', fontWeight: 600,
           opacity: hovered ? 1 : 0.5, transition: 'opacity 0.12s',

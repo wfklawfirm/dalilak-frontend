@@ -380,11 +380,32 @@
 #   that might leak onto mobile — Online dot / Trial badge / Start-guide
 #   CTA are correctly gated behind .tn-desk-only; NotificationBell and
 #   GlobalSearch are intentionally shown on both (functional, not hints).
+#
+#   TOUCH AFFORDANCE FIX (batch #330): found via a follow-up sweep for
+#   the same class of bug as the ⌘K badge — desktop-only interactions
+#   with no mobile fallback.
+#   - SavedItemsPanel.tsx: the remove ("×") button and "Ask Dalilak" CTA
+#     on each saved-item card were only revealed on onMouseEnter/Leave
+#     (React state, not CSS :hover) — on a touchscreen with no hover
+#     concept, they stayed permanently invisible (opacity:0/0.5), making
+#     it impossible to remove a saved item from the homepage on mobile.
+#     Added a `@media (pointer: coarse)` rule forcing them visible on
+#     touch devices, same principle as the .gs-search-kbd/.kbd-shortcuts-fab
+#     pattern (mirrored, not duplicated — one shared <style> in the panel).
+#   - ProcedureVersionTag.tsx: the exact "updated on <date>" tooltip only
+#     opened on hover/focus of a non-interactive span — added onClick so
+#     tapping toggles it open on touch too. Low severity (the badge's
+#     always-visible "NEW"/"UPD" text + aria-label already convey the
+#     gist) but now consistent with every other interactive element.
+#   Note: MinistryOpenHoursWidget.tsx has a similar title-attribute-only
+#   gap in compact mode, but it has zero import sites anywhere in the
+#   app (dead code) — left untouched per standing no-op-on-unused-code
+#   precedent rather than fixing something nothing renders.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-329 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd)"
+git diff --cached --quiet || git commit -m "feat: batch #284-330 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip"
 git push origin main
 echo "✅ Done"

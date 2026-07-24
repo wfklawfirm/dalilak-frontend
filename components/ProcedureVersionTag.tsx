@@ -81,6 +81,7 @@ export default function ProcedureVersionTag({ code, isAr, compact = false }: Pro
         onMouseLeave={() => setShowTooltip(false)}
         onFocus={() => setShowTooltip(true)}
         onBlur={() => setShowTooltip(false)}
+        onClick={() => setShowTooltip(v => !v)}
         tabIndex={0}
         role="status"
         aria-label={label}
