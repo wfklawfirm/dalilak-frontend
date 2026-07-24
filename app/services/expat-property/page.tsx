@@ -158,9 +158,9 @@ export default function ExpatPropertyPackPage() {
               </svg>
             </button>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
+              <h1 style={{ fontSize: 14, fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: 0, fontFamily: 'inherit' }}>
                 {isAr ? 'حزمة المغتربين والعقارات والعقود' : 'Expat, Property & Contracts Pack'}
-              </div>
+              </h1>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>
                 {isAr ? 'مسار موثّق وشامل' : 'Verified comprehensive path'}
               </div>

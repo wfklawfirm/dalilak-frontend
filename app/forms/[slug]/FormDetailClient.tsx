@@ -10,6 +10,7 @@ import { useFlowchart } from '@/lib/useFlowchart'
 import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
+import SectionCollapseToggle from '@/components/SectionCollapseToggle'
 
 interface Props {
   form: FormItem
@@ -149,117 +150,131 @@ export default function FormDetailClient({ form }: Props) {
           </div>
         </div>
 
-        <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20 }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-            {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
-          </h3>
-          {(() => {
-            const steps = isAr
-              ? ['افتح النموذج أو نزّله بالضغط على الزر أعلاه.', 'اقرأ التعليمات بعناية قبل التعبئة.', 'تأكد من صحة جميع المعلومات المُدخلة.', 'قدّم النموذج للجهة المعنية مع الوثائق المطلوبة.']
-              : ['Open or download the form using the button above.', 'Read instructions carefully before filling.', 'Verify all entered information is correct.', 'Submit the form to the relevant authority with required documents.']
-            return (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {steps.map((step, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                      <div style={{
-                        width: 28, height: 28, borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #8F1D2C, #741622)',
-                        color: '#fff', fontSize: 12, fontWeight: 800,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 1px 4px rgba(143,29,44,0.25)',
-                        flexShrink: 0,
-                      }}>{i + 1}</div>
-                      {i < steps.length - 1 && (
-                        <div style={{ width: 2, flex: 1, minHeight: 16, background: 'linear-gradient(to bottom, rgba(143,29,44,0.4), rgba(143,29,44,0.05))', marginTop: 3 }} />
-                      )}
+        <div style={{ marginBottom: 0, background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 18, padding: '12px 16px' }}>
+          <SectionCollapseToggle
+            titleAr="تفاصيل إضافية — طريقة الاستخدام وخارطة الإجراء"
+            titleEn="More details — how to use & procedure map"
+            icon="📄"
+            defaultOpen={false}
+            storageKey={`dalilak_fdc_more_${form.slug}`}
+          >
+            <div style={{ paddingTop: 8, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              <div>
+                <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                  {isAr ? 'كيفية استخدام هذا النموذج' : 'How to use this form'}
+                </h3>
+                {(() => {
+                  const steps = isAr
+                    ? ['افتح النموذج أو نزّله بالضغط على الزر أعلاه.', 'اقرأ التعليمات بعناية قبل التعبئة.', 'تأكد من صحة جميع المعلومات المُدخلة.', 'قدّم النموذج للجهة المعنية مع الوثائق المطلوبة.']
+                    : ['Open or download the form using the button above.', 'Read instructions carefully before filling.', 'Verify all entered information is correct.', 'Submit the form to the relevant authority with required documents.']
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {steps.map((step, i) => (
+                        <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                            <div style={{
+                              width: 28, height: 28, borderRadius: '50%',
+                              background: 'linear-gradient(135deg, #8F1D2C, #741622)',
+                              color: '#fff', fontSize: 12, fontWeight: 800,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              boxShadow: '0 1px 4px rgba(143,29,44,0.25)',
+                              flexShrink: 0,
+                            }}>{i + 1}</div>
+                            {i < steps.length - 1 && (
+                              <div style={{ width: 2, flex: 1, minHeight: 16, background: 'linear-gradient(to bottom, rgba(143,29,44,0.4), rgba(143,29,44,0.05))', marginTop: 3 }} />
+                            )}
+                          </div>
+                          <p style={{ fontSize: 13.5, color: '#191713', margin: '4px 0', paddingBottom: i < steps.length - 1 ? 14 : 0, lineHeight: 1.6, flex: 1 }}>{step}</p>
+                        </div>
+                      ))}
                     </div>
-                    <p style={{ fontSize: 13.5, color: '#191713', margin: '4px 0', paddingBottom: i < steps.length - 1 ? 14 : 0, lineHeight: 1.6, flex: 1 }}>{step}</p>
-                  </div>
-                ))}
+                  )
+                })()}
               </div>
-            )
-          })()}
-        </div>
 
-        <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20 }}>
-          <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-            {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
-          </h3>
-          {formFlowchart ? (
-            <>
-              <ProcedureFlowchartComponent
-                flowchart={formFlowchart}
-                isAr={isAr}
-                compact
-                completedNodeIds={formProgress.completedNodes}
-                onToggleNode={formProgress.toggleNode}
-              />
-              <SaveToMyFilesButton slug={flowchartSource.slug} titleAr={form.title_ar} flowchart={formFlowchart} isAr={isAr} compact />
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={generateFc}
-              disabled={fcLoading}
-              style={{
-                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : '#F8EDEF',
-                border: '1.5px dashed rgba(143,29,44,0.3)', color: '#8F1D2C', fontSize: 12.5, fontWeight: 700,
-                cursor: fcLoading ? 'default' : 'pointer', fontFamily: 'inherit',
-              }}
-            >
-              {fcLoading ? (
-                <>
-                  <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(143,29,44,0.25)', borderTopColor: '#8F1D2C', animation: 'fdcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
-                  {isAr ? 'جارٍ توليد الخارطة بالذكاء الاصطناعي...' : 'Generating AI map...'}
-                </>
-              ) : (
-                <>
-                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                  {isAr ? 'توليد خارطة الإجراء بالذكاء الاصطناعي' : 'Generate AI procedure map'}
-                </>
-              )}
-            </button>
-          )}
-          {fcError && (
-            <p style={{ fontSize: 10.5, color: '#8F1D2C', margin: '6px 0 0' }}>
-              {isAr ? 'تعذّر التوليد — ' : 'Generation failed — '}
-              <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: '#8F1D2C', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
-                {isAr ? 'إعادة المحاولة' : 'Retry'}
-              </button>
-            </p>
-          )}
-          <style>{`@keyframes fdcFcSpin { to { transform: rotate(360deg); } }`}</style>
-        </div>
+              <div>
+                <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                  {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
+                </h3>
+                {formFlowchart ? (
+                  <>
+                    <ProcedureFlowchartComponent
+                      flowchart={formFlowchart}
+                      isAr={isAr}
+                      compact
+                      completedNodeIds={formProgress.completedNodes}
+                      onToggleNode={formProgress.toggleNode}
+                    />
+                    <SaveToMyFilesButton slug={flowchartSource.slug} titleAr={form.title_ar} flowchart={formFlowchart} isAr={isAr} compact />
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={generateFc}
+                    disabled={fcLoading}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : '#F8EDEF',
+                      border: '1.5px dashed rgba(143,29,44,0.3)', color: '#8F1D2C', fontSize: 12.5, fontWeight: 700,
+                      cursor: fcLoading ? 'default' : 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    {fcLoading ? (
+                      <>
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(143,29,44,0.25)', borderTopColor: '#8F1D2C', animation: 'fdcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
+                        {isAr ? 'جارٍ توليد الخارطة بالذكاء الاصطناعي...' : 'Generating AI map...'}
+                      </>
+                    ) : (
+                      <>
+                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        {isAr ? 'توليد خارطة الإجراء بالذكاء الاصطناعي' : 'Generate AI procedure map'}
+                      </>
+                    )}
+                  </button>
+                )}
+                {fcError && (
+                  <p style={{ fontSize: 10.5, color: '#8F1D2C', margin: '6px 0 0' }}>
+                    {isAr ? 'تعذّر التوليد — ' : 'Generation failed — '}
+                    <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: '#8F1D2C', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
+                      {isAr ? 'إعادة المحاولة' : 'Retry'}
+                    </button>
+                  </p>
+                )}
+                <style>{`@keyframes fdcFcSpin { to { transform: rotate(360deg); } }`}</style>
+              </div>
 
-        {relatedProcedures.length > 0 && (
-          <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20 }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-              {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {relatedProcedures.map(p => p && (
-                <button
-                  type="button"
-                  key={p.slug}
-                  onClick={() => router.push(`/procedures/${p.slug}`)}
-                  onTouchStart={e => (e.currentTarget.style.background = '#F0EBE0')}
-                  onTouchEnd={e => (e.currentTarget.style.background = '#FAFAF8')}
-                  style={{ background: '#FAFAF8', border: '1px solid #E6E2DC', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.15s' }}>
-                  <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
-                  <div>
-                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#191713' }}>{isAr ? p.title_ar : p.title_en}</p>
-                    <p style={{ margin: 0, fontSize: 12, color: '#918B82' }}>{isAr ? p.category_ar : p.category_en}</p>
+              {relatedProcedures.length > 0 && (
+                <div>
+                  <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: '#191713', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    {isAr ? 'معاملات ذات صلة' : 'Related Procedures'}
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {relatedProcedures.map(p => p && (
+                      <button
+                        type="button"
+                        key={p.slug}
+                        onClick={() => router.push(`/procedures/${p.slug}`)}
+                        onTouchStart={e => (e.currentTarget.style.background = '#F0EBE0')}
+                        onTouchEnd={e => (e.currentTarget.style.background = '#FAFAF8')}
+                        style={{ background: '#FAFAF8', border: '1px solid #E6E2DC', borderRadius: 12, padding: '12px 14px', textAlign: isAr ? 'right' : 'left', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.15s' }}>
+                        <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+                        <div>
+                          <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#191713' }}>{isAr ? p.title_ar : p.title_en}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: '#918B82' }}>{isAr ? p.category_ar : p.category_en}</p>
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                </button>
-              ))}
+                </div>
+              )}
+
             </div>
-          </div>
-        )}
+          </SectionCollapseToggle>
+        </div>
 
         <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14, padding: '12px 16px' }}>
           <p style={{ margin: 0, fontSize: 12, color: '#78350F', lineHeight: 1.7, display: 'flex', alignItems: 'flex-start', gap: 5 }}>

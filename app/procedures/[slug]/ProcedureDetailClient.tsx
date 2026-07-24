@@ -4,6 +4,7 @@ import React from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { getProcedureBySlug, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
+import SectionCollapseToggle from '@/components/SectionCollapseToggle'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export default function ProcedureDetailClient() {
@@ -168,44 +169,56 @@ export default function ProcedureDetailClient() {
           </Section>
         )}
 
-        {proc.authority && (
-          <Section title={isAr ? 'الجهة المختصة' : 'Responsible Authority'} icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>} bg="#FAFAF8" border="#E6E2DC">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#191713', margin: '0 0 2px' }}>
-                {isAr ? proc.authority.name_ar : proc.authority.name_en}
-              </p>
-              {proc.authority.website && (
-                <a href={proc.authority.website} target="_blank" rel="noopener noreferrer"
-                  style={{ fontSize: 12, color: '#8F1D2C', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                  {isAr ? 'الموقع الرسمي' : 'Official Website'}
-                </a>
-              )}
-            </div>
-          </Section>
-        )}
+        <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 16, padding: '12px 16px' }}>
+            <SectionCollapseToggle
+              titleAr="تفاصيل إضافية — الجهة والرسوم والمزيد"
+              titleEn="More details — authority, fees & more"
+              icon="ℹ️"
+              defaultOpen={false}
+              storageKey={`dalilak_pdc_more_${slug}`}
+            >
+              <div style={{ paddingTop: 8 }}>
+                {proc.authority && (
+                  <Section title={isAr ? 'الجهة المختصة' : 'Responsible Authority'} icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>} bg="#FAFAF8" border="#E6E2DC">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: '#191713', margin: '0 0 2px' }}>
+                        {isAr ? proc.authority.name_ar : proc.authority.name_en}
+                      </p>
+                      {proc.authority.website && (
+                        <a href={proc.authority.website} target="_blank" rel="noopener noreferrer"
+                          style={{ fontSize: 12, color: '#8F1D2C', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                          {isAr ? 'الموقع الرسمي' : 'Official Website'}
+                        </a>
+                      )}
+                    </div>
+                  </Section>
+                )}
 
-        {proc.fees && proc.fees.length > 0 && (
-          <Section title={isAr ? 'الرسوم' : 'Fees'} icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} bg="#FFFBEB" border="#FDE68A">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {proc.fees.map((fee, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 12.5, color: '#191713', fontWeight: 500 }}>{isAr ? fee.label_ar : fee.label_en}</span>
-                  <span style={{ fontSize: 13, color: '#B45309', fontWeight: 700 }}>{isAr ? fee.amount : (fee.amount_en || fee.amount)}</span>
+                {proc.fees && proc.fees.length > 0 && (
+                  <Section title={isAr ? 'الرسوم' : 'Fees'} icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} bg="#FFFBEB" border="#FDE68A">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {proc.fees.map((fee, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: 12.5, color: '#191713', fontWeight: 500 }}>{isAr ? fee.label_ar : fee.label_en}</span>
+                          <span style={{ fontSize: 13, color: '#B45309', fontWeight: 700 }}>{isAr ? fee.amount : (fee.amount_en || fee.amount)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Section>
+                )}
+
+                <div style={{ marginTop: 4, padding: '16px', background: 'linear-gradient(135deg, #F8EDEF 0%, #FDE8E8 100%)', border: '1.5px solid rgba(143,29,44,0.15)', borderRadius: 16, textAlign: 'center' }}>
+                  <p style={{ fontSize: 12.5, color: '#69645C', margin: '0 0 12px', lineHeight: 1.5 }}>
+                    {isAr ? 'لديك سؤال محدد حول هذه المعاملة؟' : 'Have a specific question about this procedure?'}
+                  </p>
+                  <button type="button" onClick={askAI} style={{ padding: '11px 24px', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, boxShadow: '0 3px 12px rgba(143,29,44,0.3)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+                    {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+                  </button>
                 </div>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        <div style={{ marginTop: 4, padding: '16px', background: 'linear-gradient(135deg, #F8EDEF 0%, #FDE8E8 100%)', border: '1.5px solid rgba(143,29,44,0.15)', borderRadius: 16, textAlign: 'center' }}>
-          <p style={{ fontSize: 12.5, color: '#69645C', margin: '0 0 12px', lineHeight: 1.5 }}>
-            {isAr ? 'لديك سؤال محدد حول هذه المعاملة؟' : 'Have a specific question about this procedure?'}
-          </p>
-          <button type="button" onClick={askAI} style={{ padding: '11px 24px', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 700, boxShadow: '0 3px 12px rgba(143,29,44,0.3)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
-            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-          </button>
+              </div>
+            </SectionCollapseToggle>
         </div>
 
       </div>

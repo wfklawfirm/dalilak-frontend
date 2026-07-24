@@ -307,11 +307,34 @@
 #   close button was 20x20 with no aria-label — bumped to 36x36 (fits its
 #   110px-tall container comfortably) and added aria-label, matching the
 #   convention used throughout the earlier touch-target passes.
+#
+#   DECLUTTER PASS (batch #325): audited every page for visual density and
+#   applied the same SectionCollapseToggle pattern already proven on the
+#   homepage and /procedures list page to the remaining dense pages:
+#   - ProcedureDetailClient.tsx: kept hero card, Ask/Wizard buttons,
+#     Playbook button, Required Documents, and Steps always visible.
+#     Grouped Responsible Authority + Fees + the closing "Ask Dalilak" CTA
+#     into one collapsed "More details — authority, fees & more" section
+#     (defaultOpen=false, per-procedure localStorage key).
+#   - services/page.tsx: kept search bar, category chips, and results grid
+#     always visible. Grouped the 3-card stats strip + ServiceMapPlaceholder
+#     into one collapsed "Overview & nearby offices" section.
+#   - forms/[slug]/FormDetailClient.tsx: kept the primary form-info card
+#     (download/Ask AI buttons) and the legal disclaimer banner always
+#     visible. Grouped "How to use this form", "Procedure Map" (AI
+#     generator), and "Related Procedures" into one collapsed
+#     "More details — how to use & procedure map" section.
+#   No functionality removed — every collapsed section is still fully
+#   interactive once expanded, and open/closed state persists per-page via
+#   localStorage. tsc --noEmit clean after each file.
+#
+#   + expat-property page: title div converted to <h1> (was missing, like
+#     the earlier services/professional/settings h1 fix).
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-324 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-325 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix"
 git push origin main
 echo "✅ Done"

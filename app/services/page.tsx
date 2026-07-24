@@ -13,6 +13,7 @@ import SaveButton from '@/components/SaveButton'
 import { trackView } from '@/lib/savedItems'
 import type { ServiceItem } from '@/lib/allServices'
 import ServiceMapPlaceholder from '@/components/ServiceMapPlaceholder'
+import SectionCollapseToggle from '@/components/SectionCollapseToggle'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
 
@@ -578,31 +579,44 @@ export default function ServicesPage() {
       {/* ── Main Content ───────────────────────────────────────────────────── */}
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '18px 14px 100px' }}>
 
-        {/* ── Stats strip — premium individual cards ─────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
-          {[
-            { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services', featured: true },
-            { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories', featured: false },
-            { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services', featured: false },
-          ].map((stat, i) => (
-            <div key={stat.label} style={{
-              padding: '14px 8px 16px', textAlign: 'center',
-              background: stat.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
-              border: stat.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
-              borderRadius: 12,
-              boxShadow: stat.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              animation: 'svcStatsIn 0.28s cubic-bezier(0.22,1,0.36,1) both',
-              animationDelay: `${0.06 + i * 0.07}s`,
-            }}>
-              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
+        {/* ── Overview & nearby offices — collapsed by default to reduce clutter ── */}
+        <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 16, padding: '12px 16px' }}>
+          <SectionCollapseToggle
+            titleAr="نظرة عامة والمكاتب القريبة"
+            titleEn="Overview & nearby offices"
+            icon="📊"
+            defaultOpen={false}
+            storageKey="dalilak_svc_more"
+          >
+            <div style={{ paddingTop: 8 }}>
+              {/* ── Stats strip — premium individual cards ─────────────────────────── */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
+                {[
+                  { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services', featured: true },
+                  { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories', featured: false },
+                  { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services', featured: false },
+                ].map((stat, i) => (
+                  <div key={stat.label} style={{
+                    padding: '14px 8px 16px', textAlign: 'center',
+                    background: stat.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
+                    border: stat.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
+                    borderRadius: 12,
+                    boxShadow: stat.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    animation: 'svcStatsIn 0.28s cubic-bezier(0.22,1,0.36,1) both',
+                    animationDelay: `${0.06 + i * 0.07}s`,
+                  }}>
+                    <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{stat.value}</div>
+                    <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
 
-        {/* ── Map placeholder — find nearby offices ──────────────────────── */}
-        <ServiceMapPlaceholder />
+              {/* ── Map placeholder — find nearby offices ──────────────────────── */}
+              <ServiceMapPlaceholder />
+            </div>
+          </SectionCollapseToggle>
+        </div>
 
         {/* ── Category chips — horizontal scroll, no wrap ──────────────────── */}
         <div style={{ marginBottom: 16, marginRight: -14, marginLeft: -14 }}>
