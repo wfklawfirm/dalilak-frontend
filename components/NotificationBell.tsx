@@ -184,7 +184,9 @@ export default function NotificationBell({ onAsk }: Props) {
           style={{
             position: 'absolute',
             top: 40, [isAr ? 'left' : 'right']: 0,
-            width: 300, zIndex: 1000,
+            // clamp instead of a fixed 300px — the bell sits close to the screen
+            // edge on mobile, so a fixed width could overflow off-screen there.
+            width: 'min(300px, calc(100vw - 24px))', zIndex: 1000,
             background: 'var(--bg)', border: '1px solid var(--border)',
             borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
             overflow: 'hidden',

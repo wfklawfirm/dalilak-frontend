@@ -64,6 +64,10 @@ export default function KeyboardShortcutsHelp() {
         onClick={() => setOpen(o => !o)}
         aria-label={isAr ? 'اختصارات لوحة المفاتيح' : 'Keyboard shortcuts'}
         title={isAr ? 'اختصارات لوحة المفاتيح (?)' : 'Keyboard shortcuts (?)'}
+        // Hidden on mobile via .kbd-shortcuts-fab (globals.css) — a physical-keyboard
+        // shortcuts helper has no purpose on a touchscreen and was overlapping the
+        // other floating action buttons in that corner on small screens.
+        className="kbd-shortcuts-fab"
         style={{
           position: 'fixed', bottom: 80, [isAr ? 'left' : 'right']: 16,
           width: 32, height: 32, borderRadius: '50%',

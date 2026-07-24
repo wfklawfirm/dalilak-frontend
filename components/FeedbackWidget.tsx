@@ -138,6 +138,7 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
+              aria-label={isAr ? 'إغلاق' : 'Close'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-4)', fontSize: 16, padding: '0 2px' }}
             >×</button>
           </div>

@@ -618,7 +618,10 @@ a:focus-visible,
 [role="button"]:focus-visible,
 [tabindex]:focus-visible,
 select:focus-visible {
-  outline: 2.5px solid var(--brand);
+  /* !important: many buttons set inline style={{ outline:'none' }} to kill the
+     default browser ring; inline styles otherwise beat this class rule, which
+     silently removed keyboard focus feedback on those buttons entirely. */
+  outline: 2.5px solid var(--brand) !important;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -709,6 +712,11 @@ input:focus {
 
   /* Procedure page bottom padding */
   .proc-page-content { padding-bottom: calc(72px + env(safe-area-inset-bottom, 8px)) !important; }
+
+  /* Keyboard-shortcuts "?" FAB is meaningless on a touchscreen (no physical
+     keyboard) and was overlapping the other floating action buttons in the
+     same corner on small screens — hide it below the desktop breakpoint. */
+  .kbd-shortcuts-fab { display: none !important; }
 }
 
 @media (min-width: 640px) {

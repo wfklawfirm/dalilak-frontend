@@ -215,11 +215,65 @@
 #   screen readers announced them as unlabeled "button". Added bilingual
 #   aria-label matching each button's action (kept existing title where
 #   present). Purely additive attribute, zero visual change.
+#
+#   METADATA PASS (batch #318): /settings and /professional were the only
+#   two routes in the whole app with zero per-page <title>/robots metadata
+#   (every other route has a layout.tsx for this). Added layout.tsx to
+#   both with robots:{index:false,follow:false} — both pages require login
+#   (professional redirects unauthenticated users; settings is personal
+#   preferences), matching the existing admin/my-files noindex pattern.
+#
+#   FOCUS-RING FIX (batch #319): globals.css's button/a/[role=button]/
+#   [tabindex]/select :focus-visible rule had no !important, so any button
+#   using inline style={{ outline:'none' }} (found on ~15+ icon buttons,
+#   e.g. ChatVoiceInputBtn, GlobalSearch, ProcedureComparator) permanently
+#   lost its keyboard focus indicator — inline styles beat class rules
+#   regardless of pseudo-class. Added !important to the one global rule so
+#   every such button gets its focus ring back app-wide. Verified this
+#   does not affect the separate input/textarea focus patterns (those use
+#   their own :focus box-shadow rings, untouched by this selector).
+#
+#   MOBILE FAB-STACK / OVERLAP FIX (batch #320): per explicit user request to
+#   audit the app's mobile shape/arrangement (not just tap-target sizes),
+#   found that 5 independently-positioned fixed floating widgets on the
+#   homepage shared bottom-offsets/sides with no coordination:
+#   - FloatingHelpButton (help FAB, bottom:80) and AppointmentReminder
+#     (24h-before toast, was bottom:80, SAME side) directly overlapped
+#     whenever both were visible. AppointmentReminder moved to bottom:140
+#     (clears the 46px help FAB + gap) so it stacks above it instead.
+#   - ChatScrollToBottomButton (bottom:100) and FeedbackWidget (bottom:90,
+#     42px tall) overlapped on the opposite side. Scroll button moved to
+#     bottom:146 to clear the feedback button's 42px height + gap.
+#   - KeyboardShortcutsHelp's "?" FAB (bottom:80, same side as the above
+#     two) was a third widget crowding that same corner — and is
+#     meaningless on a touchscreen anyway (no physical keyboard), so it's
+#     now hidden below 767px via new .kbd-shortcuts-fab CSS class, fully
+#     desktop-only, removing one whole overlap source instead of just
+#     renumbering it.
+#   - NotificationBell's notification dropdown had a fixed width:300 near
+#     the screen edge — changed to width:min(300px, calc(100vw - 24px))
+#     so it can never overflow off-screen on narrow phones.
+#   - Bonus: FeedbackWidget's inner "×" close button was missing aria-label
+#     (same class of gap as the #317 pass).
+#   All changes are position/width/visibility only — no functionality
+#   removed, desktop layout (>767px) completely unaffected except the
+#   focus-ring and aria-label additions which apply everywhere.
+#
+#   BOTTOM-PADDING AUDIT (batch #321): swept every page rendering
+#   <BottomNav> for missing clearance above the fixed nav bar (a page with
+#   no bottom padding has its last content row sit flush behind/under the
+#   nav on mobile). Checked procedures, procedures/[slug], forms, faq,
+#   authorities, my-files, services, services/expat-property,
+#   drafting-studio, procedures/[slug]/playbook — all already correct.
+#   Found one real gap: forms/[slug]/FormDetailClient.tsx's main-content
+#   had padding:'20px 16px' with zero bottom clearance, so the disclaimer
+#   card at the end of every form detail page was flush against the nav.
+#   Fixed to '20px 16px 100px' matching every sibling detail page.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-317 — 31 new components + mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes (double-submit guards) + h1 semantic fixes + aria-label pass on 12 icon-only buttons"
+git diff --cached --quiet || git commit -m "feat: batch #284-321 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix"
 git push origin main
 echo "✅ Done"

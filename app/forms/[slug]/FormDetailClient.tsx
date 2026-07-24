@@ -97,7 +97,7 @@ export default function FormDetailClient({ form }: Props) {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div id="main-content" style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>

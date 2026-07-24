@@ -48,7 +48,9 @@ export default function ChatScrollToBottomButton({ containerId, isAr }: Props) {
       className="no-print"
       style={{
         position: 'fixed',
-        bottom: 100,
+        // 146 = FeedbackWidget's 42px toggle (bottom:90) + gap, so this button
+        // stacks cleanly above it instead of overlapping when both are visible.
+        bottom: 146,
         insetInlineEnd: 16,
         width: 40, height: 40,
         borderRadius: '50%',
