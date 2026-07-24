@@ -1317,7 +1317,14 @@ Question: ${text}`
             <div style={{ minHeight:'100%', background:'var(--bg-page)', direction: isAr ? 'rtl' : 'ltr' }}>
 
               {/* ══ HERO ══ */}
-              <section style={{ background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'clamp(48px,6vw,88px) 0 clamp(56px,7vw,96px)' }}>
+              {/* batch #355: mobile-density fix — clamp() floors below were tuned for desktop
+                  (48-88px) and never actually shrank on real phones since the vw term stays
+                  tiny at narrow widths, so every section rendered at its full desktop-sized
+                  padding on mobile too. Lowered floors only (max/desktop value unchanged) so
+                  small screens get noticeably less dead vertical space per section — verified
+                  the vw term still exceeds the new floor at typical desktop widths, so this is
+                  mobile-only in practice. */}
+              <section style={{ background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'clamp(28px,6vw,88px) 0 clamp(32px,7vw,96px)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div className="hl">
 
@@ -1518,7 +1525,7 @@ Question: ${text}`
               </section>
 
               {/* ══ PROCEDURES ══ */}
-              <section style={{ padding:'clamp(48px,5vw,80px) 0', background:'var(--bg-page)' }}>
+              <section style={{ padding:'clamp(28px,5vw,80px) 0', background:'var(--bg-page)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:24, gap:16 }}>
                     <div>
@@ -1567,7 +1574,7 @@ Question: ${text}`
               </section>
 
               {/* ══ CATEGORIES ══ */}
-              <section style={{ background:'var(--surface)', padding:'clamp(32px,4vw,56px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
+              <section style={{ background:'var(--surface)', padding:'clamp(20px,4vw,56px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:16, gap:16 }}>
                     <h3 style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'1px', textTransform:'uppercase', margin:0 }}>
@@ -1606,7 +1613,7 @@ Question: ${text}`
               </section>
 
               {/* ══ LIFE JOURNEYS ══ */}
-              <section style={{ background:'var(--bg-page)', padding:'clamp(48px,5vw,80px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
+              <section style={{ background:'var(--bg-page)', padding:'clamp(28px,5vw,80px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:8, gap:16 }}>
                     <div>
@@ -1669,7 +1676,7 @@ Question: ${text}`
               </section>
 
               {/* ══ HOW IT WORKS ══ */}
-              <section style={{ background:'var(--surface-muted)', padding:'clamp(48px,5vw,80px) 0', borderBottom:'1px solid var(--border)' }}>
+              <section style={{ background:'var(--surface-muted)', padding:'clamp(28px,5vw,80px) 0', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div style={{ textAlign:'center', marginBottom:36 }}>
                     <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 8px', letterSpacing:'-0.4px' }}>
@@ -1698,7 +1705,7 @@ Question: ${text}`
               </section>
 
               {/* ══ TRUST ══ */}
-              <section style={{ background:'var(--surface)', padding:'clamp(40px,5vw,72px) 0', borderBottom:'1px solid var(--border)' }}>
+              <section style={{ background:'var(--surface)', padding:'clamp(24px,5vw,72px) 0', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div className="tgrid">
                     {([
@@ -1722,7 +1729,7 @@ Question: ${text}`
               </section>
 
               {/* ══ FOOTER ══ */}
-              <footer style={{ background:'#191713', padding:'clamp(40px,5vw,64px) 0 clamp(24px,3vw,40px)' }}>
+              <footer style={{ background:'#191713', padding:'clamp(28px,5vw,64px) 0 clamp(20px,3vw,40px)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div className="fgrid" style={{ marginBottom:40 }}>
                     {/* Brand col */}
