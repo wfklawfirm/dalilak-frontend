@@ -443,11 +443,33 @@
 #   applied .tap-hit-9 to both buttons. Minor, justified visual change —
 #   the two arrow buttons now sit slightly further apart — versus leaving
 #   a real mobile mis-tap risk unfixed.
+#
+#   BUG FIX (batch #334): user-reported — switching the UI language
+#   toggle to English left AI chat replies in Arabic. Root cause: the
+#   backend's system prompt always answers "in the same language as the
+#   question," detected purely from the raw message text (system_prompt.txt
+#   line 58, "أجب بنفس لغة السؤال") — /chat/stream's request body has no
+#   language field at all (confirmed in backend/main.py's ChatRequest
+#   model). So if a user types in Arabic (their habit) while the UI
+#   toggle is set to English, the backend has zero visibility into that
+#   toggle and just answers in Arabic regardless. Backend APIs are off
+#   limits per standing constraints, so fixed it entirely on the frontend:
+#   app/page.tsx's sendMessage now prepends an explicit, unambiguous
+#   language directive ("[IMPORTANT: Respond only in English regardless
+#   of the language used in this message.]" / Arabic equivalent) ahead of
+#   the existing mode-prefix and message text, for both /chat/stream and
+#   /analyze/stream. This uses the same "bracketed meta-instruction"
+#   mechanism the mode prefixes (quick/detailed/research) already rely on
+#   successfully in production — no backend change needed. Side benefit:
+#   the localStorage answer cache is keyed off this same prefixed string,
+#   so cached answers are now correctly language-scoped too (previously
+#   the same question asked in two different toggle states could return
+#   a cross-language cache hit). Verified with tsc — clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-333 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-334 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle"
 git push origin main
 echo "✅ Done"

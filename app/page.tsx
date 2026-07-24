@@ -1028,9 +1028,21 @@ Question: ${text}`
 
     const activeMode = MODES.find(m => m.id === (overrideMode || mode))!
     const modePrefix = lang === 'en' ? activeMode.prefix_en : activeMode.prefix
+    // The backend always replies in "the same language as the question"
+    // (see system_prompt.txt), detected purely from the raw message text —
+    // it has no visibility into the UI's language toggle. A user who types
+    // in Arabic while the toggle is set to English (very common, since the
+    // toggle doesn't translate what they type) was getting Arabic replies
+    // regardless of the toggle. Prepend an explicit, unambiguous language
+    // directive so the toggle's intent reaches the model no matter what
+    // script the user actually typed in. Frontend-only fix — no backend
+    // API change.
+    const langDirective = lang === 'en'
+      ? '[IMPORTANT: Respond only in English, regardless of the language used in this message.] '
+      : '[مهم جداً: أجب باللغة العربية فقط، بغض النظر عن لغة هذه الرسالة.] '
     const prefixedMessage = file
-      ? cleanText || (lang === 'en' ? 'Analyze this document and suggest relevant procedures' : 'حلل هذه الوثيقة واقترح الإجراءات المناسبة')
-      : modePrefix + cleanText
+      ? langDirective + (cleanText || (lang === 'en' ? 'Analyze this document and suggest relevant procedures' : 'حلل هذه الوثيقة واقترح الإجراءات المناسبة'))
+      : langDirective + modePrefix + cleanText
 
     const displayText = file
       ? (cleanText ? `${getFileIcon(file.type)} **${file.name}**\n${cleanText}` : `${getFileIcon(file.type)} **${file.name}** — ${isAr ? 'طلب تحليل الوثيقة' : 'Document analysis request'}`)
