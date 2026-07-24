@@ -92,7 +92,19 @@ export default function SavedItemsPanel({ onAsk }: Props) {
           pointer/mouse devices to keep cards calm, but touch devices have
           no hover state — force them visible there so the affordance isn't
           permanently invisible on mobile. */}
-      <style>{`@media (pointer: coarse) { .saved-remove-btn { opacity: 1 !important; background: var(--surface) !important; } .saved-ask-cta { opacity: 1 !important; } }`}</style>
+      <style>{`
+        @media (pointer: coarse) {
+          .saved-remove-btn { opacity: 1 !important; background: var(--surface) !important; }
+          .saved-ask-cta { opacity: 1 !important; }
+          /* The visible button is 20x20 (fine for a precise mouse cursor),
+             but that's under the 44px minimum touch target — expand the
+             actual hit area with an invisible pseudo-element rather than
+             growing the visual button and disrupting the card layout. */
+          .saved-remove-btn::before {
+            content: ''; position: absolute; inset: -12px;
+          }
+        }
+      `}</style>
       {!collapsed && (
         <div style={{
           display: 'grid',

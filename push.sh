@@ -401,11 +401,18 @@
 #   gap in compact mode, but it has zero import sites anywhere in the
 #   app (dead code) — left untouched per standing no-op-on-unused-code
 #   precedent rather than fixing something nothing renders.
+#
+#   FOLLOW-UP (batch #331): the batch #330 fix made SavedItemsPanel's
+#   remove button visible on touch, but the visible button is 20x20 —
+#   under the 44px minimum touch target audited/fixed everywhere else
+#   (see #267-272, #328). Expanded its actual hit area via an invisible
+#   ::before pseudo-element (inset:-12px, touch devices only) instead of
+#   growing the visible button and disrupting the compact card layout.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-330 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip"
+git diff --cached --quiet || git commit -m "feat: batch #284-331 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion"
 git push origin main
 echo "✅ Done"
