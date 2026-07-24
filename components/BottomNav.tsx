@@ -33,22 +33,6 @@ const ChatFABIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
   </svg>
 )
-const ServicesIcon = () => (
-  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-  </svg>
-)
-const ServicesFillIcon = () => (
-  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-  </svg>
-)
 const AccountIcon = () => (
   <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -60,11 +44,17 @@ const AccountFillIcon = () => (
   </svg>
 )
 
+// Reduced from 5 to exactly 4 items per UX_AUDIT.md ("one screen — one
+// primary action" / "exactly 4 bottom-nav items"). "Services" (الخدمات) was
+// dropped from this bar — not deleted: /services stays fully reachable via
+// MobileMenu's nav list and via the homepage's search + category grid. It
+// was the right item to drop because it's a *browse* surface, while Home,
+// Procedures, Chat and Account are the four *do-a-task* surfaces the brief
+// prioritizes (clarity/task-ease over exhaustive browsing).
 const TABS = [
   { id: 'home',       label_ar: 'الرئيسية', label_en: 'Home',       Icon: HomeIcon,     FillIcon: HomeFillIcon,     route: '/' },
   { id: 'procedures', label_ar: 'المعاملات', label_en: 'Procedures', Icon: ProcIcon,     FillIcon: ProcIcon,         route: '/procedures' },
   { id: 'chat',       label_ar: 'محادثة',   label_en: 'Chat',       Icon: ChatFABIcon,  FillIcon: ChatFABIcon,      route: '/' }, // FAB center
-  { id: 'services',   label_ar: 'الخدمات',  label_en: 'Services',   Icon: ServicesIcon, FillIcon: ServicesFillIcon, route: '/services' },
   { id: 'account',    label_ar: 'حسابي',    label_en: 'Account',    Icon: AccountIcon,  FillIcon: AccountFillIcon,  route: '/my-files' },
 ] as const
 

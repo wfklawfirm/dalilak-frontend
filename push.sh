@@ -840,11 +840,61 @@
 #   `alt="preview"` — a generic/unhelpful placeholder alt text (same
 #   anti-pattern as a missing label). Now uses the real attached filename.
 #   tsc --noEmit clean after every edit in this batch.
+#
+#   BATCH #345 — UX_AUDIT.md Phase 1+2: floating-button consolidation +
+#   4-item Bottom Nav. First real-implementation batch against the new
+#   "Principal Product Designer" UX-redesign brief (full audit trail now
+#   lives in UX_AUDIT.md at the repo root — read that file for the complete
+#   problem/location/impact/priority/solution/status breakdown; this is
+#   just the commit-log summary).
+#   - Removed GlobalLangSwitch and AccessibilityBar from the global floating
+#     stack (app/layout.tsx). Zero functionality lost: language toggle
+#     already lives in TopNav (visible at every breakpoint, verified via
+#     code audit — the old "hidden on mobile" premise was stale) and in
+#     MobileMenu; accessibility toggles already live in full on /settings
+#     (confirmed same localStorage keys as the removed AccessibilityBar).
+#   - MinistryQuickDial: removed its persistent FAB trigger only. The sheet
+#     (20 government/emergency phone numbers, searchable) is unchanged and
+#     now opens via a `dalilak-open-ministry-dial` window event, triggered
+#     by a new "أرقام الوزارات والطوارئ" row in MobileMenu.
+#   - FloatingHelpButton: removed entirely from app/page.tsx. Its emergency
+#     numbers are functionally covered by MinistryQuickDial's sheet (same
+#     numbers plus more); its FAQ link duplicate was already a MobileMenu
+#     nav item.
+#   - KeyboardShortcutsHelp: removed its corner "?" FAB only. The "?"
+#     keyboard shortcut itself still works identically — this was a
+#     desktop-only power-user feature whose only real discovery path was
+#     always the key itself, documented in the modal's own footer.
+#   - Cleaned up now-dead CSS (.kbd-shortcuts-fab rule) and repositioned
+#     FeedbackWidget / AppointmentReminder's toast, which had hardcoded
+#     offsets to clear a FAB stack that no longer exists.
+#   - Also fixed a MobileMenu.tsx data bug found during this audit: the nav
+#     list had "Authorities" (/authorities) listed twice under two
+#     different labels ("الجهات الحكومية" and "الجهات المختصة") — removed
+#     the duplicate.
+#   - BottomNav.tsx: reduced from 5 items to exactly 4 (Home / Procedures /
+#     Chat-FAB / Account), per the brief's explicit requirement. Dropped
+#     "Services" from the bar specifically — not deleted, /services remains
+#     fully reachable via MobileMenu and the homepage's search + category
+#     grid. Mechanical, low-risk change: the nav is `flex:1`-per-item, so
+#     removing one entry re-balances automatically with no layout code
+#     changes needed.
+#   Net result: the always-on floating-button stack that used to have up to
+#   3 persistent items in one corner (plus a 4th colliding with a 5th on
+#   desktop) is now empty by default — only genuinely contextual,
+#   auto-hiding elements remain (scroll-to-bottom/back-to-top, which only
+#   appear during active scrolling, and FeedbackWidget, which is gated
+#   behind real usage signals).
+#   tsc --noEmit clean after every edit. Full remaining-scope tracking
+#   (homepage rebuild, design-system audit, procedure-page restructure,
+#   chat redesign, full WCAG pass, responsive/performance work) is in
+#   UX_AUDIT.md's "بنود مؤجَّلة" table — nothing there is silently dropped,
+#   it's explicitly tracked as not-yet-done.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-344 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-345 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items"
 git push origin main
 echo "✅ Done"

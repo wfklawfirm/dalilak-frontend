@@ -102,16 +102,6 @@ const NAV_ITEMS = [
   {
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-      </svg>
-    ),
-    label_ar: 'الجهات المختصة',
-    label_en: 'Authorities',
-    route: '/authorities',
-  },
-  {
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
       </svg>
     ),
@@ -370,6 +360,32 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
               wissam@aijur.ai
             </a>
           </div>
+
+          {/*
+            أرقام الوزارات والطوارئ — replaces the old persistent MinistryQuickDial
+            floating phone-dial FAB and FloatingHelpButton's emergency-numbers FAB
+            (both removed from the global floating stack; see UX_AUDIT.md).
+            Opens the same searchable ministries/emergency sheet via a custom
+            event — no functionality lost, just relocated into the menu.
+          */}
+          <button
+            type="button"
+            onClick={() => { window.dispatchEvent(new Event('dalilak-open-ministry-dial')); onClose() }}
+            style={{
+              width: 'calc(100% - 32px)', margin: '0 16px 8px', display: 'flex', alignItems: 'center', gap: 10,
+              padding: '11px 14px', borderRadius: 12, border: '1px solid #E6E2DC', background: '#FAFAF8',
+              cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
+              color: '#191713', fontSize: 12.5, fontWeight: 600,
+            }}
+          >
+            <span style={{ fontSize: 16, flexShrink: 0 }}>📞</span>
+            <span style={{ flex: 1 }}>{isAr ? 'أرقام الوزارات والطوارئ' : 'Ministries & Emergency Numbers'}</span>
+            <span style={{ color: '#918B82' }} aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+              </svg>
+            </span>
+          </button>
         </div>
 
         {/* Logout */}

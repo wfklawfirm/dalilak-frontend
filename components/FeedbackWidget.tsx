@@ -107,11 +107,11 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         position: 'fixed',
-        // 226 = clears the always-on MinistryQuickDial/AccessibilityBar/
-        // GlobalLangSwitch stack (rendered globally from layout.tsx on the
-        // same side, topping out at bottom:216) so this contextual widget
-        // stacks above them instead of overlapping mid-stack.
-        bottom: 226,
+        // The always-on MinistryQuickDial/AccessibilityBar/GlobalLangSwitch FAB
+        // stack this used to clear was removed in the UX consolidation pass
+        // (see UX_AUDIT.md) — this is now the only conditional floating widget
+        // on this side, so it sits at the same base offset the other FABs used.
+        bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
         [isAr ? 'left' : 'right']: 14,
         zIndex: 9950,
         display: 'flex',

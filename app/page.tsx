@@ -20,7 +20,6 @@ import AppointmentReminder from '@/components/AppointmentReminder'
 import ProcedureProgressTracker from '@/components/ProcedureProgressTracker'
 import RecentActivityFeed from '@/components/RecentActivityFeed'
 import FeedbackWidget from '@/components/FeedbackWidget'
-import FloatingHelpButton from '@/components/FloatingHelpButton'
 import SmartHomeBanner from '@/components/SmartHomeBanner'
 import GovHolidayAlert from '@/components/GovHolidayAlert'
 import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
@@ -2667,8 +2666,10 @@ Question: ${text}`
         {/* Floating site feedback widget */}
         <FeedbackWidget messageCount={messages.length} />
 
-        {/* Floating emergency help button */}
-        <FloatingHelpButton onAsk={q => sendMessage(q)} />
+        {/* FloatingHelpButton removed from the global floating stack (UX_AUDIT.md —
+            "one floating button app-wide"). Its emergency numbers + FAQ link are
+            now reachable via MobileMenu's "أرقام الوزارات والطوارئ" item and the
+            existing FAQ nav item — no functionality lost. */}
 
         {/* Celebration overlay — shows when all started procedures are completed */}
         <ProcedureCompletionCelebration />

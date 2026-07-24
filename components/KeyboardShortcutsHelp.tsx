@@ -3,7 +3,13 @@
 /**
  * KeyboardShortcutsHelp — modal showing all keyboard shortcuts.
  * Opens on `?` key (when not typing in an input).
- * Also shows a small `?` button in the bottom-right corner.
+ *
+ * Previously also rendered a persistent `?` FAB in the corner. Removed as
+ * part of the UX consolidation pass (UX_AUDIT.md — "one floating button
+ * app-wide"): this was a desktop-only power-user feature whose only real
+ * discovery path is the `?` key itself (documented in the modal's own
+ * footer), so the redundant always-visible button added clutter without
+ * adding reach. The keyboard shortcut still works exactly as before.
  */
 
 import React, { useState, useEffect } from 'react'
@@ -58,32 +64,6 @@ export default function KeyboardShortcutsHelp() {
 
   return (
     <>
-      {/* Floating ? button */}
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-label={isAr ? 'اختصارات لوحة المفاتيح' : 'Keyboard shortcuts'}
-        title={isAr ? 'اختصارات لوحة المفاتيح (?)' : 'Keyboard shortcuts (?)'}
-        // Hidden on mobile via .kbd-shortcuts-fab (globals.css) — a physical-keyboard
-        // shortcuts helper has no purpose on a touchscreen and was overlapping the
-        // other floating action buttons in that corner on small screens.
-        className="kbd-shortcuts-fab"
-        style={{
-          position: 'fixed', bottom: 80, [isAr ? 'left' : 'right']: 16,
-          width: 32, height: 32, borderRadius: '50%',
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          color: 'var(--text-3)', fontSize: 13, fontWeight: 700,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          transition: 'border-color 0.13s, color 0.13s',
-          zIndex: 100,
-        }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)' }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-3)' }}
-      >
-        ?
-      </button>
-
       {/* Modal overlay */}
       {open && (
         <div

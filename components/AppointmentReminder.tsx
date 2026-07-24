@@ -94,9 +94,10 @@ export default function AppointmentReminder({ onAsk }: Props) {
       role="alert"
       aria-live="assertive"
       style={{
-        // 140 = FloatingHelpButton's 46px FAB (bottom:80) + gap, so this toast
-        // stacks above it instead of overlapping — both anchor to the same side.
-        position: 'fixed', bottom: 140, [isAr ? 'right' : 'left']: 16,
+        // FloatingHelpButton (which used to anchor this side) was removed in the
+        // UX consolidation pass (UX_AUDIT.md), so this toast no longer needs to
+        // clear it — sits at the same base offset the FAB stack used to start at.
+        position: 'fixed', bottom: 80, [isAr ? 'right' : 'left']: 16,
         maxWidth: 340, width: 'calc(100vw - 32px)',
         background: urgencyBg, border: `1.5px solid ${urgencyBorder}`,
         borderRadius: 16, zIndex: 9990,

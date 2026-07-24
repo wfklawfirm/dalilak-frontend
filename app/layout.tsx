@@ -2,10 +2,16 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 import { LanguageProvider } from '@/lib/LanguageContext'
-import GlobalLangSwitch from '@/components/GlobalLangSwitch'
 import OfflineNotice from '@/components/OfflineNotice'
-import AccessibilityBar from '@/components/AccessibilityBar'
 import MinistryQuickDial from '@/components/MinistryQuickDial'
+// GlobalLangSwitch and AccessibilityBar were removed from the global floating
+// stack in the UX consolidation pass (see UX_AUDIT.md, "one floating button"
+// rule). Their functionality is not lost: language toggle already lives in
+// TopNav (visible at every breakpoint) and MobileMenu; accessibility toggles
+// already live in full on /settings (same localStorage keys). MinistryQuickDial
+// stays mounted here because its sheet is now opened via a custom event
+// dispatched from MobileMenu instead of its own persistent FAB — see
+// components/MinistryQuickDial.tsx.
 
 export const metadata: Metadata = {
   // metadataBase lets every route's relative `alternates.canonical` (and any
@@ -143,8 +149,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </a>
           <OfflineNotice />
           {children}
-          <GlobalLangSwitch />
-          <AccessibilityBar />
           <MinistryQuickDial />
         </LanguageProvider>
       </body>

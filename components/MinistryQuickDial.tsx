@@ -4,7 +4,12 @@
  * MinistryQuickDial — bottom sheet with clickable phone numbers
  * for key Lebanese government ministries and departments.
  *
- * Triggered by a phone FAB fixed at the bottom.
+ * Previously triggered by its own persistent floating FAB. As part of the
+ * UX consolidation pass (UX_AUDIT.md — "one floating button app-wide"),
+ * the FAB was removed; the sheet is now opened by dispatching a
+ * `dalilak-open-ministry-dial` window event (see MobileMenu.tsx's
+ * "أرقام الوزارات" item). No functionality was removed — only the trigger
+ * moved from a floating button into the menu.
  * Searchable list. Each card: ministry name (AR/EN), phone, hours.
  * Tapping a number opens tel: link.
  */
@@ -66,32 +71,16 @@ export default function MinistryQuickDial() {
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
+  // Opened via a custom event dispatched from MobileMenu's "أرقام الوزارات"
+  // item, replacing the old persistent floating FAB trigger.
+  useEffect(() => {
+    const openHandler = () => setOpen(true)
+    window.addEventListener('dalilak-open-ministry-dial', openHandler)
+    return () => window.removeEventListener('dalilak-open-ministry-dial', openHandler)
+  }, [])
+
   return (
     <>
-      {/* FAB trigger */}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label={isAr ? 'أرقام الوزارات' : 'Ministry phone numbers'}
-        className="no-print"
-        style={{
-          position: 'fixed',
-          bottom: 'calc(82px + env(safe-area-inset-bottom, 0px))',
-          [isAr ? 'left' : 'right']: 14,
-          width: 44, height: 44, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #1D4ED8, #1E40AF)',
-          border: 'none', color: '#fff',
-          boxShadow: '0 4px 16px rgba(29,78,216,0.4)',
-          cursor: 'pointer', zIndex: 8400,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18, transition: 'transform 0.15s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.08)' }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
-      >
-        📞
-      </button>
-
       {/* Bottom sheet */}
       {open && (
         <>
