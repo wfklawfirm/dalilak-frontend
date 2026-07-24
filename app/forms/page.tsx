@@ -98,7 +98,7 @@ export default function FormsPage() {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 100px' }}>
 
         {/* View tabs */}
         <div style={{ display: 'flex', gap: 4, marginBottom: 14, background: '#E6E2DC', borderRadius: 12, padding: 4 }}>
@@ -399,7 +399,7 @@ export default function FormsPage() {
           )
         )}
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper">
         <BottomNav isAr={isAr} activeTab="procedures" />

@@ -278,7 +278,7 @@ export default function ProceduresPage() {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
         {/* Holiday alert — when tomorrow is a public holiday or weekend */}
         <GovHolidayAlert />
@@ -1187,7 +1187,7 @@ export default function ProceduresPage() {
           </div>
         </div>
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
 

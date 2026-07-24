@@ -259,7 +259,7 @@ export default function AdminPage() {
       {error && <div role="alert" style={{ margin: '12px 24px 0', padding: '10px 16px', background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.25)', borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center' }}>{error}</div>}
 
       {/* Tabs */}
-      <div id="main-content" style={{ padding: '16px 24px 0', maxWidth: 1200, margin: '0 auto' }}>
+      <main id="main-content" style={{ padding: '16px 24px 0', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {TABS.map(t => (
             <button type="button" key={t.id}
@@ -293,7 +293,7 @@ export default function AdminPage() {
             {isAr ? 'إدارة المحتوى' : 'Content management'}
           </Link>
         </div>
-      </div>
+      </main>
 
       <div key={tab} style={{ maxWidth: 1200, margin: '0 auto', padding: '16px 24px 60px', animation: 'admIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }}>
 

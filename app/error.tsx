@@ -20,7 +20,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div id="main-content" style={{
+    <main id="main-content" style={{
       minHeight: '100vh',
       background: '#F8F8F6',
       display: 'flex',
@@ -112,6 +112,6 @@ export default function Error({
           {isAr ? 'العودة للرئيسية' : 'Back to Home'}
         </a>
       </div>
-    </div>
+    </main>
   )
 }

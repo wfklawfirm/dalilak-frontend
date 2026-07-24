@@ -208,7 +208,7 @@ export default function ExpatPropertyPackPage() {
         </div>
       </header>
 
-      <div id="main-content" className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
+      <main id="main-content" className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
 
         <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E6E2DC', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: '#191713', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -330,7 +330,7 @@ export default function ExpatPropertyPackPage() {
           </button>
         </div>
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
     </div>

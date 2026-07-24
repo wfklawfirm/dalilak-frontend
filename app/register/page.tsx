@@ -44,7 +44,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
+    <main id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -227,6 +227,6 @@ export default function RegisterPage() {
           {isAr ? 'خدمة دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak service — guidance information, not a substitute for a legal professional'}
         </span>
       </p>
-    </div>
+    </main>
   )
 }

@@ -55,7 +55,7 @@ export default function DraftingStudioPage() {
         .ds-tag:hover { background: rgba(143,29,44,0.12) !important; border-color: rgba(143,29,44,0.35) !important; }
       `}</style>
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '20px 14px 100px' }}>
 
         {/* Intro card */}
         <div style={{ background: '#F8EDEF', border: '1.5px solid rgba(143,29,44,0.15)', borderRadius: 16, padding: '16px', marginBottom: 18, animation: 'dsIn 0.3s cubic-bezier(0.22,1,0.36,1) both', animationDelay: '0.05s' }}>
@@ -92,7 +92,7 @@ export default function DraftingStudioPage() {
 
         <DraftingStudio isAr={isAr} onSend={handleSend} />
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper">
         <BottomNav isAr={isAr} activeTab="services" />

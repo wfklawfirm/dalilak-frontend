@@ -236,7 +236,7 @@ export default function MyFilesPage() {
         </div>
       </header>
 
-      <div id="main-content" aria-live="polite" aria-label={isAr ? 'قائمة المعاملات' : 'Procedures list'} style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
+      <main id="main-content" aria-live="polite" aria-label={isAr ? 'قائمة المعاملات' : 'Procedures list'} style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
 
         {/* ── Action error banner (save/delete/status failures) ─────────────── */}
         {actionError && (
@@ -611,7 +611,7 @@ export default function MyFilesPage() {
             </div>
           </div>
         )}
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper">
         <BottomNav isAr={isAr} activeTab="account" />

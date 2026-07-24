@@ -67,7 +67,7 @@ export default function PlaybookPage() {
         rightSlot={langToggle}
       />
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 120px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 120px' }}>
 
         {activeFlowchart ? (
           <>
@@ -351,7 +351,7 @@ export default function PlaybookPage() {
           </button>
         </div>
 
-      </div>{/* end content */}
+      </main>{/* end content */}
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
     </div>

@@ -222,7 +222,7 @@ export default function AuthoritiesPage() {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 760, margin: '0 auto', padding: '16px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 760, margin: '0 auto', padding: '16px 14px 100px' }}>
 
         {/* Stats banner — premium individual cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
@@ -505,7 +505,7 @@ export default function AuthoritiesPage() {
           })}
         </div>
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
     </div>

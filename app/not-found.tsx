@@ -5,7 +5,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 export default function NotFound() {
   const { isAr } = useLanguage()
   return (
-    <div id="main-content" style={{
+    <main id="main-content" style={{
       minHeight: '100vh',
       background: '#F8F8F6',
       display: 'flex',
@@ -82,6 +82,6 @@ export default function NotFound() {
         </svg>
         {isAr ? 'العودة للرئيسية' : 'Back to Home'}
       </Link>
-    </div>
+    </main>
   )
 }

@@ -18,7 +18,7 @@ export default function GlobalError({
   return (
     <html lang={isAr ? 'ar' : 'en'} dir={isAr ? 'rtl' : 'ltr'}>
       <body style={{ margin: 0, fontFamily: "'Cairo','Inter',sans-serif", background: '#FAFAF8' }}>
-        <div
+        <main
           id="main-content"
           style={{
             minHeight: '100vh',
@@ -91,7 +91,7 @@ export default function GlobalError({
               {isAr ? 'معرّف الخطأ:' : 'Error ID:'} {error.digest}
             </p>
           )}
-        </div>
+        </main>
       </body>
     </html>
   )

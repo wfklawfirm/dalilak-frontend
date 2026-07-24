@@ -330,11 +330,26 @@
 #
 #   + expat-property page: title div converted to <h1> (was missing, like
 #     the earlier services/professional/settings h1 fix).
+#
+#   SEMANTIC LANDMARK PASS (batch #326): only app/page.tsx used a real
+#   <main> element for its #main-content region — every other route (~20
+#   files: login/register/reset-password/forgot-password, error/not-found/
+#   global-error, admin + admin/content, my-files, services (+expat-property),
+#   authorities, faq, drafting-studio, procedures list/detail/playbook,
+#   forms list/detail) used a plain <div id="main-content">. Converted each
+#   to <main id="main-content"> (same id, same styles, matching close tag)
+#   so screen readers get a proper main-content landmark on every page, not
+#   just the homepage. Zero visual change — div and main both default to
+#   display:block. Caught and fixed one mismatched open/close tag pair in
+#   services/page.tsx during the pass (verified via tsc --noEmit, which
+#   catches unbalanced JSX). No ids moved, no behavior changed — the
+#   existing TopNav scroll-listener (which reads #main-content by id) is
+#   unaffected.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-325 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-326 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages"
 git push origin main
 echo "✅ Done"

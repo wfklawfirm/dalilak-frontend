@@ -531,7 +531,7 @@ export default function ServicesPage() {
       </header>
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
-      <div id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
+      <main id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
         <div style={{ position: 'relative', background: '#fff', border: `1.5px solid ${searchFocused ? '#8F1D2C' : '#E6E2DC'}`, borderRadius: 14, boxShadow: searchFocused ? '0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
           <span style={{
             position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
@@ -574,7 +574,7 @@ export default function ServicesPage() {
             </button>
           )}
         </div>
-      </div>
+      </main>
 
       {/* ── Main Content ───────────────────────────────────────────────────── */}
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '18px 14px 100px' }}>

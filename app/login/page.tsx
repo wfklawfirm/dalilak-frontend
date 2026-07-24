@@ -31,7 +31,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
+    <main id="main-content" dir={isAr ? 'rtl' : 'ltr'} style={{
       minHeight: '100dvh',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
@@ -188,6 +188,6 @@ export default function LoginPage() {
       <p style={{ marginTop: 20, fontSize: 11, color: '#B8B2AA', textAlign: 'center' }}>
         {isAr ? 'دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak — guidance information, not a substitute for a legal professional'}
       </p>
-    </div>
+    </main>
   )
 }

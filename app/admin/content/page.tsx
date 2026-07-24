@@ -191,7 +191,7 @@ export default function ContentGovernancePage() {
         </div>
 
         {/* Main layout */}
-        <div id="main-content" className="content-main" style={{ gridTemplateColumns: selected ? '1fr 1fr' : '1fr' }}>
+        <main id="main-content" className="content-main" style={{ gridTemplateColumns: selected ? '1fr 1fr' : '1fr' }}>
 
           {/* List */}
           <div>
@@ -342,7 +342,7 @@ export default function ContentGovernancePage() {
               </div>
             </div>
           )}
-        </div>
+        </main>
 
         {/* Audit log */}
         {showAudit && (

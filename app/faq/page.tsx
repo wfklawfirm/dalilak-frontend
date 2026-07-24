@@ -120,7 +120,7 @@ export default function FAQPage() {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 100px' }}>
 
         {/* Stats — premium individual cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
@@ -392,7 +392,7 @@ export default function FAQPage() {
           </div>
         )}
 
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper">
         <BottomNav isAr={isAr} activeTab="services" />

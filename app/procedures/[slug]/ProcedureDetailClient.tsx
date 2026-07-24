@@ -51,7 +51,7 @@ export default function ProcedureDetailClient() {
         </div>
       </header>
 
-      <div id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
+      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 100px' }}>
 
         <div style={{ background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 20, padding: '20px 18px', marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
@@ -221,7 +221,7 @@ export default function ProcedureDetailClient() {
             </SectionCollapseToggle>
         </div>
 
-      </div>
+      </main>
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} /></div>
     </div>
   )
