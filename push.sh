@@ -269,11 +269,26 @@
 #   had padding:'20px 16px' with zero bottom clearance, so the disclaimer
 #   card at the end of every form detail page was flush against the nav.
 #   Fixed to '20px 16px 100px' matching every sibling detail page.
+#
+#   FAB-STACK CORRECTION (batch #322): while auditing z-index layering,
+#   discovered the #320 fix was incomplete — it only accounted for the 5
+#   widgets rendered from app/page.tsx and missed that app/layout.tsx
+#   ALSO globally renders 3 more always-on fixed widgets on the exact same
+#   side (GlobalLangSwitch, AccessibilityBar, MinistryQuickDial — bottom:
+#   182/134/82, already correctly spaced against each other). On the
+#   homepage this meant FeedbackWidget (bottom:90) directly overlapped
+#   MinistryQuickDial (bottom:82, 44px tall -> top edge 126), and the
+#   #320 fix that moved ChatScrollToBottomButton to bottom:146 landed
+#   right on top of AccessibilityBar (bottom:134-174). Corrected by
+#   moving both contextual widgets to sit ABOVE the always-on 82-216
+#   stack instead of interleaving with it: FeedbackWidget -> bottom:226,
+#   ChatScrollToBottomButton -> bottom:278. The always-on trio itself
+#   was left untouched since it was already internally consistent.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-321 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-322 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix (incl. layout.tsx-level FAB stack) + forms/[slug] bottom-padding fix"
 git push origin main
 echo "✅ Done"

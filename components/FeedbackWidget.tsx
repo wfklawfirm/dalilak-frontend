@@ -107,7 +107,11 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         position: 'fixed',
-        bottom: 90,          // above BottomNav (~72px)
+        // 226 = clears the always-on MinistryQuickDial/AccessibilityBar/
+        // GlobalLangSwitch stack (rendered globally from layout.tsx on the
+        // same side, topping out at bottom:216) so this contextual widget
+        // stacks above them instead of overlapping mid-stack.
+        bottom: 226,
         [isAr ? 'left' : 'right']: 14,
         zIndex: 9950,
         display: 'flex',
