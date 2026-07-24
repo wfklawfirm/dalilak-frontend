@@ -42,9 +42,13 @@ import TransactionStarter, { type StarterResult } from '@/components/Transaction
 import ServiceGroupSheet from '@/components/ServiceGroupSheet'
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
 import { useLanguage } from '@/lib/LanguageContext'
-import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
-import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
-import { ALL_SERVICES } from '@/lib/allServices'
+// batch #354 perf fix: TX_ALL/TX_WITH_FORMS/TX_MINISTRIES (lib/allTransactions.ts, ~400KB
+// source), ENRICHED_PROCEDURES (lib/enrichedProcedures.ts, ~256KB), and ALL_SERVICES
+// (lib/allServices.ts, ~1MB) were imported here but never referenced anywhere else in this
+// file (verified: each identifier appeared exactly once — the import line itself). That's
+// ~1.7MB of unused data source being bundled into the homepage's JS for zero reason. Removed
+// the dead imports; the pages that actually use this data (/procedures, /services, /forms
+// etc.) import it directly and are unaffected.
 import { LIFE_JOURNEYS, getJourneyBySlug, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
