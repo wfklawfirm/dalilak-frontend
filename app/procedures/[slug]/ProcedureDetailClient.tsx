@@ -21,7 +21,10 @@ export default function ProcedureDetailClient() {
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cairo','Inter',sans-serif" }}>
         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg></div>
-          <h2 style={{ fontSize: 18, color: '#191713', marginBottom: 8 }}>{isAr ? 'المعاملة غير موجودة' : 'Procedure not found'}</h2>
+          {/* h1, not h2 — this state is the entire page content, so it needs
+              its own top-level heading (WCAG 2.2 AA heading-hierarchy audit,
+              UX_AUDIT.md). Tag change only, same visual size via inline style. */}
+          <h1 style={{ fontSize: 18, color: '#191713', marginBottom: 8, fontWeight: 700 }}>{isAr ? 'المعاملة غير موجودة' : 'Procedure not found'}</h1>
           <button type="button" aria-label={isAr ? 'العودة للمعاملات' : 'Back to procedures'} onClick={() => router.push('/procedures')} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, boxShadow: '0 2px 8px rgba(143,29,44,0.25)' }}>
             {isAr ? 'عودة للدليل' : 'Back to directory'}
           </button>
@@ -247,7 +250,12 @@ function Section({
     <div style={{ marginBottom: 16, background: bg, border: `1.5px solid ${border}`, borderRadius: 16, padding: '14px 16px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12 }}>
         <span style={{ color: '#8F1D2C', display: 'inline-flex' }}>{icon}</span>
-        <h3 style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', margin: 0, textTransform: 'uppercase', letterSpacing: '0.4px' }}>{title}</h3>
+        {/* h2, not h3 — these are the page's primary content sections
+            (Documents/Steps/Authority/Fees), sitting directly under the
+            page's single h1 with nothing in between (WCAG heading-hierarchy
+            audit, UX_AUDIT.md). Tag change only, same visual size via
+            inline style. */}
+        <h2 style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', margin: 0, textTransform: 'uppercase', letterSpacing: '0.4px' }}>{title}</h2>
       </div>
       {children}
     </div>

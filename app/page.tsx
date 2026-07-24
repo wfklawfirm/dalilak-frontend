@@ -1794,6 +1794,14 @@ Question: ${text}`
 
             /* ── Chat Messages ── */
             <div aria-live="polite" aria-label={isAr ? 'محادثة المساعد القانوني' : 'Legal assistant conversation'} style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '12px 14px' }}>
+              {/* WCAG 2.2 AA fix (UX_AUDIT.md heading-hierarchy audit): the
+                  page's only <h1> lives in the welcome-screen branch above,
+                  which unmounts entirely once a chat starts — leaving zero
+                  headings anywhere on the page for the rest of the session.
+                  Visually-hidden h1 restores a landmark for screen-reader
+                  users navigating by heading without changing anything
+                  visible. */}
+              <h1 className="sr-only">{isAr ? 'محادثة دليلك' : 'Dalilak conversation'}</h1>
               {/* Home button — visible on mobile inside chat */}
               <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', gap: 8, marginBottom: 8 }}>
                 <button

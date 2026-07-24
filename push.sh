@@ -974,11 +974,42 @@
 #   button app-wide" rule from batch #345-347 stays fully intact — only
 #   the underlying functionality (not the FAB) was restored. Full incident
 #   writeup in UX_AUDIT.md. tsc --noEmit clean.
+#
+#   BATCH #349 — WCAG 2.2 AA heading-hierarchy audit + fixes, 6 files.
+#   Ran a dedicated sub-agent audit across every literal <h1>-<h5> tag on
+#   19 route files, tracking conditional/empty/selected states (not just
+#   the happy path). Real findings, all fixed:
+#   - app/page.tsx: zero headings anywhere once a chat is active (the
+#     page's only h1 lives in the welcome-screen branch, which fully
+#     unmounts once messages.length>0) -> added a visually-hidden
+#     `<h1 className="sr-only">` at the top of the chat view.
+#   - ProcedureDetailClient.tsx: "not found" state had only an h2 (no h1
+#     for what is the entire page content in that state) -> promoted to
+#     h1. Normal state jumped h1 straight to h3 (the shared `Section`
+#     component used for Documents/Steps/Authority/Fees headings) with no
+#     h2 anywhere -> promoted Section's heading to h2.
+#   - services/page.tsx, my-files/page.tsx, admin/content/page.tsx: same
+#     recurring pattern — a grid/list of card titles rendered as h3 sits
+#     directly under the page h1 with no h2 section label wrapping it ->
+#     added a visually-hidden `<h2 className="sr-only">` (with a live
+#     result count) immediately before each grid/list.
+#   - admin/page.tsx: "create user" and "reset codes" tab panels used h3
+#     directly under the page h1 -> promoted both to h2 (no other h2
+#     exists in those tab states, so this was a safe direct promotion,
+#     not an addition).
+#   Verified via the same audit that 13 other files (procedures/page.tsx,
+#   forms/page.tsx, FormDetailClient.tsx, faq/authorities/settings/
+#   professional/drafting-studio pages, all 4 auth pages) already had
+#   correct single-h1/no-skipped-level structure — left untouched.
+#   Technical note: since this codebase is 100% inline-style (no CSS
+#   classes drive heading size/weight), every h-tag swap here is a pure
+#   semantic fix with zero visual change — verified safe by construction,
+#   not just by inspection. tsc --noEmit clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-348 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide) + batch #348 WCAG AA contrast audit (computed via relative-luminance formula): fixed --text-3 token (3.18:1->4.55:1) and migrated 89 real var(--text-4) text usages across 32 files to the fixed --text-3, plus fixed a critical regression where removing AccessibilityBar's FAB in batch #345 had silently broken the actual high-contrast/large-text/reduce-motion visual effect (CSS rules moved to globals.css + new render-nothing AccessibilityEffects.tsx restores it without re-adding a floating button)"
+git diff --cached --quiet || git commit -m "feat: batch #284-349 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide) + batch #348 WCAG AA contrast audit (computed via relative-luminance formula): fixed --text-3 token (3.18:1->4.55:1) and migrated 89 real var(--text-4) text usages across 32 files to the fixed --text-3, plus fixed a critical regression where removing AccessibilityBar's FAB in batch #345 had silently broken the actual high-contrast/large-text/reduce-motion visual effect (CSS rules moved to globals.css + new render-nothing AccessibilityEffects.tsx restores it without re-adding a floating button) + batch #349 WCAG heading-hierarchy audit across 19 pages + fixes in 6 files: sr-only h1 for active chat view (app/page.tsx had zero headings during chat), h1 for ProcedureDetailClient not-found state + h3->h2 promotion for its Section component, sr-only h2 section labels before card grids/lists in services/my-files/admin-content pages, h3->h2 promotion for admin create-user/reset-codes tab panels"
 git push origin main
 echo "✅ Done"

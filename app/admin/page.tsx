@@ -396,7 +396,7 @@ export default function AdminPage() {
         {tab === 'create' && (
           <div style={{ maxWidth: 440 }}>
             <div style={SECTION}>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: '0 0 18px' }}>{isAr ? 'إنشاء مستخدم جديد' : 'Create new user'}</h3>
+              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: '0 0 18px' }}>{isAr ? 'إنشاء مستخدم جديد' : 'Create new user'}</h2>
               <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
                   { k: 'full_name', label: 'الاسم الكامل',      type: 'text',     placeholder: 'أحمد علي' },
@@ -440,7 +440,7 @@ export default function AdminPage() {
           <div style={{ maxWidth: 520 }}>
             <div style={SECTION}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                <h3 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>رموز استعادة كلمة المرور</h3>
+                <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>رموز استعادة كلمة المرور</h2>
                 <button type="button" onClick={loadResets} style={{ fontSize: 11, color: '#741622', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
                   <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
                 </button>

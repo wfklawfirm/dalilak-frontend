@@ -781,10 +781,16 @@ export default function ServicesPage() {
             {Array.from({ length: 12 }).map((_, i) => <ServiceCardSkeleton key={i} />)}
           </div>
         ) : (
-          <div
-            className="svc-grid"
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
-          >
+          <div>
+            {/* WCAG heading-hierarchy fix (UX_AUDIT.md): each card title
+                below is an h3, and previously sat directly under the page's
+                h1 with nothing in between. Visually-hidden h2 restores the
+                correct nesting without changing anything visible. */}
+            <h2 className="sr-only">{isAr ? `نتائج الخدمات (${filtered.length})` : `Service results (${filtered.length})`}</h2>
+            <div
+              className="svc-grid"
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}
+            >
             {filtered.map((service, svcIdx) => (
               <button
                 type="button"
@@ -884,6 +890,7 @@ export default function ServicesPage() {
                 </div>
               </button>
             ))}
+            </div>
           </div>
         )}
       </div>

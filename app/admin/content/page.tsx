@@ -212,6 +212,12 @@ export default function ContentGovernancePage() {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {/* WCAG heading-hierarchy fix (UX_AUDIT.md): each list item
+                    title below is an h3, and previously sat directly under
+                    the page's h1 with nothing in between. Visually-hidden
+                    h2 restores the correct nesting without changing
+                    anything visible. */}
+                <h2 className="sr-only">{isAr ? `قائمة المحتوى (${filteredItems.length})` : `Content list (${filteredItems.length})`}</h2>
                 {filteredItems.map((item, i) => (
                   <button
                     type="button"
