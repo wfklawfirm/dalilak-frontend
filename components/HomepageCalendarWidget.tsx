@@ -162,15 +162,21 @@ export default function HomepageCalendarWidget() {
                 padding: 1, position: 'relative', fontFamily: 'inherit',
                 transition: 'background 0.12s',
               }}
-              aria-label={hasEvents ? `${date}: ${evs.length} ${isAr ? 'أحداث' : 'events'}` : undefined}
+              aria-label={hasEvents
+                ? `${date}: ${evs.length} ${isAr ? 'أحداث' : 'events'}` +
+                  (hasDeadline ? (isAr ? ' — يتضمن موعداً نهائياً' : ' — includes a deadline') : '') +
+                  (hasReminder ? (isAr ? ' — يتضمن تذكيراً' : ' — includes a reminder') : '')
+                : undefined}
             >
               <span style={{ fontSize: 9.5, fontWeight: isToday ? 800 : hasEvents ? 700 : 400, color: isToday ? '#8F1D2C' : hasEvents ? '#191713' : '#918B82', lineHeight: 1 }}>
                 {day}
               </span>
+              {/* batch #351 WCAG 1.4.1 fix: deadline vs reminder markers now differ by shape
+                  (circle vs. diamond), not color alone — matches the legend below. */}
               {hasEvents && (
-                <div style={{ display: 'flex', gap: 1.5, marginTop: 1.5 }}>
+                <div aria-hidden="true" style={{ display: 'flex', gap: 2, marginTop: 1.5 }}>
                   {hasDeadline && <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} />}
-                  {hasReminder && <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#8B5CF6', display: 'inline-block' }} />}
+                  {hasReminder && <span style={{ width: 4, height: 4, background: '#8B5CF6', display: 'inline-block', transform: 'rotate(45deg)' }} />}
                 </div>
               )}
             </button>
@@ -202,7 +208,7 @@ export default function HomepageCalendarWidget() {
           <span style={{ fontSize: 9, color: '#918B82', fontWeight: 600 }}>{isAr ? 'موعد نهائي' : 'Deadline'}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#8B5CF6', display: 'inline-block' }} />
+          <span style={{ width: 6, height: 6, background: '#8B5CF6', display: 'inline-block', transform: 'rotate(45deg)' }} />
           <span style={{ fontSize: 9, color: '#918B82', fontWeight: 600 }}>{isAr ? 'تذكير' : 'Reminder'}</span>
         </div>
       </div>

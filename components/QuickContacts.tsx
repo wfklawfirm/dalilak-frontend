@@ -241,17 +241,24 @@ export default function QuickContacts({ onAsk }: Props) {
                     fontSize: 15, position: 'relative',
                   }}>
                     {c.icon}
-                    {/* Per-contact open/closed dot */}
-                    <span style={{
+                    {/* Per-contact open/closed dot — batch #351 WCAG 1.4.1 fix: status is now
+                        also conveyed by shape (filled = open, hollow ring = closed), not color
+                        alone, plus a visually-hidden text label below for screen readers. */}
+                    <span aria-hidden="true" style={{
                       position: 'absolute', bottom: -1, right: -1,
                       width: 8, height: 8, borderRadius: '50%',
-                      background: openMap[c.nameEn] ? '#10b981' : '#ef4444',
-                      border: '1.5px solid var(--bg)',
+                      background: openMap[c.nameEn] ? '#10b981' : 'transparent',
+                      border: openMap[c.nameEn] ? '1.5px solid var(--bg)' : '1.5px solid #ef4444',
                     }} />
                   </span>
                   <div style={{ textAlign: isAr ? 'right' : 'left' }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-1)', whiteSpace: 'nowrap' }}>
                       {isAr ? c.nameAr : c.nameEn}
+                      <span className="sr-only">
+                        {openMap[c.nameEn]
+                          ? (isAr ? ' — مفتوح الآن' : ' — Open now')
+                          : (isAr ? ' — مغلق الآن' : ' — Closed now')}
+                      </span>
                     </div>
                     {c.phone && (
                       <div style={{ fontSize: 10.5, color: 'var(--text-3)', direction: 'ltr' }}>
