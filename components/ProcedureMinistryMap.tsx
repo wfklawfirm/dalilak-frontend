@@ -125,7 +125,8 @@ export default function ProcedureMinistryMap({ ministry, ministry_en, isAr }: Pr
 
         {/* Close button */}
         <button type="button" onClick={() => setExpanded(false)}
-          style={{ position: 'absolute', top: 5, [isAr ? 'left' : 'right']: 5, background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 11, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          aria-label={isAr ? 'إغلاق الخريطة' : 'Close map'}
+          style={{ position: 'absolute', top: 5, [isAr ? 'left' : 'right']: 5, background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >✕</button>
       </div>
 

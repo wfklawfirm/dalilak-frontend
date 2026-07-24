@@ -295,11 +295,23 @@
 #   already used elsewhere in the codebase. (TransactionStarter was
 #   checked too but is a centered modal, not a bottom sheet — no change
 #   needed there.)
+#
+#   SAFE-AREA SWEEP PART 2 (batch #324): ran an automated pass over every
+#   file with a fixed bottom:0 / flex-end-anchored overlay and no
+#   safe-area-inset-bottom reference — caught 2 more: EscalationModal's
+#   content padding and DocumentIntelligenceView's draft-preview sheet.
+#   Fixed both with the same calc() pattern; re-ran the sweep afterward
+#   and it now returns zero matches app-wide.
+#
+#   LAST TOUCH-TARGET (batch #324b): ProcedureMinistryMap's map-collapse
+#   close button was 20x20 with no aria-label — bumped to 36x36 (fits its
+#   110px-tall container comfortably) and added aria-label, matching the
+#   convention used throughout the earlier touch-target passes.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-323 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix (incl. layout.tsx-level FAB stack) + forms/[slug] bottom-padding fix + safe-area-inset-bottom sweep on 3 bottom sheets"
+git diff --cached --quiet || git commit -m "feat: batch #284-324 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix"
 git push origin main
 echo "✅ Done"

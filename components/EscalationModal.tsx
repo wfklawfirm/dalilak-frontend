@@ -110,7 +110,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />
         </div>
-        <div style={{ padding: '8px 18px 32px' }}>
+        <div style={{ padding: '8px 18px calc(32px + env(safe-area-inset-bottom, 0px))' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>
             {isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'}

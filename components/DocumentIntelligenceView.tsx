@@ -591,7 +591,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
         style={{
           width: '100%', maxWidth: 480,
           background: '#fff', borderRadius: '20px 20px 0 0',
-          padding: '20px 16px 32px',
+          padding: '20px 16px calc(32px + env(safe-area-inset-bottom, 0px))',
           fontFamily: "'Cairo','Inter',sans-serif",
           direction: isAr ? 'rtl' : 'ltr',
           maxHeight: '85vh', overflowY: 'auto',
