@@ -890,11 +890,39 @@
 #   chat redesign, full WCAG pass, responsive/performance work) is in
 #   UX_AUDIT.md's "بنود مؤجَّلة" table — nothing there is silently dropped,
 #   it's explicitly tracked as not-yet-done.
+#
+#   BATCH #346 — dead-code removal in app/page.tsx, found while auditing
+#   the homepage structure for the simplification pass. A ~110-line block
+#   of ~30 "homepage widget" components (WelcomeBackBanner, SmartReminder,
+#   GovCalendar, 11x SectionCollapseToggle groups, etc.) was 100%
+#   unreachable: it was gated by `messages.length===0` but nested INSIDE
+#   the `messages.length>0` (chat-view) branch of the page's main ternary
+#   — verified by manually tracing the bracket structure (ternary opens
+#   line 1373, chat-view branch starts 1859, dead block at 1946-2055,
+#   ternary closes 2158) before touching anything. This code never
+#   rendered for any user, ever — so removing it is a pure bundle-size/
+#   performance win with zero visible or functional change. Removed the
+#   dead JSX plus every import used exclusively by it (~20 eager imports
+#   + a whole next/dynamic-based lazy section of ~30 more, verified via
+#   `grep -c` on every single name before deleting anything; the one
+#   exception, `saveChatSession` from ChatHistoryPanel.tsx, is a separate
+#   named import genuinely still used elsewhere in the file and was left
+#   untouched). None of the underlying component files were deleted —
+#   SmartReminder.tsx, GovCalendar.tsx etc. all still exist and remain
+#   available if the new homepage design wants to reuse any of them; only
+#   the dead call site was removed. app/page.tsx: 2770 -> 2602 lines.
+#   Also incidentally confirmed via this audit that the *visible* homepage
+#   (hero + 6 procedure cards + 10 category chips + life-journey grid +
+#   3-step explainer + trust grid + footer, 4 primary CTAs) is already
+#   much closer to the brief's "simple homepage" target than assumed —
+#   full details + what's still pending in UX_AUDIT.md.
+#   tsc --noEmit clean; grep-verified zero leftover references to any
+#   removed identifier.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-345 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items"
+git diff --cached --quiet || git commit -m "feat: batch #284-346 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines"
 git push origin main
 echo "✅ Done"

@@ -1,28 +1,16 @@
 'use client'
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
 import GuidedFlow from '@/components/GuidedFlow'
 import MobileMenu from '@/components/MobileMenu'
-import DocExpiryBanner from '@/components/DocExpiryBanner'
-import DocExpiryCalendar from '@/components/DocExpiryCalendar'
-import SectionCollapseToggle from '@/components/SectionCollapseToggle'
-import AppointmentTracker from '@/components/AppointmentTracker'
-import GovCalendar from '@/components/GovCalendar'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
 import UserOnboarding from '@/components/UserOnboarding'
-import WelcomeBackBanner from '@/components/WelcomeBackBanner'
 import ChatSummaryCard from '@/components/ChatSummaryCard'
 import AppointmentReminder from '@/components/AppointmentReminder'
-import ProcedureProgressTracker from '@/components/ProcedureProgressTracker'
-import RecentActivityFeed from '@/components/RecentActivityFeed'
 import FeedbackWidget from '@/components/FeedbackWidget'
-import SmartHomeBanner from '@/components/SmartHomeBanner'
-import GovHolidayAlert from '@/components/GovHolidayAlert'
-import ChatWelcomeMessage from '@/components/ChatWelcomeMessage'
 import ChatTypingIndicator from '@/components/ChatTypingIndicator'
 import ChatMessageActions from '@/components/ChatMessageActions'
 import ChatPinButton, { ChatPinnedBanner } from '@/components/ChatPinnedMessage'
@@ -30,24 +18,14 @@ import ChatVoicePlayback from '@/components/ChatVoicePlayback'
 import ChatEmojiReactions from '@/components/ChatEmojiReactions'
 import ChatSaveToNotes from '@/components/ChatSaveToNotes'
 import ChatAIBadge from '@/components/ChatAIBadge'
-import HomepageQuickActionsBar from '@/components/HomepageQuickActionsBar'
 import ChatScrollToBottomButton from '@/components/ChatScrollToBottomButton'
-import ProcedureStatusBoard from '@/components/ProcedureStatusBoard'
-import SmartReminder from '@/components/SmartReminder'
 import { saveChatSession } from '@/components/ChatHistoryPanel'
-import ProcedureAlertSummary from '@/components/ProcedureAlertSummary'
 import ProcedureCompletionCelebration from '@/components/ProcedureCompletionCelebration'
 import ChatSessionTimer from '@/components/ChatSessionTimer'
-import ProcedureChatContext from '@/components/ProcedureChatContext'
-import HomepageTodayTasks from '@/components/HomepageTodayTasks'
 import ChatVoiceInputBtn from '@/components/ChatVoiceInputBtn'
-import HomepageCalendarWidget from '@/components/HomepageCalendarWidget'
 import ChatSessionSummaryChip from '@/components/ChatSessionSummaryChip'
-import HomepageCompletionCTA from '@/components/HomepageCompletionCTA'
-import HomepageWeeklyGoalWidget from '@/components/HomepageWeeklyGoalWidget'
 import ChatLanguageToggleChip from '@/components/ChatLanguageToggleChip'
 import HomepageChatSuggestionsBar from '@/components/HomepageChatSuggestionsBar'
-import HomepageTodaysTasks from '@/components/HomepageTodaysTasks'
 import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
 import ChatQuickReplies from '@/components/ChatQuickReplies'
 import ChatInputCharCounter from '@/components/ChatInputCharCounter'
@@ -68,50 +46,6 @@ import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES } from '@/lib/allTransactions'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { ALL_SERVICES } from '@/lib/allServices'
 import { LIFE_JOURNEYS, getJourneyBySlug, type LifeJourney, type JourneyStep } from '@/lib/lifeJourneys'
-
-// ── Lazy-loaded homepage widgets ────────────────────────────────────────────
-// These only render inside the collapsed-by-default SectionCollapseToggle
-// groups ("At a glance", "Suggestions for you", "Saved & favorites",
-// "Search & chat history", "Extra tools") added when the homepage was
-// decluttered. Using next/dynamic code-splits them into separate chunks
-// fetched on demand instead of bundled into the initial homepage load —
-// same components, same behavior, smaller first paint. ssr:false is safe
-// here since every one of these already gated its real content behind a
-// mounted-on-client check.
-function dyn<P extends object>(loader: () => Promise<{ default: React.ComponentType<P> }>) {
-  return dynamic<P>(loader, { ssr: false })
-}
-const SavedItemsPanel          = dyn(() => import('@/components/SavedItemsPanel'))
-const RecentlyViewedPanel      = dyn(() => import('@/components/RecentlyViewedPanel'))
-const QuickContacts            = dyn(() => import('@/components/QuickContacts'))
-const SmartSuggestions         = dyn(() => import('@/components/SmartSuggestions'))
-const DailyTip                 = dyn(() => import('@/components/DailyTip'))
-const LanguagePreferenceCard   = dyn(() => import('@/components/LanguagePreferenceCard'))
-const SearchHistoryPanel       = dyn(() => import('@/components/SearchHistoryPanel'))
-const HomepageRecentMinistries = dyn(() => import('@/components/HomepageRecentMinistries'))
-const DocChecklistBuilder      = dyn(() => import('@/components/DocChecklistBuilder'))
-const ProcedureComparator      = dyn(() => import('@/components/ProcedureComparator'))
-const ProcedureFavoritesList   = dyn(() => import('@/components/ProcedureFavoritesList'))
-const QuickNotepad             = dyn(() => import('@/components/QuickNotepad'))
-const StatsBadgeStrip          = dyn(() => import('@/components/StatsBadgeStrip'))
-const SavedCostSummary         = dyn(() => import('@/components/SavedCostSummary'))
-const HomepageProgressRing     = dyn(() => import('@/components/HomepageProgressRing'))
-const ProcedureOfTheWeek       = dyn(() => import('@/components/ProcedureOfTheWeek'))
-const LiveBeirutClock          = dyn(() => import('@/components/LiveBeirutClock'))
-const HomepageWeatherWidget    = dyn(() => import('@/components/HomepageWeatherWidget'))
-const HomepageMotivationalQuote = dyn(() => import('@/components/HomepageMotivationalQuote'))
-const HomepageUserStats        = dyn(() => import('@/components/HomepageUserStats'))
-const ProcedureBookmarks       = dyn(() => import('@/components/ProcedureBookmarks'))
-const ChatHistoryPanel         = dyn(() => import('@/components/ChatHistoryPanel'))
-const HomepageProcedureStats   = dyn(() => import('@/components/HomepageProcedureStats'))
-const HomepageWeatherBanner    = dyn(() => import('@/components/HomepageWeatherBanner'))
-const HomepageNewProceduresBadge = dyn(() => import('@/components/HomepageNewProceduresBadge'))
-const HomepageStreakCounter    = dyn(() => import('@/components/HomepageStreakCounter'))
-const HomepageMiniStats        = dyn(() => import('@/components/HomepageMiniStats'))
-const HomepageProcedureOfTheDay = dyn(() => import('@/components/HomepageProcedureOfTheDay'))
-const HomepageLiveStats        = dyn(() => import('@/components/HomepageLiveStats'))
-const HomepageMinistrySpotlight = dyn(() => import('@/components/HomepageMinistrySpotlight'))
-const HomepageFeaturedFAQ      = dyn(() => import('@/components/HomepageFeaturedFAQ'))
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -1941,118 +1875,16 @@ Question: ${text}`
                 </div>
               )}
 
-              {/* ── Homepage widgets — grouped into labeled collapsible sections ── */}
-              {/* Primary, always visible: welcome + quick actions */}
-              {messages.length === 0 && (
-                <>
-                  <WelcomeBackBanner userName={currentUser?.full_name} />
-                  <HomepageQuickActionsBar isAr={isAr} />
-
-                  <SectionCollapseToggle titleAr="تنبيهات وتذكيرات" titleEn="Alerts & reminders" icon="🔔" storageKey="dalilak_sec_alerts" defaultOpen={true}>
-                    <GovHolidayAlert />
-                    <SmartHomeBanner onAsk={q => sendMessage(q)} />
-                    <ProcedureAlertSummary />
-                    <SmartReminder />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="مهامي اليوم" titleEn="Today's tasks" icon="📅" storageKey="dalilak_sec_tasks" defaultOpen={true}>
-                    <HomepageTodayTasks />
-                    <HomepageTodaysTasks isAr={isAr} />
-                    <HomepageCalendarWidget />
-                    <HomepageCompletionCTA />
-                    <HomepageWeeklyGoalWidget />
-                    <GovCalendar onAsk={q => sendMessage(q)} />
-                    <ProcedureStatusBoard />
-                  </SectionCollapseToggle>
-
-                  {/* Documents/Appointments default to collapsed — unlike Alerts and
-                      Today's Tasks, these aren't universally relevant on every visit
-                      (not everyone has tracked documents or appointments yet), and
-                      having 4 sections open by default made the pre-scroll mobile
-                      experience unnecessarily long. Still one tap away, and the
-                      open/closed state persists per-user via storageKey. */}
-                  <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={false}>
-                    <DocExpiryBanner onAsk={q => sendMessage(q)} />
-                    <DocExpiryCalendar onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="مواعيدي" titleEn="My Appointments" icon="📅" storageKey="dalilak_sec_appts" defaultOpen={false}>
-                    <AppointmentTracker onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="لمحة سريعة" titleEn="At a glance" icon="📊" storageKey="dalilak_sec_stats" defaultOpen={false}>
-                    <HomepageStreakCounter />
-                    <LiveBeirutClock />
-                    <HomepageWeatherWidget isAr={isAr} />
-                    <HomepageWeatherBanner />
-                    <HomepageProgressRing />
-                    <HomepageUserStats isAr={isAr} />
-                    <StatsBadgeStrip />
-                    <HomepageLiveStats
-                      totalProcedures={TX_ALL.length + ENRICHED_PROCEDURES.length}
-                      ministriesCount={TX_MINISTRIES.length}
-                      formsCount={TX_WITH_FORMS.length}
-                      isAr={isAr}
-                    />
-                    <HomepageMiniStats />
-                    <HomepageProcedureStats />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="اقتراحات لك" titleEn="Suggestions for you" icon="💡" storageKey="dalilak_sec_suggestions" defaultOpen={false}>
-                    <LanguagePreferenceCard />
-                    <HomepageNewProceduresBadge />
-                    <DailyTip onAsk={q => sendMessage(q)} />
-                    <ProcedureOfTheWeek onAsk={q => sendMessage(q)} />
-                    <HomepageProcedureOfTheDay />
-                    <SmartSuggestions onAsk={q => sendMessage(q)} />
-                    <HomepageMinistrySpotlight isAr={isAr} />
-                    <HomepageRecentMinistries isAr={isAr} />
-                    <HomepageFeaturedFAQ isAr={isAr} onAsk={q => sendMessage(q)} />
-                    <HomepageMotivationalQuote isAr={isAr} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="المفضلة والمحفوظات" titleEn="Saved & favorites" icon="⭐" storageKey="dalilak_sec_saved" defaultOpen={false}>
-                    <ProcedureFavoritesList onAsk={q => sendMessage(q)} onNavigate={p => router.push(p)} />
-                    <ProcedureBookmarks onAsk={q => sendMessage(q)} />
-                    <SavedItemsPanel onAsk={q => sendMessage(q)} />
-                    <SavedCostSummary />
-                    <RecentlyViewedPanel onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="سجل البحث والمحادثات" titleEn="Search & chat history" icon="🕐" storageKey="dalilak_sec_history" defaultOpen={false}>
-                    <ChatHistoryPanel onRestore={msgs => setMessages(msgs.map(m => ({ role: m.role, content: m.content, streaming: false })))} />
-                    <SearchHistoryPanel onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="تقدمي في المعاملات" titleEn="My Procedure Progress" icon="📊" storageKey="dalilak_sec_progress" defaultOpen={true}>
-                    <ProcedureProgressTracker onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="آخر نشاطاتي" titleEn="Recent Activity" icon="🕐" storageKey="dalilak_sec_activity" defaultOpen={true}>
-                    <RecentActivityFeed onAsk={q => sendMessage(q)} />
-                  </SectionCollapseToggle>
-
-                  <SectionCollapseToggle titleAr="أدوات إضافية" titleEn="Extra tools" icon="🧰" storageKey="dalilak_sec_tools" defaultOpen={false}>
-                    <DocChecklistBuilder onAsk={q => sendMessage(q)} />
-                    <ProcedureComparator onAsk={q => sendMessage(q)} />
-                    <QuickContacts onAsk={q => sendMessage(q)} />
-                    <QuickNotepad />
-                  </SectionCollapseToggle>
-                </>
-              )}
-
-              {/* Procedure context chip — when navigated from a procedure page */}
-              {messages.length === 0 && (
-                <ProcedureChatContext isAr={isAr} onAsk={q => sendMessage(q)} />
-              )}
-
-              {/* Welcome screen — shown when chat is empty */}
-              {messages.length === 0 && !loading && (
-                <ChatWelcomeMessage
-                  onSelect={q => sendMessage(q)}
-                  isAr={isAr}
-                />
-              )}
+              {/* NOTE (UX_AUDIT.md, batch #346): a ~110-line block of ~30 "homepage
+                  widget" components used to sit here, gated by `messages.length===0`.
+                  That guard was always false at this point in the code — this whole
+                  branch only renders when `messages.length > 0` (see the outer
+                  ternary above). The block was therefore 100% dead/unreachable code:
+                  it never rendered for any user, ever. Verified by tracing the
+                  ternary's brackets before removal. Removed entirely (along with the
+                  ~30 now-orphaned imports/lazy-chunk definitions it was the sole user
+                  of) — this is a pure bundle-size/performance win with zero visible
+                  change, since nothing here was ever visible to begin with. */}
 
               {/* Chat summary card — appears after 5+ messages */}
               {messages.length >= 5 && (
