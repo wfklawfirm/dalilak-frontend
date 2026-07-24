@@ -429,16 +429,25 @@
 #   - MissingDocumentsChecklist: per-document "Upload" button — fixed
 #     with minHeight:44 directly (padding-based sizing, not fixed
 #     width/height, so no pseudo-element needed)
-#   Skipped HomepageMinistrySpotlight's prev/next carousel buttons: they're
-#   stacked with only 4px gap, and a uniform hit-area expansion would make
-#   the two invisible tap zones overlap and risk mis-taps between them —
-#   needs a custom asymmetric fix, left for a future batch rather than
-#   introducing a new bug while fixing this one.
+#   Skipped HomepageMinistrySpotlight's prev/next carousel buttons in
+#   #332: they're stacked with only 4px gap, and a uniform hit-area
+#   expansion would make the two invisible tap zones overlap and risk
+#   mis-taps between them.
+#
+#   FOLLOW-UP (batch #333): fixed HomepageMinistrySpotlight properly.
+#   Math: button size 26px, target ~44px needs +9px expansion per side
+#   (.tap-hit-9, already built). To avoid two 44px hit zones overlapping,
+#   center-to-center distance must be >= 44px, i.e. the gap between
+#   button edges must be >= 2×9=18px. Bumped the stack's gap from 4px to
+#   20px (small, deliberate safety margin over the 18px minimum) and
+#   applied .tap-hit-9 to both buttons. Minor, justified visual change —
+#   the two arrow buttons now sit slightly further apart — versus leaving
+#   a real mobile mis-tap risk unfixed.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-332 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components"
+git diff --cached --quiet || git commit -m "feat: batch #284-333 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix"
 git push origin main
 echo "✅ Done"

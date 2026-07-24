@@ -145,11 +145,15 @@ export default function HomepageMinistrySpotlight({ isAr }: { isAr: boolean }) {
           </div>
         </div>
 
-        {/* Prev/Next */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
-          <button type="button" onClick={() => advance(-1)}
+        {/* Prev/Next.
+            Gap bumped from 4 to 20px so each button's touch hit-area
+            (.tap-hit-9, expands +9px per side on touch devices only) can
+            reach the 44px minimum without the two expanded zones
+            overlapping each other — see push.sh batch #332/#333 notes. */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, flexShrink: 0 }}>
+          <button type="button" className="tap-hit-9" onClick={() => advance(-1)}
             style={{
-              width: 26, height: 26, borderRadius: '50%',
+              width: 26, height: 26, borderRadius: '50%', position: 'relative',
               background: '#F5F3EE', border: '1.5px solid #E5E0D8',
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
@@ -157,9 +161,9 @@ export default function HomepageMinistrySpotlight({ isAr }: { isAr: boolean }) {
               <polyline points="18 15 12 9 6 15"/>
             </svg>
           </button>
-          <button type="button" onClick={() => advance(1)}
+          <button type="button" className="tap-hit-9" onClick={() => advance(1)}
             style={{
-              width: 26, height: 26, borderRadius: '50%',
+              width: 26, height: 26, borderRadius: '50%', position: 'relative',
               background: '#F5F3EE', border: '1.5px solid #E5E0D8',
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
