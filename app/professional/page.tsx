@@ -193,7 +193,7 @@ export default function ProfessionalWorkspacePage() {
         background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 100%)',
         padding: '20px 20px 24px',
       }}>
-        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+        <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <h1 style={{ margin: 0, fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'inherit' }}>
@@ -240,7 +240,7 @@ export default function ProfessionalWorkspacePage() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 16px 100px' }}>
+      <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '20px 16px 32px' }}>
 
         {/* Overview */}
         {activeSection === 'overview' && (

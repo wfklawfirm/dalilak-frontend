@@ -520,11 +520,225 @@
 #   squeezed to nothing first. Everything else in both admin pages (users
 #   table, pipeline grid, filter/tab rows) was already correctly
 #   responsive. tsc clean.
+#
+#   BATCH #337 — cross-page mobile CONSISTENCY pass. User reported the
+#   mobile shape still felt "غير متناسق" (uneven) across pages even after
+#   #335/#336's per-page fixes. Root cause: every page hand-copies its own
+#   sticky maroon header + main-content wrapper instead of sharing one
+#   component/class, so the numbers had silently drifted from each other
+#   over many batches. Ran a dedicated full-repo audit of all 20 page
+#   files (header padding, container maxWidth, H1 size, bottom-nav
+#   clearance) and standardized every page back to the majority pattern:
+#   header padding 13px 16px, container maxWidth 720, H1 15px, bottom
+#   clearance 100px above the fixed BottomNav. Concretely:
+#   - authorities/page.tsx: maxWidth 760 → 720 (both header + main)
+#   - forms/[slug]/FormDetailClient.tsx: maxWidth 680 → 720, header
+#     padding 14px 16px → 13px 16px, main padding 20px 16px → 16px 14px
+#   - procedures/[slug]/ProcedureDetailClient.tsx: header padding
+#     12px 16px → 13px 16px
+#   - faq/page.tsx: header padding 14px 16px → 13px 16px, main top
+#     padding 14px → 16px
+#   - services/expat-property/page.tsx: header padding 14px 16px 18px →
+#     13px 16px 16px, H1 14px → 15px (was the smallest in the app);
+#     removed a dead local `.bottom-nav-padding{padding-bottom:68px}`
+#     override with no media query — it had zero effect on mobile (the
+#     global !important rule in globals.css always won there) but was
+#     silently adding unwanted bottom padding on desktop/tablet widths
+#     where BottomNav isn't even rendered. Deleting it is a pure fix,
+#     not just a style alignment.
+#   - my-files/page.tsx: page title was a plain <div>, not a heading —
+#     promoted to <h1> (same visual style, fixes a11y + consistency);
+#     bottom clearance 80px → 100px, matching every other BottomNav page
+#     (was the least clearance of any nav-bearing page).
+#   - professional/page.tsx: was reserving 100px of bottom padding as if
+#     BottomNav were rendered there, but this page never renders it —
+#     dead space. Reduced to a normal 32px page-end margin.
+#   - settings/page.tsx: <BottomNav> wasn't wrapped in the standard
+#     `.bottom-nav-wrapper` class every other page uses to hide the fixed
+#     nav above the 767px breakpoint — settings was the one page where it
+#     could stay visible outside mobile. Wrapped it to match.
+#   - drafting-studio/page.tsx, procedures/[slug]/playbook/page.tsx: main
+#     top padding (20px→16px) and bottom clearance (120px→100px)
+#     normalized to the same values used everywhere else.
+#   - login/page.tsx: logo H1 24px → 22px, matching register/
+#     forgot-password/reset-password (same auth-card template family).
+#   tsc clean after every edit. No routes, APIs, or auth logic touched —
+#   pure layout-consistency alignment.
+#
+#   BATCH #338 — design-token hardening (foundation phase of the mobile-
+#   first UI/UX request). Audited app/globals.css first: a real design-
+#   token system already exists (colors, 8px spacing scale, radius,
+#   shadows, z-index, a full typography scale .text-display→.text-label,
+#   and .container-sm/md/lg/xl classes) — the gap was that pages weren't
+#   using it, hardcoding their own literal values instead (root cause of
+#   #337's drift). Rather than risk a full mass-migration of every page
+#   to shared components in one pass, did the safe, zero-visual-diff
+#   version: replaced the literal duplicated values with CSS custom
+#   properties that resolve to the exact same output, so future edits
+#   only touch one place instead of N files:
+#   - Added --header-gradient (the sticky maroon header background) —
+#     was a hand-typed linear-gradient() literal duplicated across 14
+#     files (procedures, forms, faq, authorities, drafting-studio,
+#     services, admin, admin/content, my-files, both [slug] detail
+#     clients, playbook, expat-property, components/ui/index.tsx's
+#     PageHeader). All 14 now reference var(--header-gradient) instead.
+#   - Added --bottom-nav-clearance (100px) and pointed all 10 pages that
+#     reserve exactly 100px above the fixed BottomNav at it instead of
+#     the literal number, including the 4 outliers just aligned to
+#     100px in #337 (my-files, playbook, drafting-studio, services).
+#   - Along the way found + fixed 2 more drifted values from the same
+#     family #337 covered: forms/page.tsx main top padding (14px→16px)
+#     and services/page.tsx main top padding (18px→16px), both now
+#     matching the 16px baseline every sibling page uses.
+#   Verified the substitution didn't touch look-alike-but-different
+#   values (e.g. admin's 2-stop `linear-gradient(135deg,#741622,#8F1D2C)`
+#   button-active-state background, which is visually and semantically
+#   different from the 3-stop header gradient) — confirmed via grep
+#   before and after. tsc clean.
+#   NOTE on scope: the user's original ask was a full Playwright/
+#   Lighthouse-verified mobile-first rebuild across 36 areas. This
+#   sandbox cannot reliably run `npm run dev` or Playwright (confirmed
+#   earlier this session), so that verification layer isn't available
+#   here — code-level review + live-deployment inspection (curl/Chrome
+#   MCP against the deployed site) is the substitute used throughout.
+#   Foundation-phase work (this batch + #337) is done; page-by-page
+#   migration to the shared component/token system continues in future
+#   batches on request.
+#
+#   BATCH #339 — continued token hardening, 1-hour focused session.
+#   - maxWidth: 720 (a literal number, 35 occurrences across 21 files —
+#     9 page containers + 12 homepage widget components like
+#     DocExpiryBanner/QuickContacts/SmartSuggestions/SavedItemsPanel/
+#     DailyTip/GovCalendar/AppointmentTracker/RecentlyViewedPanel) → all
+#     now read maxWidth: 'var(--container-md)'. Same 720px output,
+#     single source of truth going forward.
+#   - Added --header-padding: 13px 16px token; applied to all 9 real
+#     sticky page headers (procedures, forms, faq, authorities,
+#     drafting-studio, services, both [slug] detail clients, and
+#     components/ui/index.tsx's PageHeader) — carefully matched only the
+#     `position:'sticky',top:0,zIndex:50` header block via its exact
+#     surrounding string, NOT the several *unrelated* buttons/list-rows/
+#     cards elsewhere in settings.tsx, GuidedFlow.tsx,
+#     DocumentIntelligenceView.tsx, LanguagePreferenceCard.tsx,
+#     MobileModeSheet.tsx, WelcomeBackBanner.tsx that coincidentally
+#     share the same "13px 16px" numeric value but aren't page headers —
+#     those were deliberately left as local literals since tying them to
+#     a header-specific token would be semantically wrong even though
+#     numerically identical today.
+#   - Found + fixed one more real outlier while doing this: my-files
+#     header top padding was still 14px (hadn't been caught in #337) —
+#     now 13px via the same token, matching all siblings.
+#   - services/page.tsx and expat-property/page.tsx both have 2-3 more
+#     "13px 16px"-valued paddings that are tab/card elements, not the
+#     header — confirmed via grep context before touching anything, left
+#     alone on purpose.
+#   tsc clean after every step (ran ~4 times this batch).
+#
+#   BATCH #340 — floating-button touch-target sweep (part of the same
+#   1-hour focused session as #339). Grepped every `height: 40/42,` in
+#   app+components, then manually read each match's surrounding context
+#   to separate real `<button>` elements from decorative icon `<div>`s
+#   inside larger cards (most matches were decorative — e.g. authorities/
+#   page.tsx:388, page.tsx:2299/2302, DraftingStudio.tsx:280/293,
+#   ServiceGroupSheet.tsx:100, DocumentIntelligenceView.tsx:796,
+#   MobileModeSheet.tsx:128 are all non-interactive icon containers,
+#   correctly left alone). Found 6 genuine sub-44px interactive buttons
+#   and fixed each with the existing tap-hit-N invisible-touch-zone
+#   pattern (added tap-hit-1 and tap-hit-2 to the family in globals.css,
+#   which previously only went 5/6/7/8/9/11/14):
+#   - ProcedureBackToTopButton.tsx (40px) + ChatScrollToBottomButton.tsx
+#     (40px): both tap-hit-2. Verified against the documented 10px gap
+#     between this button and FeedbackWidget in the fixed floating stack
+#     — after both expansions the two invisible hit-zones still clear
+#     each other by 7px, no overlap.
+#   - FeedbackWidget.tsx toggle (42px): tap-hit-1.
+#   - TopNav.tsx language-toggle button (40px tall, was already ≥46px
+#     wide so only height needed the fix): tap-hit-2.
+#   - MobileMenu.tsx drawer close button (40px): tap-hit-2 — isolated
+#     inside the slide-out drawer, no neighboring fixed elements, no
+#     overlap risk to check.
+#   - The trickiest one: the global MinistryQuickDial/AccessibilityBar/
+#     GlobalLangSwitch fixed-button stack (present on every page,
+#     8px real gaps between each pair by design). AccessibilityBar
+#     (40px) got tap-hit-2; GlobalLangSwitch (34px, the smallest button
+#     in the app) got tap-hit-5. Did the full arithmetic before touching
+#     anything: AccessibilityBar's top gap to GlobalLangSwitch and
+#     bottom gap to MinistryQuickDial are both exactly 8px; with both
+#     expansions applied the tightest resulting clearance is 1px — thin
+#     but confirmed non-overlapping, not a guess. MinistryQuickDial
+#     itself was already 44px, untouched.
+#   tsc clean after every edit (ran 2 more times this batch, both exit 0).
+#
+#   BATCH #341 — auth-page (login/register/forgot-password/reset-password)
+#   visual consistency fix, closing out the same 1-hour session. These 4
+#   pages share one visual template (logo circle, card, form) but were
+#   built across different past batches and had drifted on ~12 numeric
+#   dimensions. Ran an Explore-agent line-by-line diff of all 4 files
+#   first, then picked the value already shared by 3-of-4 (or resolved
+#   the couple of 2-vs-2 splits toward the more compact/mobile-friendly
+#   value) as the canonical one and aligned the outlier(s):
+#   - Font-family: forgot-password and reset-password were missing
+#     'IBM Plex Sans Arabic' (only had Cairo/Inter as fallback) — this is
+#     a real Arabic-rendering regression, not just a style nitpick, since
+#     login/register already had the Arabic-optimized font. Added to both.
+#   - .auth-input padding: login was 13px 16px vs 12px 16px everywhere
+#     else — aligned to 12px 16px.
+#   - Logo circle: login was 80×80/radius22/border2px/margin 0 auto 14px —
+#     the other 3 all agree on 72×72/radius20/margin 0 auto 12px (register
+#     differed only on border width, 2px vs the other two's 1.5px).
+#     Aligned login AND register down to 72×72/radius20/border1.5px/mb12.
+#   - Logo image: login was 56×56 vs 50×50 elsewhere — aligned to 50×50.
+#   - Logo block marginBottom: login was 28 vs 20 elsewhere — aligned to 20.
+#   - Brand subtitle: login was fontSize12.5/marginTop4 vs 12/3 elsewhere —
+#     aligned.
+#   - Card padding: split 2-vs-2 (login+forgot-password used 28px 24px,
+#     register+reset-password used 24px 22px). Standardized all 4 to the
+#     more compact 24px 22px.
+#   - Card title h2: login was fontSize18/margin '0 0 20px' vs the other
+#     3's fontSize17 (register's margin was '0 0 4px', forgot/reset's was
+#     '0 0 6px') — aligned all 4 to fontSize17/margin '0 0 6px'.
+#   - Error box marginBottom: login was 16 vs 14 elsewhere — aligned.
+#   - Form gap: split 2-vs-2 (login+forgot-password used 14, register+
+#     reset-password used 12) — standardized all 4 to 12.
+#   - Field label: login was fontSize12.5/marginBottom6 vs 12/5 elsewhere
+#     — aligned (both username and password labels).
+#   - "Back to login/register" link marginTop: 3-way split (login 20,
+#     register 16, forgot-password/reset-password 14) — standardized all
+#     4 to 14.
+#   - Footer disclaimer marginTop: login was 20 vs 18 everywhere else —
+#     aligned.
+#   Deliberately left alone: register's "free for 3 days" badge block
+#   (structurally unique to that page, not a drift) and the submit
+#   button's optional marginTop:4 (present on register/reset-password
+#   only, ~4px difference, negligible visual impact not worth 2 more
+#   edits for). tsc --noEmit clean after all 4 files.
+#
+#   BONUS FIX (same batch): audited every maroon-gradient primary-CTA
+#   button app-wide (37 instances across 24 files) for the same class of
+#   drift as the auth-page audit. Finding: unlike the auth pages, there
+#   is genuinely no dominant pattern here — 33 distinct (padding/radius/
+#   fontSize/shadow) combinations across 37 buttons, each contextually
+#   sized to its own compact list-row/card/standalone-CTA container.
+#   Mass-normalizing all 37 without live visual verification (not
+#   possible in this sandbox) would be real, unverifiable regression
+#   risk for near-zero user-facing benefit — same judgment already
+#   applied earlier this session to border-radius and breakpoint-scheme
+#   normalization, so deliberately left alone. Fixed only the one clear,
+#   narrow exception found: error.tsx and global-error.tsx both render
+#   the literal same "Try Again" button (same role, near-identical
+#   trigger condition — route-level vs root-layout-level crash) but had
+#   drifted to different radius/fontSize/shadow (12/13/0.25 vs
+#   10/14/0.28). Aligned global-error.tsx to error.tsx's values. Did NOT
+#   add the icon or restructure global-error.tsx to match error.tsx's
+#   markup — global-error.tsx intentionally avoids importing shared
+#   components/LanguageContext since it's the last-resort fallback that
+#   must still render if even the root layout crashes; that's a
+#   deliberate resilience choice, not a bug. tsc clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-336 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-341 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration across 21+9 files + batch #340 floating-button touch-target sweep: tap-hit-1/2/5 added, 6 sub-44px buttons fixed with verified no-overlap math + batch #341 auth-page (login/register/forgot-password/reset-password) visual consistency fix: font-family, input padding, logo sizing, card padding, h2 sizing, form gap, label sizing, error/link/footer margins all aligned to one canonical template"
 git push origin main
 echo "✅ Done"

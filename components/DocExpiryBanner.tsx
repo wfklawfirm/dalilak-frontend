@@ -109,7 +109,7 @@ export default function DocExpiryBanner({ onAsk }: Props) {
       <div
         dir={isAr ? 'rtl' : 'ltr'}
         style={{
-          margin: '0 auto 12px', maxWidth: 720,
+          margin: '0 auto 12px', maxWidth: 'var(--container-md)',
           background: 'var(--surface-muted)',
           border: '1px dashed var(--border)',
           borderRadius: 12, padding: '10px 16px',
@@ -158,7 +158,7 @@ export default function DocExpiryBanner({ onAsk }: Props) {
         dir={isAr ? 'rtl' : 'ltr'}
         role="alert"
         style={{
-          margin: '0 auto 12px', maxWidth: 720,
+          margin: '0 auto 12px', maxWidth: 'var(--container-md)',
           background: col.bg, border: `1px solid ${col.border}`,
           borderRadius: 12, padding: '10px 16px',
           display: 'flex', alignItems: 'center', gap: 12,
@@ -231,7 +231,7 @@ export default function DocExpiryBanner({ onAsk }: Props) {
     <div
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
-        margin: '0 auto 12px', maxWidth: 720,
+        margin: '0 auto 12px', maxWidth: 'var(--container-md)',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         borderRadius: 14,

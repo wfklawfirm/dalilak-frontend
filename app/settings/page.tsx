@@ -275,7 +275,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <BottomNav isAr={isAr} />
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} /></div>
     </div>
   )
 }

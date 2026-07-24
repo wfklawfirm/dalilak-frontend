@@ -45,12 +45,17 @@ export default function ChatScrollToBottomButton({ containerId, isAr }: Props) {
     <button
       onClick={scrollDown}
       aria-label={isAr ? 'الانتقال لأسفل' : 'Scroll to bottom'}
-      className="no-print"
+      className="no-print tap-hit-2"
       style={{
         position: 'fixed',
         // 278 = clears FeedbackWidget (bottom:226, 42px tall -> top edge 268),
         // which itself sits above the always-on MinistryQuickDial/
         // AccessibilityBar/GlobalLangSwitch stack on the same side.
+        // The tap-hit-2 touch-area expansion below (+2px/side, to bring
+        // this 40px button to the ~44px minimum) stays safely inside the
+        // 10px gap to FeedbackWidget's own expanded zone — verified:
+        // 10px gap - 2px (this) - 1px (FeedbackWidget's tap-hit-1) = 7px
+        // clearance still left between the two invisible hit-zones.
         bottom: 278,
         insetInlineEnd: 16,
         width: 40, height: 40,

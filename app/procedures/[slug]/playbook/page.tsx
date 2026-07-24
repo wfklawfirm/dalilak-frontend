@@ -67,7 +67,7 @@ export default function PlaybookPage() {
         rightSlot={langToggle}
       />
 
-      <main id="main-content" style={{ maxWidth: 720, margin: '0 auto', padding: '16px 14px 120px' }}>
+      <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
         {activeFlowchart ? (
           <>
@@ -297,7 +297,7 @@ export default function PlaybookPage() {
 
         {/* Ask AI CTA */}
         <div style={{
-          background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
+          background: 'var(--header-gradient)',
           borderRadius: 18, padding: '20px 20px',
           display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center', textAlign: 'center',
           boxShadow: '0 4px 24px rgba(80,10,10,0.2)',

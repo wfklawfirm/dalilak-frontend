@@ -167,7 +167,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         margin: '0 auto 14px',
-        maxWidth: 720,
+        maxWidth: 'var(--container-md)',
         borderRadius: 14,
         border: `1px solid ${hasSoon ? '#FDE68A' : 'var(--border)'}`,
         background: hasSoon ? '#FFFDF5' : 'var(--surface)',

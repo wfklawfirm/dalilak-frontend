@@ -44,7 +44,7 @@ export default function LoginPage() {
         @keyframes authLogoIn { from { opacity:0; transform:translateY(-14px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
         @keyframes authCardIn { from { opacity:0; transform:translateY(24px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
         .auth-input {
-          width: 100%; padding: 13px 16px;
+          width: 100%; padding: 12px 16px;
           border: 1.5px solid #E6E2DC; border-radius: 14px;
           font-size: 15px; outline: none;
           font-family: inherit; background: #FAFAF8;
@@ -71,21 +71,21 @@ export default function LoginPage() {
       `}</style>
 
       {/* Logo + Brand */}
-      <div style={{ textAlign: 'center', marginBottom: 28, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
+      <div style={{ textAlign: 'center', marginBottom: 20, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
         <div style={{
-          width: 80, height: 80, borderRadius: 22,
+          width: 72, height: 72, borderRadius: 20,
           background: '#F8EDEF',
-          border: '2px solid rgba(143,29,44,0.15)',
+          border: '1.5px solid rgba(143,29,44,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 14px',
+          margin: '0 auto 12px',
         }}>
           <img src="/logo-icon.png" alt="دليلك"
-            style={{ width: 56, height: 56, objectFit: 'contain' }} />
+            style={{ width: 50, height: 50, objectFit: 'contain' }} />
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 900, color: '#191713', margin: 0, letterSpacing: '-0.3px' }}>
+        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#191713', margin: 0, letterSpacing: '-0.3px' }}>
           دليلك
         </h1>
-        <p style={{ fontSize: 12.5, color: '#918B82', marginTop: 4 }}>
+        <p style={{ fontSize: 12, color: '#918B82', marginTop: 3 }}>
           {isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}
         </p>
       </div>
@@ -94,17 +94,17 @@ export default function LoginPage() {
       <div style={{
         width: '100%', maxWidth: 380,
         background: '#fff', borderRadius: 24,
-        padding: '28px 24px',
+        padding: '24px 22px',
         boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
-        <h2 style={{ fontSize: 18, fontWeight: 800, color: '#191713', margin: '0 0 20px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 6px', textAlign: 'center' }}>
           {isAr ? 'تسجيل الدخول' : 'Login'}
         </h2>
 
         {error && (
           <div id="login-error" role="alert" style={{
-            marginBottom: 16, padding: '10px 14px',
+            marginBottom: 14, padding: '10px 14px',
             background: '#F8EDEF', border: '1.5px solid #FECACA',
             borderRadius: 12, color: '#8F1D2C', fontSize: 13, textAlign: 'center',
           }}>
@@ -112,9 +112,9 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label htmlFor="login-username" style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#69645C', marginBottom: 6 }}>
+            <label htmlFor="login-username" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
               {isAr ? 'اسم المستخدم أو البريد الإلكتروني' : 'Username or email'}
             </label>
             <input
@@ -134,7 +134,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="login-password" style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#69645C', marginBottom: 6 }}>
+            <label htmlFor="login-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
               {isAr ? 'كلمة المرور' : 'Password'}
             </label>
             <div style={{ position: 'relative' }}>
@@ -176,7 +176,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: 20, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
           {isAr ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
           <Link href="/register" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الآن — مجاناً لـ 3 أيام' : 'Register now — free for 3 days'}
@@ -185,7 +185,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer note */}
-      <p style={{ marginTop: 20, fontSize: 11, color: '#B8B2AA', textAlign: 'center' }}>
+      <p style={{ marginTop: 18, fontSize: 11, color: '#B8B2AA', textAlign: 'center' }}>
         {isAr ? 'دليلك — معلومات إرشادية لا تُغني عن المختص القانوني' : 'Dalilak — guidance information, not a substitute for a legal professional'}
       </p>
     </main>

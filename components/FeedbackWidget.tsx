@@ -224,7 +224,9 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
         onClick={() => setOpen(o => !o)}
         aria-label={isAr ? 'شاركنا رأيك' : 'Give feedback'}
         title={isAr ? 'شاركنا رأيك' : 'Give feedback'}
+        className="tap-hit-1"
         style={{
+          position: 'relative',
           width: 42, height: 42, borderRadius: 13,
           background: open ? '#8F1D2C' : 'var(--bg)',
           border: `1.5px solid ${open ? '#8F1D2C' : 'var(--border)'}`,

@@ -59,12 +59,12 @@ export default function GlobalError({
                 background: 'linear-gradient(135deg, #8F1D2C, #741622)',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 12,
+                borderRadius: 10,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 700,
-                boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
+                boxShadow: '0 3px 12px rgba(143,29,44,0.28)',
               }}
             >
               {isAr ? 'حاول مجدداً' : 'Try Again'}
@@ -76,10 +76,10 @@ export default function GlobalError({
                 background: '#fff',
                 color: '#8F1D2C',
                 border: '1.5px solid rgba(143,29,44,0.3)',
-                borderRadius: 12,
+                borderRadius: 10,
                 textDecoration: 'none',
                 fontFamily: 'inherit',
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 700,
               }}
             >

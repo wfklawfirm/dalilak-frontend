@@ -133,17 +133,16 @@ export default function ExpatPropertyPackPage() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #D5CEC4; border-radius: 3px; }
         .svc-card:hover { border-color: #8F1D2C !important; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(143,29,44,0.10) !important; }
-        .bottom-nav-padding { padding-bottom: 68px; }
         @keyframes expHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
 
       <header style={{
-        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
-        padding: '14px 16px 18px', position: 'sticky', top: 0, zIndex: 50,
+        background: 'var(--header-gradient)',
+        padding: '13px 16px 16px', position: 'sticky', top: 0, zIndex: 50,
         boxShadow: '0 2px 16px rgba(80,10,10,0.3)',
         animation: 'expHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
-        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+        <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
             <button
               type="button"
@@ -158,7 +157,7 @@ export default function ExpatPropertyPackPage() {
               </svg>
             </button>
             <div style={{ flex: 1 }}>
-              <h1 style={{ fontSize: 14, fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: 0, fontFamily: 'inherit' }}>
+              <h1 style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: 0, fontFamily: 'inherit' }}>
                 {isAr ? 'حزمة المغتربين والعقارات والعقود' : 'Expat, Property & Contracts Pack'}
               </h1>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>
@@ -208,7 +207,7 @@ export default function ExpatPropertyPackPage() {
         </div>
       </header>
 
-      <main id="main-content" className="bottom-nav-padding" style={{ maxWidth: 720, margin: '0 auto', padding: '14px 14px 20px' }}>
+      <main id="main-content" className="bottom-nav-padding" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '14px 14px 20px' }}>
 
         <div style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E6E2DC', padding: '14px 16px', marginBottom: 14, boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
           <div style={{ fontSize: 12, fontWeight: 800, color: '#191713', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>

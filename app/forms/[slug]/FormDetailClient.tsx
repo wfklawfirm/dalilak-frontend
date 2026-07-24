@@ -65,12 +65,12 @@ export default function FormDetailClient({ form }: Props) {
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #E6E2DC; border-radius: 3px; } @keyframes fdcHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }`}</style>
 
       <header style={{
-        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
+        background: 'var(--header-gradient)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
-        padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50,
+        padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
         animation: 'fdcHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
-        <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
             aria-label={isAr ? 'رجوع' : 'Back'}
@@ -98,7 +98,7 @@ export default function FormDetailClient({ form }: Props) {
         </div>
       </header>
 
-      <main id="main-content" style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px 100px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>

@@ -20,6 +20,23 @@
   --brand-muted:      #FEEEF1;
   --brand-ring:       rgba(143, 29, 44, 0.15);
   --brand-fg:         #ffffff;   /* text on brand background */
+  /* Sticky page-header gradient — used identically across ~14 page
+     headers (procedures/forms/faq/authorities/drafting-studio/services/
+     admin/detail pages/PageHeader.tsx). Was a hand-copied literal string
+     in every file; now a single source of truth so a future brand-color
+     tweak only needs one edit instead of 14. */
+  --header-gradient:  linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%);
+  /* Sticky page-header padding — same "13px 16px" repeated verbatim in
+     every gradient header (procedures, forms, faq, authorities,
+     drafting-studio, services, and both [slug] detail clients). Named
+     separately from the 8px --space-* scale since 13px doesn't belong
+     on it and forcing it to 12/16 would be a real (if tiny) visual
+     change — this purely centralizes the existing value. */
+  --header-padding:   13px 16px;
+  /* Standard bottom clearance reserved above the fixed BottomNav on
+     pages that render it — see .bottom-nav-padding below for the
+     narrower always-safe-area-aware version. */
+  --bottom-nav-clearance: 100px;
 
   /* ── Accent (warm amber / gold) ───────────────────── */
   --accent:           #B76B00;   /* عنبري دافئ */
@@ -731,6 +748,8 @@ input:focus {
    ::before anchors to it correctly. Numbers are the inset needed to bring
    that specific button size up to ~44px: inset = (44 - buttonSize) / 2. */
 @media (pointer: coarse) {
+  .tap-hit-1::before,
+  .tap-hit-2::before,
   .tap-hit-5::before,
   .tap-hit-6::before,
   .tap-hit-7::before,
@@ -741,6 +760,8 @@ input:focus {
     content: '';
     position: absolute;
   }
+  .tap-hit-1::before  { inset: -1px; }
+  .tap-hit-2::before  { inset: -2px; }
   .tap-hit-5::before  { inset: -5px; }
   .tap-hit-6::before  { inset: -6px; }
   .tap-hit-7::before  { inset: -7px; }

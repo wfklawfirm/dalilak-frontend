@@ -88,7 +88,7 @@ export default function RegisterPage() {
         <div style={{
           width: 72, height: 72, borderRadius: 20,
           background: '#F8EDEF',
-          border: '2px solid rgba(143,29,44,0.15)',
+          border: '1.5px solid rgba(143,29,44,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           margin: '0 auto 12px',
         }}>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
         boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
-        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 4px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 6px', textAlign: 'center' }}>
           {isAr ? 'إنشاء حساب جديد' : 'Create a new account'}
         </h2>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
@@ -213,7 +213,7 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: 16, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
           {isAr ? 'لديك حساب بالفعل؟' : 'Already have an account?'}{' '}
           <Link href="/login" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الدخول' : 'Log in'}

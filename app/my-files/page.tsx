@@ -191,9 +191,9 @@ export default function MyFilesPage() {
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <header style={{
-        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
+        background: 'var(--header-gradient)',
         boxShadow: '0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(80,10,10,0.3)',
-        padding: '14px 16px', position: 'sticky', top: 0, zIndex: 50,
+        padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
         animation: 'mfHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 1060, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -215,7 +215,7 @@ export default function MyFilesPage() {
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>{isAr ? 'ملفاتي' : 'My Files'}</div>
+              <h1 style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: 0 }}>{isAr ? 'ملفاتي' : 'My Files'}</h1>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.60)', marginTop: 2 }}>{isAr ? 'متابعة معاملاتك الحكومية' : 'Track your government procedures'}</div>
             </div>
           </div>
@@ -236,7 +236,7 @@ export default function MyFilesPage() {
         </div>
       </header>
 
-      <main id="main-content" aria-live="polite" aria-label={isAr ? 'قائمة المعاملات' : 'Procedures list'} style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px 80px' }}>
+      <main id="main-content" aria-live="polite" aria-label={isAr ? 'قائمة المعاملات' : 'Procedures list'} style={{ maxWidth: 1060, margin: '0 auto', padding: '20px 14px var(--bottom-nav-clearance)' }}>
 
         {/* ── Action error banner (save/delete/status failures) ─────────────── */}
         {actionError && (

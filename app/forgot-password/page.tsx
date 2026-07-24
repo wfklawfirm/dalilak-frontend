@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
       alignItems: 'center', justifyContent: 'center',
       background: '#F8F8F6',
       padding: '20px 16px',
-      fontFamily: "'Cairo','Inter',sans-serif",
+      fontFamily: "'IBM Plex Sans Arabic','Cairo','Inter',sans-serif",
     }}>
       <style>{`
         * { box-sizing: border-box; }
@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
       <div style={{
         width: '100%', maxWidth: 380,
         background: '#fff', borderRadius: 24,
-        padding: '28px 24px',
+        padding: '24px 22px',
         boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
         animation: 'authCardIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.1s both',
       }}>
@@ -143,7 +143,7 @@ export default function ForgotPasswordPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
                 <label htmlFor="fp-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
                   {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8F1D2C' }}>*</span>

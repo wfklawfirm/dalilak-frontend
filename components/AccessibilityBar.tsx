@@ -131,7 +131,9 @@ export default function AccessibilityBar() {
           aria-label={isAr ? 'خيارات إمكانية الوصول' : 'Accessibility options'}
           aria-expanded={open}
           onClick={() => setOpen(v => !v)}
+          className="tap-hit-2"
           style={{
+            position: 'relative',
             width: 40,
             height: 40,
             borderRadius: '50%',

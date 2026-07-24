@@ -40,7 +40,7 @@ export default function SavedItemsPanel({ onAsk }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         margin: '0 auto 16px',
-        maxWidth: 720,
+        maxWidth: 'var(--container-md)',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
         borderRadius: 14,

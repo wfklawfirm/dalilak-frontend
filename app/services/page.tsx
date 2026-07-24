@@ -61,7 +61,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         aria-label={displayName}
         onKeyDown={e => { if (e.key === 'Escape') onClose() }}
         style={{
-        background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 720,
+        background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 'var(--container-md)',
         margin: '0 auto', maxHeight: '82vh', overflow: 'hidden', display: 'flex',
         flexDirection: 'column', boxShadow: '0 -8px 40px rgba(0,0,0,0.2)',
       }}>
@@ -479,9 +479,9 @@ export default function ServicesPage() {
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header style={{
-        background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)',
+        background: 'var(--header-gradient)',
         boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
-        padding: '13px 16px', position: 'sticky', top: 0, zIndex: 50,
+        padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
         animation: 'svc-header-in 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -577,7 +577,7 @@ export default function ServicesPage() {
       </main>
 
       {/* ── Main Content ───────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 1024, margin: '0 auto', padding: '18px 14px 100px' }}>
+      <div style={{ maxWidth: 1024, margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
         {/* ── Overview & nearby offices — collapsed by default to reduce clutter ── */}
         <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 16, padding: '12px 16px' }}>

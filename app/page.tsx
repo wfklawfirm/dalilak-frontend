@@ -1859,7 +1859,7 @@ Question: ${text}`
           ) : (
 
             /* ── Chat Messages ── */
-            <div aria-live="polite" aria-label={isAr ? 'محادثة المساعد القانوني' : 'Legal assistant conversation'} style={{ maxWidth: 720, margin: '0 auto', padding: '12px 14px' }}>
+            <div aria-live="polite" aria-label={isAr ? 'محادثة المساعد القانوني' : 'Legal assistant conversation'} style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '12px 14px' }}>
               {/* Home button — visible on mobile inside chat */}
               <div style={{ display: 'flex', justifyContent: isAr ? 'flex-end' : 'flex-start', gap: 8, marginBottom: 8 }}>
                 <button
@@ -2161,7 +2161,7 @@ Question: ${text}`
         {/* ══ Follow-up question chips ══ */}
         {followupQuestions.length > 0 && !loading && (
           <div style={{
-            maxWidth: 720, margin: '0 auto', padding: '4px 12px 2px',
+            maxWidth: 'var(--container-md)', margin: '0 auto', padding: '4px 12px 2px',
             display: 'flex', flexWrap: 'wrap', gap: 8, direction: isAr ? 'rtl' : 'ltr',
           }}>
             {followupQuestions.map((q, i) => (
@@ -2193,7 +2193,7 @@ Question: ${text}`
         {/* ── Inline voice/file error — replaces alert() ── */}
         {voiceError && (
           <div role="alert" style={{
-            maxWidth: 720, margin: '0 auto 6px', padding: '8px 14px',
+            maxWidth: 'var(--container-md)', margin: '0 auto 6px', padding: '8px 14px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             background: '#F8EDEF', border: '1.5px solid #FECACA',
             borderRadius: 10, direction: isAr ? 'rtl' : 'ltr',
@@ -2212,7 +2212,7 @@ Question: ${text}`
 
         {/* ══ Retry chip on connection error ══ */}
         {retryMsg && !loading && (
-          <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
+          <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
             <button
               type="button"
               onClick={() => sendMessage(retryMsg!)}
@@ -2236,7 +2236,7 @@ Question: ${text}`
         {/* ══ Quota remaining warning ══ */}
         {quotaRemaining !== null && quotaRemaining >= 0 && quotaRemaining <= 10 && (
           <div style={{
-            maxWidth: 720, margin: '0 auto', padding: '0 12px 2px',
+            maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 2px',
             direction: 'rtl', textAlign: 'right',
           }}>
             <span style={{
@@ -2263,7 +2263,7 @@ Question: ${text}`
           paddingTop: messages.length > 0 ? 8 : 0,
           paddingBottom: messages.length > 0 && footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
         }}>
-          {messages.length > 0 && <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 12px 10px' }}>
+          {messages.length > 0 && <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 10px' }}>
 
             {/* ── Active Document Context Chip (Phase 9) ── */}
             {activeDocumentName && messages.length > 0 && !attachedFile && (

@@ -122,7 +122,7 @@ export default function DailyTip({ onAsk }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         margin: '0 auto 14px',
-        maxWidth: 720,
+        maxWidth: 'var(--container-md)',
         padding: '12px 14px',
         borderRadius: 12,
         border: `1px solid ${tip.color}28`,

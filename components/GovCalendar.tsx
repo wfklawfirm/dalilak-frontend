@@ -79,7 +79,7 @@ export default function GovCalendar({ onAsk }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         margin: '0 auto 16px',
-        maxWidth: 720,
+        maxWidth: 'var(--container-md)',
         animation: 'fadeUp 0.2s ease',
       }}
     >

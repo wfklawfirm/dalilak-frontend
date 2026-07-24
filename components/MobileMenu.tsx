@@ -238,7 +238,9 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
               aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
               onTouchStart={e => { e.currentTarget.style.background = '#F3F1EE' }}
               onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
+              className="tap-hit-2"
               style={{
+                position: 'relative',
                 width: 40, height: 40, borderRadius: '50%',
                 background: 'transparent', border: '1.5px solid #E6E2DC',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -163,7 +163,7 @@ export default function ResetPasswordPage() {
       alignItems: 'center', justifyContent: 'center',
       background: '#F8F8F6',
       padding: '20px 16px',
-      fontFamily: "'Cairo','Inter',sans-serif",
+      fontFamily: "'IBM Plex Sans Arabic','Cairo','Inter',sans-serif",
     }}>
       <style>{`
         * { box-sizing: border-box; }

@@ -306,8 +306,9 @@ export default function TopNav({
               type="button"
               aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
               onClick={onLangToggle}
-              className="tn-ibtn"
+              className="tn-ibtn tap-hit-2"
               style={{
+                position: 'relative',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 height: 40, minWidth: 46, padding: '0 12px', borderRadius: 9,
                 border: '1.5px solid var(--border)',

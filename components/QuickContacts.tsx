@@ -171,7 +171,7 @@ export default function QuickContacts({ onAsk }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{
         margin: '0 auto 16px',
-        maxWidth: 720,
+        maxWidth: 'var(--container-md)',
         animation: 'fadeUp 0.18s ease',
       }}
     >
