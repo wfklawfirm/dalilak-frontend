@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { getProcedureBySlug, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import BottomNav from '@/components/BottomNav'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
+import Breadcrumbs from '@/components/Breadcrumbs'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export default function ProcedureDetailClient() {
@@ -52,6 +53,12 @@ export default function ProcedureDetailClient() {
       </header>
 
       <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
+
+        <Breadcrumbs items={[
+          { label_ar: 'الرئيسية', label_en: 'Home', href: '/' },
+          { label_ar: 'الإجراءات', label_en: 'Procedures', href: '/procedures' },
+          { label_ar: proc.title_ar, label_en: proc.title_en },
+        ]} />
 
         <div style={{ background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 20, padding: '20px 18px', marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>

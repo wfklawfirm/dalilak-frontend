@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 type ResponseMode = 'quick' | 'detailed' | 'research'
 
@@ -64,6 +64,15 @@ interface MobileModeSheetProps {
 
 /** Bottom sheet that slides up on mobile to select response mode */
 export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: MobileModeSheetProps) {
+  // Escape closes the sheet — document-level listener so it works regardless
+  // of internal focus (matches the robust pattern used by GuidedFlow/MobileMenu).
+  useEffect(() => {
+    if (!isOpen) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
   return (
     <>

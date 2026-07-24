@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: 'دليل المعاملات الرسمية | دليلك',
     description: 'جميع الإجراءات الحكومية في لبنان خطوة بخطوة.',
   },
+  alternates: { canonical: '/procedures' },
 }
 
 export default function ProceduresLayout({ children }: { children: React.ReactNode }) {

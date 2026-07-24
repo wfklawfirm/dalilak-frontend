@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { FORMS_DATA } from '@/lib/procedures'
 import FormDetailClient from './FormDetailClient'
 import { notFound } from 'next/navigation'
+import { buildBreadcrumbJsonLd, SITE_URL } from '@/lib/breadcrumbJsonLd'
 
 // ── Static params ─────────────────────────────────────────────────────────────
 export async function generateStaticParams() {
@@ -30,9 +31,26 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
+// ── Structured data (JSON-LD) ────────────────────────────────────────────────
+function buildBreadcrumbs(form: (typeof FORMS_DATA)[number]) {
+  return buildBreadcrumbJsonLd([
+    { name: 'الرئيسية', url: SITE_URL },
+    { name: 'النماذج', url: `${SITE_URL}/forms` },
+    { name: form.title_ar, url: `${SITE_URL}/forms/${form.slug}` },
+  ])
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function FormDetailPage({ params }: { params: { slug: string } }) {
   const form = FORMS_DATA.find(f => f.slug === params.slug)
   if (!form) notFound()
-  return <FormDetailClient form={form!} />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildBreadcrumbs(form!)) }}
+      />
+      <FormDetailClient form={form!} />
+    </>
+  )
 }

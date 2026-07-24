@@ -9,7 +9,7 @@
  * Tapping a number opens tel: link.
  */
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 
 interface Ministry {
@@ -57,6 +57,14 @@ export default function MinistryQuickDial() {
       m.phone.includes(q)
     )
   }, [search])
+
+  // Escape closes the sheet — standard dialog behavior.
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open])
 
   return (
     <>

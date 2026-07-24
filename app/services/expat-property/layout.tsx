@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'خدمات المغتربين والعقارات | دليلك',
     description: 'دليل شامل لخدمات المغتربين اللبنانيين، المعاملات العقارية، والعقود الرسمية.',
   },
+  alternates: { canonical: '/services/expat-property' },
 }
 
 export default function ExpatPropertyLayout({ children }: { children: ReactNode }) {

@@ -17,7 +17,7 @@
  *   totalResults — number of matching procedures (for showing "X results")
  */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export interface ProcFilters {
@@ -90,6 +90,15 @@ function ChipGroup<T extends string>({ labelAr, labelEn, options, value, onChang
 export default function ProcedureFilterDrawer({ filters, onChange, onClose, totalResults }: Props) {
   const { isAr } = useLanguage()
   const [local, setLocal] = useState<ProcFilters>(filters)
+
+  // Escape closes the drawer — the parent only mounts this component while
+  // open, so a plain document-level listener for the component's lifetime
+  // is correct here (same robust pattern as GuidedFlow/MobileMenu).
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
 
   function update<K extends keyof ProcFilters>(key: K, value: ProcFilters[K]) {
     setLocal(prev => ({ ...prev, [key]: value }))

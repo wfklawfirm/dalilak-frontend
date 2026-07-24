@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'الجهات الحكومية في لبنان | دليلك',
     description: 'دليل الوزارات والجهات الحكومية اللبنانية.',
   },
+  alternates: { canonical: '/authorities' },
 }
 
 export default function AuthoritiesLayout({ children }: { children: ReactNode }) {

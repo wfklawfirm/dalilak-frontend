@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { PROCEDURES_DATA } from '@/lib/procedures'
 import ProcedureDetailClient from './ProcedureDetailClient'
 import { notFound } from 'next/navigation'
+import { buildBreadcrumbJsonLd, SITE_URL } from '@/lib/breadcrumbJsonLd'
 
 // ── Static params ──────────────────────────────────────────────────────────────
 export async function generateStaticParams() {
@@ -56,11 +57,20 @@ function buildHowToJsonLd(proc: (typeof PROCEDURES_DATA)[number]) {
 export default function ProcedurePage({ params }: { params: { slug: string } }) {
   const proc = PROCEDURES_DATA.find(p => p.slug === params.slug)
   if (!proc) notFound()
+  const breadcrumbLd = buildBreadcrumbJsonLd([
+    { name: 'الرئيسية', url: SITE_URL },
+    { name: 'الإجراءات', url: `${SITE_URL}/procedures` },
+    { name: proc.title_ar, url: `${SITE_URL}/procedures/${proc.slug}` },
+  ])
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildHowToJsonLd(proc)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <ProcedureDetailClient />
     </>

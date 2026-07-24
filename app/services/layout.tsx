@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'الخدمات القانونية والإدارية | دليلك',
     description: 'أكثر من 200 خدمة قانونية وإدارية في لبنان.',
   },
+  alternates: { canonical: '/services' },
 }
 
 export default function ServicesLayout({ children }: { children: ReactNode }) {

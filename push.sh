@@ -734,11 +734,82 @@
 #   components/LanguageContext since it's the last-resort fallback that
 #   must still render if even the root layout crashes; that's a
 #   deliberate resilience choice, not a bug. tsc clean.
+#
+#   BATCH #342 — "world-class additions" session (new standing directive:
+#   3-hour continuous improvement pass). Verified the skip-to-content link
+#   (WCAG 2.2 AA) was already correctly implemented from an earlier batch —
+#   no fix needed there. New additive work this batch:
+#   - NEW components/Breadcrumbs.tsx + lib/breadcrumbJsonLd.ts: a reusable,
+#     bilingual (AR/EN), RTL-aware breadcrumb trail component, plus a shared
+#     BreadcrumbList JSON-LD builder. Applied to the two highest-traffic
+#     detail-page templates: procedures/[slug] and forms/[slug] — both now
+#     show a visible "الرئيسية › الإجراءات/النماذج › [العنوان]" trail (new
+#     UX, improves wayfinding on deep pages) AND emit matching BreadcrumbList
+#     structured data via the existing server page.tsx wrapper pattern
+#     (same approach already used for procedures' HowTo schema). Purely
+#     additive — no existing back-button/header navigation removed.
+#   - NEW: Organization + WebSite/SearchAction JSON-LD added to
+#     app/layout.tsx (site-wide, invisible). Built only from real, already-
+#     verified data — the real support WhatsApp number wired in batch #327,
+#     and the homepage's actual `?q=` query param, which already triggers a
+#     genuine AI search on load (see app/page.tsx's existing ?q= handler) —
+#     not a placeholder endpoint. This is what lets Google potentially show
+#     a Knowledge Panel / sitelinks search box; standard for any
+#     "world-class" production site.
+#   - Considered and declined: FAQPage JSON-LD on /faq. The real Q&A data
+#     in lib/serviceFAQ.ts exists (48 real entries) but its `title` fields
+#     are topic headings ("رخصة البناء - الإجراءات والرسوم"), not phrased
+#     as literal questions — forcing them into FAQPage's Question/Answer
+#     schema would be a content-type mismatch even though the underlying
+#     data is real, not mock. Skipped rather than force a technically
+#     questionable schema onto real content.
+#   - ACCESSIBILITY: audited every modal/sheet/drawer overlay in the app for
+#     Escape-to-close (WAI-ARIA APG requirement for any dialog). Found 3
+#     with a "fragile" Escape handler — attached directly to the dialog
+#     `<div>` via onKeyDown, but nothing ever moves keyboard focus into that
+#     div on open, so on a real keyboard-only visit Escape silently does
+#     nothing until the user has already tabbed inside once. Fixed
+#     ServiceGroupSheet.tsx, MobileModeSheet.tsx, and
+#     ProcedureFilterDrawer.tsx by adding a document-level `keydown`
+#     listener (useEffect + window.addEventListener), matching the already-
+#     robust pattern used elsewhere in the app (GuidedFlow, MobileMenu,
+#     GlobalSearch, KeyboardShortcutsHelp, EscalationModal, etc — 10 of 13
+#     audited overlays already did this correctly). Also found 2 floating
+#     panels with zero Escape handling at all — AccessibilityBar's options
+#     panel and MinistryQuickDial's ministry-directory sheet — added the
+#     same document-level listener to both. Deliberately left
+#     UserOnboarding.tsx untouched: it's a forced first-run wizard, and
+#     whether Escape should skip a first-run flow is a product decision,
+#     not an accessibility bug — not something to silently decide unasked.
+#   - Verified in passing: the homepage chat region already has
+#     aria-live="polite" on its message container (app/page.tsx:1862) — a
+#     real "world-class" chat-a11y pattern already correctly in place, no
+#     fix needed.
+#   tsc --noEmit clean after every step in this batch.
+#
+#   BATCH #343 — canonical URL / metadataBase fix (same "world-class"
+#   session). Audit found only 3 of ~20 routes had `alternates.canonical`
+#   set (root layout, procedures/[slug], forms/[slug]) — AND none of them
+#   had `metadataBase` configured on the root layout, which Next.js needs
+#   to resolve any *relative* canonical/OG path to a real absolute URL.
+#   Without it, the two existing canonical tags from earlier batches
+#   couldn't be trusted to render correctly in production (silent
+#   fallback/warning). Fixed the root cause first — added `metadataBase:
+#   new URL('https://dalilak-frontend.vercel.app')` to app/layout.tsx —
+#   then added `alternates: { canonical: '/<route>' }` to the 7 public,
+#   search-indexable list pages that were missing it entirely: services,
+#   services/expat-property, procedures, forms, faq, drafting-studio,
+#   authorities. Deliberately skipped the 8 routes that already carry
+#   `robots: { index: false }` (login, register, forgot-password,
+#   reset-password, settings, professional, my-files, admin) — a canonical
+#   tag on a page search engines are already told not to index adds no
+#   real value, so left those alone rather than doing low-value busywork.
+#   tsc clean after every edit.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-341 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration across 21+9 files + batch #340 floating-button touch-target sweep: tap-hit-1/2/5 added, 6 sub-44px buttons fixed with verified no-overlap math + batch #341 auth-page (login/register/forgot-password/reset-password) visual consistency fix: font-family, input padding, logo sizing, card padding, h2 sizing, form gap, label sizing, error/link/footer margins all aligned to one canonical template"
+git diff --cached --quiet || git commit -m "feat: batch #284-343 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration across 21+9 files + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs component + BreadcrumbList JSON-LD on procedures/forms detail pages, Organization + WebSite/SearchAction JSON-LD on layout.tsx, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages"
 git push origin main
 echo "✅ Done"

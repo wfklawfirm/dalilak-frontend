@@ -52,6 +52,14 @@ export default function AccessibilityBar() {
     } catch {}
   }, [])
 
+  // Escape closes the options panel when open — standard dialog behavior.
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open])
+
   function toggleHc() {
     const next = !hc
     setHc(next)

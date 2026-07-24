@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'الأسئلة الشائعة | دليلك',
     description: 'إجابات على أكثر الأسئلة شيوعاً عن الإجراءات الرسمية في لبنان.',
   },
+  alternates: { canonical: '/faq' },
 }
 
 export default function FaqLayout({ children }: { children: ReactNode }) {

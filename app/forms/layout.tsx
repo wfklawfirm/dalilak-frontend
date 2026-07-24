@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'النماذج الرسمية اللبنانية | دليلك',
     description: 'أكثر من 60 نموذجاً رسمياً لبنانياً.',
   },
+  alternates: { canonical: '/forms' },
 }
 
 export default function FormsLayout({ children }: { children: ReactNode }) {

@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     title: 'استوديو الصياغة القانونية | دليلك',
     description: 'صِغ وثائقك القانونية بمساعدة الذكاء الاصطناعي.',
   },
+  alternates: { canonical: '/drafting-studio' },
 }
 
 export default function DraftingStudioLayout({ children }: { children: ReactNode }) {

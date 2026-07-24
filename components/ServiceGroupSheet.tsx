@@ -21,6 +21,17 @@ export default function ServiceGroupSheet({
     return () => { document.body.style.overflow = '' }
   }, [group])
 
+  // Escape closes the sheet — document-level listener so it works regardless
+  // of which element (if any) currently has focus, not just when focus is
+  // inside the dialog (the tabIndex={-1}/onKeyDown on the dialog div below
+  // only fires after the user has already tabbed into it once).
+  useEffect(() => {
+    if (!group) return
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [group, onClose])
+
   if (!group) return null
 
   const T = isAr

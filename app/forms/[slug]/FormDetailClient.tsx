@@ -11,6 +11,7 @@ import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 interface Props {
   form: FormItem
@@ -99,6 +100,12 @@ export default function FormDetailClient({ form }: Props) {
       </header>
 
       <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        <Breadcrumbs style={{ marginBottom: 0 }} items={[
+          { label_ar: 'الرئيسية', label_en: 'Home', href: '/' },
+          { label_ar: 'النماذج', label_en: 'Forms', href: '/forms' },
+          { label_ar: form.title_ar, label_en: form.title_en },
+        ]} />
 
         <div style={{ background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
