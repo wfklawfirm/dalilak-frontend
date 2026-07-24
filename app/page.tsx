@@ -1534,8 +1534,9 @@ Question: ${text}`
                       { ar:'إخراج قيد فردي', en:'Civil Registry Extract', authAr:'السجل المدني', authEn:'Civil Registry', stepsAr:'3 خطوات', stepsEn:'3 Steps', pAr:'كيف أستخرج إخراج قيد فردي من السجل المدني؟', pEn:'How do I get a civil registry extract?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
                       { ar:'تسجيل شركة', en:'Company Registration', authAr:'وزارة الاقتصاد', authEn:'Ministry of Economy', stepsAr:'7 خطوات', stepsEn:'7 Steps', pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
                       { ar:'تسجيل سيارة جديدة', en:'Vehicle Registration', authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration', stepsAr:'5 خطوات', stepsEn:'5 Steps', pAr:'كيف أسجّل سيارة جديدة في لبنان؟', pEn:'How do I register a new vehicle in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> },
-                      { ar:'تجديد رخصة القيادة', en:"Driver's License Renewal", authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration', stepsAr:'4 خطوات', stepsEn:'4 Steps', pAr:'كيف أجدد رخصة القيادة في لبنان؟', pEn:"How do I renew my driver's license in Lebanon?", icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg> },
-                      { ar:'تجديد إقامة الأجانب', en:'Residency Renewal', authAr:'الأمن العام', authEn:'General Security', stepsAr:'5 خطوات', stepsEn:'5 Steps', pAr:'كيف أجدد إقامة أجنبي في لبنان؟', pEn:"How do I renew a foreigner's residency in Lebanon?", icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+                      /* batch #350: Driver's License Renewal + Residency Renewal moved off the homepage grid to hold
+                         the "max 4 popular-transaction cards" limit from the UX brief (was 6). Both remain fully
+                         reachable via /procedures, search, categories, and life journeys — no functionality removed. */
                     ] as {ar:string;en:string;authAr:string;authEn:string;stepsAr:string;stepsEn:string;pAr:string;pEn:string;icon:React.ReactNode}[]).map(p => (
                       <button type="button" key={p.en}
                         onClick={() => sendMessage(isAr ? p.pAr : p.pEn)}
@@ -1561,9 +1562,16 @@ Question: ${text}`
               {/* ══ CATEGORIES ══ */}
               <section style={{ background:'var(--surface)', padding:'clamp(32px,4vw,56px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <h3 style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:16 }}>
-                    {isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
-                  </h3>
+                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:16, gap:16 }}>
+                    <h3 style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'1px', textTransform:'uppercase', margin:0 }}>
+                      {isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
+                    </h3>
+                    <button type="button" onClick={() => router.push('/services')}
+                      style={{ fontSize:13, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4, whiteSpace:'nowrap', flexShrink:0 }}>
+                      {isAr ? 'كل الفئات' : 'All categories'}
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
+                    </button>
+                  </div>
                   <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
                     {([
                       { ar:'الأحوال الشخصية',             en:'Personal Status',       q_ar:'ما هي معاملات الأحوال الشخصية في لبنان؟',        q_en:'What are personal status procedures in Lebanon?' },
@@ -1572,10 +1580,10 @@ Question: ${text}`
                       { ar:'السيارات والنقل',              en:'Vehicles & Transport',  q_ar:'ما هي إجراءات السيارات والنقل في لبنان؟',         q_en:'What are vehicle and transport procedures in Lebanon?' },
                       { ar:'العقارات',                     en:'Real Estate',           q_ar:'ما هي إجراءات العقارات وتسجيل الملكية في لبنان؟', q_en:'What are real estate procedures in Lebanon?' },
                       { ar:'البلديات',                     en:'Municipalities',        q_ar:'ما هي خدمات البلديات في لبنان؟',                   q_en:'What are municipality services in Lebanon?' },
-                      { ar:'الكاتب العدل',                 en:'Notary Public',         q_ar:'ما هي خدمات الكاتب العدل في لبنان؟',               q_en:'What are notary public services in Lebanon?' },
-                      { ar:'التعليم',                      en:'Education',             q_ar:'ما هي إجراءات التعليم في لبنان؟',                   q_en:'What are education procedures in Lebanon?' },
-                      { ar:'العمل والضمان',                en:'Labor & Social Security',q_ar:'ما هي إجراءات العمل والضمان الاجتماعي في لبنان؟', q_en:'What are labor and social security procedures in Lebanon?' },
-                      { ar:'القضاء والمعاملات القانونية', en:'Legal Procedures',       q_ar:'ما هي الإجراءات القضائية والقانونية في لبنان؟',    q_en:'What are legal and court procedures in Lebanon?' },
+                      /* batch #350: Notary Public / Education / Labor & Social Security / Legal Procedures moved
+                         off the homepage chip row to hold the "limited category grid" brief target (was 10 chips).
+                         All ten categories remain one tap away via the new "All categories" link to /services,
+                         which lists the complete catalog — no functionality removed. */
                     ] as {ar:string;en:string;q_ar:string;q_en:string}[]).map(cat => (
                       <button type="button" key={cat.en}
                         onClick={() => sendMessage(isAr ? cat.q_ar : cat.q_en)}
