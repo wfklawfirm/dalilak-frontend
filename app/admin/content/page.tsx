@@ -130,18 +130,18 @@ export default function ContentGovernancePage() {
 
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)', animation: 'cntHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Link href="/admin" style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '5px 10px', color: 'rgba(255,255,255,0.85)', fontSize: 12, textDecoration: 'none' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <Link href="/admin" style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '5px 10px', color: 'rgba(255,255,255,0.85)', fontSize: 12, textDecoration: 'none', flexShrink: 0 }}>
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
               {isAr ? 'لوحة التحكم' : 'Admin panel'}
             </Link>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
             </div>
-            <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0 }}>{isAr ? 'إدارة المحتوى' : 'Content management'}</h1>
+            <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{isAr ? 'إدارة المحتوى' : 'Content management'}</h1>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <button
               type="button"
               onClick={() => { setShowAudit(!showAudit); if (!showAudit) loadAudit() }}

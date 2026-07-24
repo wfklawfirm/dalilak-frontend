@@ -506,11 +506,25 @@
 #   /authorities, /faq, /my-files, /settings, /drafting-studio, /login,
 #   /register, /forgot-password, /reset-password. Verified with tsc after
 #   every change — clean throughout.
+#
+#   FOLLOW-UP (batch #336): extended the mobile re-audit to /admin and
+#   /admin/content, which weren't in the first pass. Found one genuine,
+#   visible bug in both: the sticky header row (logo + title/welcome-text
+#   + action buttons) used `justifyContent:'space-between'` with no
+#   flexWrap. On 360-390px phones that's more content than fits on one
+#   line, causing horizontal page scroll or clipped buttons — the header
+#   is sticky, so this was on-screen on every scroll position. Added
+#   flexWrap to both the outer row and the button group, minWidth:0 +
+#   ellipsis truncation on the title/welcome-text so long usernames don't
+#   force overflow, and flexShrink:0 on the back-link so it can't get
+#   squeezed to nothing first. Everything else in both admin pages (users
+#   table, pipeline grid, filter/tab rows) was already correctly
+#   responsive. tsc clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-335 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill"
+git diff --cached --quiet || git commit -m "feat: batch #284-336 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix"
 git push origin main
 echo "✅ Done"

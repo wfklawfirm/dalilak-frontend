@@ -229,17 +229,17 @@ export default function AdminPage() {
 
       {/* Header */}
       <header style={{ background: 'linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 4px 24px rgba(80,10,10,0.28)', animation: 'admHeaderIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
             </div>
-            <div>
+            <div style={{ minWidth: 0 }}>
               <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#fff' }}>{isAr ? 'لوحة التحكم — دليلك' : 'Admin Panel — Dalilak'}</h1>
-              <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>{isAr ? 'مرحباً،' : 'Welcome,'} {me?.full_name || me?.username}</p>
+              <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.7)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{isAr ? 'مرحباً،' : 'Welcome,'} {me?.full_name || me?.username}</p>
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
             <button type="button" aria-label={isAr ? 'تحديث البيانات' : 'Refresh data'} onClick={refreshAll} disabled={loading} style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 5, opacity: loading ? 0.6 : 1 }}>
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               {loading ? '...' : (isAr ? 'تحديث' : 'Refresh')}
