@@ -284,11 +284,22 @@
 #   stack instead of interleaving with it: FeedbackWidget -> bottom:226,
 #   ChatScrollToBottomButton -> bottom:278. The always-on trio itself
 #   was left untouched since it was already internally consistent.
+#
+#   SAFE-AREA SWEEP (batch #323): checked every fixed bottom-0 sheet/drawer
+#   for env(safe-area-inset-bottom) handling (needed so content/buttons
+#   don't sit under the iPhone home-indicator bar). MinistryQuickDial,
+#   MobileModeSheet, and MobileMenu already had it. Found 3 without it —
+#   GuidedFlow's scrollable step content, ServiceGroupSheet's scrollable
+#   list, and ProcedureFilterDrawer's sticky Apply/Reset footer — all
+#   given the same 'calc(Npx + env(safe-area-inset-bottom, 0px))' pattern
+#   already used elsewhere in the codebase. (TransactionStarter was
+#   checked too but is a centered modal, not a bottom sheet — no change
+#   needed there.)
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-322 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix (incl. layout.tsx-level FAB stack) + forms/[slug] bottom-padding fix"
+git diff --cached --quiet || git commit -m "feat: batch #284-323 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix (incl. layout.tsx-level FAB stack) + forms/[slug] bottom-padding fix + safe-area-inset-bottom sweep on 3 bottom sheets"
 git push origin main
 echo "✅ Done"

@@ -265,7 +265,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
         </div>
 
         {/* Content */}
-        <div key={phase + '-' + stepIndex} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px 24px', animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
+        <div key={phase + '-' + stepIndex} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px calc(24px + env(safe-area-inset-bottom, 0px))', animation: 'gfIn 0.18s cubic-bezier(0.22,1,0.36,1) both' }}>
 
           {/* ── Phase 0: Pick category ── */}
           {phase === 'pick_category' && (

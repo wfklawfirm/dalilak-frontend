@@ -129,7 +129,7 @@ export default function ServiceGroupSheet({
         </div>
 
         {/* Services list */}
-        <div style={{ overflowY: 'auto', flex: 1, padding: '10px 16px 24px' }}>
+        <div style={{ overflowY: 'auto', flex: 1, padding: '10px 16px calc(24px + env(safe-area-inset-bottom, 0px))' }}>
           {group.services.map((item, i) => (
             <button
               type="button"

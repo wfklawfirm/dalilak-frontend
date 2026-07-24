@@ -215,7 +215,7 @@ export default function ProcedureFilterDrawer({ filters, onChange, onClose, tota
         </div>
 
         {/* Footer actions */}
-        <div style={{ display: 'flex', gap: 8, padding: '0 18px 24px', position: 'sticky', bottom: 0, background: 'var(--bg)', paddingTop: 12, borderTop: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', gap: 8, padding: '0 18px calc(24px + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0, background: 'var(--bg)', paddingTop: 12, borderTop: '1px solid var(--border)' }}>
           {activeCount > 0 && (
             <button
               type="button"
