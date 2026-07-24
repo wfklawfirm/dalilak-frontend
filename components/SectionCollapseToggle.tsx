@@ -72,7 +72,7 @@ export default function SectionCollapseToggle({
         style={{
           display: 'flex', alignItems: 'center', gap: 6, width: '100%',
           background: 'none', border: 'none', cursor: 'pointer',
-          padding: '2px 0 6px', textAlign: isAr ? 'right' : 'left',
+          padding: '11px 0', minHeight: 44, textAlign: isAr ? 'right' : 'left',
           fontFamily: 'inherit',
         }}
       >

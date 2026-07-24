@@ -354,11 +354,19 @@
 #   codebase for similar placeholder contact numbers — none found; all
 #   other WhatsApp references are generic share actions (no fixed number)
 #   or user-supplied contact fields in EscalationModal.
+#
+#   TOUCH TARGET FIX (batch #328): SectionCollapseToggle's header button
+#   (the shared collapse/expand pattern used on the homepage, /procedures
+#   list, and now the procedure/services/form detail pages) had only
+#   2px/6px vertical padding — well under the 44px minimum touch target.
+#   Since it's now used on 6+ pages, bumped padding to 11px top/bottom +
+#   minHeight:44 so every instance gets a properly sized tap target at
+#   once. Purely a hit-area change — visual text size unchanged.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-327 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest"
+git diff --cached --quiet || git commit -m "feat: batch #284-328 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix"
 git push origin main
 echo "✅ Done"
