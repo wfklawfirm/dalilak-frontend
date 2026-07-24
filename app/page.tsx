@@ -1447,6 +1447,7 @@ Question: ${text}`
                         />
                         {heroInput.trim().length > 3 && (
                           <button type="button"
+                            className="hero-enhance-btn"
                             disabled={heroEnhancing}
                             onClick={() => enhancePrompt(heroInput, setHeroInput, setHeroEnhancing)}
                             aria-label={isAr ? 'تحسين السؤال' : 'Enhance question'}
@@ -1458,7 +1459,7 @@ Question: ${text}`
                               ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation:'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" strokeOpacity="0.2"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                               : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5zM19 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
                             }
-                            {isAr ? 'حسّن' : 'Enhance'}
+                            <span className="hero-enhance-label">{isAr ? 'حسّن' : 'Enhance'}</span>
                           </button>
                         )}
                         {/* Voice input for hero search */}
@@ -1964,12 +1965,18 @@ Question: ${text}`
                     <ProcedureStatusBoard />
                   </SectionCollapseToggle>
 
-                  <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={true}>
+                  {/* Documents/Appointments default to collapsed — unlike Alerts and
+                      Today's Tasks, these aren't universally relevant on every visit
+                      (not everyone has tracked documents or appointments yet), and
+                      having 4 sections open by default made the pre-scroll mobile
+                      experience unnecessarily long. Still one tap away, and the
+                      open/closed state persists per-user via storageKey. */}
+                  <SectionCollapseToggle titleAr="وثائقي" titleEn="My Documents" icon="📋" storageKey="dalilak_sec_docs" defaultOpen={false}>
                     <DocExpiryBanner onAsk={q => sendMessage(q)} />
                     <DocExpiryCalendar onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 
-                  <SectionCollapseToggle titleAr="مواعيدي" titleEn="My Appointments" icon="📅" storageKey="dalilak_sec_appts" defaultOpen={true}>
+                  <SectionCollapseToggle titleAr="مواعيدي" titleEn="My Appointments" icon="📅" storageKey="dalilak_sec_appts" defaultOpen={false}>
                     <AppointmentTracker onAsk={q => sendMessage(q)} />
                   </SectionCollapseToggle>
 

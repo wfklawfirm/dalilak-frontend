@@ -465,11 +465,52 @@
 #   so cached answers are now correctly language-scoped too (previously
 #   the same question asked in two different toggle states could return
 #   a cross-language cache hit). Verified with tsc — clean.
+#
+#   MOBILE RE-AUDIT (batch #335): user asked for a fresh, dedicated re-audit
+#   of layout/shape/organization on mobile across every page. Ran 3 parallel
+#   focused audits (chat/core pages, services/content pages, account/utility
+#   pages) instead of relying on memory of earlier sweeps. Fixed the
+#   concrete findings:
+#   - app/page.tsx hero search bar: once the "Enhance" button appears
+#     (as soon as the user has typed 4+ chars — i.e. exactly while typing),
+#     it plus the voice/search buttons could eat 200px+ of a ~340px bar on
+#     360-390px phones, squeezing the actual input to a sliver. Enhance
+#     button now drops to icon-only below 420px (.hero-enhance-label /
+#     .hero-enhance-btn classes in globals.css) — same "hide label, keep
+#     icon" pattern already used for GlobalSearch/KeyboardShortcutsHelp.
+#   - app/page.tsx homepage widget stack: "My Documents" and "My
+#     Appointments" sections now default to collapsed (defaultOpen=false),
+#     matching "At a glance"/"Suggestions" — previously 4 of 6 sections
+#     were open by default (14+ nested widgets), an unnecessarily long
+#     pre-scroll experience on mobile. "Alerts" and "Today's tasks" stay
+#     open since they're the most universally relevant. Per-user open/
+#     closed state still persists via each section's storageKey either way.
+#   - app/globals.css .fgrid (footer): was hard-coded to 2 columns even at
+#     360px, cramming brand text + 2 link lists into ~148px columns. Now
+#     starts at 1 column, widens at 480px+.
+#   - app/services/expat-property/page.tsx: the Expat/Property/Contracts
+#     tab row had no flexWrap or overflowX fallback (every comparable chip
+#     row elsewhere in the app has one) — added horizontal scroll +
+#     flexShrink:0 so it can't overflow the sticky header on narrow phones.
+#   - app/professional/page.tsx: Overview tab's 4 stat cards were a fixed
+#     2x2 grid at every width; at 360px, ~55-60px was left for labels like
+#     "طلبات مراجعة"/"Review Requests" after the icon, causing uneven
+#     wrapping. New .prof-stat-grid class collapses to 1 column only below
+#     400px.
+#   - components/DraftingStudio.tsx: the 3-segment stage-indicator pill had
+#     no minHeight, so a wrapped 2-line label produced uneven segment
+#     heights next to single-line siblings. Added minHeight:34 + flex
+#     centering so all 3 stay visually uniform whether or not text wraps.
+#   Audited and found already correctly mobile-aware (no changes needed):
+#   /procedures, /procedures/[slug], /services, /forms, /forms/[slug],
+#   /authorities, /faq, /my-files, /settings, /drafting-studio, /login,
+#   /register, /forgot-password, /reset-password. Verified with tsc after
+#   every change — clean throughout.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-334 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle"
+git diff --cached --quiet || git commit -m "feat: batch #284-335 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill"
 git push origin main
 echo "✅ Done"

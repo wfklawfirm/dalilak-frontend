@@ -245,7 +245,7 @@ export default function ProfessionalWorkspacePage() {
         {/* Overview */}
         {activeSection === 'overview' && (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+            <div className="prof-stat-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
               <StatCard icon="👥" value="0" labelAr="موكّلون نشطون" labelEn="Active Clients" color="#8F1D2C" isAr={isAr} />
               <StatCard icon="📂" value="0" labelAr="ملفات مفتوحة" labelEn="Open Files" color="#B8860B" isAr={isAr} />
               <StatCard icon="✍️" value="0" labelAr="مسودات محفوظة" labelEn="Saved Drafts" color="#6366f1" isAr={isAr} />

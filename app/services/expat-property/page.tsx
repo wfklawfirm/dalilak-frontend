@@ -181,7 +181,7 @@ export default function ExpatPropertyPackPage() {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', paddingBottom: 2 }}>
             {PACK_SECTIONS.map(s => (
               <button
                 type="button"
@@ -192,7 +192,7 @@ export default function ExpatPropertyPackPage() {
                 onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
                 style={{
                   padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
-                  border: '1.5px solid',
+                  border: '1.5px solid', flexShrink: 0, whiteSpace: 'nowrap',
                   borderColor: activeSection === s.id ? '#fff' : 'rgba(255,255,255,0.28)',
                   background: activeSection === s.id ? 'rgba(255,255,255,0.18)' : 'transparent',
                   color: activeSection === s.id ? '#fff' : 'rgba(255,255,255,0.68)',

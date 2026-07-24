@@ -945,6 +945,18 @@ input:focus {
   box-shadow: 0 0 0 3px var(--brand-ring) !important;
 }
 
+/* Hero search bar on narrow phones (<420px): once the "Enhance" button
+   appears (as soon as the user has typed 4+ characters — i.e. exactly
+   while they're actively typing), it plus the voice button and Search
+   button were eating 200px+ of a ~340px-wide bar, squeezing the actual
+   text input to a sliver. Drop the Enhance button to icon-only and
+   tighten its padding below 420px; unaffected at 420px+ or on any other
+   screen size. */
+@media (max-width: 419px) {
+  .hero-enhance-label { display: none; }
+  .hero-enhance-btn { padding: 0 10px !important; }
+}
+
 /* Procedures grid */
 .pgrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 @media (min-width: 640px)  { .pgrid { grid-template-columns: repeat(2, 1fr); } }
@@ -975,8 +987,13 @@ input:focus {
 @media (min-width: 640px)  { .tgrid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .tgrid { grid-template-columns: repeat(4, 1fr); } }
 
-/* Footer grid */
-.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+/* Footer grid.
+   Was hard-coded to 2 columns even on the smallest phones (360px), cramming
+   the brand paragraph and two link lists into ~148px columns. Start at 1
+   column like every other responsive grid in this file (.pgrid/.hwgrid/
+   .tgrid), widen at larger breakpoints. */
+.fgrid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (min-width: 480px) { .fgrid { grid-template-columns: 1fr 1fr; gap: 32px; } }
 
 /* ────────────────────────────────────────────────────────────────────────
    Print stylesheet — was missing entirely, so hitting the browser's native
@@ -1000,6 +1017,15 @@ input:focus {
    so it doesn't fight inline styles or need !important. */
 .prof-header-btn, .prof-tab-btn { transition: filter 0.15s; }
 .prof-header-btn:hover, .prof-tab-btn:hover { filter: brightness(1.35); }
+
+/* /professional Overview tab's 4 stat cards were hard-coded to a 2-column
+   grid at every screen size. At 360px each card is only ~155px wide, and
+   after the 44px icon + padding, labels like "طلبات مراجعة" / "Review
+   Requests" had ~55-60px left to wrap into — cramped and uneven. Collapse
+   to 1 column on narrow phones only; unchanged at 400px+. */
+@media (max-width: 400px) {
+  .prof-stat-grid { grid-template-columns: 1fr !important; }
+}
 
 @media print {
   header, nav, .no-print {
