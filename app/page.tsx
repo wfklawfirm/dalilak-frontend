@@ -529,6 +529,9 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [authChecked, setAuthChecked] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
+  // batch #353: per-message "more actions" expand state (chat-interface declutter pass —
+  // see the render block near ChatMessageActions for context on why this exists).
+  const [expandedMsgActions, setExpandedMsgActions] = useState<Set<number>>(new Set())
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [recording, setRecording] = useState(false)
@@ -1990,13 +1993,47 @@ Question: ${text}`
                         ? messages[i - 1].content.replace(/^\[.*?\]\n?/, '').slice(0, 300)
                         : undefined}
                     />
+                    {/* batch #353 chat-declutter: this row used to render 10 separate clickable
+                        controls (Copy/Share/Save from ChatMessageActions + Pin + Voice-playback +
+                        4 emoji-reaction buttons + Save-to-notes) inline on EVERY assistant message
+                        — the single highest-frequency clutter spot in the app, since it repeats
+                        per message rather than once per page. Kept ChatMessageActions (Copy/Share/
+                        Save — the 3 most fundamental "do something with this text" actions) always
+                        visible, and folded the remaining 7 controls behind one "More" toggle per
+                        message. Nothing was removed — same components, same props, same behavior,
+                        just one extra click to reach the secondary actions. */}
                     {msg.role === 'assistant' && !msg.streaming && msg.content.length > 10 && (
                       <div style={{ paddingInlineStart: isAr ? 0 : 10, paddingInlineEnd: isAr ? 10 : 0, display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                         <ChatMessageActions text={msg.content} isAr={isAr} />
-                        <ChatPinButton text={msg.content} isAr={isAr} />
-                        <ChatVoicePlayback text={msg.content} isAr={isAr} />
-                        <ChatEmojiReactions msgId={String(i)} isAr={isAr} />
-                        <ChatSaveToNotes text={msg.content} isAr={isAr} />
+                        <button
+                          type="button"
+                          onClick={() => setExpandedMsgActions(prev => {
+                            const next = new Set(prev)
+                            next.has(i) ? next.delete(i) : next.add(i)
+                            return next
+                          })}
+                          aria-expanded={expandedMsgActions.has(i)}
+                          aria-label={isAr ? 'المزيد من الإجراءات' : 'More actions'}
+                          title={isAr ? 'المزيد' : 'More'}
+                          style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                            padding: '3px 8px', borderRadius: 12,
+                            background: expandedMsgActions.has(i) ? '#F8EDEF' : 'transparent',
+                            border: `1px solid ${expandedMsgActions.has(i) ? 'rgba(143,29,44,0.25)' : 'transparent'}`,
+                            color: expandedMsgActions.has(i) ? '#8F1D2C' : '#918B82',
+                            fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                          }}
+                        >
+                          •••
+                        </button>
+                        {expandedMsgActions.has(i) && (
+                          <>
+                            <ChatPinButton text={msg.content} isAr={isAr} />
+                            <ChatVoicePlayback text={msg.content} isAr={isAr} />
+                            <ChatEmojiReactions msgId={String(i)} isAr={isAr} />
+                            <ChatSaveToNotes text={msg.content} isAr={isAr} />
+                          </>
+                        )}
                         <ChatAIBadge isAr={isAr} messageIndex={i} />
                       </div>
                     )}
