@@ -345,11 +345,20 @@
 #   catches unbalanced JSX). No ids moved, no behavior changed — the
 #   existing TopNav scroll-listener (which reads #main-content by id) is
 #   unaffected.
+#
+#   REAL SUPPORT NUMBER (batch #327): ProcedureHelpRequest's "Get human
+#   help" WhatsApp button was wired to a placeholder number (96181000000,
+#   flagged TODO in the source). Per the no-mock-data rule, flagged this to
+#   the user directly rather than guessing; user supplied the real WhatsApp
+#   number, now wired in (HELP_NUMBER = '9616694794'). Swept the rest of the
+#   codebase for similar placeholder contact numbers — none found; all
+#   other WhatsApp references are generic share actions (no fixed number)
+#   or user-supplied contact fields in EscalationModal.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-326 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages"
+git diff --cached --quiet || git commit -m "feat: batch #284-327 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest"
 git push origin main
 echo "✅ Done"

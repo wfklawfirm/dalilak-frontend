@@ -5,14 +5,11 @@
  * help line with the current procedure details.
  *
  * Props: { code: string; titleAr: string; titleEn?: string; isAr: boolean }
- *
- * WhatsApp number is a placeholder (+961 XX XXXXXX).
- * Replace HELP_NUMBER with the real number when available.
  */
 
 import React, { useState } from 'react'
 
-const HELP_NUMBER = '96181000000' // TODO: replace with real Dalilak help number
+const HELP_NUMBER = '9616694794'
 
 interface Props {
   code: string
