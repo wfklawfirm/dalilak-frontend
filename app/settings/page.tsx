@@ -1,12 +1,18 @@
 'use client'
 
 /**
- * /settings — centralizes preference toggles that were previously only
- * reachable via scattered floating widgets (AccessibilityBar, GlobalLangSwitch,
- * ChatResponseLength). This page does NOT replace those widgets — it reads
- * and writes the SAME localStorage keys, so toggling something here or from
- * the floating widgets stays in sync either way. Purely additive: no existing
- * control was removed.
+ * /settings — centralizes preference toggles. Originally built alongside
+ * scattered floating widgets (AccessibilityBar, GlobalLangSwitch) that read/
+ * wrote the same localStorage keys; those floating widgets were later
+ * removed entirely as part of the UX consolidation pass (UX_AUDIT.md — "one
+ * floating button app-wide"), making this page the single, sole UI for
+ * language and accessibility preferences. The actual CSS effect of the
+ * accessibility toggles (previously injected only by AccessibilityBar,
+ * which briefly broke when that component stopped mounting) now lives
+ * permanently in globals.css and is re-applied on every page load by the
+ * always-mounted components/AccessibilityEffects.tsx in the root layout —
+ * this page's own applyA11yClasses() call below just makes the toggle feel
+ * instant while you're on this page.
  *
  * Sections: Language, Accessibility (high contrast / large text / reduce
  * motion), Chat preferences (default response length), About.

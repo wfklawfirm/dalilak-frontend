@@ -4,6 +4,7 @@ import './globals.css'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import OfflineNotice from '@/components/OfflineNotice'
 import MinistryQuickDial from '@/components/MinistryQuickDial'
+import AccessibilityEffects from '@/components/AccessibilityEffects'
 // GlobalLangSwitch and AccessibilityBar were removed from the global floating
 // stack in the UX consolidation pass (see UX_AUDIT.md, "one floating button"
 // rule). Their functionality is not lost: language toggle already lives in
@@ -11,7 +12,11 @@ import MinistryQuickDial from '@/components/MinistryQuickDial'
 // already live in full on /settings (same localStorage keys). MinistryQuickDial
 // stays mounted here because its sheet is now opened via a custom event
 // dispatched from MobileMenu instead of its own persistent FAB — see
-// components/MinistryQuickDial.tsx.
+// components/MinistryQuickDial.tsx. AccessibilityEffects (no UI, renders
+// null) replaces the part of AccessibilityBar that actually mattered
+// functionally: applying the stored high-contrast/large-text/reduce-motion
+// classes to <html> on every page load. This was a real regression, caught
+// and fixed same-session — see UX_AUDIT.md and AccessibilityEffects.tsx.
 
 export const metadata: Metadata = {
   // metadataBase lets every route's relative `alternates.canonical` (and any
@@ -148,6 +153,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             انتقل إلى المحتوى الرئيسي / Skip to main content
           </a>
           <OfflineNotice />
+          <AccessibilityEffects />
           {children}
           <MinistryQuickDial />
         </LanguageProvider>

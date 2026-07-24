@@ -55,7 +55,7 @@ function ProcPicker({ value, onSelect, placeholder, isAr, side }: ProcPickerProp
           <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-1)' }}>
             {isAr ? value.title : (value.title_en || value.title)}
           </div>
-          <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 2 }}>
+          <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>
             {isAr ? value.ministry : (value.ministry_en || value.ministry)}
           </div>
         </div>
@@ -109,7 +109,7 @@ function ProcPicker({ value, onSelect, placeholder, isAr, side }: ProcPickerProp
                 <div style={{ fontWeight: 600 }}>
                   {isAr ? proc.title : (proc.title_en || proc.title)}
                 </div>
-                <div style={{ fontSize: 9.5, color: 'var(--text-4)', marginTop: 1 }}>
+                <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1 }}>
                   {isAr ? proc.ministry : (proc.ministry_en || proc.ministry)}
                 </div>
               </button>
@@ -169,7 +169,7 @@ export default function ProcedureComparator({ onAsk }: Props) {
           </span>
         </div>
         <span style={{
-          fontSize: 10, color: 'var(--text-4)',
+          fontSize: 10, color: 'var(--text-3)',
           transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
           transition: 'transform 0.18s', display: 'inline-block',
         }}>▾</span>
@@ -189,7 +189,7 @@ export default function ProcedureComparator({ onAsk }: Props) {
             />
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--text-4)', fontSize: 16, fontWeight: 700, padding: '0 2px',
+              color: 'var(--text-3)', fontSize: 16, fontWeight: 700, padding: '0 2px',
             }}>
               VS
             </div>
@@ -210,7 +210,7 @@ export default function ProcedureComparator({ onAsk }: Props) {
                   <tr>
                     <th style={{
                       padding: '7px 10px', textAlign: isAr ? 'right' : 'left',
-                      color: 'var(--text-4)', fontWeight: 700, fontSize: 10.5,
+                      color: 'var(--text-3)', fontWeight: 700, fontSize: 10.5,
                       borderBottom: '1px solid var(--border)', width: '30%',
                     }}>
                       {isAr ? 'العنصر' : 'Item'}
@@ -288,7 +288,7 @@ export default function ProcedureComparator({ onAsk }: Props) {
           )}
 
           {!bothSelected && (
-            <div style={{ textAlign: 'center', padding: '10px 0', color: 'var(--text-4)', fontSize: 12 }}>
+            <div style={{ textAlign: 'center', padding: '10px 0', color: 'var(--text-3)', fontSize: 12 }}>
               {isAr ? 'اختر معاملتين لمقارنتهما' : 'Select two procedures to compare them'}
             </div>
           )}

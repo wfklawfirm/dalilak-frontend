@@ -259,7 +259,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
           alignItems: 'center', gap: 1,
           padding: '1px 5px', borderRadius: 4,
           border: '1px solid var(--border)', background: 'var(--surface)',
-          fontSize: 9.5, fontFamily: 'inherit', color: 'var(--text-4)',
+          fontSize: 9.5, fontFamily: 'inherit', color: 'var(--text-3)',
           lineHeight: 1.6, letterSpacing: '0.3px',
         }}>
           ⌘K
@@ -485,7 +485,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
                     {isActive && (
                       <div style={{
                         flexShrink: 0, display: 'flex', alignItems: 'center', gap: 3,
-                        color: 'var(--text-4)', fontSize: 10,
+                        color: 'var(--text-3)', fontSize: 10,
                       }}>
                         <kbd style={{
                           padding: '1px 5px', borderRadius: 4,
@@ -507,7 +507,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
           padding: '8px 16px', borderTop: '1px solid var(--border)',
           background: 'var(--surface-muted)',
         }}>
-          <div style={{ display: 'flex', gap: 12, fontSize: 10.5, color: 'var(--text-4)' }}>
+          <div style={{ display: 'flex', gap: 12, fontSize: 10.5, color: 'var(--text-3)' }}>
             {[
               { keys: '↑↓', label: isAr ? 'تنقل' : 'navigate' },
               { keys: '↵', label: isAr ? 'اختر' : 'select' },
@@ -525,7 +525,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
               </span>
             ))}
           </div>
-          <span style={{ fontSize: 10.5, color: 'var(--text-4)' }}>
+          <span style={{ fontSize: 10.5, color: 'var(--text-3)' }}>
             {results.length > 0 && query
               ? (isAr ? `${results.length} نتيجة` : `${results.length} results`)
               : ''}

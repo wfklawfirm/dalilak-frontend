@@ -321,7 +321,7 @@ export default function ProcedureTimeline({
               onClick={reset}
               style={{
                 marginTop: 8, alignSelf: 'center',
-                fontSize: 10.5, color: 'var(--text-4)', background: 'none',
+                fontSize: 10.5, color: 'var(--text-3)', background: 'none',
                 border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                 textDecoration: 'underline',
               }}

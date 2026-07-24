@@ -79,7 +79,7 @@ export default function SearchHistoryPanel({ onAsk }: Props) {
             {isAr ? 'آخر البحوث' : 'Recent Searches'}
           </span>
           <span style={{
-            fontSize: 10.5, fontWeight: 700, color: 'var(--text-4)',
+            fontSize: 10.5, fontWeight: 700, color: 'var(--text-3)',
             background: 'var(--surface-muted)', borderRadius: 99,
             padding: '1px 7px', border: '1px solid var(--border)',
           }}>
@@ -93,7 +93,7 @@ export default function SearchHistoryPanel({ onAsk }: Props) {
             onClick={e => { e.stopPropagation(); clearHistory() }}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: 11, color: 'var(--text-4)', padding: '2px 6px',
+              fontSize: 11, color: 'var(--text-3)', padding: '2px 6px',
               borderRadius: 6,
             }}
             title={isAr ? 'مسح السجل' : 'Clear history'}
@@ -101,7 +101,7 @@ export default function SearchHistoryPanel({ onAsk }: Props) {
             {isAr ? 'مسح' : 'Clear'}
           </button>
           <span style={{
-            fontSize: 10, color: 'var(--text-4)',
+            fontSize: 10, color: 'var(--text-3)',
             transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
             transition: 'transform 0.18s ease', display: 'inline-block',
           }}>
@@ -140,7 +140,7 @@ export default function SearchHistoryPanel({ onAsk }: Props) {
                 e.currentTarget.style.background = 'var(--bg)'
               }}
             >
-              <span style={{ color: 'var(--text-4)', flexShrink: 0, fontSize: 11 }}>↩</span>
+              <span style={{ color: 'var(--text-3)', flexShrink: 0, fontSize: 11 }}>↩</span>
               <span style={{
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 lineHeight: 1.4,

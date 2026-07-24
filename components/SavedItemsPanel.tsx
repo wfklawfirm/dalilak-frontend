@@ -170,7 +170,7 @@ function SavedCard({
           width: 20, height: 20, borderRadius: 5,
           border: '1px solid var(--border)',
           background: hovered ? 'var(--surface)' : 'transparent',
-          color: 'var(--text-4)', fontSize: 12, fontWeight: 700,
+          color: 'var(--text-3)', fontSize: 12, fontWeight: 700,
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'opacity 0.12s', opacity: hovered ? 1 : 0,
         }}

@@ -183,7 +183,7 @@ export default function DailyTip({ onAsk }: Props) {
         style={{
           position: 'absolute', top: 8, [isAr ? 'left' : 'right']: 8,
           background: 'none', border: 'none', cursor: 'pointer',
-          color: 'var(--text-4)', fontSize: 15, lineHeight: 1, padding: 4,
+          color: 'var(--text-3)', fontSize: 15, lineHeight: 1, padding: 4,
         }}
       >
         ×

@@ -133,7 +133,7 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
               {isAr ? 'ملخص المحادثة' : 'Conversation Summary'}
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 1 }}>
+            <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 1 }}>
               {isAr
                 ? `${msgCount} سؤال • ${assistantCount} إجابة • ${topics.length} موضوع`
                 : `${msgCount} question${msgCount !== 1 ? 's' : ''} • ${assistantCount} answer${assistantCount !== 1 ? 's' : ''} • ${topics.length} topic${topics.length !== 1 ? 's' : ''}`}
@@ -146,11 +146,11 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              color: 'var(--text-4)', fontSize: 16, padding: '2px 4px',
+              color: 'var(--text-3)', fontSize: 16, padding: '2px 4px',
             }}
           >×</button>
           <span style={{
-            fontSize: 10, color: 'var(--text-4)',
+            fontSize: 10, color: 'var(--text-3)',
             transform: expanded ? 'rotate(180deg)' : 'none',
             transition: 'transform 0.18s', display: 'inline-block',
           }}>▾</span>
@@ -212,7 +212,7 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
                 <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-1)' }}>
                   {stat.value}
                 </div>
-                <div style={{ fontSize: 10, color: 'var(--text-4)' }}>
+                <div style={{ fontSize: 10, color: 'var(--text-3)' }}>
                   {isAr ? stat.labelAr : stat.labelEn}
                 </div>
               </div>

@@ -933,11 +933,52 @@
 #   extra elements per the simplification goal). Full reasoning in
 #   UX_AUDIT.md. With this, zero floating-button exceptions remain
 #   app-wide. tsc --noEmit clean.
+#
+#   BATCH #348 — WCAG 2.2 AA contrast audit (computed, not guessed) + a
+#   critical regression fix caught in the process of doing it.
+#
+#   Contrast audit: extracted every text-color design-token hex value from
+#   globals.css and computed real WCAG contrast ratios via the official
+#   relative-luminance formula (Python script, not eyeballing). Found two
+#   real failures: --text-3 (#918B82) was 3.18:1 on --bg / 3.38:1 on
+#   --surface, failing the 4.5:1 normal-text AA threshold despite being
+#   used as genuine small-caption/meta text (not large text) across 27+
+#   files; --text-4 (#B8B2AA) was 1.98:1/2.10:1, failing even the 3:1
+#   non-text threshold, and grep confirmed 89 real usages across 32 files
+#   were genuine readable text (empty states, counts, timestamps at
+#   10-12.5px), not the placeholder-only use its own comment claimed.
+#   Fixed: darkened --text-3 to #76716A (4.55:1/4.84:1, same hue) — one
+#   token edit, cascades everywhere. Bulk-migrated (via targeted sed on
+#   every file grep confirmed had a real content usage) all 89 var(--text-4)
+#   text-color usages to var(--text-3); left --text-4's own token value
+#   unchanged since its only remaining uses (::placeholder, scrollbar-thumb)
+#   are legitimately exempt from text-contrast requirements. One deliberate
+#   exception not touched: Breadcrumbs.tsx's aria-hidden separator glyph,
+#   which conveys no information and is correctly exempt.
+#
+#   Regression found + fixed while doing the above: removing
+#   AccessibilityBar's floating FAB in batch #345 also silently broke the
+#   actual visual effect of high-contrast/large-text/reduce-motion, because
+#   the CSS rules for .dalilak-high-contrast/.dalilak-large-text/
+#   .dalilak-reduce-motion lived ONLY inside that component's own inline
+#   <style> tag — nowhere else, not in globals.css. /settings kept toggling
+#   the classes on <html> correctly, but with the defining component
+#   unmounted, those classes had zero CSS backing them = zero visible
+#   effect for anyone who turned the toggle on after batch #345. Fixed by
+#   moving the three CSS rules permanently into globals.css and creating
+#   components/AccessibilityEffects.tsx — a render-nothing component,
+#   mounted in app/layout.tsx exactly where AccessibilityBar used to be,
+#   whose only job is applying the stored localStorage preference to
+#   <html> on every page load (plus a storage-event listener for
+#   cross-tab sync). Zero floating button re-added; the "one floating
+#   button app-wide" rule from batch #345-347 stays fully intact — only
+#   the underlying functionality (not the FAB) was restored. Full incident
+#   writeup in UX_AUDIT.md. tsc --noEmit clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-347 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide)"
+git diff --cached --quiet || git commit -m "feat: batch #284-348 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide) + batch #348 WCAG AA contrast audit (computed via relative-luminance formula): fixed --text-3 token (3.18:1->4.55:1) and migrated 89 real var(--text-4) text usages across 32 files to the fixed --text-3, plus fixed a critical regression where removing AccessibilityBar's FAB in batch #345 had silently broken the actual high-contrast/large-text/reduce-motion visual effect (CSS rules moved to globals.css + new render-nothing AccessibilityEffects.tsx restores it without re-adding a floating button)"
 git push origin main
 echo "✅ Done"

@@ -84,8 +84,14 @@
   /* ── Text ─────────────────────────────────────────── */
   --text-1:           #191713;   /* شبه أسود دافئ */
   --text-2:           #69645C;   /* ثانوي */
-  --text-3:           #918B82;   /* خافت */
-  --text-4:           #B8B2AA;   /* Placeholder */
+  /* text-3 darkened from #918B82 -> #76716A (UX_AUDIT.md, batch #348):
+     the old value was 3.18:1 on --bg / 3.38:1 on --surface, failing WCAG
+     2.2 AA's 4.5:1 normal-text threshold — a real failure, since text-3 is
+     used as genuine small-caption/meta text (not large text) across 27+
+     files. New value verified 4.55:1 (bg) / 4.84:1 (surface), computed via
+     the WCAG relative-luminance formula. Same warm-gray hue, just darker. */
+  --text-3:           #76716A;   /* خافت — AA-compliant */
+  --text-4:           #B8B2AA;   /* حصراً للعناصر المعفاة من التباين: placeholder نصوص الإدخال + عناصر زخرفية بحتة (لا نص حقيقي) */
   --text-on-brand:    #ffffff;
 
   /* ── Shadows ──────────────────────────────────────── */
@@ -869,6 +875,49 @@ input:focus {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ════════════════════════════════════════════════════════
+   ACCESSIBILITY TOGGLES — high contrast / large text / reduce motion
+   Moved here from components/AccessibilityBar.tsx's inline <style> tag
+   (batch #348, bug fix): these classes are applied to <html> from two
+   places — the always-mounted components/AccessibilityEffects.tsx (root
+   layout, applies stored preference on every page load) and /settings'
+   own toggle handlers. When AccessibilityBar's floating FAB was removed
+   from layout.tsx during the UX consolidation pass, these CSS rules —
+   which only ever existed inside that component's own <style> tag — went
+   with it, silently breaking the actual visual effect of high-contrast/
+   large-text/reduce-motion even though the class-toggling logic in
+   /settings kept working (toggling a class with no matching CSS does
+   nothing visible). Moving the rules to a real global stylesheet fixes
+   this properly: the effect no longer depends on any specific component
+   being mounted. See UX_AUDIT.md for the full incident note. */
+.dalilak-high-contrast {
+  --bg: #000000 !important;
+  --surface: #1a1a1a !important;
+  --surface-2: #222222 !important;
+  --border: #555555 !important;
+  --text-1: #ffffff !important;
+  --text-2: #f0f0f0 !important;
+  --text-3: #cccccc !important;
+  --text-4: #aaaaaa !important;
+  filter: contrast(1.3);
+}
+.dalilak-large-text {
+  font-size: 118% !important;
+}
+.dalilak-large-text button,
+.dalilak-large-text input,
+.dalilak-large-text textarea {
+  font-size: inherit !important;
+}
+.dalilak-reduce-motion *,
+.dalilak-reduce-motion *::before,
+.dalilak-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }
 
 /* ════════════════════════════════════════════════════════

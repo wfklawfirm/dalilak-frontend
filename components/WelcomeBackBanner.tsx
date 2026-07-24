@@ -113,7 +113,7 @@ export default function WelcomeBackBanner({ userName }: Props) {
         aria-label={isAr ? 'إغلاق' : 'Dismiss'}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
-          color: 'var(--text-4)', fontSize: 18, padding: '2px 4px',
+          color: 'var(--text-3)', fontSize: 18, padding: '2px 4px',
           flexShrink: 0, lineHeight: 1,
         }}
       >

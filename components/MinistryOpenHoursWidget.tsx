@@ -105,7 +105,7 @@ export default function MinistryOpenHoursWidget({
       <span style={{ width: 7, height: 7, borderRadius: '50%', background: dotColor, flexShrink: 0 }} />
       <span style={{ fontWeight: 700, color: textColor }}>{statusLabel}</span>
       {hoursText && (
-        <span style={{ color: 'var(--text-4)' }}>
+        <span style={{ color: 'var(--text-3)' }}>
           · {hoursText}
         </span>
       )}

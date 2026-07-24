@@ -245,13 +245,13 @@ export default function RecentActivityFeed({ onAsk }: Props) {
           <span style={{
             fontSize: 9.5, fontWeight: 700, padding: '1px 6px', borderRadius: 10,
             background: 'var(--surface-muted)', border: '1px solid var(--border)',
-            color: 'var(--text-4)',
+            color: 'var(--text-3)',
           }}>
             {activities.length}
           </span>
         </div>
         <span style={{
-          fontSize: 10, color: 'var(--text-4)',
+          fontSize: 10, color: 'var(--text-3)',
           transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
           transition: 'transform 0.18s', display: 'inline-block',
         }}>▾</span>
@@ -308,7 +308,7 @@ export default function RecentActivityFeed({ onAsk }: Props) {
                       {actionLabel}
                     </div>
                   )}
-                  <div style={{ fontSize: 10, color: 'var(--text-4)' }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-3)' }}>
                     {relativeTime(act.ts, isAr)}
                   </div>
                 </div>
@@ -342,7 +342,7 @@ export default function RecentActivityFeed({ onAsk }: Props) {
               style={{
                 width: '100%', padding: '8px 14px', background: 'none', border: 'none',
                 borderTop: '1px solid var(--border)', cursor: 'pointer',
-                fontSize: 11.5, fontWeight: 700, color: 'var(--text-4)',
+                fontSize: 11.5, fontWeight: 700, color: 'var(--text-3)',
                 fontFamily: 'inherit',
               }}
             >

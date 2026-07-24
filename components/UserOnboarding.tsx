@@ -246,7 +246,7 @@ export default function UserOnboarding({ onComplete }: Props) {
               style={{
                 width: '100%', marginTop: 10, padding: '9px 0',
                 background: 'none', border: 'none',
-                color: 'var(--text-4)', fontSize: 12.5, cursor: 'pointer',
+                color: 'var(--text-3)', fontSize: 12.5, cursor: 'pointer',
               }}
             >
               {isAr ? 'تخطي الإعداد' : 'Skip setup'}
@@ -257,7 +257,7 @@ export default function UserOnboarding({ onComplete }: Props) {
         {/* ── Step 1: Language ── */}
         {step === 1 && (
           <div style={{ padding: '28px 28px 24px' }}>
-            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {isAr ? 'الخطوة 1 من 3' : 'Step 1 of 3'}
             </div>
             <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', marginBottom: 6 }}>
@@ -302,7 +302,7 @@ export default function UserOnboarding({ onComplete }: Props) {
         {/* ── Step 2: User type ── */}
         {step === 2 && (
           <div style={{ padding: '28px 28px 24px' }}>
-            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {isAr ? 'الخطوة 2 من 3' : 'Step 2 of 3'}
             </div>
             <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', marginBottom: 6 }}>
@@ -362,7 +362,7 @@ export default function UserOnboarding({ onComplete }: Props) {
         {/* ── Step 3: Get started ── */}
         {step === 3 && selectedType && (
           <div style={{ padding: '28px 28px 24px' }}>
-            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ marginBottom: 6, fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {isAr ? 'الخطوة 3 من 3' : 'Step 3 of 3'}
             </div>
             <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', marginBottom: 4 }}>

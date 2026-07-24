@@ -196,7 +196,7 @@ export default function CostEstimator({
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-1)' }}>
             {isAr ? 'حاسبة التكلفة' : 'Cost Estimator'}
           </span>
-          <span style={{ fontSize: 10, color: 'var(--text-4)', fontWeight: 500 }}>
+          <span style={{ fontSize: 10, color: 'var(--text-3)', fontWeight: 500 }}>
             {isAr ? '(تقريبي)' : '(estimate)'}
           </span>
         </div>
@@ -257,7 +257,7 @@ export default function CostEstimator({
                 {isAr ? line.labelAr : line.labelEn}
               </div>
               {line.note && (
-                <div style={{ fontSize: 10, color: 'var(--text-4)', marginTop: 1 }}>{line.note}</div>
+                <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{line.note}</div>
               )}
             </div>
             <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)', flexShrink: 0 }}>
@@ -284,7 +284,7 @@ export default function CostEstimator({
 
       {/* Disclaimer + Ask CTA */}
       <div style={{ padding: '8px 14px 12px', borderTop: '1px solid var(--border)' }}>
-        <p style={{ fontSize: 10, color: 'var(--text-4)', margin: '0 0 8px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: 10, color: 'var(--text-3)', margin: '0 0 8px', lineHeight: 1.6 }}>
           {isAr
             ? '⚠️ هذه تقديرات استرشادية. تتفاوت التكاليف الفعلية حسب الجهة والوقت وعوامل أخرى. تأكد دائماً من الجهة الرسمية.'
             : '⚠️ These are rough estimates. Actual costs vary by authority, timing, and other factors. Always verify with the official authority.'}

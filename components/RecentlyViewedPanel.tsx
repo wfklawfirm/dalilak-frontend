@@ -99,7 +99,7 @@ export default function RecentlyViewedPanel({ onAsk }: Props) {
               }}>
                 {isAr ? item.titleAr : item.titleEn}
               </div>
-              <div style={{ fontSize: 9.5, color: 'var(--text-4)', marginTop: 1 }}>
+              <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1 }}>
                 {timeAgo(item.viewedAt, isAr)}
               </div>
             </div>

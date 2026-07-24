@@ -167,7 +167,7 @@ export default function StatsBadgeStrip() {
               {formatValue(s, i)}
             </div>
             <div style={{
-              fontSize: 9.5, fontWeight: 600, color: 'var(--text-4)',
+              fontSize: 9.5, fontWeight: 600, color: 'var(--text-3)',
               lineHeight: 1.3,
             }}>
               {isAr ? s.labelAr : s.labelEn}

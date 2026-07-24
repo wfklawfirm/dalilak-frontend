@@ -75,7 +75,7 @@ export default function ProcedureRelatedSuggestions({ proc, onSelect, onAsk }: P
       }}
     >
       {/* Section label */}
-      <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--text-4)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+      <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--text-3)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
         🔗 {isAr ? 'قد تحتاج أيضاً' : 'You may also need'}
       </div>
 
@@ -127,7 +127,7 @@ export default function ProcedureRelatedSuggestions({ proc, onSelect, onAsk }: P
                   <div style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, marginTop: 2 }}>
                     🏛️ {ministry}
                     {docCount > 0 && (
-                      <span style={{ color: 'var(--text-4)', fontWeight: 400, marginInlineStart: 6 }}>
+                      <span style={{ color: 'var(--text-3)', fontWeight: 400, marginInlineStart: 6 }}>
                         · {docCount} {isAr ? 'وثيقة' : 'docs'}
                       </span>
                     )}

@@ -97,7 +97,7 @@ export default function KeyboardShortcutsHelp() {
                 <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-1)' }}>
                   ⌨️ {isAr ? 'اختصارات لوحة المفاتيح' : 'Keyboard Shortcuts'}
                 </div>
-                <div style={{ fontSize: 11, color: 'var(--text-4)', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
                   {isAr ? 'اضغط ? في أي وقت لفتح هذه القائمة' : 'Press ? anytime to open this panel'}
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function KeyboardShortcutsHelp() {
                           <div style={{ display: 'flex', gap: 3, flexShrink: 0 }}>
                             {s.keys.map((k, ki) => (
                               <React.Fragment key={ki}>
-                                {ki > 0 && <span style={{ fontSize: 10, color: 'var(--text-4)', lineHeight: '20px' }}>+</span>}
+                                {ki > 0 && <span style={{ fontSize: 10, color: 'var(--text-3)', lineHeight: '20px' }}>+</span>}
                                 <kbd style={{
                                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                                   minWidth: k.length > 1 ? 'auto' : 22, height: 22,
@@ -156,7 +156,7 @@ export default function KeyboardShortcutsHelp() {
 
             <div style={{
               padding: '10px 18px', borderTop: '1px solid var(--border)',
-              fontSize: 11, color: 'var(--text-4)', textAlign: 'center',
+              fontSize: 11, color: 'var(--text-3)', textAlign: 'center',
             }}>
               {isAr ? 'دليلك AI — مساعد المعاملات الحكومية اللبنانية' : 'Dalilak AI — Lebanese Government Procedures Assistant'}
             </div>

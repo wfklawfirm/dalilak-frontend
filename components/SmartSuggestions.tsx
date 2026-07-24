@@ -174,7 +174,7 @@ export default function SmartSuggestions({ onAsk }: Props) {
       }}
     >
       <div style={{
-        fontSize: 11, fontWeight: 700, color: 'var(--text-4)',
+        fontSize: 11, fontWeight: 700, color: 'var(--text-3)',
         marginBottom: 7, paddingInline: 2,
         display: 'flex', alignItems: 'center', gap: 5,
       }}>

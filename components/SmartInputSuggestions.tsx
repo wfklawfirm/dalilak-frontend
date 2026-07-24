@@ -159,11 +159,11 @@ export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) 
             transition: 'background 0.1s',
           }}
         >
-          <span style={{ color: 'var(--text-4)', fontSize: 11, flexShrink: 0 }}>🔍</span>
+          <span style={{ color: 'var(--text-3)', fontSize: 11, flexShrink: 0 }}>🔍</span>
           <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {s}
           </span>
-          <span style={{ fontSize: 10, color: 'var(--text-4)', flexShrink: 0 }}>
+          <span style={{ fontSize: 10, color: 'var(--text-3)', flexShrink: 0 }}>
             {isAr ? 'اختر' : 'Tab'}
           </span>
         </button>
@@ -172,7 +172,7 @@ export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) 
       {/* Keyboard hint */}
       <div style={{
         padding: '4px 12px 5px',
-        fontSize: 9.5, color: 'var(--text-4)',
+        fontSize: 9.5, color: 'var(--text-3)',
         borderTop: '1px solid var(--border)',
         textAlign: isAr ? 'right' : 'left',
       }}>

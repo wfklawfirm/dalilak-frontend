@@ -177,7 +177,7 @@ export default function ChatContextBar({ mode, modeAr, modeEn }: Props) {
       ))}
 
       {/* Label hint */}
-      <span style={{ fontSize: 9.5, color: 'var(--text-4)', marginInlineStart: 'auto', whiteSpace: 'nowrap' }}>
+      <span style={{ fontSize: 9.5, color: 'var(--text-3)', marginInlineStart: 'auto', whiteSpace: 'nowrap' }}>
         {isAr ? 'السياق النشط' : 'Active context'}
       </span>
     </div>

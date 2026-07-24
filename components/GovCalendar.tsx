@@ -90,7 +90,7 @@ export default function GovCalendar({ onAsk }: Props) {
         <span style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--text-3)' }}>
           {isAr ? 'أيام العطل القادمة' : 'Upcoming Holidays'}
         </span>
-        <span style={{ fontSize: 10, color: 'var(--text-4)', fontStyle: 'italic' }}>
+        <span style={{ fontSize: 10, color: 'var(--text-3)', fontStyle: 'italic' }}>
           {isAr ? '(الدوائر مغلقة)' : '(offices closed)'}
         </span>
       </div>
@@ -147,7 +147,7 @@ export default function GovCalendar({ onAsk }: Props) {
                     {dayLabel}
                   </span>
                   {h.type === 'national' && (
-                    <span style={{ fontSize: 9, color: 'var(--text-4)' }}>
+                    <span style={{ fontSize: 9, color: 'var(--text-3)' }}>
                       {isAr ? 'وطني' : 'National'}
                     </span>
                   )}

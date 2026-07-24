@@ -128,7 +128,7 @@ export default function ProcedureProgressTracker({ onAsk }: Props) {
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2)' }}>
               {isAr ? 'تقدّمي في المعاملات' : 'My Procedure Progress'}
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 1 }}>
+            <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 1 }}>
               {isAr
                 ? `${completedCount} مكتملة · ${inProgressCount} قيد التنفيذ`
                 : `${completedCount} completed · ${inProgressCount} in progress`}
@@ -160,7 +160,7 @@ export default function ProcedureProgressTracker({ onAsk }: Props) {
             </span>
           </div>
           <span style={{
-            fontSize: 10, color: 'var(--text-4)',
+            fontSize: 10, color: 'var(--text-3)',
             transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
             transition: 'transform 0.18s', display: 'inline-block',
           }}>▾</span>
@@ -215,7 +215,7 @@ export default function ProcedureProgressTracker({ onAsk }: Props) {
                           transition: 'width 0.3s',
                         }} />
                       </div>
-                      <span style={{ fontSize: 9.5, color: 'var(--text-4)', flexShrink: 0 }}>
+                      <span style={{ fontSize: 9.5, color: 'var(--text-3)', flexShrink: 0 }}>
                         {p.checkedDocs}/{p.totalDocs} {isAr ? 'وثيقة' : 'docs'}
                       </span>
                     </div>
@@ -249,7 +249,7 @@ export default function ProcedureProgressTracker({ onAsk }: Props) {
           })}
 
           {procs.length === 0 && (
-            <div style={{ textAlign: 'center', color: 'var(--text-4)', fontSize: 12, padding: '8px 0' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-3)', fontSize: 12, padding: '8px 0' }}>
               {isAr ? 'ابدأ بفتح قائمة وثائق أي معاملة' : 'Open a procedure checklist to start tracking'}
             </div>
           )}

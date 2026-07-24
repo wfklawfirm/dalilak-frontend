@@ -59,7 +59,7 @@ export default function ProcedureFavoritesList({ onAsk, onNavigate }: Props) {
     >
       {/* Label */}
       <div style={{
-        fontSize: 10.5, fontWeight: 800, color: 'var(--text-4)',
+        fontSize: 10.5, fontWeight: 800, color: 'var(--text-3)',
         textTransform: 'uppercase', letterSpacing: '0.05em',
         marginBottom: 7,
         display: 'flex', alignItems: 'center', gap: 5,

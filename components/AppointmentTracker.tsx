@@ -358,7 +358,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
           {/* Appointment list */}
           {upcoming.length === 0 && !adding && (
             <div style={{
-              textAlign: 'center', padding: '18px 0', color: 'var(--text-4)', fontSize: 12.5,
+              textAlign: 'center', padding: '18px 0', color: 'var(--text-3)', fontSize: 12.5,
             }}>
               <div style={{ fontSize: 28, marginBottom: 6 }}>📅</div>
               <div style={{ fontWeight: 600 }}>
@@ -489,7 +489,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
 
           {/* Past appointments note */}
           {appts.length > upcoming.length && (
-            <div style={{ fontSize: 11, color: 'var(--text-4)', textAlign: 'center' }}>
+            <div style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center' }}>
               {isAr
                 ? `${appts.length - upcoming.length} موعد منتهي مخفي`
                 : `${appts.length - upcoming.length} past appointment(s) hidden`}

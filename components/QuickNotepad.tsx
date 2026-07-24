@@ -85,7 +85,7 @@ export default function QuickNotepad() {
           </span>
           {text.trim() && (
             <span style={{
-              fontSize: 10, fontWeight: 700, color: 'var(--text-4)',
+              fontSize: 10, fontWeight: 700, color: 'var(--text-3)',
               background: 'var(--surface-muted)', borderRadius: 99,
               padding: '1px 7px', border: '1px solid var(--border)',
             }}>
@@ -102,7 +102,7 @@ export default function QuickNotepad() {
                 onClick={e => { e.stopPropagation(); copyAll() }}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 11, color: copied ? 'var(--success)' : 'var(--text-4)',
+                  fontSize: 11, color: copied ? 'var(--success)' : 'var(--text-3)',
                   padding: '2px 6px', borderRadius: 5,
                   fontWeight: 600,
                 }}
@@ -114,7 +114,7 @@ export default function QuickNotepad() {
                 onClick={e => { e.stopPropagation(); clear() }}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: 11, color: 'var(--text-4)',
+                  fontSize: 11, color: 'var(--text-3)',
                   padding: '2px 6px', borderRadius: 5,
                 }}
               >
@@ -123,7 +123,7 @@ export default function QuickNotepad() {
             </>
           )}
           <span style={{
-            fontSize: 10, color: 'var(--text-4)',
+            fontSize: 10, color: 'var(--text-3)',
             transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
             transition: 'transform 0.18s', display: 'inline-block',
           }}>▾</span>
@@ -152,7 +152,7 @@ export default function QuickNotepad() {
             }}
           />
           <div style={{
-            marginTop: 5, fontSize: 10, color: 'var(--text-4)',
+            marginTop: 5, fontSize: 10, color: 'var(--text-3)',
             textAlign: isAr ? 'left' : 'right',
           }}>
             {isAr

@@ -337,7 +337,7 @@ export default function DocExpiryBanner({ onAsk }: Props) {
 
       {/* Footer hint */}
       <div style={{ padding: '8px 16px', background: 'var(--surface-muted)' }}>
-        <p style={{ fontSize: 11, color: 'var(--text-4)', margin: 0 }}>
+        <p style={{ fontSize: 11, color: 'var(--text-3)', margin: 0 }}>
           {isAr
             ? '💾 التواريخ محفوظة تلقائياً على جهازك — لا ترفع للخادم'
             : '💾 Dates are saved locally on your device — never uploaded to any server'}

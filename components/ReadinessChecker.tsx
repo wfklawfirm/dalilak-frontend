@@ -319,7 +319,7 @@ export default function ReadinessChecker({
 
       {/* ── Hint when nothing checked ── */}
       {done === 0 && !compact && (
-        <p style={{ fontSize: 11.5, color: 'var(--text-4)', margin: '10px 0 0', textAlign: 'center' }}>
+        <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: '10px 0 0', textAlign: 'center' }}>
           {isAr
             ? '💡 اضغط على كل وثيقة عندما تجهّزها — تُحفظ تلقائياً'
             : '💡 Tap each document when you have it — saved automatically'}

@@ -158,13 +158,13 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
         <span style={{ flex: 1, fontSize: 12.5, fontWeight: 700, color: 'var(--text-2)' }}>
           {isAr ? 'شاركنا رأيك' : 'Share Your Feedback'}
         </span>
-        <span aria-hidden="true" style={{ color: 'var(--text-4)', fontSize: 12, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
+        <span aria-hidden="true" style={{ color: 'var(--text-3)', fontSize: 12, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
       </button>
 
       {open && (
         <div style={{ padding: '4px 14px 14px', borderTop: '1px solid var(--border)' }}>
           {/* Star rating */}
-          <div style={{ fontSize: 11, color: 'var(--text-4)', margin: '10px 0 8px' }}>
+          <div style={{ fontSize: 11, color: 'var(--text-3)', margin: '10px 0 8px' }}>
             {isAr ? 'كيف تُقيّم تجربتك مع دليلك؟' : 'How would you rate your experience?'}
           </div>
           <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 12 }}>
@@ -214,7 +214,7 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
             style={{
               width: '100%', padding: '8px 0', borderRadius: 9,
               background: rating > 0 ? '#8F1D2C' : 'var(--bg)',
-              color: rating > 0 ? '#fff' : 'var(--text-4)',
+              color: rating > 0 ? '#fff' : 'var(--text-3)',
               border: '1px solid var(--border)',
               fontSize: 12.5, fontWeight: 700, cursor: rating > 0 ? 'pointer' : 'default',
               fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',

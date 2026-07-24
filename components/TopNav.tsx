@@ -392,7 +392,7 @@ export default function TopNav({
                         <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
                           {currentUser.full_name || currentUser.username}
                         </div>
-                        <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 2 }}>
+                        <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>
                           {currentUser.email}
                         </div>
                       </div>

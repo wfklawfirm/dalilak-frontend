@@ -73,7 +73,7 @@ function ShareBar({ content, isAr }: { content: string; isAr: boolean }) {
     height: 26, padding: '0 8px', borderRadius: 6,
     border: '1px solid var(--border)',
     background: 'transparent',
-    color: 'var(--text-4)', fontSize: 10.5, fontWeight: 600,
+    color: 'var(--text-3)', fontSize: 10.5, fontWeight: 600,
     cursor: 'pointer', fontFamily: 'inherit',
     transition: 'color 0.12s, border-color 0.12s, background 0.12s',
   }
@@ -89,9 +89,9 @@ function ShareBar({ content, isAr }: { content: string; isAr: boolean }) {
         onClick={handleCopy}
         aria-label={isAr ? 'نسخ الرد' : 'Copy response'}
         title={isAr ? 'نسخ' : 'Copy'}
-        style={{ ...btnBase, color: copied ? 'var(--success)' : 'var(--text-4)', borderColor: copied ? 'var(--success-border)' : 'var(--border)' }}
+        style={{ ...btnBase, color: copied ? 'var(--success)' : 'var(--text-3)', borderColor: copied ? 'var(--success-border)' : 'var(--border)' }}
         onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-1)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
-        onMouseLeave={e => { e.currentTarget.style.color = copied ? 'var(--success)' : 'var(--text-4)'; e.currentTarget.style.borderColor = copied ? 'var(--success-border)' : 'var(--border)' }}
+        onMouseLeave={e => { e.currentTarget.style.color = copied ? 'var(--success)' : 'var(--text-3)'; e.currentTarget.style.borderColor = copied ? 'var(--success-border)' : 'var(--border)' }}
       >
         {copied ? (
           <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -111,9 +111,9 @@ function ShareBar({ content, isAr }: { content: string; isAr: boolean }) {
         onClick={handleWhatsApp}
         aria-label={isAr ? 'مشاركة عبر واتساب' : 'Share via WhatsApp'}
         title="WhatsApp"
-        style={{ ...btnBase, color: shared ? '#25D366' : 'var(--text-4)', borderColor: shared ? '#25D36644' : 'var(--border)' }}
+        style={{ ...btnBase, color: shared ? '#25D366' : 'var(--text-3)', borderColor: shared ? '#25D36644' : 'var(--border)' }}
         onMouseEnter={e => { e.currentTarget.style.color = '#25D366'; e.currentTarget.style.borderColor = '#25D36644'; e.currentTarget.style.background = '#25D36610' }}
-        onMouseLeave={e => { e.currentTarget.style.color = shared ? '#25D366' : 'var(--text-4)'; e.currentTarget.style.borderColor = shared ? '#25D36644' : 'var(--border)'; e.currentTarget.style.background = 'transparent' }}
+        onMouseLeave={e => { e.currentTarget.style.color = shared ? '#25D366' : 'var(--text-3)'; e.currentTarget.style.borderColor = shared ? '#25D36644' : 'var(--border)'; e.currentTarget.style.background = 'transparent' }}
       >
         {/* WhatsApp icon */}
         <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
@@ -131,7 +131,7 @@ function ShareBar({ content, isAr }: { content: string; isAr: boolean }) {
           title={isAr ? 'مشاركة' : 'Share'}
           style={btnBase}
           onMouseEnter={e => { e.currentTarget.style.color = 'var(--brand)'; e.currentTarget.style.borderColor = 'var(--brand)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-4)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-3)'; e.currentTarget.style.borderColor = 'var(--border)' }}
         >
           <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>

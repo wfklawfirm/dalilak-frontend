@@ -155,7 +155,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
               {isAr ? 'قائمة الوثائق المطلوبة' : 'Document Checklist'}
             </div>
             {selected && (
-              <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 1 }}>
+              <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 1 }}>
                 {isAr ? selected.title : (selected.title_en || selected.title)}
                 {' — '}{doneCount}/{total}
               </div>
@@ -163,7 +163,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
           </div>
         </div>
         <span style={{
-          fontSize: 10, color: 'var(--text-4)',
+          fontSize: 10, color: 'var(--text-3)',
           transform: collapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
           transition: 'transform 0.18s', display: 'inline-block',
         }}>▾</span>
@@ -216,7 +216,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
                     <div style={{ fontWeight: 600 }}>
                       {isAr ? proc.title : (proc.title_en || proc.title)}
                     </div>
-                    <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 2 }}>
+                    <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>
                       {isAr ? proc.ministry : (proc.ministry_en || proc.ministry)}
                     </div>
                   </button>
@@ -270,7 +270,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
                       }}
                     />
                     <span style={{
-                      fontSize: 12.5, color: checked.has(i) ? 'var(--text-4)' : 'var(--text-1)',
+                      fontSize: 12.5, color: checked.has(i) ? 'var(--text-3)' : 'var(--text-1)',
                       textDecoration: checked.has(i) ? 'line-through' : 'none',
                       lineHeight: 1.5,
                     }}>
@@ -321,7 +321,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
                   }}
                   style={{
                     padding: '7px 12px', borderRadius: 8,
-                    background: 'none', color: 'var(--text-4)',
+                    background: 'none', color: 'var(--text-3)',
                     border: '1px solid var(--border)', cursor: 'pointer', fontSize: 11,
                   }}
                 >
@@ -332,7 +332,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
           )}
 
           {!selected && (
-            <div style={{ textAlign: 'center', padding: '12px 0', color: 'var(--text-4)', fontSize: 12.5 }}>
+            <div style={{ textAlign: 'center', padding: '12px 0', color: 'var(--text-3)', fontSize: 12.5 }}>
               {isAr ? 'ابحث عن معاملة لعرض وثائقها المطلوبة' : 'Search for a procedure to see its required documents'}
             </div>
           )}

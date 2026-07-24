@@ -146,7 +146,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
             <button
               type="button"
               onClick={() => setQuery('')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-4)', fontSize: 18 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 18 }}
             >×</button>
           )}
           <button
@@ -154,7 +154,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
             onClick={onClose}
             style={{
               background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6,
-              padding: '2px 7px', fontSize: 10, color: 'var(--text-4)',
+              padding: '2px 7px', fontSize: 10, color: 'var(--text-3)',
               cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit',
             }}
           >Esc</button>
@@ -165,7 +165,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
           {/* Recent searches */}
           {!query && recent.length > 0 && (
             <div style={{ padding: '10px 16px 6px' }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-4)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', marginBottom: 7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {isAr ? 'عمليات بحث سابقة' : 'Recent searches'}
               </div>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -190,7 +190,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
 
           {/* Section label */}
           <div style={{ padding: '8px 16px 4px' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {query
                 ? (isAr ? `${results.length} نتيجة` : `${results.length} results`)
                 : (isAr ? 'أكثر المعاملات شيوعاً' : 'Popular Procedures')
@@ -200,7 +200,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
 
           {/* Results list */}
           {results.length === 0 ? (
-            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-4)', fontSize: 13 }}>
+            <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>
               {isAr ? 'لا توجد نتائج' : 'No results found'}
               {onAsk && (
                 <div style={{ marginTop: 12 }}>
@@ -270,12 +270,12 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
                         🏛️ {ministry}
                       </span>
                       {docs.length > 0 && (
-                        <span style={{ fontSize: 10, color: 'var(--text-4)' }}>
+                        <span style={{ fontSize: 10, color: 'var(--text-3)' }}>
                           · 📋 {docs.length} {isAr ? 'وثيقة' : 'docs'}
                         </span>
                       )}
                       {steps.length > 0 && (
-                        <span style={{ fontSize: 10, color: 'var(--text-4)' }}>
+                        <span style={{ fontSize: 10, color: 'var(--text-3)' }}>
                           · 👣 {steps.length} {isAr ? 'خطوة' : 'steps'}
                         </span>
                       )}
@@ -291,7 +291,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
                   </div>
 
                   {/* Arrow */}
-                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" strokeWidth="2.5" style={{ flexShrink: 0, transform: isAr ? 'scaleX(-1)' : 'none' }}>
+                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.5" style={{ flexShrink: 0, transform: isAr ? 'scaleX(-1)' : 'none' }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/>
                   </svg>
                 </button>
@@ -326,7 +326,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: '#8F1D2C' }}>
                   {isAr ? `اسأل دليلك عن "${query}"` : `Ask Dalilak about "${query}"`}
                 </div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-4)', marginTop: 1 }}>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 1 }}>
                   {isAr ? 'احصل على إجابة مفصّلة من المساعد الذكي' : 'Get a detailed AI-powered answer'}
                 </div>
               </div>
@@ -337,7 +337,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
         {/* Footer hint */}
         <div style={{
           padding: '7px 16px', borderTop: '1px solid var(--border)',
-          fontSize: 10, color: 'var(--text-4)', flexShrink: 0,
+          fontSize: 10, color: 'var(--text-3)', flexShrink: 0,
           display: 'flex', gap: 12,
         }}>
           <span>↑↓ {isAr ? 'للتنقل' : 'navigate'}</span>
