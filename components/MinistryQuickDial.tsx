@@ -150,6 +150,7 @@ export default function MinistryQuickDial() {
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   placeholder={isAr ? 'ابحث عن جهة...' : 'Search ministry...'}
+                  aria-label={isAr ? 'ابحث عن جهة حكومية' : 'Search government ministry'}
                   dir={isAr ? 'rtl' : 'ltr'}
                   style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13, fontFamily: 'inherit', color: '#191713' }}
                 />

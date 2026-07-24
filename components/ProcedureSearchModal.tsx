@@ -136,6 +136,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={isAr ? 'ابحث في المعاملات الحكومية...' : 'Search government procedures...'}
+            aria-label={isAr ? 'ابحث في المعاملات الحكومية' : 'Search government procedures'}
             style={{
               flex: 1, border: 'none', outline: 'none', fontSize: 15,
               color: 'var(--text-1)', background: 'transparent', fontFamily: 'inherit',

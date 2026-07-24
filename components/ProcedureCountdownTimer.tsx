@@ -121,6 +121,7 @@ export default function ProcedureCountdownTimer({ code, titleAr, isAr }: Props) 
                 type="number" min="1" max="365"
                 value={days}
                 onChange={e => setDays(e.target.value)}
+                aria-label={isAr ? 'عدد الأيام حتى الموعد النهائي' : 'Number of days until the deadline'}
                 style={{ width: 60, padding: '4px 8px', borderRadius: 6, border: '1px solid #D1D5DB', fontSize: 12, fontFamily: 'inherit' }}
               />
               <span style={{ fontSize: 11, color: '#6B7280' }}>{isAr ? 'يوم' : 'days'}</span>

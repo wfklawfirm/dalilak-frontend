@@ -186,6 +186,7 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   placeholder={isAr ? 'أي اقتراحات؟ (اختياري)' : 'Any suggestions? (optional)'}
+                  aria-label={isAr ? 'تعليق اختياري على تقييمك' : 'Optional comment on your rating'}
                   rows={2}
                   style={{
                     width: '100%', resize: 'none', padding: '7px 9px',

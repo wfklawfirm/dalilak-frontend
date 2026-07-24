@@ -197,6 +197,7 @@ export default function HomepageWeeklyGoalWidget() {
               <input
                 type="text"
                 placeholder={isAr ? 'ابحث عن معاملة...' : 'Search procedure...'}
+                aria-label={isAr ? 'ابحث عن معاملة لتحديدها كهدف الأسبوع' : 'Search for a procedure to set as your weekly goal'}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 style={{ width: '100%', padding: '5px 9px', border: '1.5px solid rgba(124,58,237,0.25)', borderRadius: 8, fontSize: 11, fontFamily: 'inherit', color: '#191713', marginBottom: 6, boxSizing: 'border-box' }}

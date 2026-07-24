@@ -1442,6 +1442,7 @@ Question: ${text}`
                           value={heroInput}
                           onChange={e => { setHeroInput(e.target.value); if (!e.target.value.trim()) chipsLockedRef.current = false }}
                           placeholder={isAr ? 'اكتب اسم المعاملة أو سؤالك...' : 'Type a procedure or ask a question...'}
+                          aria-label={isAr ? 'اكتب اسم المعاملة أو سؤالك' : 'Type a procedure or ask a question'}
                           dir={isAr ? 'rtl' : 'ltr'}
                           style={{ flex:1, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:14.5, fontFamily:'inherit', fontWeight:500, color:'var(--text-1)' }}
                         />
@@ -2295,7 +2296,7 @@ Question: ${text}`
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 {attachedFile.preview ? (
-                  <img src={attachedFile.preview} alt="preview" loading="lazy"
+                  <img src={attachedFile.preview} alt={isAr ? `معاينة الملف المرفق: ${attachedFile.name}` : `Attached file preview: ${attachedFile.name}`} loading="lazy"
                     style={{ width: 42, height: 42, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
                 ) : (
                   <div style={{

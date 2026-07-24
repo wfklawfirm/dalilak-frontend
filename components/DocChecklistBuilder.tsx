@@ -178,6 +178,7 @@ export default function DocChecklistBuilder({ onAsk }: Props) {
               type="text"
               dir={isAr ? 'rtl' : 'ltr'}
               placeholder={isAr ? 'ابحث عن معاملة...' : 'Search for a procedure...'}
+              aria-label={isAr ? 'ابحث عن معاملة لإضافتها إلى قائمة المستندات' : 'Search for a procedure to add to the document checklist'}
               value={search}
               onChange={e => { setSearch(e.target.value); setOpen(true) }}
               onFocus={() => setOpen(true)}

@@ -64,6 +64,7 @@ function ProcPicker({ value, onSelect, placeholder, isAr, side }: ProcPickerProp
           type="text"
           dir={isAr ? 'rtl' : 'ltr'}
           placeholder={placeholder}
+          aria-label={placeholder}
           value={search}
           autoFocus={open}
           onChange={e => { setSearch(e.target.value); setOpen(true) }}

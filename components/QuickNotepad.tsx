@@ -141,6 +141,7 @@ export default function QuickNotepad() {
             placeholder={isAr
               ? 'سجّل ملاحظاتك هنا... (تُحفظ تلقائياً للجلسة الحالية)'
               : 'Jot your notes here... (auto-saved for this session)'}
+            aria-label={isAr ? 'المفكرة السريعة' : 'Quick notepad'}
             rows={4}
             style={{
               width: '100%', resize: 'vertical', minHeight: 80,

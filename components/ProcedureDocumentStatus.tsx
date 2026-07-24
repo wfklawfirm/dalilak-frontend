@@ -145,6 +145,7 @@ export default function ProcedureDocumentStatus({ code, docs, isAr }: Props) {
                       type="date"
                       value={expiries[i] || ''}
                       onChange={e => update(i, e.target.value)}
+                      aria-label={isAr ? `تاريخ انتهاء صلاحية: ${docs[i]}` : `Expiry date: ${docs[i]}`}
                       style={{
                         fontSize: 10, padding: '3px 6px', borderRadius: 7,
                         border: '1.5px solid #D1CBC4', fontFamily: 'inherit',

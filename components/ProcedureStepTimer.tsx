@@ -165,6 +165,7 @@ function StepTimer({ code, idx, label, isAr }: { code: string; idx: number; labe
             <input type="number" min="1" max="365" value={custom}
               onChange={e => setCustom(e.target.value)}
               placeholder={isAr ? 'أيام' : 'days'}
+              aria-label={isAr ? 'عدد الأيام المخصّص للموعد النهائي' : 'Custom number of days for the deadline'}
               style={{
                 width: 50, padding: '3px 6px', borderRadius: 7,
                 border: '1.5px solid #D1CBC4', fontSize: 9,

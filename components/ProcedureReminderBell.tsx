@@ -172,6 +172,7 @@ export default function ProcedureReminderBell({ code, titleAr, titleEn, isAr }: 
               value={customDate}
               min={getTodayLb()}
               onChange={e => setCustomDate(e.target.value)}
+              aria-label={isAr ? 'اختر تاريخاً مخصّصاً للتذكير' : 'Choose a custom reminder date'}
               style={{ padding: '5px 8px', border: '1px solid #E6E2DC', borderRadius: 8, fontSize: 11, fontFamily: 'inherit', color: '#191713', width: '100%' }}
             />
             {customDate && (

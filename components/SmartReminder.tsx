@@ -185,6 +185,7 @@ export default function SmartReminder() {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder={isAr ? 'عنوان التذكير...' : 'Reminder title...'}
+                aria-label={isAr ? 'عنوان التذكير' : 'Reminder title'}
                 dir={isAr ? 'rtl' : 'ltr'}
                 maxLength={80}
                 style={{
@@ -199,6 +200,7 @@ export default function SmartReminder() {
                   value={date}
                   min={today}
                   onChange={e => setDate(e.target.value)}
+                  aria-label={isAr ? 'تاريخ التذكير' : 'Reminder date'}
                   style={{
                     flex: 1, border: '1px solid #E6E2DC', borderRadius: 8, padding: '7px 10px',
                     fontSize: 12, fontFamily: 'inherit', outline: 'none', color: '#191713',

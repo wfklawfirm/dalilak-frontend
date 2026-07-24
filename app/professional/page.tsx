@@ -118,10 +118,11 @@ function IntakeLinkCreator({ isAr }: { isAr: boolean }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div>
-        <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>
+        <label htmlFor="prof-client-name" style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>
           {isAr ? 'اسم الموكّل' : 'Client Name'}
         </label>
         <input
+          id="prof-client-name"
           value={clientName}
           onChange={e => setClientName(e.target.value)}
           placeholder={isAr ? 'مثال: أحمد محمد' : 'e.g. Ahmad Mohammad'}
@@ -134,10 +135,11 @@ function IntakeLinkCreator({ isAr }: { isAr: boolean }) {
         />
       </div>
       <div>
-        <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>
+        <label htmlFor="prof-matter-subject" style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 6 }}>
           {isAr ? 'موضوع المعاملة' : 'Matter Subject'}
         </label>
         <input
+          id="prof-matter-subject"
           value={matter}
           onChange={e => setMatter(e.target.value)}
           placeholder={isAr ? 'مثال: بيع عقار' : 'e.g. Property Sale'}

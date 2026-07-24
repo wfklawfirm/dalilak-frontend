@@ -955,6 +955,7 @@ export default function ProceduresPage() {
                               type="date"
                               defaultValue={savedDeadline}
                               min={new Date().toISOString().slice(0, 10)}
+                              aria-label={isAr ? 'حدّد موعداً نهائياً لهذه المعاملة' : 'Set a deadline for this procedure'}
                               onChange={e => {
                                 const val = e.target.value
                                 if (val) {

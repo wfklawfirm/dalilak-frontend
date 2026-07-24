@@ -177,6 +177,7 @@ export default function ProcedureNotesPanel({ code, isAr }: Props) {
             placeholder={isAr
               ? 'اكتب ملاحظاتك هنا — تُحفظ تلقائياً...'
               : 'Write your notes here — auto-saved...'}
+            aria-label={isAr ? 'ملاحظاتك الشخصية حول هذه المعاملة' : 'Your personal notes about this procedure'}
             rows={3}
             style={{
               width: '100%', resize: 'vertical', border: '1px solid #FDE68A',

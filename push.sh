@@ -805,11 +805,46 @@
 #   tag on a page search engines are already told not to index adds no
 #   real value, so left those alone rather than doing low-value busywork.
 #   tsc clean after every edit.
+#
+#   BATCH #344 — form-field labeling audit (continuing "world-class"
+#   session, part of the same standing directive). Ran a dedicated
+#   Explore-agent audit for every `<input>`/`<textarea>`/`<select>` in the
+#   app lacking BOTH a `<label htmlFor>` and an `aria-label`/
+#   `aria-labelledby` (a placeholder alone does not count — screen readers
+#   don't reliably announce placeholders, and they vanish once the user
+#   starts typing). Found 19 genuine gaps across 13 files and fixed all of
+#   them with a bilingual `aria-label` (or, for the 2 professional/page.tsx
+#   fields that already had a *visible* `<label>` sitting unassociated next
+#   to the input, added the missing `htmlFor`/`id` pair instead of a
+#   redundant aria-label):
+#   - app/page.tsx — the homepage's main hero search/chat input (the
+#     single most-used control in the whole app) had no aria-label at all.
+#   - Search bars: ChatMessageSearchInThread, MinistryQuickDial,
+#     ProcedureComparator, HomepageWeeklyGoalWidget, DocChecklistBuilder,
+#     ProcedureSearchModal.
+#   - Notes/comment fields: my-files notes textarea, QuickNotepad,
+#     ProcedureNotesPanel, FeedbackWidget's optional comment box.
+#   - Date/number pickers: ProcedureStepTimer, ProcedureCountdownTimer,
+#     ProcedureReminderBell, ProcedureDocumentStatus (label includes the
+#     specific document name per-row, not a generic "date"), SmartReminder
+#     (title + date), procedures/page.tsx's per-procedure deadline picker.
+#   - components/AppointmentTracker.tsx — the entire add/appointment form
+#     (title, location, date, time, note — 5 fields) had zero programmatic
+#     labels.
+#   - app/professional/page.tsx — client-name and matter-subject fields had
+#     a visible `<label>` that was never actually wired to its `<input>`
+#     (no htmlFor/id pair) — fixed the association, not just added a
+#     duplicate aria-label.
+#   Also fixed one unrelated but related-class defect found while auditing
+#   images: app/page.tsx:2298's attached-file preview thumbnail had
+#   `alt="preview"` — a generic/unhelpful placeholder alt text (same
+#   anti-pattern as a missing label). Now uses the real attached filename.
+#   tsc --noEmit clean after every edit in this batch.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-343 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit: hero search bar crowding, homepage widget defaults, footer grid, expat-property tabs, professional stat grid, DraftingStudio stage pill + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration across 21+9 files + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs component + BreadcrumbList JSON-LD on procedures/forms detail pages, Organization + WebSite/SearchAction JSON-LD on layout.tsx, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages"
+git diff --cached --quiet || git commit -m "feat: batch #284-344 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix"
 git push origin main
 echo "✅ Done"

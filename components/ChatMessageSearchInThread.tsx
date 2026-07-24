@@ -97,6 +97,7 @@ export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
           if (e.key === 'Escape') setOpen(false)
         }}
         placeholder={isAr ? 'ابحث في هذه المحادثة...' : 'Search this chat...'}
+        aria-label={isAr ? 'ابحث في هذه المحادثة' : 'Search this chat'}
         style={{
           flex: 1, border: 'none', outline: 'none', background: 'transparent',
           fontSize: 12, fontFamily: 'inherit', minWidth: 0,

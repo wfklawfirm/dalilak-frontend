@@ -596,6 +596,7 @@ export default function MyFilesPage() {
                         value={notesDraft}
                         onChange={e => setNotesDraft(e.target.value)}
                         onBlur={() => { if (notesDraft !== (selected.notes || '')) saveNotes(selected, notesDraft) }}
+                        aria-label={isAr ? 'ملاحظات حول هذه المعاملة' : 'Notes about this procedure'}
                         placeholder={isAr ? 'أضف ملاحظة حول هذه المعاملة (مثال: رقم مرجعي، موعد، اسم الموظف)...' : 'Add a note about this procedure (e.g., reference number, appointment, staff name)...'}
                         rows={3}
                         style={{

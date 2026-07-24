@@ -250,6 +250,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
               <input
                 style={inputStyle}
                 placeholder={isAr ? 'اسم الموعد (مثال: تجديد الجواز)' : 'Appointment title (e.g. Passport renewal)'}
+                aria-label={isAr ? 'اسم الموعد' : 'Appointment title'}
                 value={isAr ? form.titleAr : form.titleEn}
                 onChange={e => setForm(f => isAr
                   ? { ...f, titleAr: e.target.value }
@@ -280,6 +281,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
                 <input
                   style={inputStyle}
                   placeholder={isAr ? 'أو اكتب الجهة...' : 'Or type location...'}
+                  aria-label={isAr ? 'جهة الموعد' : 'Appointment location'}
                   value={form.location}
                   onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                 />
@@ -295,6 +297,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
                     type="date"
                     required
                     style={inputStyle}
+                    aria-label={isAr ? 'تاريخ الموعد' : 'Appointment date'}
                     value={form.date}
                     onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                   />
@@ -306,6 +309,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
                   <input
                     type="time"
                     style={inputStyle}
+                    aria-label={isAr ? 'وقت الموعد' : 'Appointment time'}
                     value={form.time}
                     onChange={e => setForm(f => ({ ...f, time: e.target.value }))}
                   />
@@ -316,6 +320,7 @@ export default function AppointmentTracker({ onAsk }: Props) {
               <input
                 style={inputStyle}
                 placeholder={isAr ? 'ملاحظة (اختياري)' : 'Note (optional)'}
+                aria-label={isAr ? 'ملاحظة على الموعد (اختياري)' : 'Note on the appointment (optional)'}
                 value={isAr ? form.noteAr : form.noteEn}
                 onChange={e => setForm(f => isAr
                   ? { ...f, noteAr: e.target.value }
