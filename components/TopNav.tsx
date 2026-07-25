@@ -243,9 +243,13 @@ export default function TopNav({
               background: '#f0fdf4', borderRadius: 20,
               padding: '4px 10px', border: '1px solid #bbf7d0',
             }}>
+              {/* v4.0 motion audit (batch #376): dropped the infinite 2.5s pulse —
+                  a purely decorative animation that ran continuously the whole
+                  time this dot is on screen, not a one-shot/functional cue.
+                  Static dot + soft glow still communicates "online" clearly. */}
               <span style={{
                 width: 6, height: 6, borderRadius: '50%', background: '#22c55e',
-                boxShadow: '0 0 5px #22c55e66', animation: 'tn-pulse 2.5s infinite',
+                boxShadow: '0 0 5px #22c55e66',
               }} />
               <span style={{ fontSize: 10.5, color: '#15803d', fontWeight: 600 }}>
                 {isAr ? 'متصل' : 'Online'}

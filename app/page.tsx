@@ -1515,7 +1515,7 @@ Question: ${text}`
                                 <button key={idx} type="button"
                                   aria-label={`Procedure ${idx + 1}`}
                                   onClick={() => setActiveCard(idx)}
-                                  style={{ width: idx===displayCard ? 20 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.32s cubic-bezier(0.34,1.56,0.64,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
+                                  style={{ width: idx===displayCard ? 20 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.2s cubic-bezier(0.22,1,0.36,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
                                 />
                               ))}
                             </div>

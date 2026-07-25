@@ -175,7 +175,7 @@ export default function ProcedureTimeline({
                   width: `${pct}%`,
                   background: allDone ? 'var(--success)' : 'var(--brand)',
                   borderRadius: 2,
-                  transition: 'width 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                  transition: 'width 0.28s cubic-bezier(0.22,1,0.36,1)',
                 }} />
               </div>
               <span style={{ fontSize: 10.5, fontWeight: 700, color: allDone ? 'var(--success)' : 'var(--text-3)', whiteSpace: 'nowrap' }}>
