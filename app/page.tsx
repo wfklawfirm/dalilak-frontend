@@ -1257,10 +1257,16 @@ Question: ${text}`
         :root {
           --safe-top: env(safe-area-inset-top, 0px);
           --safe-bottom: env(safe-area-inset-bottom, 0px);
-          /* Legacy aliases used in chat section */
-          --red: #8F1D2C;
-          --red-dark: #741622;
-          --red-light: #F8EDEF;
+          /* Legacy aliases used in the chat composer — batch #369: these were
+             still hard-pinned to the pre-v4.0 maroon (#8F1D2C/#741622), so the
+             send button, active-mic state, recording indicator, file-preview
+             accents, and focused-input ring were all rendering in the old
+             color even after every other page moved to the v4.0 brand tokens.
+             Pointing them at the real tokens fixes that in one place instead
+             of editing every individual usage site below. */
+          --red: var(--brand);
+          --red-dark: var(--brand-hover);
+          --red-light: var(--brand-soft);
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
@@ -1285,7 +1291,7 @@ Question: ${text}`
         .send-btn:hover:not(:disabled) { background: var(--red-dark) !important; transform: scale(1.05); }
         .icon-btn:hover:not(:disabled) { background: var(--red-light) !important; color: var(--red) !important; }
         .lang-btn:hover { background: rgba(255,255,255,0.22) !important; }
-        .input-focused { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06) !important; transform: scale(1.004); }
+        .input-focused { border-color: var(--red) !important; }
       `}</style>
 
       <div style={{
@@ -1838,15 +1844,14 @@ Question: ${text}`
                     }}>
                       <div style={{
                         display: 'inline-flex', alignItems: 'center', gap: 5,
-                        background: '#fff', border: '1px solid rgba(210,195,178,0.5)',
+                        background: 'var(--surface)', border: '1px solid var(--border)',
                         borderRadius: isAr ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                         padding: '10px 16px',
-                        boxShadow: '0 1px 8px rgba(100,60,20,0.06)',
                       }}>
                         {[0, 1, 2].map(j => (
                           <span key={j} style={{
                             width: 7, height: 7, borderRadius: '50%',
-                            background: '#8F1D2C', display: 'inline-block',
+                            background: 'var(--brand)', display: 'inline-block',
                             animation: `typing-dot 1.2s ease-in-out ${j * 0.2}s infinite`,
                           }} />
                         ))}
@@ -1893,9 +1898,9 @@ Question: ${text}`
                           style={{
                             display: 'inline-flex', alignItems: 'center', gap: 4,
                             padding: '3px 8px', borderRadius: 12,
-                            background: expandedMsgActions.has(i) ? '#F8EDEF' : 'transparent',
-                            border: `1px solid ${expandedMsgActions.has(i) ? 'rgba(143,29,44,0.25)' : 'transparent'}`,
-                            color: expandedMsgActions.has(i) ? '#8F1D2C' : '#918B82',
+                            background: expandedMsgActions.has(i) ? 'var(--brand-soft)' : 'transparent',
+                            border: `1px solid ${expandedMsgActions.has(i) ? 'var(--border-brand)' : 'transparent'}`,
+                            color: expandedMsgActions.has(i) ? 'var(--brand)' : 'var(--text-3)',
                             fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                           }}
                         >
@@ -2026,7 +2031,7 @@ Question: ${text}`
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
         <footer aria-label={isAr ? 'شريط إدخال الرسالة' : 'Message input bar'} className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
           flexShrink: 0,
-          background: messages.length > 0 ? 'linear-gradient(to top, rgba(242,237,230,1) 0%, rgba(242,237,230,0.96) 70%, rgba(242,237,230,0) 100%)' : 'transparent',
+          background: messages.length > 0 ? 'linear-gradient(to top, rgba(248,248,246,1) 0%, rgba(248,248,246,0.96) 70%, rgba(248,248,246,0) 100%)' : 'transparent',
           paddingTop: messages.length > 0 ? 8 : 0,
           paddingBottom: messages.length > 0 && footerBottom > 0 ? 'env(safe-area-inset-bottom, 4px)' : undefined,
         }}>
@@ -2098,26 +2103,26 @@ Question: ${text}`
               <div style={{
                 marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 gap: 10, padding: '9px 16px',
-                background: 'linear-gradient(135deg, #F8EDEF 0%, #FDE8E8 100%)',
-                borderRadius: 14, border: '1.5px solid #FECACA',
+                background: 'var(--brand-soft)',
+                borderRadius: 14, border: '1px solid var(--border-brand)',
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[7, 13, 9, 15, 10, 13, 8].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: 'var(--brand)', borderRadius: 2,
                       animation: `pulse 0.75s ease-in-out infinite`, animationDelay: `${n * 0.07}s`,
                       display: 'inline-block',
                     }} />
                   ))}
                 </span>
-                <span style={{ fontSize: 12.5, color: '#8F1D2C', fontWeight: 700 }}>
+                <span style={{ fontSize: 12.5, color: 'var(--brand)', fontWeight: 600 }}>
                   {isAr ? '🎙 جاري الاستماع... تكلّم الآن' : '🎙 Listening... speak now'}
                 </span>
                 <span style={{ display: 'flex', gap: 3, alignItems: 'flex-end' }}>
                   {[8, 13, 10, 15, 9, 13, 7].map((h, n) => (
                     <span key={n} style={{
-                      width: 3, height: h, backgroundColor: '#8F1D2C', borderRadius: 2,
+                      width: 3, height: h, backgroundColor: 'var(--brand)', borderRadius: 2,
                       animation: `pulse 0.75s ease-in-out infinite`, animationDelay: `${n * 0.09}s`,
                       display: 'inline-block',
                     }} />
@@ -2126,8 +2131,8 @@ Question: ${text}`
                 <button type="button" onClick={stopRecording}
                   aria-label={isAr ? 'إيقاف التسجيل' : 'Stop recording'}
                   style={{
-                    marginInlineStart: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700,
-                    background: '#8F1D2C', color: '#fff', border: 'none', borderRadius: 8,
+                    marginInlineStart: 6, padding: '3px 10px', fontSize: 11, fontWeight: 600,
+                    background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 8,
                     cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
                   }}>
                   {isAr ? 'إيقاف' : 'Stop'}
@@ -2139,8 +2144,8 @@ Question: ${text}`
             {enhanceSuggestion && !recording && (
               <div style={{
                 marginBottom: 8, padding: '10px 14px',
-                background: 'linear-gradient(135deg, #F0F7FF 0%, #E8F4FF 100%)',
-                borderRadius: 14, border: '1.5px solid #BAD7F8',
+                background: '#EAF2FE',
+                borderRadius: 14, border: '1px solid #BAD7F8',
                 animation: 'slideQ 0.22s cubic-bezier(0.22,1,0.36,1) both',
               }}>
                 <div style={{ fontSize: 10.5, color: '#2563EB', fontWeight: 700, marginBottom: 5, letterSpacing: 0.3 }}>
@@ -2185,8 +2190,8 @@ Question: ${text}`
             {voiceJustEnded && !recording && !enhanceSuggestion && !enhancing && input.trim().length > 4 && (
               <div style={{
                 marginBottom: 8, padding: '8px 14px',
-                background: 'linear-gradient(135deg, #FFFBF0 0%, #FFF8E6 100%)',
-                borderRadius: 12, border: '1.5px solid #FDE68A',
+                background: '#FFF8E6',
+                borderRadius: 12, border: '1px solid #FDE68A',
                 display: 'flex', alignItems: 'center', gap: 10,
                 animation: 'slideQ 0.2s cubic-bezier(0.22,1,0.36,1) both',
               }}>
@@ -2266,11 +2271,10 @@ Question: ${text}`
               <div className={inputFocused ? 'input-focused' : ''}
                 style={{
                   display: 'flex', alignItems: 'flex-end', gap: 4,
-                  backgroundColor: '#fff',
-                  border: recording ? '2px solid #FCA5A5' : '1.5px solid rgba(210,195,178,0.7)',
-                  borderRadius: 22, padding: '7px 8px',
-                  boxShadow: '0 2px 16px rgba(100,60,20,0.09), 0 1px 4px rgba(0,0,0,0.05)',
-                  transition: 'border-color 0.18s, box-shadow 0.18s',
+                  backgroundColor: 'var(--surface)',
+                  border: recording ? '1.5px solid #FCA5A5' : '1px solid var(--border)',
+                  borderRadius: 20, padding: '7px 8px',
+                  transition: 'border-color 0.15s',
                 }}>
 
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, flex: 1 }}>
@@ -2370,12 +2374,9 @@ Question: ${text}`
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
                     cursor: loading ? 'default' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: recording
-                      ? 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)'
-                      : 'none',
+                    background: recording ? 'var(--brand)' : 'none',
                     color: recording ? '#fff' : 'var(--text-3)',
-                    boxShadow: recording ? '0 2px 8px rgba(143,29,44,0.35)' : 'none',
-                    opacity: loading ? 0.4 : 1, transition: 'background 0.15s, box-shadow 0.15s, opacity 0.15s',
+                    opacity: loading ? 0.4 : 1, transition: 'background 0.15s, opacity 0.15s',
                   }}
                   onTouchStart={e => !loading && !recording && (e.currentTarget.style.background = 'var(--red-light)')}
                   onTouchEnd={e => !recording && (e.currentTarget.style.background = 'none')}>
@@ -2393,12 +2394,9 @@ Question: ${text}`
                   style={{
                     flexShrink: 0, width: 38, height: 38, borderRadius: 12, border: 'none',
                     cursor: canSend ? 'pointer' : 'default',
-                    background: canSend
-                      ? 'linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%)'
-                      : 'var(--border)',
+                    background: canSend ? 'var(--brand)' : 'var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: canSend ? '0 3px 10px rgba(143,29,44,0.35)' : 'none',
-                    transition: 'background 0.15s, box-shadow 0.15s',
+                    transition: 'background 0.15s',
                   }}
                   onTouchStart={e => canSend && (e.currentTarget.style.transform = 'scale(0.91)')}
                   onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}>
