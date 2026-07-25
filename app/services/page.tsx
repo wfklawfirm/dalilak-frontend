@@ -71,20 +71,20 @@ function ServiceSheet({ service, onClose, onAsk }: {
         </div>
 
         {/* Header */}
-        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid #E6E2DC' }}>
+        <div style={{ padding: '4px 20px 14px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
             <div style={{
-              width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #F8EDEF, #FDE8E8)',
-              border: '1px solid rgba(143,29,44,0.1)', display: 'flex', alignItems: 'center',
+              width: 44, height: 44, borderRadius: 12, background: 'var(--brand-soft)',
+              border: '1px solid var(--border-brand)', display: 'flex', alignItems: 'center',
               justifyContent: 'center', fontSize: 22, flexShrink: 0,
             }}>
               {service.icon}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#191713', lineHeight: 1.35 }}>
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: 'var(--text-1)', lineHeight: 1.35 }}>
                 {displayName}
               </h2>
-              <p style={{ margin: '4px 0 0', fontSize: 11, color: '#8F1D2C', fontWeight: 600, lineHeight: 1.3 }}>
+              <p style={{ margin: '4px 0 0', fontSize: 11, color: 'var(--brand)', fontWeight: 600, lineHeight: 1.3 }}>
                 {displayAuthority}
               </p>
             </div>
@@ -94,8 +94,8 @@ function ServiceSheet({ service, onClose, onAsk }: {
               aria-label={isAr ? 'إغلاق' : 'Close'}
               onClick={onClose}
               style={{
-                background: '#E6E2DC', border: 'none', borderRadius: 10, width: 32, height: 32,
-                cursor: 'pointer', color: '#69645C', flexShrink: 0,
+                background: 'var(--border)', border: 'none', borderRadius: 10, width: 32, height: 32,
+                cursor: 'pointer', color: 'var(--text-2)', flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
@@ -107,21 +107,21 @@ function ServiceSheet({ service, onClose, onAsk }: {
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 10.5, color: '#8F1D2C', background: '#F8EDEF', borderRadius: 20, padding: '3px 10px', border: '1px solid rgba(143,29,44,0.15)', fontWeight: 600 }}>
+            <span style={{ fontSize: 10.5, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 999, padding: '3px 10px', border: '1px solid var(--border-brand)', fontWeight: 600 }}>
               {displayCategory}
             </span>
             {displayFees && (
-              <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                 {displayFees}
               </span>
             )}
             {displayProcessingTime && (
-              <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '3px 10px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                 {displayProcessingTime}
               </span>
             )}
             {service.online_available && (
-              <span style={{ fontSize: 10.5, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '3px 10px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
+              <span style={{ fontSize: 10.5, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 999, padding: '3px 10px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
                 {isAr ? 'متاح أونلاين' : 'Available Online'}
               </span>
             )}
@@ -131,7 +131,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         {/* Body */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
           {displayDescription && (
-            <p style={{ margin: '0 0 16px', fontSize: 13, color: '#2D1B0E', lineHeight: 1.75 }}>
+            <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text-1)', lineHeight: 1.75 }}>
               {displayDescription}
             </p>
           )}
@@ -152,9 +152,9 @@ function ServiceSheet({ service, onClose, onAsk }: {
 
           {/* AI Flowchart */}
           <div style={{ marginBottom: 16 }}>
-            <h3 style={{ fontSize: 12, fontWeight: 800, color: '#191713', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 24, height: 24, borderRadius: 7, background: '#F8EDEF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+            <h3 style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-1)', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 24, height: 24, borderRadius: 7, background: 'var(--brand-soft)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
               </span>
               {isAr ? 'خارطة الإجراء' : 'Procedure Map'}
             </h3>
@@ -176,14 +176,14 @@ function ServiceSheet({ service, onClose, onAsk }: {
                 disabled={fcLoading}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                  padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : '#F8EDEF',
-                  border: '1.5px dashed rgba(143,29,44,0.3)', color: '#8F1D2C', fontSize: 12.5, fontWeight: 700,
+                  padding: '11px 14px', borderRadius: 12, background: fcLoading ? '#F5F0EA' : 'var(--brand-soft)',
+                  border: '1.5px dashed var(--border-brand)', color: 'var(--brand)', fontSize: 12.5, fontWeight: 700,
                   cursor: fcLoading ? 'default' : 'pointer', fontFamily: 'inherit',
                 }}
               >
                 {fcLoading ? (
                   <>
-                    <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(143,29,44,0.25)', borderTopColor: '#8F1D2C', animation: 'svcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
+                    <span style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(143,29,44,0.25)', borderTopColor: 'var(--brand)', animation: 'svcFcSpin 0.8s linear infinite', display: 'inline-block' }} />
                     {isAr ? 'جارٍ توليد الخارطة بالذكاء الاصطناعي...' : 'Generating AI map...'}
                   </>
                 ) : (
@@ -195,9 +195,9 @@ function ServiceSheet({ service, onClose, onAsk }: {
               </button>
             )}
             {fcError && (
-              <p style={{ fontSize: 10.5, color: '#8F1D2C', margin: '6px 0 0' }}>
+              <p style={{ fontSize: 10.5, color: 'var(--brand)', margin: '6px 0 0' }}>
                 {isAr ? 'تعذّر التوليد — ' : 'Generation failed — '}
-                <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: '#8F1D2C', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
+                <button type="button" onClick={generateFc} style={{ background: 'none', border: 'none', color: 'var(--brand)', textDecoration: 'underline', cursor: 'pointer', fontSize: 10.5, padding: 0, fontFamily: 'inherit' }}>
                   {isAr ? 'إعادة المحاولة' : 'Retry'}
                 </button>
               </p>
@@ -224,7 +224,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
           {/* Forms needed */}
           {service.forms_needed && service.forms_needed.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ fontSize: 12, fontWeight: 800, color: '#191713', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <h3 style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-1)', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ width: 24, height: 24, borderRadius: 7, background: '#FFFBEB', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </span>
@@ -237,7 +237,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
                   const label = url ? form.replace(/\s*—?\s*https?:\/\/[^\s]+/, '').trim() : form
                   return url ? (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: '#8F1D2C', background: '#F8EDEF', borderRadius: 8, padding: '7px 10px', border: '1px solid rgba(143,29,44,0.15)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
+                      style={{ fontSize: 12, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 8, padding: '7px 10px', border: '1px solid var(--border-brand)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
                       <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                       {label || (isAr ? 'تحميل النموذج' : 'Download Form')}
                     </a>
@@ -252,27 +252,27 @@ function ServiceSheet({ service, onClose, onAsk }: {
           {/* Contact info */}
           {(service.phone || service.website || service.working_hours) && (
             <div style={{ background: '#F8F4F0', borderRadius: 12, padding: '12px 14px', marginBottom: 14 }}>
-              <h3 style={{ fontSize: 11, fontWeight: 800, color: '#69645C', margin: '0 0 8px' }}>{isAr ? 'معلومات التواصل' : 'Contact Information'}</h3>
+              <h3 style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-2)', margin: '0 0 8px' }}>{isAr ? 'معلومات التواصل' : 'Contact Information'}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {service.phone && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#2D1B0E' }}>
-                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2" style={{ flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--text-1)' }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
                     {service.phone}
                   </div>
                 )}
                 {service.working_hours && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#2D1B0E' }}>
-                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2" style={{ flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--text-1)' }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2"/>
                     </svg>
                     {service.working_hours}
                   </div>
                 )}
                 {service.website && (
-                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#8F1D2C', fontWeight: 600, textDecoration: 'none' }}>
-                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2" style={{ flexShrink: 0 }}>
+                  <a href={service.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--brand)', fontWeight: 600, textDecoration: 'none' }}>
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" style={{ flexShrink: 0 }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
                     {isAr ? 'الموقع الرسمي' : 'Official Website'}
@@ -282,13 +282,13 @@ function ServiceSheet({ service, onClose, onAsk }: {
             </div>
           )}
 
-          <p style={{ fontSize: 10, color: '#918B82', margin: 0, lineHeight: 1.5, padding: '10px 14px', background: '#FAFAF8', borderRadius: 8 }}>
+          <p style={{ fontSize: 10, color: 'var(--text-3)', margin: 0, lineHeight: 1.5, padding: '10px 14px', background: 'var(--bg)', borderRadius: 8 }}>
             {isAr ? 'المعلومات للإرشاد العام — تأكد دائماً من المصادر الرسمية قبل تقديم أي طلب.' : 'This information is for general guidance — always verify with official sources before submitting any request.'}
           </p>
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '12px 20px', paddingBottom: 'max(28px, env(safe-area-inset-bottom, 0px))', borderTop: '1px solid #E6E2DC', display: 'flex', gap: 10 }}>
+        <div style={{ padding: '12px 20px', paddingBottom: 'max(28px, env(safe-area-inset-bottom, 0px))', borderTop: '1px solid var(--border)', display: 'flex', gap: 10 }}>
           <button
             type="button"
             onClick={() => onAsk(isAr ? (service.chatPrompt_ar || service.name_ar) : `What are the requirements and steps for: ${service.name_en || service.name_ar}?`)}
@@ -296,10 +296,10 @@ function ServiceSheet({ service, onClose, onAsk }: {
             onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
             style={{
               flex: 1, padding: '13px 16px', borderRadius: 14,
-              background: 'linear-gradient(135deg, #8F1D2C, #741622)', border: 'none',
+              background: 'var(--brand)', border: 'none',
               color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: '0 3px 12px rgba(143,29,44,0.3)', transition: 'opacity 0.12s, transform 0.12s',
+              transition: 'opacity 0.12s, transform 0.12s',
             }}
           >
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -356,11 +356,11 @@ function ServiceSheet({ service, onClose, onAsk }: {
           <button
             type="button"
             onClick={onClose}
-            onTouchStart={e => { e.currentTarget.style.background = '#E6E2DC' }}
-            onTouchEnd={e => { e.currentTarget.style.background = '#FAFAF8' }}
+            onTouchStart={e => { e.currentTarget.style.background = 'var(--border)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'var(--bg)' }}
             style={{
-              padding: '13px 16px', borderRadius: 14, background: '#FAFAF8',
-              border: '1.5px solid #E6E2DC', color: '#69645C', fontSize: 12,
+              padding: '13px 16px', borderRadius: 14, background: 'var(--bg)',
+              border: '1.5px solid var(--border)', color: 'var(--text-2)', fontSize: 12,
               fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
             }}
           >
@@ -378,7 +378,7 @@ function ServiceCardSkeleton() {
   return (
     <div style={{
       background: '#fff', borderRadius: 16, padding: 14,
-      border: '1px solid #e6e2dc', minHeight: 110,
+      border: '1px solid var(--border)', minHeight: 110,
       display: 'flex', flexDirection: 'column', gap: 10,
       overflow: 'hidden',
     }}>
@@ -453,11 +453,11 @@ export default function ServicesPage() {
       <style>{`
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; height: 3px; }
-        ::-webkit-scrollbar-thumb { background: #E6E2DC; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         .svc-card { transition: border-color 0.14s, box-shadow 0.14s, transform 0.14s; }
-        .svc-card:hover { border-color: rgba(143,29,44,0.4) !important; box-shadow: 0 4px 18px rgba(143,29,44,0.13) !important; transform: translateY(-2px); }
+        .svc-card:hover { border-color: var(--brand) !important; }
         .cat-chip { transition: border-color 0.14s, color 0.14s, background 0.14s; }
-        .cat-chip:hover { border-color: #8F1D2C !important; color: #8F1D2C !important; background: #FEF7F7 !important; }
+        .cat-chip:hover { border-color: var(--brand) !important; color: var(--brand) !important; background: var(--brand-soft) !important; }
         @keyframes svc-header-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes svcEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -477,52 +477,32 @@ export default function ServicesPage() {
         @media (min-width: 600px) and (max-width: 899px) { .svc-grid { grid-template-columns: repeat(3, 1fr) !important; } }
       `}</style>
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* ── Header — v4.0: flat surface header, same pattern as other pages ── */}
       <header style={{
-        background: 'var(--header-gradient)',
-        boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
         padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
-        animation: 'svc-header-in 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             type="button"
             aria-label={isAr ? 'الرجوع' : 'Go back'}
             onClick={() => router.push('/')}
-            className="nav-home-btn"
-            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
-            style={{
-              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px',
-              display: 'flex', flexShrink: 0,
-            }}
+            onTouchStart={e => { e.currentTarget.style.background = 'var(--surface-2)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
+            style={{ background: 'transparent', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
           >
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1, minWidth: 0 }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 9,
-              background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0,
-            }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-            </div>
-            <div style={{ minWidth: 0 }}>
-              <h1 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, fontFamily: 'inherit' }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</h1>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>
-                {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
-              </div>
-            </div>
-          </div>
+          <h1 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.2, fontFamily: 'inherit', flex: 1, minWidth: 0 }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</h1>
           {/* Search count badge */}
           {(search || selectedCat) && (
             <span style={{
-              fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)',
-              background: 'rgba(255,255,255,0.15)', borderRadius: 20,
-              padding: '3px 10px', flexShrink: 0, border: '1px solid rgba(255,255,255,0.2)',
+              fontSize: 11, fontWeight: 700, color: 'var(--brand)',
+              background: 'var(--brand-soft)', borderRadius: 999,
+              padding: '3px 10px', flexShrink: 0, border: '1px solid var(--border-brand)',
             }}>
               <span aria-live="polite" aria-atomic="true">{filtered.length} {isAr ? 'نتيجة' : 'results'}</span>
             </span>
@@ -532,10 +512,10 @@ export default function ServicesPage() {
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
       <main id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
-        <div style={{ position: 'relative', background: '#fff', border: `1.5px solid ${searchFocused ? '#8F1D2C' : '#E6E2DC'}`, borderRadius: 14, boxShadow: searchFocused ? '0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
+        <div style={{ position: 'relative', background: 'var(--surface)', border: `1px solid ${searchFocused ? 'var(--brand)' : 'var(--border)'}`, borderRadius: 14, transition: 'border-color 0.18s' }}>
           <span style={{
             position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-            color: searchFocused ? '#8F1D2C' : '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none', transition: 'color 0.18s',
+            color: searchFocused ? 'var(--brand)' : '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none', transition: 'color 0.18s',
           }}>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
@@ -553,7 +533,7 @@ export default function ServicesPage() {
               width: '100%', padding: '12px 44px 12px 42px', borderRadius: 14,
               fontSize: 13.5, border: 'none', outline: 'none',
               fontFamily: "'Cairo','Inter',sans-serif",
-              direction: isAr ? 'rtl' : 'ltr', color: '#191713', background: 'transparent',
+              direction: isAr ? 'rtl' : 'ltr', color: 'var(--text-1)', background: 'transparent',
             }}
           />
           {search && (
@@ -563,8 +543,8 @@ export default function ServicesPage() {
               onClick={() => setSearch('')}
               style={{
                 position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)',
-                background: '#E6E2DC', border: 'none', borderRadius: '50%',
-                width: 36, height: 36, cursor: 'pointer', color: '#69645C',
+                background: 'var(--border)', border: 'none', borderRadius: '50%',
+                width: 36, height: 36, cursor: 'pointer', color: 'var(--text-2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
@@ -580,7 +560,7 @@ export default function ServicesPage() {
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
         {/* ── Overview & nearby offices — collapsed by default to reduce clutter ── */}
-        <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC', borderRadius: 16, padding: '12px 16px' }}>
+        <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid var(--border)', borderRadius: 16, padding: '12px 16px' }}>
           <SectionCollapseToggle
             titleAr="نظرة عامة والمكاتب القريبة"
             titleEn="Overview & nearby offices"
@@ -592,22 +572,21 @@ export default function ServicesPage() {
               {/* ── Stats strip — premium individual cards ─────────────────────────── */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
                 {[
-                  { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services', featured: true },
-                  { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories', featured: false },
-                  { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services', featured: false },
+                  { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services' },
+                  { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories' },
+                  { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services' },
                 ].map((stat, i) => (
                   <div key={stat.label} style={{
                     padding: '14px 8px 16px', textAlign: 'center',
-                    background: stat.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
-                    border: stat.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
                     borderRadius: 12,
-                    boxShadow: stat.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     animation: 'svcStatsIn 0.28s cubic-bezier(0.22,1,0.36,1) both',
                     animationDelay: `${0.06 + i * 0.07}s`,
                   }}>
-                    <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{stat.value}</div>
-                    <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
+                    <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{stat.value}</div>
+                    <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -630,21 +609,13 @@ export default function ServicesPage() {
               aria-pressed={!selectedCat}
               onClick={() => setSelectedCat(null)}
               className="cat-chip"
-              onTouchStart={e => {
-                e.currentTarget.style.background = !selectedCat ? '#FDE8E8' : '#FEF9F9'
-                e.currentTarget.style.borderColor = '#8F1D2C'
-              }}
-              onTouchEnd={e => {
-                e.currentTarget.style.background = !selectedCat ? '#F8EDEF' : '#fff'
-                e.currentTarget.style.borderColor = !selectedCat ? '#8F1D2C' : '#E6E2DC'
-              }}
               style={{
-                padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
+                padding: '6px 14px', borderRadius: 999, cursor: 'pointer',
                 fontFamily: 'inherit', fontSize: 12, fontWeight: 700,
-                border: !selectedCat ? '2px solid #8F1D2C' : '1.5px solid #E6E2DC',
-                background: !selectedCat ? '#F8EDEF' : '#fff',
-                color: !selectedCat ? '#8F1D2C' : '#69645C',
-                boxShadow: !selectedCat ? '0 2px 8px rgba(143,29,44,0.15)' : 'none',
+                border: !selectedCat ? '1px solid var(--brand)' : '1px solid var(--border)',
+                background: !selectedCat ? 'var(--brand-soft)' : 'var(--surface)',
+                color: !selectedCat ? 'var(--brand)' : 'var(--text-2)',
+                transition: 'background 0.14s',
                 whiteSpace: 'nowrap', flexShrink: 0,
               }}
             >
@@ -661,21 +632,13 @@ export default function ServicesPage() {
                   aria-pressed={active}
                   onClick={() => setSelectedCat(active ? null : cat.slug)}
                   className="cat-chip"
-                  onTouchStart={e => {
-                    e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'
-                    e.currentTarget.style.borderColor = '#8F1D2C'
-                  }}
-                  onTouchEnd={e => {
-                    e.currentTarget.style.background = active ? '#F8EDEF' : '#fff'
-                    e.currentTarget.style.borderColor = active ? '#8F1D2C' : '#E6E2DC'
-                  }}
                   style={{
-                    padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
+                    padding: '6px 14px', borderRadius: 999, cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 12, fontWeight: active ? 700 : 600,
-                    border: active ? '2px solid #8F1D2C' : '1.5px solid #E6E2DC',
-                    background: active ? '#F8EDEF' : '#fff',
-                    color: active ? '#8F1D2C' : '#69645C',
-                    boxShadow: active ? '0 2px 8px rgba(143,29,44,0.15)' : 'none',
+                    border: active ? '1px solid var(--brand)' : '1px solid var(--border)',
+                    background: active ? 'var(--brand-soft)' : 'var(--surface)',
+                    color: active ? 'var(--brand)' : 'var(--text-2)',
+                    transition: 'background 0.14s',
                     whiteSpace: 'nowrap', flexShrink: 0,
                     display: 'flex', alignItems: 'center', gap: 5,
                   }}
@@ -691,22 +654,22 @@ export default function ServicesPage() {
 
         {/* ── Results meta bar ────────────────────────────────────────────── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: '#918B82', fontWeight: 500 }}>
+          <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
             {filtered.length === ALL_SERVICES.length
               ? (isAr ? `${ALL_SERVICES.length} خدمة حكومية` : `${ALL_SERVICES.length} services`)
               : (isAr ? `${filtered.length} خدمة` : `${filtered.length} services`)}
           </span>
           {activeCatLabel && (
             <>
-              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
+              <span style={{ color: 'var(--text-3)', fontSize: 12 }}>·</span>
               <button
                 type="button"
                 aria-label={isAr ? `إزالة فلتر الفئة: ${activeCatLabel}` : `Remove category filter: ${activeCatLabel}`}
                 onClick={() => setSelectedCat(null)}
                 style={{
-                  fontSize: 11, color: '#8F1D2C', fontWeight: 700,
-                  background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
-                  borderRadius: 20, padding: '2px 10px', cursor: 'pointer',
+                  fontSize: 11, color: 'var(--brand)', fontWeight: 700,
+                  background: 'var(--brand-soft)', border: '1px solid var(--border-brand)',
+                  borderRadius: 999, padding: '2px 10px', cursor: 'pointer',
                   fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
                 }}
               >
@@ -719,8 +682,8 @@ export default function ServicesPage() {
           )}
           {search && (
             <>
-              <span style={{ color: '#D4C5B0', fontSize: 12 }}>·</span>
-              <span style={{ fontSize: 11, color: '#918B82' }}>{isAr ? `نتائج لـ "${search}"` : `Results for "${search}"`}</span>
+              <span style={{ color: 'var(--text-3)', fontSize: 12 }}>·</span>
+              <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{isAr ? `نتائج لـ "${search}"` : `Results for "${search}"`}</span>
             </>
           )}
         </div>
@@ -729,14 +692,14 @@ export default function ServicesPage() {
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.4">
+              <svg aria-hidden="true" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="1.4">
                 <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
               </svg>
             </div>
-            <p style={{ color: '#69645C', fontSize: 14, fontWeight: 600, margin: '0 0 5px' }}>
+            <p style={{ color: 'var(--text-2)', fontSize: 14, fontWeight: 600, margin: '0 0 5px' }}>
               {isAr ? 'لا توجد نتائج مطابقة' : 'No matching results'}
             </p>
-            <p style={{ color: '#918B82', fontSize: 12.5, margin: '0 0 18px' }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 12.5, margin: '0 0 18px' }}>
               {isAr ? 'جرّب مصطلحاً مختلفاً أو اسأل دليلك مباشرةً' : 'Try a different term or ask Dalilak directly'}
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -746,10 +709,10 @@ export default function ServicesPage() {
                 onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
                 onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
                 style={{
-                  padding: '10px 20px', background: 'linear-gradient(135deg, #8F1D2C, #741622)',
+                  padding: '10px 20px', background: 'var(--brand)',
                   color: '#fff', border: 'none', borderRadius: 12,
                   fontFamily: 'inherit', fontSize: 13, fontWeight: 700,
-                  cursor: 'pointer', boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
+                  cursor: 'pointer',
                   transition: 'opacity 0.12s, transform 0.12s',
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                 }}
@@ -760,11 +723,11 @@ export default function ServicesPage() {
               <button
                 type="button"
                 onClick={() => { setSearch(''); setSelectedCat(null) }}
-                onTouchStart={e => { e.currentTarget.style.background = '#E6E2DC' }}
+                onTouchStart={e => { e.currentTarget.style.background = 'var(--border)' }}
                 onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
                 style={{
-                  padding: '10px 20px', background: '#fff', border: '1.5px solid #E6E2DC',
-                  color: '#69645C', borderRadius: 12,
+                  padding: '10px 20px', background: '#fff', border: '1.5px solid var(--border)',
+                  color: 'var(--text-2)', borderRadius: 12,
                   fontFamily: 'inherit', fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', transition: 'background 0.12s',
                 }}
@@ -813,35 +776,35 @@ export default function ServicesPage() {
                 className="svc-card"
                 style={{
                   display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,
-                  padding: '14px', border: '1.5px solid #E6E2DC',
-                  textAlign: 'right', boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  padding: '14px', border: '1.5px solid var(--border)',
+                  textAlign: 'right',
                   fontFamily: 'inherit', cursor: 'pointer', width: '100%',
                   transition: 'all 0.14s', position: 'relative', overflow: 'hidden',
                   animation: 'svcEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
                   animationDelay: `${Math.min(svcIdx, 20) * 0.03}s`,
                 }}
-                onTouchStart={e => { e.currentTarget.style.background = '#FEF7F7'; e.currentTarget.style.borderColor = 'rgba(143,29,44,0.3)'; e.currentTarget.style.transform = 'scale(0.98)' }}
-                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.transform = 'scale(1)' }}
+                onTouchStart={e => { e.currentTarget.style.background = 'var(--brand-soft)'; e.currentTarget.style.borderColor = 'var(--border-brand)'; e.currentTarget.style.transform = 'scale(0.98)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'scale(1)' }}
               >
                 {/* Top row: icon badge + chevron */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
                   <div style={{
                     width: 38, height: 38, borderRadius: 11,
-                    background: 'linear-gradient(135deg, #F8EDEF, #FCE8E8)',
-                    border: '1px solid rgba(143,29,44,0.12)',
+                    background: 'var(--brand-soft)',
+                    border: '1px solid var(--border-brand)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     flexShrink: 0,
                   }}>
                     <span className="svc-icon" style={{ fontSize: 20, lineHeight: 1 }}>{service.icon}</span>
                   </div>
-                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="2" style={{ flexShrink: 0, marginTop: 3 }}>
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2" style={{ flexShrink: 0, marginTop: 3 }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
                   </svg>
                 </div>
 
                 {/* Name */}
                 <h3 style={{
-                  fontSize: 13, fontWeight: 800, color: '#191713', margin: '0 0 4px', lineHeight: 1.4,
+                  fontSize: 13, fontWeight: 800, color: 'var(--text-1)', margin: '0 0 4px', lineHeight: 1.4,
                   display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                   flex: 1,
                 }}>
@@ -850,7 +813,7 @@ export default function ServicesPage() {
 
                 {/* Authority */}
                 <p style={{
-                  fontSize: 10.5, color: '#8F1D2C', margin: '0 0 10px', fontWeight: 700,
+                  fontSize: 10.5, color: 'var(--brand)', margin: '0 0 10px', fontWeight: 700,
                   display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                 }}>
                   {isAr ? service.authority_ar : (service.authority_en || service.authority_ar)}
@@ -861,7 +824,7 @@ export default function ServicesPage() {
                   {(() => {
                     const cardFees = isAr ? service.fees : (service.fees_en || service.fees)
                     return cardFees && (
-                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                         {cardFees.length > 18 ? cardFees.slice(0, 18) + '…' : cardFees}
                       </span>
                     )
@@ -869,20 +832,20 @@ export default function ServicesPage() {
                   {(() => {
                     const cardProcessingTime = isAr ? service.processing_time : (service.processing_time_en || service.processing_time)
                     return cardProcessingTime && (
-                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 20, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
+                      <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                         {cardProcessingTime}
                       </span>
                     )
                   })()}
                   {service.online_available && (
-                    <span style={{ fontSize: 10, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 20, padding: '2px 8px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
+                    <span style={{ fontSize: 10, color: '#065F46', background: 'rgba(6,95,70,0.07)', borderRadius: 999, padding: '2px 8px', border: '1px solid rgba(6,95,70,0.2)', fontWeight: 600 }}>
                       {isAr ? 'أونلاين' : 'Online'}
                     </span>
                   )}
                   {(() => {
                     const cardDocs = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
                     return cardDocs && cardDocs.length > 0 && (
-                      <span style={{ fontSize: 10, color: '#69645C', background: '#E6E2DC', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
+                      <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--border)', borderRadius: 999, padding: '2px 8px', fontWeight: 600 }}>
                         {cardDocs.length} {isAr ? 'وثيقة' : 'docs'}
                       </span>
                     )
