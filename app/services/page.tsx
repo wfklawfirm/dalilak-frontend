@@ -397,7 +397,7 @@ function ServiceCardSkeleton() {
 
 export default function ServicesPage() {
   const router = useRouter()
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
@@ -507,6 +507,12 @@ export default function ServicesPage() {
               <span aria-live="polite" aria-atomic="true">{filtered.length} {isAr ? 'نتيجة' : 'results'}</span>
             </span>
           )}
+          {/* Language toggle (batch #373): no TopNav/MobileMenu on this page. */}
+          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
+            className="tap-hit-2"
+            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
+            {isAr ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 

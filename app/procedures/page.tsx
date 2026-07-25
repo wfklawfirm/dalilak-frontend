@@ -155,7 +155,7 @@ function CopyBtn({ text, isAr }: { text: string; isAr: boolean }) {
 
 export default function ProceduresPage() {
   const router = useRouter()
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
@@ -247,8 +247,11 @@ export default function ProceduresPage() {
       {/* Header — v4.0: flat surface header (was a maroon gradient banner with
           translucent white-on-color chrome). Calm Government Digital Service
           spec calls for simple headers: back + title (+ optional small
-          filter) — the subtitle/stat count moved to the stats strip below,
-          and language toggle moved out (already reachable via MobileMenu). */}
+          filter) — the subtitle/stat count moved to the stats strip below.
+          Language toggle (batch #373): this page renders neither TopNav nor
+          MobileMenu, so a compact in-header toggle is the only way to reach
+          it here — restores parity lost when the gradient header (which had
+          one) was flattened. */}
       <header style={{
         background: 'var(--surface)',
         borderBottom: '1px solid var(--border)',
@@ -264,6 +267,11 @@ export default function ProceduresPage() {
           <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
             {isAr ? 'المعاملات الحكومية' : 'Government Procedures'}
           </h1>
+          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
+            className="tap-hit-2"
+            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
+            {isAr ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 

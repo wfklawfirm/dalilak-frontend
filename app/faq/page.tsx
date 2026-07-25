@@ -45,7 +45,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
 
 export default function FAQPage() {
   const router = useRouter()
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [catFilter, setCatFilter] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -95,8 +95,8 @@ export default function FAQPage() {
       `}</style>
 
       {/* Header — v4.0: flat surface header (was a maroon gradient banner).
-          Language toggle moved out, following the same convention as
-          /procedures (batch #367) — reachable via the homepage's MobileMenu. */}
+          Language toggle (batch #373): this page renders neither TopNav nor
+          MobileMenu, so a compact in-header toggle restores reachability. */}
       <header style={{
         background: 'var(--surface)',
         borderBottom: '1px solid var(--border)',
@@ -112,6 +112,11 @@ export default function FAQPage() {
           <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
             {isAr ? 'الأسئلة الشائعة' : 'FAQ & Guide'}
           </h1>
+          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
+            className="tap-hit-2"
+            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
+            {isAr ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 

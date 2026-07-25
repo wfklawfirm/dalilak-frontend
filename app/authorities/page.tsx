@@ -134,7 +134,7 @@ function TypeIcon({ type, size = 20 }: { type: string; size?: number }) {
 
 export default function AuthoritiesPage() {
   const router = useRouter()
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [typeFilter, setTypeFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
@@ -178,7 +178,8 @@ export default function AuthoritiesPage() {
         @media (min-width: 481px) and (max-width: 720px) { .auth-grid { grid-template-columns: repeat(2, 1fr) !important; } }
       `}</style>
 
-      {/* Header — v4.0: flat surface header, same pattern as /procedures and /faq */}
+      {/* Header — v4.0: flat surface header, same pattern as /procedures and /faq.
+          Language toggle (batch #373): no TopNav/MobileMenu on this page. */}
       <header style={{
         background: 'var(--surface)',
         borderBottom: '1px solid var(--border)',
@@ -196,6 +197,11 @@ export default function AuthoritiesPage() {
           <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
             {isAr ? 'دليل الجهات الرسمية' : 'Official Authorities Directory'}
           </h1>
+          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
+            className="tap-hit-2"
+            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
+            {isAr ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 

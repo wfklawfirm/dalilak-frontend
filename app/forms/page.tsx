@@ -12,7 +12,7 @@ type ViewTab = 'curated' | 'all-tx' | 'forms-tx'
 
 export default function FormsPage() {
   const router = useRouter()
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [ministryFilter, setMinistryFilter] = useState('all')
   const [viewTab, setViewTab] = useState<ViewTab>('forms-tx')
@@ -68,7 +68,8 @@ export default function FormsPage() {
         @keyframes formEnter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
-      {/* Header — v4.0: flat surface header, same pattern as other pages */}
+      {/* Header — v4.0: flat surface header, same pattern as other pages.
+          Language toggle (batch #373): no TopNav/MobileMenu on this page. */}
       <header style={{
         background: 'var(--surface)',
         borderBottom: '1px solid var(--border)',
@@ -84,6 +85,11 @@ export default function FormsPage() {
           <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
             {isAr ? 'النماذج والمعاملات' : 'Forms & Procedures'}
           </h1>
+          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
+            className="tap-hit-2"
+            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
+            {isAr ? 'EN' : 'AR'}
+          </button>
         </div>
       </header>
 
