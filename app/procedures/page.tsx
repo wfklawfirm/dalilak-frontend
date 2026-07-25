@@ -63,7 +63,6 @@ import ProcedureDocReadinessBar from '@/components/ProcedureDocReadinessBar'
 import ProcedurePrintSummary from '@/components/ProcedurePrintSummary'
 import ProcedureMiniMap from '@/components/ProcedureMiniMap'
 import ProcedureVersionTag from '@/components/ProcedureVersionTag'
-import ProcedureHashtagChips from '@/components/ProcedureHashtagChips'
 import ProcedureApprovalTracker from '@/components/ProcedureApprovalTracker'
 import ProcedureFAQChips from '@/components/ProcedureFAQChips'
 import ProcedureReminderBell from '@/components/ProcedureReminderBell'
@@ -646,35 +645,30 @@ export default function ProceduresPage() {
                     <MinistryIcon slug={proc.ministrySlug} size={18} />
                   </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
+                    {/* Badge row — decluttered (batch #374): previously stacked ~13
+                        elements across 4 sub-rows (ministry shown 3x — chip, plain
+                        text, and a hashtag chip; fee shown 2x — inline badge and
+                        ProcedureEstimatedFeeChip; doc-count and step-count as 2
+                        separate chips). Kept every collapsed-only/functional badge
+                        (difficulty, priority, views, form flag, version tag,
+                        reminder bell, progress badge) untouched — only removed true
+                        duplicates and merged doc+step into one chip. No data or
+                        interactivity lost, just fewer repeated visual elements. */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 6, padding: '1px 7px' }}>
                         {isAr
                           ? (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.ar || proc.ministry)
                           : (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.en || proc.ministry_en || proc.ministry)}
                       </span>
-                      {displayDocs.length > 0 && <span style={{ fontSize: 10, background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 6, padding: '1px 7px' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
-                      {displaySteps.length > 0 && <span style={{ fontSize: 10, background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 6, padding: '1px 7px' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
+                      {(displayDocs.length > 0 || displaySteps.length > 0) && (
+                        <span style={{ fontSize: 10, background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 6, padding: '1px 7px' }}>
+                          {displayDocs.length} {isAr ? 'وثيقة' : 'doc'} · {displaySteps.length} {isAr ? 'خطوة' : 'step'}
+                        </span>
+                      )}
                       <ProcedureDifficultyBadge stepCount={proc.steps.length} docCount={proc.requiredDocuments.length} isAr={isAr} />
                       <ProcedurePriorityTag code={proc.code} isAr={isAr} />
                       <ProcedureViewCount code={proc.code} isAr={isAr} />
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
-                      {displayFees && (() => {
-                        const isFree = displayFees.includes('مجان') || displayFees.toLowerCase().includes('free') || displayFees === '0'
-                        return (
-                          <span style={{
-                            fontSize: 9.5, borderRadius: 6, padding: '1px 7px',
-                            background: isFree ? '#D1FAE5' : '#F0FDF4',
-                            color: isFree ? '#065F46' : '#166534',
-                            border: `1px solid ${isFree ? '#A7F3D0' : '#BBF7D0'}`,
-                            fontWeight: 700,
-                          }}>
-                            💰 {isFree
-                              ? (isAr ? 'مجاني' : 'Free')
-                              : (displayFees.length > 14 ? displayFees.slice(0, 14) + '…' : displayFees)
-                            }
-                          </span>
-                        )
-                      })()}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>{displayTitle}</div>
@@ -682,16 +676,9 @@ export default function ProceduresPage() {
                       <ProcedureReminderBell code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
                       <ProcedureProgressBadge code={proc.code} total={proc.requiredDocuments.length} compact />
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginTop: 2 }}>{displayMinistry}</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', marginTop: 3 }}>
                       <ProcedureEstimatedFeeChip fees={proc.fees} fees_en={proc.fees_en} isAr={isAr} />
                     </div>
-                    <ProcedureHashtagChips
-                      code={proc.code}
-                      ministry={proc.ministry}
-                      ministry_en={proc.ministry_en}
-                      isAr={isAr}
-                    />
                     {displayDescription && expandedProc !== proc.code && (
                       <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3, lineHeight: 1.5 }}>
                         {displayDescription.length > 90 ? displayDescription.slice(0, 90) + '…' : displayDescription}
