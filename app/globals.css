@@ -5,41 +5,42 @@
 @tailwind utilities;
 
 /* ════════════════════════════════════════════════════════
-   DALILAK DESIGN SYSTEM — v2.0
+   DALILAK DESIGN SYSTEM — v4.0 "Calm Government Digital Service" (batch #366)
    Professional Government Services Platform
+
+   v4.0 is a full visual-language replacement, not another increment.
+   The user explicitly rejected the v3.0 pass (gradients, warm shadows,
+   bigger radii) as still "generic AI-generated UI" and specified an
+   exact, opinionated direction: calm, quiet, government-appropriate,
+   one primary color used sparingly, near-zero shadows, no gradients
+   anywhere, functional pills only. Values below are the user's own
+   exact hex spec, not an interpretation of it. Backend/APIs/data/
+   routes are untouched — this is the surface layer only.
    ════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Brand / Primary ──────────────────────────────── */
-  --brand:            #8F1D2C;   /* الأحمر اللبناني الرسمي */
-  --brand-hover:      #741622;
-  --brand-dark:       #5C1020;
-  --brand-deeper:     #3D0A14;
-  --brand-light:      #FBF0F2;
-  --brand-soft:       #F8EDEF;
-  --brand-muted:      #FEEEF1;
-  --brand-ring:       rgba(143, 29, 44, 0.15);
-  --brand-fg:         #ffffff;   /* text on brand background */
-  /* Sticky page-header gradient — used identically across ~14 page
-     headers (procedures/forms/faq/authorities/drafting-studio/services/
-     admin/detail pages/PageHeader.tsx). Was a hand-copied literal string
-     in every file; now a single source of truth so a future brand-color
-     tweak only needs one edit instead of 14. */
-  --header-gradient:  linear-gradient(135deg, #741622 0%, #8F1D2C 60%, #7a1818 100%);
-  /* Sticky page-header padding — same "13px 16px" repeated verbatim in
-     every gradient header (procedures, forms, faq, authorities,
-     drafting-studio, services, and both [slug] detail clients). Named
-     separately from the 8px --space-* scale since 13px doesn't belong
-     on it and forcing it to 12/16 would be a real (if tiny) visual
-     change — this purely centralizes the existing value. */
+  /* ── Brand / Primary — used sparingly: primary actions + active state
+     only, never large fills, never gradients, never glow. ──────────── */
+  --brand:            #9F1D2F;
+  --brand-hover:      #861827;
+  --brand-dark:       #6E1421;
+  --brand-deeper:     #4A0D16;
+  --brand-light:      #F8ECEF;
+  --brand-soft:       #F8ECEF;
+  --brand-muted:      #F8ECEF;
+  --brand-ring:       rgba(159, 29, 47, 0.22);
+  --brand-fg:         #ffffff;
+  /* v4.0: gradients are explicitly banned by spec. This alias exists only
+     so any remaining var(--brand-gradient) reference (old v3.0 usages not
+     yet swept in this batch) resolves to a flat color instead of breaking
+     — every NEW component in this batch uses var(--brand) directly. */
+  --brand-gradient:   var(--brand);
+  --header-gradient:  var(--brand);
   --header-padding:   13px 16px;
-  /* Standard bottom clearance reserved above the fixed BottomNav on
-     pages that render it — see .bottom-nav-padding below for the
-     narrower always-safe-area-aware version. */
   --bottom-nav-clearance: 100px;
 
-  /* ── Accent (warm amber / gold) ───────────────────── */
-  --accent:           #B76B00;   /* عنبري دافئ */
+  /* ── Accent (warm amber / gold) — status/meta only, not brand ─────── */
+  --accent:           #B76B00;
   --accent-hover:     #945600;
   --accent-light:     #FFFBEB;
   --accent-fg:        #ffffff;
@@ -65,53 +66,50 @@
   --info-border:      #bfdbfe;
   --info-fg:          #1e3a8a;
 
-  /* ── Backgrounds & Surfaces ───────────────────────── */
-  --bg:               #F8F8F6;   /* خلفية عامة — أبيض دافئ */
+  /* ── Backgrounds & Surfaces — exact spec values ───── */
+  --bg:               #F8F8F6;
   --bg-page:          #F8F8F6;
-  --bg-hero:          #FFFFFF;
+  --bg-hero:          #F8F8F6;
   --surface:          #FFFFFF;
-  --surface-2:        #F3F1EE;
-  --surface-3:        #EAE7E2;
-  --surface-muted:    #F8F7F5;
+  --surface-2:        #F1EFEA;
+  --surface-3:        #E9E6DF;
+  --surface-muted:    #F5F3EF;
   --surface-overlay:  rgba(25, 23, 19, 0.45);
 
-  /* ── Borders ──────────────────────────────────────── */
-  --border:           #E6E2DC;
+  /* ── Borders — exact spec value ───────────────────── */
+  --border:           #E5E2DD;
   --border-light:     #EDEBE7;
-  --border-strong:    #D5D0C8;
-  --border-brand:     rgba(143, 29, 44, 0.20);
+  --border-strong:    #D2CDC4;
+  --border-brand:     rgba(159, 29, 47, 0.22);
 
-  /* ── Text ─────────────────────────────────────────── */
-  --text-1:           #191713;   /* شبه أسود دافئ */
-  --text-2:           #69645C;   /* ثانوي */
-  /* text-3 darkened from #918B82 -> #76716A (UX_AUDIT.md, batch #348):
-     the old value was 3.18:1 on --bg / 3.38:1 on --surface, failing WCAG
-     2.2 AA's 4.5:1 normal-text threshold — a real failure, since text-3 is
-     used as genuine small-caption/meta text (not large text) across 27+
-     files. New value verified 4.55:1 (bg) / 4.84:1 (surface), computed via
-     the WCAG relative-luminance formula. Same warm-gray hue, just darker. */
-  --text-3:           #76716A;   /* خافت — AA-compliant */
-  --text-4:           #B8B2AA;   /* حصراً للعناصر المعفاة من التباين: placeholder نصوص الإدخال + عناصر زخرفية بحتة (لا نص حقيقي) */
+  /* ── Text — exact spec values ─────────────────────── */
+  --text-1:           #181817;
+  --text-2:           #65635F;
+  --text-3:           #76716A;   /* small-caption/meta only — WCAG AA verified */
+  --text-4:           #B8B2AA;   /* placeholder text + purely decorative elements only */
   --text-on-brand:    #ffffff;
 
-  /* ── Shadows ──────────────────────────────────────── */
-  --shadow-xs:        0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm:        0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:        0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
-  --shadow-lg:        0 8px 24px rgba(0,0,0,0.10), 0 3px 8px rgba(0,0,0,0.06);
-  --shadow-xl:        0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.07);
-  --shadow-brand:     0 4px 14px rgba(143, 29, 44, 0.25);
-  --shadow-brand-lg:  0 8px 28px rgba(143, 29, 44, 0.32);
-  --shadow-warm:      0 2px 10px rgba(100, 60, 20, 0.06);
+  /* ── Shadows — v4.0: near-zero by default per spec. Cards use a border
+     instead of a shadow; the few remaining shadow tokens are reserved
+     for the sticky header ONLY on scroll, and modals/drawers. No warm
+     tint, no brand-colored glow anywhere. ─────────────────────────── */
+  --shadow-xs:        0 1px 2px rgba(20,18,15,0.04);
+  --shadow-sm:        0 1px 3px rgba(20,18,15,0.05);
+  --shadow-md:        0 2px 8px rgba(20,18,15,0.06);
+  --shadow-lg:        0 4px 16px rgba(20,18,15,0.08);
+  --shadow-xl:        0 8px 28px rgba(20,18,15,0.10);
+  --shadow-brand:     none;
+  --shadow-brand-lg:  none;
+  --shadow-warm:      0 1px 3px rgba(20,18,15,0.05);
 
-  /* ── Border Radius ────────────────────────────────── */
+  /* ── Border Radius — exact spec scale ─────────────── */
   --radius-xs:        6px;
   --radius-sm:        8px;
-  --radius-md:        12px;
-  --radius-lg:        16px;
-  --radius-xl:        20px;
-  --radius-2xl:       24px;
-  --radius-full:      999px;
+  --radius-md:        12px;   /* buttons */
+  --radius-lg:        14px;   /* inputs + cards */
+  --radius-xl:        20px;   /* modals */
+  --radius-2xl:       20px;
+  --radius-full:      999px;  /* functional tags only, per spec */
 
   /* ── Spacing (8px base) ───────────────────────────── */
   --space-1:          4px;
@@ -343,23 +341,20 @@ a { color: inherit; text-decoration: none; }
   padding: 12px 26px;
   border-radius: var(--radius-md);
   border: none;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  background: var(--brand);
   color: var(--brand-fg);
   font-size: 14px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: var(--shadow-brand);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  box-shadow: none;
+  transition: background var(--transition-base), transform var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
   min-height: 44px;
 }
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-brand-lg);
-}
-.btn-primary:active:not(:disabled) { transform: scale(0.97); }
+.btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Secondary */
@@ -519,15 +514,13 @@ a { color: inherit; text-decoration: none; }
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 .ds-card-hover {
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+  transition: border-color var(--transition-base);
 }
 .ds-card-hover:hover {
   border-color: var(--border-brand);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
 }
 
 /* Legacy */
@@ -1027,7 +1020,7 @@ input:focus {
 @media (min-width: 640px)  { .pgrid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .pgrid { grid-template-columns: repeat(3, 1fr); } }
 
-/* Procedure card */
+/* Procedure card — v4.0 calm spec: border only, no shadow, 14px radius. */
 .pcard {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1037,10 +1030,11 @@ input:focus {
   font-family: inherit;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  transition: border-color 0.15s;
   width: 100%;
+  box-shadow: none;
 }
-.pcard:hover  { border-color: var(--border-brand); box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.pcard:hover  { border-color: var(--border-brand); }
 .pcard:active { transform: scale(0.98) !important; }
 
 /* How-it-works grid */

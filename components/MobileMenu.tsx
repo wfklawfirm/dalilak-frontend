@@ -5,6 +5,8 @@ import { useRouter, usePathname } from 'next/navigation'
 import { clearToken, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFocusTrap } from '@/lib/useFocusTrap'
+import NotificationBell from '@/components/NotificationBell'
+import GlobalSearch from '@/components/GlobalSearch'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -15,6 +17,10 @@ interface MobileMenuProps {
   onLangToggle?: () => void
   onHome: () => void
   currentUser: User | null
+  /** batch #366: passed through so the relocated GlobalSearch/NotificationBell
+      entries below behave identically to their old header placement. */
+  onAsk?: (q: string) => void
+  onJourneySelect?: (slug: string) => void
 }
 
 const NAV_ITEMS = [
@@ -123,7 +129,7 @@ const NAV_ITEMS = [
   },
 ]
 
-export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggleProp, onHome, currentUser }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggleProp, onHome, currentUser, onAsk, onJourneySelect }: MobileMenuProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { isAr, lang, toggleLang } = useLanguage()
@@ -352,6 +358,78 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
             </span>
           </button>
 
+          {/* batch #366: Search + Notifications — relocated from the header
+              (v4.0 mobile header allows only the logo + hamburger). These
+              are the exact same GlobalSearch/NotificationBell components
+              used on desktop, just re-homed here so the feature isn't lost. */}
+          <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 14, padding: '13px 20px' }}>
+            <span style={{ color: '#8F1D2C', flexShrink: 0 }}>
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
+              </svg>
+            </span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: '#191713' }}>{isAr ? 'بحث' : 'Search'}</span>
+            <GlobalSearch onAsk={onAsk} onJourneySelect={onJourneySelect} />
+          </div>
+          <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 14, padding: '13px 20px' }}>
+            <span style={{ color: '#8F1D2C', flexShrink: 0 }}>
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/>
+              </svg>
+            </span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: '#191713' }}>{isAr ? 'الإشعارات' : 'Notifications'}</span>
+            <NotificationBell onAsk={onAsk} />
+          </div>
+
+          {/* Accessibility — high-contrast / large-text / reduce-motion toggles
+              already live on /settings (see AccessibilityEffects.tsx); this is
+              a direct, clearly-labeled entry point per spec rather than
+              burying it inside the general settings list. */}
+          <button
+            type="button"
+            onClick={() => { router.push('/settings'); onClose() }}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+              padding: '13px 20px', border: 'none', background: 'none',
+              cursor: 'pointer', fontFamily: 'inherit',
+              textAlign: isAr ? 'right' : 'left',
+              color: '#191713', fontSize: 14, fontWeight: 500,
+            }}
+            onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
+          >
+            <span style={{ color: '#8F1D2C', flexShrink: 0 }}>
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01"/>
+              </svg>
+            </span>
+            <span style={{ flex: 1 }}>{isAr ? 'إمكانية الوصول' : 'Accessibility'}</span>
+          </button>
+
+          {/* Help — /faq already contains real, existing Q&A content
+              (lib/serviceFAQ.ts). Distinct from "Contact Us" below: this is
+              self-serve help, contact is direct human support. */}
+          <button
+            type="button"
+            onClick={() => { router.push('/faq'); onClose() }}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+              padding: '13px 20px', border: 'none', background: 'none',
+              cursor: 'pointer', fontFamily: 'inherit',
+              textAlign: isAr ? 'right' : 'left',
+              color: '#191713', fontSize: 14, fontWeight: 500,
+            }}
+            onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
+          >
+            <span style={{ color: '#8F1D2C', flexShrink: 0 }}>
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </span>
+            <span style={{ flex: 1 }}>{isAr ? 'المساعدة' : 'Help'}</span>
+          </button>
+
           {/* Contact */}
           <div style={{ margin: '8px 16px', padding: '12px 14px', background: '#FAFAF8', borderRadius: 12, border: '1px solid #E6E2DC' }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: '#8F1D2C', margin: '0 0 9px', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -393,6 +471,35 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
               </svg>
             </span>
           </button>
+
+          {/* حول دليلك — reuses /settings' existing "About" block (real
+              app name + description already there) rather than a new page
+              with invented copy. سياسة الخصوصية — new minimal /privacy page,
+              factual/verifiable content only (see its own file header note). */}
+          <div style={{ display: 'flex', gap: 8, margin: '4px 16px 0' }}>
+            <button
+              type="button"
+              onClick={() => { router.push('/settings'); onClose() }}
+              style={{
+                flex: 1, padding: '9px 4px', borderRadius: 10, border: '1px solid #E6E2DC',
+                background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 11.5, color: '#69645C', fontWeight: 600,
+              }}
+            >
+              {isAr ? 'حول دليلك' : 'About Dalilak'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { router.push('/privacy'); onClose() }}
+              style={{
+                flex: 1, padding: '9px 4px', borderRadius: 10, border: '1px solid #E6E2DC',
+                background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 11.5, color: '#69645C', fontWeight: 600,
+              }}
+            >
+              {isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}
+            </button>
+          </div>
         </div>
 
         {/* Logout */}

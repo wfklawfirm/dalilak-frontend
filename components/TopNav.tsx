@@ -73,8 +73,12 @@ export default function TopNav({
         .tn-cta:hover { background: var(--brand-hover) !important; box-shadow: var(--shadow-brand-lg) !important; transform: translateY(-1px); }
         .tn-cta:active { transform: scale(0.97) !important; }
 
-        /* ── Scroll shadow ── */
-        .tn-scrolled { box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important; }
+        /* ── Scroll shadow — v4.0: near-invisible, only appears on scroll (per spec: "لا تستخدم shadow إلا عند scroll") ── */
+        .tn-scrolled { box-shadow: 0 1px 3px rgba(20,18,15,0.06) !important; }
+
+        /* ── Row height: 56px mobile (spec), 64px desktop (unchanged) ── */
+        .tn-row { height: 56px; }
+        @media (min-width: 768px) { .tn-row { height: 64px; padding: 0 clamp(16px,3vw,32px) !important; } }
 
         /* ── Responsive ── */
         @media (min-width: 768px) {
@@ -93,6 +97,20 @@ export default function TopNav({
         }
       `}</style>
 
+      {/* v4.0 (batch #366): the header is now the ONLY chrome allowed at the
+          top of the screen on mobile — logo unit + hamburger, nothing else.
+          Search (GlobalSearch), language toggle, notifications, and the
+          in-chat "new chat" pill used to all live here too, competing for
+          the same 56px row and violating the "one action beside the logo"
+          rule the user specified. None of that functionality was deleted:
+          GlobalSearch and NotificationBell are unchanged components, simply
+          re-homed into MobileMenu's drawer (see MobileMenu.tsx) where they
+          render exactly as before; language toggle already existed in the
+          drawer; "new chat" is now covered by BottomNav's Home tab, which
+          was updated to call the same saveChatSession+clear logic. Desktop
+          (>=768px) keeps every one of these visible in the row — this is a
+          mobile-only simplification per the user's explicit priority order
+          (mobile visual quality first, desktop adaptation last). */}
       <header
         dir={isAr ? 'rtl' : 'ltr'}
         className={scrolled ? 'tn-scrolled' : ''}
@@ -102,14 +120,15 @@ export default function TopNav({
           borderBottom: '1px solid var(--border)',
           boxShadow: 'none',
           zIndex: 50,
-          transition: 'box-shadow 0.22s ease',
-          animation: 'tn-drop 0.24s cubic-bezier(0.22,1,0.36,1) both',
+          transition: 'box-shadow 0.18s ease',
+          animation: 'tn-drop 0.2s cubic-bezier(0.22,1,0.36,1) both',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
         }}
       >
-        <div style={{
+        <div className="tn-row" style={{
           maxWidth: 1200, margin: '0 auto',
-          padding: '0 clamp(16px,3vw,32px)',
-          height: 64,
+          padding: '0 16px',
+          height: 56,
           display: 'flex', alignItems: 'center', gap: 0,
         }}>
 
@@ -184,10 +203,12 @@ export default function TopNav({
             })}
           </nav>
 
-          {/* ══ MOBILE: spacer ══ */}
-          <div className="tn-mobile-brand" style={{ display: 'none', flex: 1 }} />
-
-          {/* ══ MOBILE BRAND (center) ══ */}
+          {/* ══ MOBILE BRAND — v4.0: one composed unit (icon+wordmark, not
+              two separate elements), sits in normal flow as the row's first
+              child so RTL places it on the right per spec. No longer
+              absolutely centered — centering competed visually with the
+              hamburger for "primary" attention; a fixed start-aligned logo
+              reads as calmer and matches every reference government app. ══ */}
           <button
             type="button"
             className="tn-mobile-brand"
@@ -195,22 +216,22 @@ export default function TopNav({
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
             style={{
               display: 'none',
-              position: 'absolute', left: '50%', top: '50%',
-              transform: 'translate(-50%, -50%)',
               alignItems: 'center', gap: 8,
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+              flexShrink: 0,
             }}
           >
             <div style={{
-              width: 30, height: 30, borderRadius: 8,
+              width: 28, height: 28, borderRadius: 7,
               background: 'var(--brand-soft)', border: '1px solid var(--brand-ring)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+              flexShrink: 0,
             }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain', display: 'block' }} />
+              <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width: 20, height: 20, objectFit: 'contain', display: 'block' }} />
             </div>
-            <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-1)', letterSpacing: '-0.3px', lineHeight: 1 }}>
+            <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.2px', lineHeight: 1 }}>
               {isAr ? 'دليلك' : 'Dalilak'}
-            </div>
+            </span>
           </button>
 
           {/* ══ RIGHT ACTIONS ══ */}
@@ -272,21 +293,34 @@ export default function TopNav({
               </button>
             )}
 
-            {/* Notification Bell */}
-            <NotificationBell onAsk={onAsk} />
+            {/* Notification Bell — v4.0: desktop-only in the header row.
+                On mobile it's reachable from MobileMenu (see the new
+                "الإشعارات" entry there, which renders this exact same
+                component) — feature relocated, not removed. */}
+            <div className="tn-desk-only" style={{ display: 'none' }}>
+              <NotificationBell onAsk={onAsk} />
+            </div>
 
-            {/* Global Search — Cmd+K */}
-            <GlobalSearch onAsk={onAsk} onJourneySelect={onJourneySelect} />
+            {/* Global Search — Cmd+K. v4.0: desktop-only in the header;
+                on mobile the primary search is the homepage's own search
+                field (spec's "البحث هو البطل الرئيسي"). Also reachable
+                from MobileMenu's "بحث" entry for use from any page. */}
+            <div className="tn-desk-only" style={{ display: 'none' }}>
+              <GlobalSearch onAsk={onAsk} onJourneySelect={onJourneySelect} />
+            </div>
 
-            {/* New chat — in conversation */}
+            {/* New chat — in conversation. v4.0: desktop-only; on mobile
+                BottomNav's Home tab now performs the identical
+                saveChatSession+clear action (see app/page.tsx), so the
+                function isn't lost, just consolidated onto one control. */}
             {hasChat && (
               <button
                 type="button"
                 aria-label={isAr ? 'محادثة جديدة' : 'New conversation'}
                 onClick={onNewChat}
-                className="tn-ibtn"
+                className="tn-ibtn tn-desk-only"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
+                  display: 'none', alignItems: 'center', gap: 5,
                   height: 34, padding: '0 12px', borderRadius: 9,
                   border: '1.5px solid var(--border)',
                   background: 'transparent',
@@ -297,19 +331,21 @@ export default function TopNav({
                 <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span className="tn-desk-only" style={{ display: 'none' }}>{isAr ? 'جديد' : 'New'}</span>
+                <span>{isAr ? 'جديد' : 'New'}</span>
               </button>
             )}
 
-            {/* Language toggle */}
+            {/* Language toggle — v4.0: desktop-only in the header per spec
+                ("ممنوع وضع داخل Header ... زر لغة مستقل"). Already existed
+                in MobileMenu's drawer before this batch — unchanged there. */}
             <button
               type="button"
               aria-label={isAr ? 'تغيير اللغة إلى الإنجليزية' : 'Switch to Arabic'}
               onClick={onLangToggle}
-              className="tn-ibtn tap-hit-2"
+              className="tn-ibtn tn-desk-only tap-hit-2"
               style={{
                 position: 'relative',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                display: 'none', alignItems: 'center', justifyContent: 'center',
                 height: 40, minWidth: 46, padding: '0 12px', borderRadius: 9,
                 border: '1.5px solid var(--border)',
                 background: 'transparent',
@@ -459,13 +495,10 @@ export default function TopNav({
               </button>
             )}
 
-            {/* Divider before hamburger */}
-            <div className="tn-hamburger" style={{
-              display: 'none', width: 1, height: 20,
-              background: 'var(--border)', margin: '0 2px',
-            }} />
-
-            {/* Hamburger — mobile */}
+            {/* Hamburger — mobile only, 40x40 per spec. No divider before it
+                (spec explicitly bans "فاصل عمودي" in the header) and no
+                heavy border — this is now the single icon in the row, so a
+                loud border/box around it reads as unnecessary chrome. */}
             <button
               type="button"
               className="tn-ibtn tn-hamburger"
@@ -474,15 +507,15 @@ export default function TopNav({
               style={{
                 display: 'none', flexDirection: 'column', alignItems: 'center',
                 justifyContent: 'center', gap: 4.5,
-                height: 44, width: 44, borderRadius: 9,
-                border: '1.5px solid var(--border)',
+                height: 40, width: 40, borderRadius: 10,
+                border: 'none',
                 background: 'transparent',
                 cursor: 'pointer', transition: 'background 0.12s',
               }}
             >
-              <span style={{ width: 15, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 11, height: 1.5, background: 'var(--text-3)', borderRadius: 2, display: 'block' }} />
-              <span style={{ width: 15, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 16, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 16, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
+              <span style={{ width: 16, height: 1.5, background: 'var(--text-1)', borderRadius: 2, display: 'block' }} />
             </button>
 
           </div>

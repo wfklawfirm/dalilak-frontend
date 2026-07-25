@@ -1336,123 +1336,109 @@ Question: ${text}`
                   small screens get noticeably less dead vertical space per section — verified
                   the vw term still exceeds the new floor at typical desktop widths, so this is
                   mobile-only in practice. */}
-              <section style={{ background:'var(--surface)', borderBottom:'1px solid var(--border)', padding:'clamp(28px,6vw,88px) 0 clamp(32px,7vw,96px)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
+              <section style={{ background:'var(--bg)', padding:'20px 0 28px' }}>
+                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 16px' }}>
                   <div className="hl">
 
-                    {/* ── Left Column ── */}
+                    {/* ── Left Column — v4.0 "Calm Government Digital Service" ──
+                        batch #366 full rebuild, replacing the marketing-style hero
+                        (badge + big two-tone headline + long description + two
+                        competing CTA buttons) with the minimal, task-first block
+                        the spec requires: a short question-framed title, one line
+                        of helper text, and the search field as the primary,
+                        unmissable action. Total height of title+subtitle+search
+                        stays well under ~260px at 390px width — verified by the
+                        fixed line counts and font sizes below (no clamp() ranges
+                        that could grow unpredictably tall on a small screen). */}
                     <div>
-                      {/* Badge */}
-                      <div style={{ display:'inline-flex', alignItems:'center', gap:8, marginBottom:24, padding:'6px 16px 6px 10px', borderRadius:999, background:'var(--brand-soft)', border:'1px solid var(--brand-ring)' }}>
-                        <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width:20, height:20, objectFit:'contain', borderRadius:4 }} />
-                        <span style={{ fontSize:12, fontWeight:700, color:'var(--brand)', letterSpacing:'0.2px' }}>
-                          {isAr ? 'دليلك — الدليل الحكومي الذكي' : 'Dalilak — Smart Government Guide'}
-                        </span>
-                      </div>
-
-                      {/* H1 */}
-                      <h1 style={{ fontSize:'clamp(30px,5vw,54px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 16px', lineHeight:1.1, letterSpacing:'-1px' }}>
-                        {isAr
-                          ? <>{`أنجز معاملتك الحكومية`}<br/><span style={{ color:'var(--brand)' }}>بخطوات واضحة</span></>
-                          : <>{`Navigate Lebanon's`}<br/><span style={{ color:'var(--brand)' }}>Government System</span></>
-                        }
+                      <h1 style={{
+                        fontSize:'clamp(24px,6vw,28px)', fontWeight:700, color:'var(--text-1)',
+                        margin:'0 0 8px', lineHeight:1.35, letterSpacing:0,
+                      }}>
+                        {isAr ? 'ما المعاملة التي تبحث عنها؟' : 'Which procedure are you looking for?'}
                       </h1>
-
-                      {/* Description */}
-                      <p style={{ fontSize:'clamp(15px,2vw,17px)', color:'var(--text-2)', margin:'0 0 28px', lineHeight:1.7, maxWidth:480 }}>
+                      <p style={{ fontSize:15, color:'var(--text-2)', margin:'0 0 20px', lineHeight:1.6 }}>
                         {isAr
-                          ? 'اسأل عن أي معاملة حكومية — دليلك يوجّهك خطوة بخطوة بمصادر رسمية محدّثة'
-                          : 'Ask about any government procedure — step-by-step guidance from official Lebanese sources'
-                        }
+                          ? 'ابحث بالاسم أو تصفح الخدمات حسب الفئة.'
+                          : 'Search by name or browse services by category.'}
                       </p>
 
-                      {/* CTAs */}
-                      <div style={{ display:'flex', gap:12, flexWrap:'wrap', marginBottom:28 }}>
-                        <button type="button"
-                          onClick={() => sendMessage(isAr ? 'مرحباً، أريد مساعدة في معاملة حكومية' : 'Hello, I need help with a government procedure')}
-                          style={{ height:44, padding:'0 22px', borderRadius:11, border:'none', background:'var(--brand)', color:'#fff', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:7, boxShadow:'var(--shadow-brand)', transition:'background 0.14s, transform 0.14s' }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background='var(--brand-hover)'; (e.currentTarget as HTMLButtonElement).style.transform='translateY(-1px)' }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background='var(--brand)'; (e.currentTarget as HTMLButtonElement).style.transform='' }}
-                        >
-                          <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                          {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-                        </button>
-                        <button type="button"
-                          onClick={() => router.push('/procedures')}
-                          style={{ height:44, padding:'0 22px', borderRadius:11, border:'1.5px solid var(--border-strong)', background:'transparent', color:'var(--text-1)', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:7, transition:'border-color 0.14s, background 0.14s, color 0.14s' }}
-                          onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--brand)'; t.style.background='var(--brand-soft)'; t.style.color='var(--brand)' }}
-                          onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border-strong)'; t.style.background='transparent'; t.style.color='var(--text-1)' }}
-                        >
-                          {isAr ? 'تصفح المعاملات' : 'Browse Procedures'}
-                        </button>
-                      </div>
-
-                      {/* Search bar */}
+                      {/* Search — the single primary action on this screen.
+                          One field, no separate "بحث" button (Enter/suggestion
+                          submits), mic + clear live inside the field. */}
                       <form
                         className="hsearch"
                         onSubmit={e => { e.preventDefault(); if (heroInput.trim()) { sendMessage(heroInput); setHeroInput('') } }}
-                        style={{ display:'flex', alignItems:'center', height:56, background:'var(--surface)', border:'1.5px solid var(--border)', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s, box-shadow 0.15s', marginBottom:16, maxWidth:540 }}
+                        style={{ display:'flex', alignItems:'center', height:56, background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s', marginBottom:12, maxWidth:540 }}
                       >
-                        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.2" style={{ flexShrink:0, margin:'0 14px' }}>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2" style={{ flexShrink:0, marginInlineStart:16, marginInlineEnd:10 }}>
                           <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
                         </svg>
                         <input
                           type="text"
                           value={heroInput}
                           onChange={e => { setHeroInput(e.target.value); if (!e.target.value.trim()) chipsLockedRef.current = false }}
-                          placeholder={isAr ? 'اكتب اسم المعاملة أو سؤالك...' : 'Type a procedure or ask a question...'}
-                          aria-label={isAr ? 'اكتب اسم المعاملة أو سؤالك' : 'Type a procedure or ask a question'}
+                          placeholder={isAr ? 'مثال: تجديد جواز السفر' : 'e.g. Renew my passport'}
+                          aria-label={isAr ? 'ابحث عن معاملة' : 'Search for a procedure'}
                           dir={isAr ? 'rtl' : 'ltr'}
-                          style={{ flex:1, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:14.5, fontFamily:'inherit', fontWeight:500, color:'var(--text-1)' }}
+                          style={{ flex:1, minWidth:0, height:'100%', border:'none', outline:'none', background:'transparent', fontSize:16, fontFamily:'inherit', fontWeight:400, color:'var(--text-1)' }}
                         />
-                        {heroInput.trim().length > 3 && (
+                        {/* Clear — only while typing */}
+                        {heroInput.trim().length > 0 && (
                           <button type="button"
-                            className="hero-enhance-btn"
-                            disabled={heroEnhancing}
-                            onClick={() => enhancePrompt(heroInput, setHeroInput, setHeroEnhancing)}
-                            aria-label={isAr ? 'تحسين السؤال' : 'Enhance question'}
-                            title={isAr ? 'تحسين السؤال بالذكاء الاصطناعي' : 'AI-enhance your question'}
-                            style={{ flexShrink:0, height:'100%', padding:'0 13px', border:'none', borderInlineStart:'1.5px solid var(--border)', background:'var(--brand-soft)', color:'var(--brand)', fontSize:12, fontWeight:700, cursor: heroEnhancing ? 'default' : 'pointer', fontFamily:'inherit', transition:'background 0.14s', display:'flex', alignItems:'center', gap:5, whiteSpace:'nowrap' }}
-                            onMouseEnter={e => !heroEnhancing && ((e.currentTarget as HTMLButtonElement).style.background = '#FDDDE2')}
-                            onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.background = 'var(--brand-soft)')}>
-                            {heroEnhancing
-                              ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation:'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" strokeOpacity="0.2"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                              : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5zM19 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
-                            }
-                            <span className="hero-enhance-label">{isAr ? 'حسّن' : 'Enhance'}</span>
+                            onClick={() => { setHeroInput(''); chipsLockedRef.current = false }}
+                            aria-label={isAr ? 'مسح' : 'Clear'}
+                            className="tap-hit-8"
+                            style={{ position:'relative', flexShrink:0, width:28, height:28, borderRadius:'50%', border:'none', background:'var(--surface-2)', color:'var(--text-3)', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', marginInlineEnd:4 }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                           </button>
                         )}
-                        {/* Voice input for hero search */}
-                        <span style={{ display:'flex', alignItems:'center', paddingInlineEnd:6, borderInlineStart:'1.5px solid var(--border)', height:'100%', paddingInlineStart:6 }}>
+                        {/* AI-enhance — real, existing feature (not new). Kept
+                            icon-only and unobtrusive so it doesn't compete with
+                            search as the primary action, only appears once the
+                            user is actively typing a real query. */}
+                        {heroInput.trim().length > 3 && (
+                          <button type="button"
+                            className="tap-hit-8"
+                            disabled={heroEnhancing}
+                            onClick={() => enhancePrompt(heroInput, setHeroInput, setHeroEnhancing)}
+                            aria-label={isAr ? 'تحسين السؤال بالذكاء الاصطناعي' : 'AI-enhance your question'}
+                            title={isAr ? 'تحسين السؤال بالذكاء الاصطناعي' : 'AI-enhance your question'}
+                            style={{ position:'relative', flexShrink:0, width:28, height:28, borderRadius:'50%', border:'none', background:'transparent', color:'var(--text-3)', cursor: heroEnhancing ? 'default' : 'pointer', display:'flex', alignItems:'center', justifyContent:'center', marginInlineEnd:2 }}>
+                            {heroEnhancing
+                              ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation:'spin 0.8s linear infinite' }}><circle cx="12" cy="12" r="10" strokeOpacity="0.2"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                              : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5zM19 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
+                            }
+                          </button>
+                        )}
+                        {/* Mic — inside the field, per spec */}
+                        <span style={{ display:'flex', alignItems:'center', marginInlineEnd:8 }}>
                           <ChatVoiceInputBtn
                             onTranscript={t => setHeroInput(v => v ? v + ' ' + t : t)}
                             isAr={isAr}
                             lang={lang}
                           />
                         </span>
-                        <button type="submit" disabled={!heroInput.trim()}
-                          style={{ flexShrink:0, height:'100%', padding:'0 18px', border:'none', borderInlineStart:'1.5px solid var(--border)', background: heroInput.trim() ? 'var(--brand)' : 'var(--surface-2)', color: heroInput.trim() ? '#fff' : 'var(--text-3)', fontSize:13, fontWeight:700, cursor: heroInput.trim() ? 'pointer' : 'default', fontFamily:'inherit', transition:'background 0.14s, color 0.14s', whiteSpace:'nowrap' }}>
-                          {isAr ? 'بحث' : 'Search'}
-                        </button>
                       </form>
 
-                      {/* Suggestion chips */}
-                      {visibleQ.length > 0 && (
-                        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-                          {visibleQ.slice(0, 4).map((q, i) => (
-                            <button key={i} type="button"
-                              onClick={() => sendMessage(q)}
-                              className="quick-btn"
-                              style={{ padding:'6px 14px', borderRadius:999, background:'var(--surface)', border:'1px solid var(--border)', color:'var(--text-2)', fontSize:12, fontWeight:500, cursor:'pointer', fontFamily:'inherit', display:'inline-flex', alignItems:'center', gap:5, animationDelay:`${i*0.06}s`, whiteSpace:'nowrap', maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', boxShadow:'var(--shadow-xs)', transition:'border-color 0.14s, color 0.14s' }}
-                              onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border-brand)'; t.style.color='var(--brand)' }}
-                              onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.borderColor='var(--border)'; t.style.color='var(--text-2)' }}
-                            >
-                              <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.5"><circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
-                              {q.length > 32 ? q.slice(0,30)+'…' : q}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                      {/* Quick actions — exactly 2, per spec. "اسأل دليلك" is the
+                          only element on this screen carrying the primary brand
+                          color; "تصفح كل المعاملات" is a quiet ghost link. No
+                          shadows, no large icons. */}
+                      <div style={{ display:'flex', gap:12, marginBottom:4 }}>
+                        <button type="button"
+                          onClick={() => router.push('/procedures')}
+                          style={{ flex:1, height:52, borderRadius:12, border:'1px solid var(--border)', background:'var(--surface)', color:'var(--text-1)', fontSize:14, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}
+                        >
+                          {isAr ? 'تصفح كل المعاملات' : 'Browse Procedures'}
+                        </button>
+                        <button type="button"
+                          onClick={() => sendMessage(isAr ? 'مرحباً، أريد مساعدة في معاملة حكومية' : 'Hello, I need help with a government procedure')}
+                          style={{ flex:1, height:52, borderRadius:12, border:'none', background:'var(--brand)', color:'#fff', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center', gap:7 }}
+                        >
+                          {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+                        </button>
+                      </div>
                     </div>
 
                     {/* ── Right Column — Rotating Procedure Preview (desktop only) ── */}
@@ -1536,291 +1522,154 @@ Question: ${text}`
                 </div>
               </section>
 
-              {/* ══ PROCEDURES ══ */}
-              <section style={{ padding:'clamp(28px,5vw,80px) 0', background:'var(--bg-page)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:24, gap:16 }}>
-                    <div>
-                      <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 4px', letterSpacing:'-0.4px' }}>
-                        {isAr ? 'الإجراءات الأكثر طلباً' : 'Most Requested Procedures'}
-                      </h2>
-                      <p style={{ fontSize:13.5, color:'var(--text-3)', margin:0 }}>
-                        {isAr ? 'اضغط على أي معاملة للحصول على خطوات مفصّلة' : 'Tap any procedure for step-by-step guidance'}
-                      </p>
-                    </div>
-                    <button type="button" onClick={() => router.push('/procedures')}
-                      style={{ fontSize:13, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4, whiteSpace:'nowrap', flexShrink:0 }}>
-                      {isAr ? 'كل المعاملات' : 'All'}
-                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
-                    </button>
-                  </div>
-                  <div className="pgrid">
+              {/* ══ الأكثر بحثاً — v4.0: uniform full-width list rows instead
+                  of a card grid, per spec ("كل عنصر يكون صفاً كاملاً"). Same
+                  4 real procedures/prompts as before — only the presentation
+                  changed (icon + name + arrow, 56px rows, one containing
+                  card, consistent alignment). ══ */}
+              <section style={{ padding:'8px 0 32px', background:'var(--bg)' }}>
+                <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px' }}>
+                  <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text-1)', margin:'0 0 12px' }}>
+                    {isAr ? 'الأكثر بحثاً' : 'Most Searched'}
+                  </h2>
+                  <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:14, overflow:'hidden' }}>
                     {([
-                      { ar:'استخراج جواز السفر', en:'Passport Application', authAr:'الأمن العام', authEn:'General Security', stepsAr:'4 خطوات', stepsEn:'4 Steps', pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟', pEn:'How do I get or renew my Lebanese passport?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg> },
-                      { ar:'إخراج قيد فردي', en:'Civil Registry Extract', authAr:'السجل المدني', authEn:'Civil Registry', stepsAr:'3 خطوات', stepsEn:'3 Steps', pAr:'كيف أستخرج إخراج قيد فردي من السجل المدني؟', pEn:'How do I get a civil registry extract?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
-                      { ar:'تسجيل شركة', en:'Company Registration', authAr:'وزارة الاقتصاد', authEn:'Ministry of Economy', stepsAr:'7 خطوات', stepsEn:'7 Steps', pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
-                      { ar:'تسجيل سيارة جديدة', en:'Vehicle Registration', authAr:'مصلحة تسجيل السيارات', authEn:'Vehicle Registration', stepsAr:'5 خطوات', stepsEn:'5 Steps', pAr:'كيف أسجّل سيارة جديدة في لبنان؟', pEn:'How do I register a new vehicle in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> },
-                      /* batch #350: Driver's License Renewal + Residency Renewal moved off the homepage grid to hold
-                         the "max 4 popular-transaction cards" limit from the UX brief (was 6). Both remain fully
-                         reachable via /procedures, search, categories, and life journeys — no functionality removed. */
-                    ] as {ar:string;en:string;authAr:string;authEn:string;stepsAr:string;stepsEn:string;pAr:string;pEn:string;icon:React.ReactNode}[]).map(p => (
+                      { ar:'استخراج جواز السفر', en:'Passport Application', pAr:'كيف أستخرج أو أجدد جواز سفري اللبناني؟', pEn:'How do I get or renew my Lebanese passport?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg> },
+                      { ar:'إخراج قيد فردي', en:'Civil Registry Extract', pAr:'كيف أستخرج إخراج قيد فردي من السجل المدني؟', pEn:'How do I get a civil registry extract?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+                      { ar:'تسجيل شركة', en:'Company Registration', pAr:'كيف أسجّل شركة في لبنان وما هي الخطوات؟', pEn:'How do I register a company in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
+                      { ar:'تسجيل سيارة جديدة', en:'Vehicle Registration', pAr:'كيف أسجّل سيارة جديدة في لبنان؟', pEn:'How do I register a new vehicle in Lebanon?', icon:<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> },
+                    ] as {ar:string;en:string;pAr:string;pEn:string;icon:React.ReactNode}[]).map((p, i, arr) => (
                       <button type="button" key={p.en}
                         onClick={() => sendMessage(isAr ? p.pAr : p.pEn)}
-                        className="pcard"
-                        style={{ textAlign: isAr ? 'right' : 'left' }}
+                        style={{
+                          width:'100%', minHeight:56, padding:'8px 16px',
+                          display:'flex', alignItems:'center', gap:12,
+                          border:'none', borderBottom: i < arr.length - 1 ? '1px solid var(--border-light)' : 'none',
+                          background:'transparent', cursor:'pointer', fontFamily:'inherit',
+                          textAlign: isAr ? 'right' : 'left',
+                        }}
                       >
-                        <div style={{ width:44, height:44, borderRadius:12, background:'var(--brand-soft)', border:'1px solid var(--brand-ring)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--brand)', marginBottom:14 }}>
-                          {p.icon}
-                        </div>
-                        <div style={{ fontSize:15, fontWeight:700, color:'var(--text-1)', marginBottom:6, lineHeight:1.3 }}>
+                        <span style={{ color:'var(--text-2)', flexShrink:0 }}>{p.icon}</span>
+                        <span style={{ flex:1, fontSize:16, fontWeight:600, color:'var(--text-1)' }}>
                           {isAr ? p.ar : p.en}
-                        </div>
-                        <div style={{ display:'flex', gap:8, marginTop:'auto', paddingTop:12, flexWrap:'wrap' }}>
-                          <span style={{ fontSize:11.5, color:'var(--text-3)', background:'var(--surface-2)', borderRadius:6, padding:'3px 8px' }}>{isAr ? p.authAr : p.authEn}</span>
-                          <span style={{ fontSize:11.5, color:'var(--brand)', background:'var(--brand-soft)', borderRadius:6, padding:'3px 8px' }}>{isAr ? p.stepsAr : p.stepsEn}</span>
-                        </div>
+                        </span>
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2" style={{ flexShrink:0 }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
+                        </svg>
                       </button>
                     ))}
                   </div>
+                  <button type="button" onClick={() => router.push('/procedures')}
+                    style={{ marginTop:12, fontSize:14, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>
+                    {isAr ? 'عرض جميع المعاملات' : 'View all procedures'}
+                    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
+                  </button>
                 </div>
               </section>
 
-              {/* ══ CATEGORIES ══ */}
-              <section style={{ background:'var(--surface)', padding:'clamp(20px,4vw,56px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:16, gap:16 }}>
-                    <h3 style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'1px', textTransform:'uppercase', margin:0 }}>
+              {/* ══ تصفّح حسب الفئة — v4.0: 2-column grid of fixed-height
+                  cards instead of a wrapped pill row, per spec. Same 6 real
+                  categories/prompts as before (batch #350 already trimmed
+                  this list from 10 to 6 for the homepage; the full catalog
+                  stays one tap away via "كل الفئات" → /services). ══ */}
+              <section style={{ background:'var(--bg)', padding:'8px 0 32px' }}>
+                <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px' }}>
+                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:12, gap:16 }}>
+                    <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text-1)', margin:0 }}>
                       {isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
-                    </h3>
+                    </h2>
                     <button type="button" onClick={() => router.push('/services')}
                       style={{ fontSize:13, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4, whiteSpace:'nowrap', flexShrink:0 }}>
                       {isAr ? 'كل الفئات' : 'All categories'}
                       <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
                     </button>
                   </div>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:10 }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:12 }}>
                     {([
-                      { ar:'الأحوال الشخصية',             en:'Personal Status',       q_ar:'ما هي معاملات الأحوال الشخصية في لبنان؟',        q_en:'What are personal status procedures in Lebanon?' },
-                      { ar:'السفر والإقامة',               en:'Travel & Residency',    q_ar:'ما هي إجراءات السفر والإقامة في لبنان؟',          q_en:'What are travel and residency procedures in Lebanon?' },
-                      { ar:'الشركات والأعمال',             en:'Business',              q_ar:'كيف أسجّل شركة أو أبدأ عمل تجاري في لبنان؟',     q_en:'How do I register a business in Lebanon?' },
-                      { ar:'السيارات والنقل',              en:'Vehicles & Transport',  q_ar:'ما هي إجراءات السيارات والنقل في لبنان؟',         q_en:'What are vehicle and transport procedures in Lebanon?' },
-                      { ar:'العقارات',                     en:'Real Estate',           q_ar:'ما هي إجراءات العقارات وتسجيل الملكية في لبنان؟', q_en:'What are real estate procedures in Lebanon?' },
-                      { ar:'البلديات',                     en:'Municipalities',        q_ar:'ما هي خدمات البلديات في لبنان؟',                   q_en:'What are municipality services in Lebanon?' },
-                      /* batch #350: Notary Public / Education / Labor & Social Security / Legal Procedures moved
-                         off the homepage chip row to hold the "limited category grid" brief target (was 10 chips).
-                         All ten categories remain one tap away via the new "All categories" link to /services,
-                         which lists the complete catalog — no functionality removed. */
-                    ] as {ar:string;en:string;q_ar:string;q_en:string}[]).map(cat => (
+                      { ar:'الأحوال الشخصية',    en:'Personal Status',      q_ar:'ما هي معاملات الأحوال الشخصية في لبنان؟',        q_en:'What are personal status procedures in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path strokeLinecap="round" d="M14 10h4M14 14h4"/></svg> },
+                      { ar:'السفر والإقامة',      en:'Travel & Residency',   q_ar:'ما هي إجراءات السفر والإقامة في لبنان؟',          q_en:'What are travel and residency procedures in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0"/></svg> },
+                      { ar:'الشركات والأعمال',    en:'Business',             q_ar:'كيف أسجّل شركة أو أبدأ عمل تجاري في لبنان؟',     q_en:'How do I register a business in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg> },
+                      { ar:'السيارات والنقل',     en:'Vehicles & Transport', q_ar:'ما هي إجراءات السيارات والنقل في لبنان؟',         q_en:'What are vehicle and transport procedures in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> },
+                      { ar:'العقارات',            en:'Real Estate',          q_ar:'ما هي إجراءات العقارات وتسجيل الملكية في لبنان؟', q_en:'What are real estate procedures in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg> },
+                      { ar:'البلديات',            en:'Municipalities',       q_ar:'ما هي خدمات البلديات في لبنان؟',                   q_en:'What are municipality services in Lebanon?',
+                        icon:<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg> },
+                    ] as {ar:string;en:string;q_ar:string;q_en:string;icon:React.ReactNode}[]).map(cat => (
                       <button type="button" key={cat.en}
                         onClick={() => sendMessage(isAr ? cat.q_ar : cat.q_en)}
-                        style={{ padding:'9px 18px', borderRadius:999, background:'var(--surface-2)', border:'1px solid var(--border)', color:'var(--text-2)', fontSize:13.5, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'background 0.13s, border-color 0.13s, color 0.13s' }}
-                        onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='var(--brand-soft)'; t.style.borderColor='var(--border-brand)'; t.style.color='var(--brand)' }}
-                        onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='var(--surface-2)'; t.style.borderColor='var(--border)'; t.style.color='var(--text-2)' }}
-                      >
-                        {isAr ? cat.ar : cat.en}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* ══ LIFE JOURNEYS ══ */}
-              <section style={{ background:'var(--bg-page)', padding:'clamp(28px,5vw,80px) 0', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:8, gap:16 }}>
-                    <div>
-                      <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 4px', letterSpacing:'-0.4px' }}>
-                        {isAr ? 'أنت في أي مرحلة من حياتك؟' : 'What life stage are you in?'}
-                      </h2>
-                      <p style={{ fontSize:13.5, color:'var(--text-3)', margin:0 }}>
-                        {isAr ? 'اختر حدثاً حياتياً لترى كل الإجراءات المترابطة دفعةً واحدة' : 'Pick a life event to see all related procedures in one place'}
-                      </p>
-                    </div>
-                  </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:12, marginTop:24 }}>
-                    {LIFE_JOURNEYS.map(journey => (
-                      <button
-                        key={journey.slug}
-                        type="button"
-                        onClick={() => setActiveJourney(journey)}
                         style={{
+                          height:100, padding:'14px', borderRadius:14,
+                          background:'var(--surface)', border:'1px solid var(--border)',
+                          color:'var(--text-1)', cursor:'pointer', fontFamily:'inherit',
+                          display:'flex', flexDirection:'column', alignItems:'flex-start', justifyContent:'space-between',
                           textAlign: isAr ? 'right' : 'left',
-                          background:'var(--surface)',
-                          border:'1.5px solid var(--border)',
-                          borderRadius:14, padding:'16px 16px 14px',
-                          cursor:'pointer', fontFamily:'inherit',
-                          transition:'border-color 0.14s, box-shadow 0.14s, transform 0.14s',
-                          display:'flex', flexDirection:'column', gap:8,
-                        }}
-                        onMouseEnter={e => {
-                          const t = e.currentTarget as HTMLButtonElement
-                          t.style.borderColor = 'var(--brand)'
-                          t.style.boxShadow = 'var(--shadow-brand)'
-                          t.style.transform = 'translateY(-2px)'
-                        }}
-                        onMouseLeave={e => {
-                          const t = e.currentTarget as HTMLButtonElement
-                          t.style.borderColor = 'var(--border)'
-                          t.style.boxShadow = 'none'
-                          t.style.transform = ''
                         }}
                       >
-                        <div style={{ fontSize:28, lineHeight:1 }}>{journey.emoji}</div>
-                        <div>
-                          <div style={{ fontSize:14, fontWeight:700, color:'var(--text-1)', lineHeight:1.3, marginBottom:3 }}>
-                            {isAr ? journey.titleAr : journey.titleEn}
-                          </div>
-                          <div style={{ fontSize:11.5, color:'var(--text-3)' }}>
-                            {isAr ? journey.subtitleAr : journey.subtitleEn}
-                          </div>
-                        </div>
-                        <div style={{
-                          marginTop:'auto', paddingTop:4,
-                          fontSize:11, color:'var(--brand)', fontWeight:700,
-                          display:'flex', alignItems:'center', gap:4,
-                        }}>
-                          {isAr ? 'عرض الخطوات ←' : '→ View Steps'}
-                        </div>
+                        <span style={{ color:'var(--text-2)' }}>{cat.icon}</span>
+                        <span style={{ fontSize:15, fontWeight:600, lineHeight:1.3 }}>{isAr ? cat.ar : cat.en}</span>
                       </button>
                     ))}
                   </div>
                 </div>
               </section>
 
-              {/* ══ HOW IT WORKS ══ */}
-              <section style={{ background:'var(--surface-muted)', padding:'clamp(28px,5vw,80px) 0', borderBottom:'1px solid var(--border)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div style={{ textAlign:'center', marginBottom:36 }}>
-                    <h2 style={{ fontSize:'clamp(20px,3vw,28px)', fontWeight:800, color:'var(--text-1)', margin:'0 0 8px', letterSpacing:'-0.4px' }}>
-                      {isAr ? 'كيف يعمل دليلك؟' : 'How does Dalilak work?'}
-                    </h2>
-                    <p style={{ fontSize:14, color:'var(--text-3)', margin:0 }}>
-                      {isAr ? 'ثلاث خطوات تفصلك عن أي إجابة حكومية' : 'Three steps to any government answer'}
-                    </p>
-                  </div>
-                  <div className="hwgrid">
-                    {([
-                      { num:'1', numAr:'١', ar:'اطرح سؤالك', en:'Ask Your Question', descAr:'اكتب اسم المعاملة أو صف وضعك بكلماتك — عربي أو إنجليزي', descEn:'Type the procedure or describe your situation — Arabic or English', color:'var(--brand)' },
-                      { num:'2', numAr:'٢', ar:'راجع الخطوات', en:'Review the Steps', descAr:'خطوات مرتّبة مع المستندات والجهات المختصة والرسوم', descEn:'Organized steps with required documents, authorities, and fees', color:'#1d4ed8' },
-                      { num:'3', numAr:'٣', ar:'تابع بثقة', en:'Proceed with Confidence', descAr:'كل المعلومات مستندة إلى مصادر رسمية لبنانية محدّثة', descEn:'All information backed by updated official Lebanese sources', color:'var(--success)' },
-                    ] as {num:string;numAr:string;ar:string;en:string;descAr:string;descEn:string;color:string}[]).map(step => (
-                      <div key={step.num} style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:16, padding:'28px 24px', textAlign:'center' }}>
-                        <div style={{ width:48, height:48, borderRadius:'50%', background:step.color, color:'#fff', fontSize:20, fontWeight:800, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 18px' }}>
-                          {isAr ? step.numAr : step.num}
-                        </div>
-                        <div style={{ fontSize:16, fontWeight:700, color:'var(--text-1)', marginBottom:10 }}>{isAr ? step.ar : step.en}</div>
-                        <div style={{ fontSize:13.5, color:'var(--text-2)', lineHeight:1.65 }}>{isAr ? step.descAr : step.descEn}</div>
-                      </div>
-                    ))}
+              {/* v4.0 (batch #366): the homepage's exact required section
+                  order per spec is Header → title → helper text → search →
+                  quick actions → popular → categories → one small trust
+                  line → simple footer → bottom nav — explicitly no hero
+                  banner, no "how it works" explainer, no life-journey grid,
+                  no multi-card trust section on this screen. The removed
+                  sections below are NOT deleted features: LIFE_JOURNEYS data
+                  and the JourneySheet modal (setActiveJourney) are untouched
+                  and still reachable via GlobalSearch/MobileMenu's journey
+                  results (onJourneySelect, already wired) — only the
+                  homepage grid that browsed them inline was removed, per the
+                  explicit "no more than 2 sections before first scroll" /
+                  literal 10-item homepage spec. The 3-step "how it works"
+                  explainer and the 4-card trust grid are replaced below by
+                  the single small trust line the spec asks for. */}
+
+              {/* ══ رسالة ثقة صغيرة ══ */}
+              <section style={{ background:'var(--bg)', padding:'4px 0 24px' }}>
+                <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:13, color:'var(--text-3)' }}>
+                    <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink:0 }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <span>
+                      {isAr
+                        ? 'المعلومات مرتبطة بمصادر رسمية ويظهر تاريخ آخر تحديث.'
+                        : 'Information is linked to official sources, and the last-updated date is shown.'}
+                    </span>
                   </div>
                 </div>
               </section>
 
-              {/* ══ TRUST ══ */}
-              <section style={{ background:'var(--surface)', padding:'clamp(24px,5vw,72px) 0', borderBottom:'1px solid var(--border)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div className="tgrid">
-                    {([
-                      { ar:'مصادر رسمية فقط', en:'Official Sources Only', descAr:'كل المعلومات مستقاة من المواقع والوثائق الرسمية للحكومة اللبنانية', descEn:'All information sourced from official Lebanese government websites and documents', color:'var(--success)', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> },
-                      { ar:'متاح ٢٤ ساعة', en:'Available 24/7', descAr:'دليلك متاح دائماً — بلا طوابير ولا أوقات دوام', descEn:'Always available — no queues, no office hours', color:'var(--brand)', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/></svg> },
-                      { ar:'خصوصية كاملة', en:'Full Privacy', descAr:'لا نحتفظ ببياناتك الشخصية — محادثاتك خاصة بك تماماً', descEn:"We don't store your personal data — your conversations stay private", color:'#1d4ed8', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> },
-                      { ar:'عربي وإنجليزي', en:'Arabic & English', descAr:'اسأل بأي لغة — دليلك يجيبك بنفس اللغة التي تختارها', descEn:'Ask in either language — Dalilak responds in your chosen language', color:'#7c3aed', icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg> },
-                    ] as {ar:string;en:string;descAr:string;descEn:string;color:string;icon:React.ReactNode}[]).map(trust => (
-                      <div key={trust.en} style={{ background:'var(--surface-muted)', border:'1px solid var(--border)', borderRadius:16, padding:'24px 20px', display:'flex', gap:16, alignItems:'flex-start' }}>
-                        <div style={{ width:44, height:44, borderRadius:12, background:'var(--surface)', border:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'center', color:trust.color, flexShrink:0 }}>
-                          {trust.icon}
-                        </div>
-                        <div>
-                          <div style={{ fontSize:14.5, fontWeight:700, color:'var(--text-1)', marginBottom:5 }}>{isAr ? trust.ar : trust.en}</div>
-                          <div style={{ fontSize:13, color:'var(--text-2)', lineHeight:1.6 }}>{isAr ? trust.descAr : trust.descEn}</div>
-                        </div>
-                      </div>
-                    ))}
+              {/* ══ Footer — v4.0: simplified per "Footer بسيط عند الحاجة".
+                  The previous 3-column dark footer (brand blurb + 8 links +
+                  language toggle) was landing-page styling, not a government
+                  app pattern. Kept only what's genuinely useful at the very
+                  bottom of the page — brand mark, copyright, the one legal
+                  disclaimer line, and links to About/Privacy (both real
+                  pages, see MobileMenu). All the quick-links it used to
+                  duplicate (Services/Procedures/Authorities/Forms/FAQ/My
+                  Files/Drafting Studio) remain reachable from the hamburger
+                  menu — nothing deleted, just no longer repeated here. ══ */}
+              <footer aria-label={isAr ? 'تذييل الصفحة' : 'Page footer'} style={{ background:'var(--surface)', borderTop:'1px solid var(--border)', padding:'20px 0' }}>
+                <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px', display:'flex', flexDirection:'column', gap:10 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width:18, height:18, objectFit:'contain' }} />
+                    <span style={{ fontSize:13, fontWeight:700, color:'var(--text-1)' }}>{isAr ? 'دليلك' : 'Dalilak'}</span>
                   </div>
-                </div>
-              </section>
-
-              {/* ══ FOOTER ══ */}
-              {/* batch #359: labeled so screen-reader landmark lists can tell
-                  this apart from the always-mounted input-toolbar <footer>
-                  below (which renders as a sibling outside <main>). */}
-              <footer aria-label={isAr ? 'تذييل الصفحة' : 'Page footer'} style={{ background:'#191713', padding:'clamp(28px,5vw,64px) 0 clamp(20px,3vw,40px)' }}>
-                <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
-                  <div className="fgrid" style={{ marginBottom:40 }}>
-                    {/* Brand col */}
-                    <div>
-                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14 }}>
-                        <div style={{ width:36, height:36, borderRadius:10, background:'var(--brand-soft)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                          <img src="/logo-icon.png" alt="دليلك" style={{ width:26, height:26, objectFit:'contain' }} />
-                        </div>
-                        <div>
-                          <div style={{ fontSize:16, fontWeight:800, color:'#fff', lineHeight:1 }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
-                          <div style={{ fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:2 }}>{isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}</div>
-                        </div>
-                      </div>
-                      <p style={{ fontSize:13, color:'rgba(255,255,255,0.45)', lineHeight:1.7, maxWidth:300, margin:0 }}>
-                        {isAr
-                          ? 'منصة ذكية تساعد المواطنين اللبنانيين على فهم الإجراءات الحكومية بسهولة وثقة.'
-                          : 'A smart platform helping Lebanese citizens understand government procedures with confidence.'
-                        }
-                      </p>
-                      <button type="button" onClick={toggleLang}
-                        style={{ marginTop:20, display:'inline-flex', alignItems:'center', gap:6, padding:'7px 16px', borderRadius:20, border:'1px solid rgba(255,255,255,0.12)', background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.6)', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'background 0.13s, color 0.13s' }}
-                        onMouseEnter={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='rgba(255,255,255,0.10)'; t.style.color='#fff' }}
-                        onMouseLeave={e => { const t = e.currentTarget as HTMLButtonElement; t.style.background='rgba(255,255,255,0.05)'; t.style.color='rgba(255,255,255,0.6)' }}
-                      >
-                        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
-                        {isAr ? 'English' : 'العربية'}
-                      </button>
-                    </div>
-                    {/* Quick links */}
-                    <div>
-                      <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:14 }}>
-                        {isAr ? 'روابط سريعة' : 'Quick Links'}
-                      </div>
-                      {([
-                        { ar:'الرئيسية', en:'Home', href:'/' },
-                        { ar:'الخدمات', en:'Services', href:'/services' },
-                        { ar:'المعاملات', en:'Procedures', href:'/procedures' },
-                        { ar:'الجهات', en:'Authorities', href:'/authorities' },
-                        { ar:'النماذج', en:'Forms', href:'/forms' },
-                        { ar:'الأسئلة', en:'FAQ', href:'/faq' },
-                      ] as {ar:string;en:string;href:string}[]).map(link => (
-                        <button key={link.href} type="button" onClick={() => router.push(link.href)}
-                          style={{ display:'block', background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:'inherit', padding:'5px 0', lineHeight:1.4, textAlign: isAr ? 'right' : 'left', transition:'color 0.13s' }}
-                          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color='#fff'}
-                          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.5)'}
-                        >
-                          {isAr ? link.ar : link.en}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Account links */}
-                    <div>
-                      <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'1px', textTransform:'uppercase', marginBottom:14 }}>
-                        {isAr ? 'حسابي' : 'Account'}
-                      </div>
-                      {([
-                        { ar:'ملفاتي', en:'My Files', href:'/my-files' },
-                        { ar:'استوديو الصياغة', en:'Drafting Studio', href:'/drafting-studio' },
-                      ] as {ar:string;en:string;href:string}[]).map(link => (
-                        <button key={link.href} type="button" onClick={() => router.push(link.href)}
-                          style={{ display:'block', background:'none', border:'none', color:'rgba(255,255,255,0.5)', fontSize:13, fontWeight:500, cursor:'pointer', fontFamily:'inherit', padding:'5px 0', lineHeight:1.4, textAlign: isAr ? 'right' : 'left', transition:'color 0.13s' }}
-                          onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.color='#fff'}
-                          onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.5)'}
-                        >
-                          {isAr ? link.ar : link.en}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ borderTop:'1px solid rgba(255,255,255,0.07)', paddingTop:20, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
-                    <div style={{ fontSize:12, color:'rgba(255,255,255,0.3)' }}>
-                      {isAr ? '© ٢٠٢٤ دليلك — جميع الحقوق محفوظة' : '© 2024 Dalilak — All rights reserved'}
-                    </div>
-                    <div style={{ fontSize:12, color:'rgba(255,255,255,0.25)' }}>
-                      {isAr ? 'ليس بديلاً عن الاستشارة القانونية الرسمية' : 'Not a substitute for official legal advice'}
-                    </div>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:'6px 16px', fontSize:12, color:'var(--text-3)' }}>
+                    <span>{isAr ? '© ٢٠٢٦ دليلك' : '© 2026 Dalilak'}</span>
+                    <button type="button" onClick={() => router.push('/settings')} style={{ background:'none', border:'none', color:'var(--text-3)', cursor:'pointer', fontFamily:'inherit', fontSize:12, padding:0 }}>{isAr ? 'حول دليلك' : 'About'}</button>
+                    <button type="button" onClick={() => router.push('/privacy')} style={{ background:'none', border:'none', color:'var(--text-3)', cursor:'pointer', fontFamily:'inherit', fontSize:12, padding:0 }}>{isAr ? 'سياسة الخصوصية' : 'Privacy'}</button>
+                    <span>{isAr ? 'ليس بديلاً عن الاستشارة القانونية الرسمية' : 'Not a substitute for official legal advice'}</span>
                   </div>
                 </div>
               </footer>
@@ -2597,7 +2446,7 @@ Question: ${text}`
           <BottomNav
             isAr={isAr}
             activeTab={messages.length > 0 ? 'chat' : 'home'}
-            onHomeClick={() => setMessages([])}
+            onHomeClick={() => { saveChatSession(messages); setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
             onChatClick={() => { /* already in chat */ }}
           />
         </div>
@@ -2680,8 +2529,13 @@ Question: ${text}`
         isAr={isAr}
         lang={lang}
         onLangToggle={toggleLang}
-        onHome={() => setMessages([])}
+        onHome={() => { saveChatSession(messages); setMessages([]); setFollowupQuestions([]); setRetryMsg(null) }}
         currentUser={currentUser}
+        onAsk={q => sendMessage(q)}
+        onJourneySelect={slug => {
+          const j = getJourneyBySlug(slug)
+          if (j) setActiveJourney(j)
+        }}
       />
     </>
   )

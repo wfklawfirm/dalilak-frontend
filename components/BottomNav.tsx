@@ -28,9 +28,14 @@ const ProcIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
   </svg>
 )
-const ChatFABIcon = () => (
-  <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+const ChatIcon = () => (
+  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+  </svg>
+)
+const ChatFillIcon = () => (
+  <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.477 2 2 5.925 2 10.75c0 2.605 1.32 4.942 3.412 6.542L4 22l4.29-1.98A11.6 11.6 0 0012 20.5c5.523 0 10-3.925 10-8.75S17.523 2 12 2z"/>
   </svg>
 )
 const AccountIcon = () => (
@@ -51,11 +56,18 @@ const AccountFillIcon = () => (
 // was the right item to drop because it's a *browse* surface, while Home,
 // Procedures, Chat and Account are the four *do-a-task* surfaces the brief
 // prioritizes (clarity/task-ease over exhaustive browsing).
+//
+// v4.0 (batch #366): flattened per the "Calm Government Digital Service"
+// spec — the chat tab is no longer a raised circular FAB with a gradient
+// and colored shadow; it's now a plain 4th tab like the other three, just
+// tinted with --brand when active. Removed the top active-indicator bar
+// too ("no long top bar") — active state is communicated by icon+label
+// color alone, matching how Home/Procedures/Account already indicated it.
 const TABS = [
-  { id: 'home',       label_ar: 'الرئيسية', label_en: 'Home',       Icon: HomeIcon,     FillIcon: HomeFillIcon,     route: '/' },
-  { id: 'procedures', label_ar: 'المعاملات', label_en: 'Procedures', Icon: ProcIcon,     FillIcon: ProcIcon,         route: '/procedures' },
-  { id: 'chat',       label_ar: 'محادثة',   label_en: 'Chat',       Icon: ChatFABIcon,  FillIcon: ChatFABIcon,      route: '/' }, // FAB center
-  { id: 'account',    label_ar: 'حسابي',    label_en: 'Account',    Icon: AccountIcon,  FillIcon: AccountFillIcon,  route: '/my-files' },
+  { id: 'home',       label_ar: 'الرئيسية',   label_en: 'Home',       Icon: HomeIcon,  FillIcon: HomeFillIcon,  route: '/' },
+  { id: 'procedures', label_ar: 'المعاملات',   label_en: 'Procedures', Icon: ProcIcon,  FillIcon: ProcIcon,      route: '/procedures' },
+  { id: 'chat',       label_ar: 'اسأل دليلك',  label_en: 'Ask Dalilak',Icon: ChatIcon,  FillIcon: ChatFillIcon,  route: '/' },
+  { id: 'account',    label_ar: 'حسابي',       label_en: 'Account',    Icon: AccountIcon,FillIcon: AccountFillIcon,route: '/my-files' },
 ] as const
 
 export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeClick, onChatClick }: BottomNavProps) {
@@ -73,96 +85,42 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
   return (
     <>
       <style>{`
-        @keyframes bnSlideUp { from { opacity:0; transform:translateY(100%); } to { opacity:1; transform:translateY(0); } }
-        .bn-tab-btn { transition: background 0.12s, transform 0.12s; }
-        .bn-tab-btn:active { transform: scale(0.92); }
-        .bn-fab:active { transform: translateY(-8px) scale(0.93); }
+        .bn-tab-btn { transition: color 0.15s; }
+        .bn-tab-btn:active { opacity: 0.65; }
       `}</style>
       <nav
         aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}
         style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: 'rgba(255,255,255,0.97)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(210,195,178,0.5)',
-          boxShadow: '0 -4px 24px rgba(100,60,20,0.09)',
-          display: 'flex', alignItems: 'center',
+          background: 'var(--surface)',
+          borderTop: '1px solid var(--border)',
+          display: 'flex', alignItems: 'stretch',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
           zIndex: 100,
-          minHeight: 56,
-          animation: 'bnSlideUp 0.3s cubic-bezier(0.22,1,0.36,1) both',
+          minHeight: 64,
         }}
       >
         {TABS.map(tab => {
           const active = activeTab === tab.id
-          const isFAB = tab.id === 'chat'
-
-          if (isFAB) {
-            return (
-              <div key={tab.id} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  onClick={() => handleTab(tab.id)}
-                  aria-label={isAr ? 'فتح المحادثة' : 'Open chat'}
-                  className="bn-fab"
-                  style={{
-                    width: 52, height: 52, borderRadius: 18,
-                    background: active
-                      ? 'linear-gradient(135deg,#741622 0%,#8F1D2C 100%)'
-                      : 'linear-gradient(135deg,#8F1D2C 0%,#741622 100%)',
-                    border: 'none', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 4px 16px rgba(143,29,44,0.45), 0 1px 4px rgba(0,0,0,0.12)',
-                    transform: 'translateY(-10px)',
-                    transition: 'transform 0.18s cubic-bezier(0.34,1.6,0.64,1), box-shadow 0.18s',
-                  }}
-                >
-                  <ChatFABIcon />
-                </button>
-                <span style={{
-                  fontSize: 10, fontWeight: active ? 700 : 500,
-                  color: active ? '#8F1D2C' : '#B0A498',
-                  marginTop: -2,
-                }}>
-                  {isAr ? tab.label_ar : tab.label_en}
-                </span>
-              </div>
-            )
-          }
-
           return (
             <button
               key={tab.id}
               type="button"
               onClick={() => handleTab(tab.id)}
               aria-current={active ? 'page' : undefined}
-              className="bn-tab-btn"
+              aria-label={isAr ? tab.label_ar : tab.label_en}
+              className="bn-tab-btn tap-hit-8"
               style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center',
-                gap: 3, padding: '7px 4px 5px',
+                gap: 3, padding: '8px 4px',
                 border: 'none', background: 'transparent', cursor: 'pointer',
-                color: active ? '#8F1D2C' : '#A89D92',
+                color: active ? 'var(--brand)' : 'var(--text-3)',
                 fontFamily: 'inherit',
-                position: 'relative', borderRadius: 8,
               }}
             >
-              {active && (
-                <span style={{
-                  position: 'absolute', top: 0, left: '22%', right: '22%',
-                  height: 3, borderRadius: '0 0 3px 3px',
-                  background: 'linear-gradient(90deg,#741622,#8F1D2C)',
-                }} />
-              )}
-              <span style={{
-                color: active ? '#8F1D2C' : '#B0A498',
-                transform: active ? 'scale(1.08)' : 'scale(1)',
-                transition: 'color 0.18s, transform 0.2s cubic-bezier(0.34,1.6,0.64,1)',
-              }}>
-                {active ? <tab.FillIcon /> : <tab.Icon />}
-              </span>
-              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>
+              {active ? <tab.FillIcon /> : <tab.Icon />}
+              <span style={{ fontSize: 12, fontWeight: active ? 600 : 500 }}>
                 {isAr ? tab.label_ar : tab.label_en}
               </span>
             </button>
