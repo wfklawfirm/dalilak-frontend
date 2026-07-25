@@ -13,6 +13,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 
 interface EmergencyEntry {
@@ -64,6 +65,10 @@ export default function FloatingHelpButton({ onAsk }: Props) {
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [open])
+
+  // batch #361: trap Tab focus inside the FAB+panel while open (panelRef
+  // already wraps both the toggle button and the panel — see below)
+  useFocusTrap(panelRef, open)
 
   if (!mounted) return null
 

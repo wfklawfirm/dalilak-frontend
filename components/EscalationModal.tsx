@@ -8,6 +8,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { authHeaders } from '@/lib/auth'
 import { Analytics } from '@/lib/analytics'
 
@@ -60,6 +61,9 @@ const CONTACT_PREFS: { id: ContactPref; ar: string; en: string }[] = [
 
 export default function EscalationModal({ question = '', isAr = true, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null)
+  // batch #361: trap Tab focus — mounted only while open by the parent
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
   useEffect(() => { closeRef.current?.focus() }, [])
 
   const [requestType, setRequestType] = useState<RequestType>('consultation')
@@ -105,7 +109,7 @@ export default function EscalationModal({ question = '', isAr = true, onClose }:
     <style>{`@keyframes emFadeIn { from { opacity:0; } to { opacity:1; } } @keyframes emSlideUp { from { transform:translateY(100%); opacity:0.6; } to { transform:translateY(0); opacity:1; } } @keyframes emItem { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } } @keyframes emSpin { to { transform: rotate(360deg); } }`}</style>
     <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-end', background: 'rgba(0,0,0,0.45)', animation: 'emFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }} onClick={e => { if (e.target === e.currentTarget) onClose() }}
       onKeyDown={e => { if (e.key === 'Escape') onClose() }}>
-      <div role="dialog" aria-modal="true" aria-label={isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'} onKeyDown={e => { if (e.key === 'Escape') onClose() }} style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', fontFamily: "'Cairo','Inter',sans-serif", boxShadow: '0 -8px 40px rgba(0,0,0,0.18)', animation: 'emSlideUp 0.32s cubic-bezier(0.22,1,0.36,1) both' }} dir={isAr ? 'rtl' : 'ltr'}>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={isAr ? 'تواصل مع متخصص' : 'Connect with an Expert'} onKeyDown={e => { if (e.key === 'Escape') onClose() }} style={{ width: '100%', maxWidth: 520, margin: '0 auto', background: '#fff', borderRadius: '20px 20px 0 0', fontFamily: "'Cairo','Inter',sans-serif", boxShadow: '0 -8px 40px rgba(0,0,0,0.18)', animation: 'emSlideUp 0.32s cubic-bezier(0.22,1,0.36,1) both' }} dir={isAr ? 'rtl' : 'ltr'}>
         {/* Drag handle */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5CEC4' }} />

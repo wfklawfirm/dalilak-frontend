@@ -5,6 +5,7 @@
 // Questions: Who are you? / What type? / What do you need?
 
 import React, { useState, useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 export type StarterUserType = 'citizen' | 'expat' | 'lawyer' | 'company' | 'service_office'
 export type StarterTxType = 'property' | 'contract' | 'civil' | 'business' | 'form_doc' | 'unsure'
@@ -57,6 +58,10 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
 
   const dir = isAr ? 'rtl' : 'ltr'
   const closeRef = useRef<HTMLButtonElement>(null)
+  // batch #361: trap Tab focus — only ever mounted while open (see the
+  // `{showTransactionStarter && <TransactionStarter/>}` gate in app/page.tsx)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   useEffect(() => { closeRef.current?.focus() }, [])
   useEffect(() => {
@@ -94,7 +99,7 @@ export default function TransactionStarter({ isAr, onClose, onResult }: Transact
       />
 
       {/* Modal */}
-      <div role="dialog" aria-modal="true" aria-label={isAr ? 'بدء معاملة' : 'Start a Transaction'} style={{
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={isAr ? 'بدء معاملة' : 'Start a Transaction'} style={{
         position: 'fixed',
         left: '50%', top: '50%',
         transform: 'translate(-50%, -50%)',

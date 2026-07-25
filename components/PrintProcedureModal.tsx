@@ -7,7 +7,8 @@
  * Bilingual (AR/EN).
  */
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 import type { EnrichedProcedure } from '@/lib/enrichedProcedures'
 
@@ -18,6 +19,9 @@ interface Props {
 
 export default function PrintProcedureModal({ procedure: proc, onClose }: Props) {
   const { isAr } = useLanguage()
+  // batch #361: trap Tab focus — mounted only while open by the parent
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   // Close on Escape
   useEffect(() => {
@@ -83,6 +87,7 @@ export default function PrintProcedureModal({ procedure: proc, onClose }: Props)
         onClick={e => { if (e.target === e.currentTarget) onClose() }}
       >
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={isAr ? `طباعة: ${title}` : `Print: ${title}`}

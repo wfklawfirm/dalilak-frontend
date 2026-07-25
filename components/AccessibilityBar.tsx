@@ -19,7 +19,8 @@
  *   .dalilak-large-text    { font-size: 120%; }
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 
 const LS_HC = 'dalilak_a11y_hc'
@@ -59,6 +60,10 @@ export default function AccessibilityBar() {
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [open])
+
+  // batch #361: trap Tab focus inside the options panel while open
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, open)
 
   function toggleHc() {
     const next = !hc
@@ -165,6 +170,7 @@ export default function AccessibilityBar() {
         {/* Panel */}
         {open && (
           <div
+            ref={dialogRef}
             role="dialog"
             aria-label={isAr ? 'إعدادات إمكانية الوصول' : 'Accessibility settings'}
             style={{

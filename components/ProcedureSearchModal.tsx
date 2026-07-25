@@ -8,6 +8,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 import { ENRICHED_PROCEDURES, type EnrichedProcedure } from '@/lib/enrichedProcedures'
 import { normalizeForSearch } from '@/lib/arabicNormalize'
@@ -53,6 +54,9 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
   const [recent, setRecent] = useState<string[]>([])
   const [activeIdx, setActiveIdx] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
+  // batch #361: trap Tab focus — mounted only while open by the parent
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   useEffect(() => {
     inputRef.current?.focus()
@@ -109,6 +113,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
+        ref={dialogRef}
         dir={isAr ? 'rtl' : 'ltr'}
         role="dialog"
         aria-modal="true"

@@ -15,7 +15,8 @@
  * 8. المصادر والثقة (EvidencePanel)
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import type {
   UniversalDocumentAnalysis,
   ExtractedFact,
@@ -517,6 +518,10 @@ export function GenerateDraftModal({
     return () => document.removeEventListener('keydown', handleKey)
   }, [onClose])
 
+  // batch #361: trap Tab focus — mounted only while open by the parent
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
+
   const template = getDraftTemplate(draft.templateSlug)
 
   // Pre-fill from extracted facts
@@ -585,6 +590,7 @@ ${template?.requiresLawyerReview ? '- End with: "Lawyer review is recommended be
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
     }} onClick={e => e.target === e.currentTarget && onClose()}>
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={isAr ? draft.titleAr : draft.titleEn}

@@ -17,7 +17,8 @@
  *   totalResults — number of matching procedures (for showing "X results")
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export interface ProcFilters {
@@ -90,6 +91,9 @@ function ChipGroup<T extends string>({ labelAr, labelEn, options, value, onChang
 export default function ProcedureFilterDrawer({ filters, onChange, onClose, totalResults }: Props) {
   const { isAr } = useLanguage()
   const [local, setLocal] = useState<ProcFilters>(filters)
+  // batch #361: trap Tab focus — mounted only while open by the parent
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   // Escape closes the drawer — the parent only mounts this component while
   // open, so a plain document-level listener for the component's lifetime
@@ -127,6 +131,7 @@ export default function ProcedureFilterDrawer({ filters, onChange, onClose, tota
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={isAr ? 'خيارات الفلترة المتقدمة' : 'Advanced filter options'}
