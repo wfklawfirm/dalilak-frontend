@@ -6,6 +6,7 @@ import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
+import AskDalilakButton from '@/components/AskDalilakButton'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -246,21 +247,10 @@ export default function AuthoritiesPage() {
             </div>
             <p style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-1)', margin: '0 0 6px' }}>{isAr ? 'لا توجد جهات مطابقة' : 'No matching authorities'}</p>
             <p style={{ fontSize: 12, color: 'var(--text-3)', margin: '0 0 16px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
-            <button type="button"
-              className="btn-primary"
+            <AskDalilakButton
+              isAr={isAr}
               onClick={() => router.push(`/?q=${encodeURIComponent(isAr ? `ما هي ${search || typeFilter !== 'all' ? `جهات من نوع ${typeFilter}` : 'الجهات الرسمية'} في لبنان؟` : `What are the ${search || typeFilter !== 'all' ? `${typeFilter} type` : 'official'} authorities in Lebanon?`)}`)}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '9px 22px', borderRadius: 12,
-                background: 'var(--brand)',
-                border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}>
-              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-              </svg>
-              {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-            </button>
+            />
           </div>
         )}
 

@@ -4,6 +4,7 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import MobileHeader from '@/components/MobileHeader'
 import StatsRow from '@/components/StatsRow'
+import AskDalilakButton from '@/components/AskDalilakButton'
 import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
@@ -419,17 +420,7 @@ export default function ProceduresPage() {
             <p style={{ fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
               {isAr ? 'لم نجد إجراءات مطابقة' : 'No matching procedures'}
             </p>
-            <button type="button" onClick={() => handleAsk(search)}
-              className="btn-primary"
-              style={{
-              padding: '10px 22px', borderRadius: 12,
-              background: 'var(--brand)',
-              border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-            }}>
-              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-              {isAr ? (search ? `اسأل دليلك عن: ${search}` : 'اسأل دليلك') : (search ? `Ask about: ${search}` : 'Ask Dalilak')}
-            </button>
+            <AskDalilakButton isAr={isAr} onClick={() => handleAsk(search)} searchTerm={search} />
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

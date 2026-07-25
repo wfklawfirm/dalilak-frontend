@@ -5,6 +5,7 @@ import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
+import AskDalilakButton from '@/components/AskDalilakButton'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
@@ -641,23 +642,7 @@ export default function ServicesPage() {
               {isAr ? 'جرّب مصطلحاً مختلفاً أو اسأل دليلك مباشرةً' : 'Try a different term or ask Dalilak directly'}
             </p>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => router.push(`/?q=${encodeURIComponent(search)}`)}
-                onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
-                onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
-                style={{
-                  padding: '10px 20px', background: 'var(--brand)',
-                  color: '#fff', border: 'none', borderRadius: 12,
-                  fontFamily: 'inherit', fontSize: 13, fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'opacity 0.12s, transform 0.12s',
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                }}
-              >
-                <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-              </button>
+              <AskDalilakButton isAr={isAr} onClick={() => router.push(`/?q=${encodeURIComponent(search)}`)} />
               <button
                 type="button"
                 onClick={() => { setSearch(''); setSelectedCat(null) }}

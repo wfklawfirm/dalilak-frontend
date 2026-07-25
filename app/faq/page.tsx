@@ -6,6 +6,7 @@ import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
+import AskDalilakButton from '@/components/AskDalilakButton'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -184,18 +185,7 @@ export default function FAQPage() {
             </div>
             <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 8px', color: 'var(--text-1)' }}>{isAr ? 'لم يُعثر على نتائج' : 'No results found'}</p>
             <p style={{ fontSize: 12, margin: '0 0 14px' }}>{isAr ? 'جرّب كلمة مختلفة أو اسأل دليلك مباشرة' : 'Try a different word or ask Dalilak directly'}</p>
-            <button type="button" onClick={() => askAI(search || (isAr ? 'دليلك' : 'Dalilak'))}
-              className="btn-primary"
-              style={{
-              padding: '10px 22px', borderRadius: 12,
-              background: 'var(--brand)',
-              border: 'none', color: '#fff', fontSize: 12.5, fontWeight: 700,
-              cursor: 'pointer', fontFamily: 'inherit',
-              display: 'inline-flex', alignItems: 'center', gap: 7,
-            }}>
-              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-              {isAr ? (search ? `اسأل دليلك عن: ${search}` : 'اسأل دليلك') : (search ? `Ask about: ${search}` : 'Ask Dalilak')}
-            </button>
+            <AskDalilakButton isAr={isAr} onClick={() => askAI(search || (isAr ? 'دليلك' : 'Dalilak'))} searchTerm={search} />
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
