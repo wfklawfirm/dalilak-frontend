@@ -111,6 +111,7 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
               aria-label={isAr ? tab.label_ar : tab.label_en}
               className="bn-tab-btn tap-hit-8"
               style={{
+                position: 'relative',
                 flex: 1, display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center',
                 gap: 3, padding: '8px 4px',

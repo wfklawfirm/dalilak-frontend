@@ -315,6 +315,7 @@ export default function ProceduresPage() {
                   onClick={() => { setMinistryFilter(chip.slug); setExpandedProc(null) }}
                   aria-pressed={active}
                   style={{
+                    position: 'relative',
                     display: 'inline-flex', alignItems: 'center', gap: 5,
                     padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 12, fontWeight: active ? 600 : 500,
@@ -350,7 +351,7 @@ export default function ProceduresPage() {
             style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 14, color: 'var(--text-1)', fontFamily: 'inherit' }}
           />
           {search && (
-            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} className="tap-hit-8" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', alignItems: 'center' }}>
+            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} className="tap-hit-8" style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', alignItems: 'center' }}>
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           )}
