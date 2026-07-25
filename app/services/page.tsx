@@ -14,10 +14,10 @@ import ProcedureFlowchartComponent from '@/components/ProcedureFlowchart'
 import SaveToMyFilesButton from '@/components/SaveToMyFilesButton'
 import ReadinessChecker from '@/components/ReadinessChecker'
 import SaveButton from '@/components/SaveButton'
-import { trackView } from '@/lib/savedItems'
 import type { ServiceItem } from '@/lib/allServices'
 import ServiceMapPlaceholder from '@/components/ServiceMapPlaceholder'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 // ─── Service Detail Sheet ────────────────────────────────────────────────────
 
@@ -29,6 +29,13 @@ function ServiceSheet({ service, onClose, onAsk }: {
   const { isAr } = useLanguage()
   const closeRef = useRef<HTMLButtonElement>(null)
   useEffect(() => { closeRef.current?.focus() }, [])
+  // batch #467: this dialog was missing from the batch #360/361 app-wide
+  // Tab-focus-trap sweep for the same reason as JourneySheet (#465) and the
+  // two admin modals (#466) — it's an inline dialog in a route file rather
+  // than its own components/*.tsx file, so the component-name-based sweep
+  // skipped it. grep -c useFocusTrap app/services/page.tsx was 0 before this.
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
   const displayName = isAr ? service.name_ar : (service.name_en || service.name_ar)
   const displayAuthority = isAr ? service.authority_ar : (service.authority_en || service.authority_ar)
   const displayCategory = isAr ? service.category : (service.category_en || service.category)
@@ -62,6 +69,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
       onKeyDown={e => { if (e.key === 'Escape') onClose() }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={displayName}
@@ -694,17 +702,6 @@ export default function ServicesPage() {
                 aria-label={isAr ? service.name_ar : (service.name_en || service.name_ar)}
                 onClick={() => {
                   setSelectedService(service)
-                  trackView({
-                    id: `svc-${service.id}`,
-                    type: 'service',
-                    icon: service.icon || '🏛️',
-                    titleAr: service.name_ar,
-                    titleEn: service.name_en || service.name_ar,
-                    subtitleAr: service.authority_ar || service.category || '',
-                    subtitleEn: service.authority_en || service.category_en || '',
-                    aiPrompt: service.chatPrompt_ar || `أخبرني عن خدمة: ${service.name_ar}`,
-                    href: '/services',
-                  })
                 }}
                 className="svc-card"
                 style={{

@@ -32,6 +32,19 @@ const NAV_LINKS = [
   { href: '/faq',         ar: 'أسئلة',     en: 'FAQ'         },
 ]
 
+// Arabic number-agreement for the trial-days badge — same rule already
+// applied in ProcedureFeeHistory.tsx / ProcedureDocumentStatus.tsx: 1 -> مفرد,
+// 2 -> مثنى, 3-10 -> جمع تكسير, 11+ -> تمييز مفرد منصوب. days_left counts
+// down over the whole trial (no upper bound filter here), so every trial
+// user passes through the 2-10 range at some point — exactly when the
+// amber/red urgency styling makes the badge most visible.
+function arTrialDays(n: number): string {
+  if (n === 1) return 'يوم واحد'
+  if (n === 2) return 'يومان'
+  if (n >= 3 && n <= 10) return `${n} أيام`
+  return `${n} يوماً`
+}
+
 export default function TopNav({
   currentUser, messages = [], onLangToggle: onLangToggleProp,
   onNewChat, onMenuOpen, onStartGuide, showGuideBtn,
@@ -238,7 +251,7 @@ export default function TopNav({
                   <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <circle cx="12" cy="12" r="9"/><path strokeLinecap="round" d="M12 7v5l3 3"/>
                   </svg>
-                  {currentUser.days_left}{isAr ? ' يوم' : 'd'}
+                  {isAr ? arTrialDays(currentUser.days_left) : `${currentUser.days_left}d`}
                 </span>
               </div>
             )}

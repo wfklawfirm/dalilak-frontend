@@ -38,11 +38,24 @@ function saveExpiry(code: string, i: number, val: string) {
   } catch {}
 }
 
+// Arabic number-agreement for "days left" — same rule already applied in
+// ProcedureFeeHistory.tsx (batch #476) and NotificationBell.tsx: 1 -> مفرد,
+// 2 -> مثنى, 3-10 -> جمع تكسير, 11+ -> تمييز مفرد منصوب. A bare `${days} يوم`
+// (used previously) was only correct by coincidence when days === 1; every
+// other value in the 0-30 range was grammatically wrong (e.g. "2 يوم"
+// instead of "يومان", "5 يوم" instead of "5 أيام").
+function arDaysLeft(n: number): string {
+  if (n === 1) return 'يوم واحد'
+  if (n === 2) return 'يومان'
+  if (n >= 3 && n <= 10) return `${n} أيام`
+  return `${n} يوماً`
+}
+
 function getStatus(dateStr: string): { color: string; bg: string; label: string; labelEn: string } | null {
   if (!dateStr) return null
   const days = Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000)
   if (days < 0)   return { color: '#991B1B', bg: '#FEF2F2', label: 'منتهية', labelEn: 'Expired' }
-  if (days <= 30) return { color: '#92400E', bg: '#FFFBEB', label: `${days} يوم`, labelEn: `${days}d left` }
+  if (days <= 30) return { color: '#92400E', bg: '#FFFBEB', label: arDaysLeft(days), labelEn: `${days}d left` }
   return { color: '#065F46', bg: '#ECFDF5', label: 'صالحة', labelEn: 'Valid' }
 }
 

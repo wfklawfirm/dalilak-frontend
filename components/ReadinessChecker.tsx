@@ -17,6 +17,21 @@ interface ReadinessCheckerProps {
   onAsk?: (question: string) => void
   /** Compact mode — smaller, no title, used inside a parent card */
   compact?: boolean
+  /**
+   * Optional: when provided, per-document state is stored/read as
+   * `{docKeyPrefix}_{index}` -> '1'/'0' instead of the default single
+   * JSON-array key (`dalilak_ready_{storageKey}`). Use this when this
+   * checker is rendered alongside other components that already track
+   * the SAME document list under that shared per-document schema (e.g.
+   * `dalilak_doc_{code}_{index}`, written/read by
+   * ProcedureDocumentChecklist.tsx / ProcedureDocReadinessBar.tsx and 3
+   * other live components) — otherwise the two checklists silently never
+   * see each other's checks despite showing the same documents in the
+   * same section. Does not affect the other call sites of this component
+   * (app/services/page.tsx, PROCEDURES_DATA guided view), which keep the
+   * original single-key format.
+   */
+  docKeyPrefix?: string
 }
 
 export default function ReadinessChecker({
@@ -27,6 +42,7 @@ export default function ReadinessChecker({
   titleEn,
   onAsk,
   compact = false,
+  docKeyPrefix,
 }: ReadinessCheckerProps) {
   const { isAr } = useLanguage()
   const lsKey = `dalilak_ready_${storageKey}`
@@ -35,6 +51,13 @@ export default function ReadinessChecker({
   const [checked, setChecked] = useState<Set<number>>(() => {
     if (typeof window === 'undefined') return new Set()
     try {
+      if (docKeyPrefix) {
+        const s = new Set<number>()
+        documentsAr.forEach((_, i) => {
+          if (localStorage.getItem(`${docKeyPrefix}_${i}`) === '1') s.add(i)
+        })
+        return s
+      }
       const saved = localStorage.getItem(lsKey)
       return saved ? new Set<number>(JSON.parse(saved)) : new Set()
     } catch {
@@ -47,9 +70,16 @@ export default function ReadinessChecker({
   // Persist to localStorage on change
   useEffect(() => {
     try {
-      localStorage.setItem(lsKey, JSON.stringify(Array.from(checked)))
+      if (docKeyPrefix) {
+        documentsAr.forEach((_, i) => {
+          localStorage.setItem(`${docKeyPrefix}_${i}`, checked.has(i) ? '1' : '0')
+        })
+        window.dispatchEvent(new Event('dalilak_saved_change'))
+      } else {
+        localStorage.setItem(lsKey, JSON.stringify(Array.from(checked)))
+      }
     } catch { /* ignore storage errors */ }
-  }, [checked, lsKey])
+  }, [checked, lsKey, docKeyPrefix, documentsAr])
 
   const toggle = useCallback((i: number) => {
     setChecked(prev => {
@@ -61,7 +91,9 @@ export default function ReadinessChecker({
 
   const reset = () => {
     setChecked(new Set())
-    try { localStorage.removeItem(lsKey) } catch { /* ignore */ }
+    if (!docKeyPrefix) {
+      try { localStorage.removeItem(lsKey) } catch { /* ignore */ }
+    }
   }
 
   const total = documentsAr.length

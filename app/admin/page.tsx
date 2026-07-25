@@ -11,6 +11,7 @@ import {
 import { useLanguage } from '@/lib/LanguageContext'
 import SectionHeader from '@/components/SectionHeader'
 import ModalCloseButton from '@/components/ModalCloseButton'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface UserRow {
   username: string; email: string; full_name: string; phone: string
@@ -50,6 +51,18 @@ const PLAN_LABELS_EN: Record<string, string> = {
   paid: 'Paid', trial: 'Trial', admin: 'Admin', suspended: 'Suspended', expired: 'Expired'
 }
 
+// Arabic number-agreement for the "days left" column — same rule already
+// applied in components/TopNav.tsx (batch #479) for this exact same
+// days_left field: 1 -> مفرد, 2 -> مثنى, 3-10 -> جمع تكسير, 11+ -> تمييز
+// مفرد منصوب. A bare `${days_left} يوم` (used previously) is wrong for
+// every count except 1.
+function arDaysLeftAdmin(n: number): string {
+  if (n === 1) return 'يوم واحد'
+  if (n === 2) return 'يومان'
+  if (n >= 3 && n <= 10) return `${n} أيام`
+  return `${n} يوماً`
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 const INP: React.CSSProperties = {
@@ -79,6 +92,12 @@ export default function AdminPage() {
 
   const [newUser, setNewUser] = useState({ username: '', email: '', password: '', full_name: '', phone: '', plan: 'trial' })
   const [editUser, setEditUser] = useState<UserRow | null>(null)
+  // batch #466: Edit-user dialog is role="dialog" but was missing from the
+  // batch #360/361 app-wide Tab-focus-trap sweep (that sweep matched by
+  // component name; this dialog is inline JSX inside this page, same root
+  // cause as the JourneySheet miss fixed in #465).
+  const editDialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(editDialogRef, !!editUser)
   const [editPlan, setEditPlan] = useState('')
   const [editPaidUntil, setEditPaidUntil] = useState('')
   const [deactivating, setDeactivating] = useState<string | null>(null)
@@ -376,7 +395,7 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td style={{ padding: '10px 14px', color: '#69645C', fontSize: 13 }}>
-                          {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? (isAr ? `${u.days_left} يوم` : `${u.days_left} days`) : '—'}
+                          {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? (isAr ? arDaysLeftAdmin(u.days_left) : `${u.days_left} days`) : '—'}
                         </td>
                         <td style={{ padding: '10px 14px', color: '#918B82', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
                         <td style={{ padding: '10px 14px' }}>
@@ -692,7 +711,7 @@ export default function AdminPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
           onClick={e => { if (e.target === e.currentTarget) setEditUser(null) }}
           onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }}>
-          <div role="dialog" aria-modal="true" aria-label={`تعديل: ${editUser.username}`} onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
+          <div ref={editDialogRef} role="dialog" aria-modal="true" aria-label={`تعديل: ${editUser.username}`} onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>{isAr ? 'تعديل' : 'Edit'}: {editUser.username}</h2>
               <ModalCloseButton onClick={() => setEditUser(null)} isAr={isAr} />

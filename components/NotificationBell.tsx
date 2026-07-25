@@ -5,6 +5,8 @@
  *  • Documents expiring within 30 days (from dalilak_doc_expiry_{code}_{i},
  *    written by ProcedureDocumentStatus.tsx)
  *  • Appointments within 3 days (from dalilak_appointments)
+ *  • Due/overdue reminders (from dalilak_reminders, written by
+ *    ProcedureRemindMeLater.tsx / ProcedureReminderBell.tsx — see below)
  *
  * Reads localStorage directly so it works without prop drilling.
  * Listens to `dalilak_saved_change` + storage events to stay in sync.
@@ -13,6 +15,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
+import { getReminders } from '@/components/SmartReminder'
 
 // ── Types mirroring AppointmentTracker ───────────────────────────────────────
 
@@ -34,6 +37,15 @@ const APPT_LS_KEY = 'dalilak_appointments'
 const WARN_DAYS   = 30
 const APPT_DAYS   = 3
 
+// Reminders written to dalilak_reminders by ProcedureRemindMeLater.tsx /
+// ProcedureReminderBell.tsx (both live, on /procedures) share this store
+// with SmartReminder.tsx's exported getReminders(). SmartReminder's own
+// default-exported component (the only place that used to render "due
+// today / overdue" banners for this data) is not mounted anywhere live —
+// it was intentionally kept as dead UI when the homepage widget stack was
+// decluttered (see UX_AUDIT.md) — so without reading it here, reminders
+// set via either live writer were saved but never surfaced again.
+
 function daysUntil(dateStr: string): number {
   const now = new Date(); now.setHours(0, 0, 0, 0)
   const d = new Date(dateStr + 'T00:00:00')
@@ -54,7 +66,7 @@ interface NotiItem {
   labelAr: string
   labelEn: string
   days: number
-  type: 'doc' | 'appt'
+  type: 'doc' | 'appt' | 'reminder'
   promptAr: string
   promptEn: string
 }
@@ -107,6 +119,21 @@ function loadItems(): NotiItem[] {
         }
       })
     }
+  } catch { /* ignore */ }
+
+  // Reminders — same due/overdue definition SmartReminder.tsx uses
+  // (date <= today, not dismissed): date <= today.
+  try {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
+    getReminders().forEach(r => {
+      if (r.dismissed || r.date > today) return
+      const days = daysUntil(r.date)
+      items.push({
+        id: `rem_${r.id}`, icon: '🔔', labelAr: r.title, labelEn: r.title, days, type: 'reminder',
+        promptAr: `ذكّرتني بـ: ${r.title}. ماذا يجب أن أفعل الآن؟`,
+        promptEn: `You reminded me about: ${r.title}. What should I do now?`,
+      })
+    })
   } catch { /* ignore */ }
 
   return items.sort((a, b) => a.days - b.days)
@@ -262,7 +289,11 @@ export default function NotificationBell({ onAsk }: Props) {
                     <div style={{ fontSize: 11, color, fontWeight: 600, marginTop: 2 }}>
                       {item.type === 'doc'
                         ? (isAr ? `تنتهي الصلاحية ${dayLabel}` : `Expires ${dayLabel}`)
-                        : (isAr ? `موعد ${dayLabel}` : `Appointment ${dayLabel}`)}
+                        : item.type === 'appt'
+                        ? (isAr ? `موعد ${dayLabel}` : `Appointment ${dayLabel}`)
+                        : (item.days < 0
+                          ? (isAr ? `تذكير متأخر — ${arDays(-item.days)}` : `Overdue reminder — ${-item.days} day(s)`)
+                          : (isAr ? 'تذكير اليوم' : 'Reminder — today'))}
                     </div>
                     {onAsk && (
                       <div style={{ fontSize: 10.5, color: 'var(--brand)', marginTop: 3, fontWeight: 600 }}>

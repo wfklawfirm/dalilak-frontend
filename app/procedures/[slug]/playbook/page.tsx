@@ -19,8 +19,18 @@ export default function PlaybookPage() {
   const slug = typeof params?.slug === 'string' ? params.slug : ''
   const { isAr, toggleLang } = useLanguage()
 
-  // Find procedure - EnrichedProcedure uses 'code' field as identifier
-  const proc = ENRICHED_PROCEDURES.find(p => p.code === slug || p.code.includes(slug.replace(/-/g, '')))
+  // Find procedure - EnrichedProcedure uses 'code' field as identifier.
+  // batch #471: `code` values are ministry-prefixed and still hyphenated
+  // (e.g. 'interior-birth-certificate'), while route `slug`s from
+  // lib/procedures.ts are plain hyphenated words (e.g. 'birth-certificate').
+  // The old check stripped hyphens ONLY from `slug` before doing
+  // `.includes()` against a still-hyphenated `code`, so any multi-word
+  // slug could never match (the hyphen between words in `code` broke the
+  // contiguous-substring check) — only the one single-word slug
+  // ('passport') ever worked. Stripping hyphens from BOTH sides before
+  // comparing fixes matching for every ministry-prefixed code.
+  const normSlug = (s: string) => s.replace(/-/g, '')
+  const proc = ENRICHED_PROCEDURES.find(p => p.code === slug || normSlug(p.code).includes(normSlug(slug)))
 
   // مصدر بيانات توليد الخارطة بالذكاء الاصطناعي — يُستخدم فقط إذا لم توجد خارطة مُوثّقة يدوياً لهذا الـ slug
   const flowchartSource = useMemo(() => ({

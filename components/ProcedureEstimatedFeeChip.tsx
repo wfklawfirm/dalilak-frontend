@@ -31,8 +31,23 @@ interface ParseResult {
   maxAmount: number | null
 }
 
+// Real fee strings (lib/enrichedProcedures.ts) often cite the legal basis for
+// a fee inline — decree/law/circular numbers ("المرسوم 7847/1961", "بقرار
+// 1879/1 تاريخ 18/6/1993") — which are NOT fee amounts. Without stripping
+// them first, the generic "grab every number, take the max" pass below picks
+// up the decree number or the citation's date/year as if it were the fee
+// itself (e.g. mnb10-01's real fee is $400/year, but the chip showed
+// "up to 1,993 LBP" — lifted straight from the citation date "18/6/1993",
+// and imu11-01's chip showed "up to 7,847 LBP" — lifted from decree
+// "7847/1961" — when the text actually states no fixed amount at all).
+function stripLegalCitations(f: string): string {
+  return f
+    .replace(/(?:مرسوم|قرار|قانون|تعميم)\s*(?:رقم\s*)?\d+(?:\s*\/\s*\d+)*/g, ' ')
+    .replace(/\b\d{1,2}\s*\/\s*\d{1,2}\s*\/\s*\d{2,4}\b/g, ' ')
+}
+
 function parseFeesAr(fees: string): ParseResult {
-  const f = fees.toLowerCase()
+  const f = stripLegalCitations(fees.toLowerCase())
 
   if (f.includes('مجاني') || f.includes('مجانا') || f.includes('بدون رسوم') || f.includes('دون رسوم')) {
     return { cat: 'free', maxAmount: null }

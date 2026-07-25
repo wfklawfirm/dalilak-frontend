@@ -14,7 +14,6 @@ import { useLanguage } from '@/lib/LanguageContext'
 import ReadinessChecker from '@/components/ReadinessChecker'
 import SaveButton from '@/components/SaveButton'
 import CostEstimator from '@/components/CostEstimator'
-import { trackView } from '@/lib/savedItems'
 import ProcedureTimeline from '@/components/ProcedureTimeline'
 import ProcedureCopyableSteps from '@/components/ProcedureCopyableSteps'
 import ProcedureCopySummaryLine from '@/components/ProcedureCopySummaryLine'
@@ -608,17 +607,6 @@ export default function ProceduresPage() {
                   onClick={() => {
                     const next = expandedProc === proc.code ? null : proc.code
                     setExpandedProc(next)
-                    if (next) trackView({
-                      id: `enr-${proc.code}`,
-                      type: 'enriched',
-                      icon: proc.icon || '📄',
-                      titleAr: proc.title,
-                      titleEn: proc.title_en || proc.title,
-                      subtitleAr: proc.ministry,
-                      subtitleEn: proc.ministry_en || proc.ministry,
-                      aiPrompt: `أخبرني بكل التفاصيل عن: ${proc.title} — الإجراءات والوثائق والرسوم`,
-                      href: '/procedures',
-                    })
                   }}
                   aria-expanded={expandedProc === proc.code}
                   style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
@@ -743,6 +731,7 @@ export default function ProceduresPage() {
                       <ProcedureSectionGroup icon="📁" titleAr="المستندات المطلوبة" titleEn="Required documents" isAr={isAr} defaultOpen>
                         <ReadinessChecker
                           storageKey={`enr-${proc.code}`}
+                          docKeyPrefix={`dalilak_doc_${proc.code}`}
                           documentsAr={proc.requiredDocuments}
                           documentsEn={proc.requiredDocuments_en}
                           titleAr={proc.title}

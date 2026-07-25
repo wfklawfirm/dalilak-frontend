@@ -6,6 +6,11 @@
  * Each step (from proc.steps: string[]) is a checkable row.
  * Checked state persisted in LS: dalilak_step_check_{code}_{index} = '1'
  *
+ * This is the SAME key schema written/read by ProcedureStepHighlight.tsx,
+ * rendered directly above this component for the same steps array — see
+ * that file's comment for the disconnected-checklist bug this schema
+ * alignment fixes (batch #455).
+ *
  * Shows:
  *   - Progress bar (checked / total steps)
  *   - Step rows with checkbox

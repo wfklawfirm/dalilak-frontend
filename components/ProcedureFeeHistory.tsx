@@ -29,6 +29,19 @@ function daysDiff(iso: string): number {
   return Math.floor((Date.now() - then) / 86400000)
 }
 
+// Arabic number-agreement for "days ago" (يوم): 1 -> مفرد, 2 -> مثنى,
+// 3-10 -> جمع تكسير ("N أيام"), 11+ -> تمييز مفرد منصوب ("N يوماً"). A bare
+// `منذ ${days} يوم` (used previously) is grammatically wrong for every count
+// except 1 — e.g. 2 days read as "منذ 2 يوم" instead of "منذ يومين", and
+// 5 days as "منذ 5 يوم" instead of "منذ 5 أيام". Same agreement rule already
+// applied elsewhere in this codebase (components/ProcedureCountdownTimer.tsx).
+function arDaysAgo(n: number): string {
+  if (n === 1) return 'منذ يوم واحد'
+  if (n === 2) return 'منذ يومين'
+  if (n >= 3 && n <= 10) return `منذ ${n} أيام`
+  return `منذ ${n} يوماً`
+}
+
 export default function ProcedureFeeHistory({ code, fees, isAr }: Props) {
   const [mounted, setMounted]     = useState(false)
   const [lastPaid, setLastPaid]   = useState<string | null>(null)
@@ -87,7 +100,7 @@ export default function ProcedureFeeHistory({ code, fees, isAr }: Props) {
           }}>
             {days === 0
               ? (isAr ? 'دفعت اليوم ✓' : 'Paid today ✓')
-              : (isAr ? `منذ ${days} يوم` : `${days} day${days !== 1 ? 's' : ''} ago`)}
+              : (isAr ? arDaysAgo(days as number) : `${days} day${days !== 1 ? 's' : ''} ago`)}
           </div>
           <span style={{ fontSize: 10, color: '#9CA3AF' }}>{lastPaid}</span>
           <button

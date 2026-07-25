@@ -139,13 +139,20 @@ export default function ProcedureDeadlineAlert({ onGoTo }: Props) {
       {items.map(item => {
         const { bg, border, text, icon } = alertColor(item.daysLeft)
         const dateLabel = formatDate(new Date(item.dateStr), lang, { month: 'short', day: 'numeric' })
+        // Only daysLeft values 2-7 ever reach the final branch below (the
+        // scan filters out daysLeft > 7 at scanDeadlines(), and 0/1 are
+        // special-cased above). Of those, "N أيام" (plural) is correct
+        // Arabic for 3-7, but wrong for 2 — Arabic requires the dual form
+        // "يومان متبقيان", not "2 أيام".
         const daysLabel = item.daysLeft < 0
           ? (isAr ? 'تأخر الموعد' : 'Past deadline')
           : item.daysLeft === 0
             ? (isAr ? 'اليوم!' : 'Today!')
             : item.daysLeft === 1
               ? (isAr ? 'غداً!' : 'Tomorrow!')
-              : (isAr ? `${item.daysLeft} أيام متبقية` : `${item.daysLeft} days left`)
+              : item.daysLeft === 2
+                ? (isAr ? 'يومان متبقيان' : '2 days left')
+                : (isAr ? `${item.daysLeft} أيام متبقية` : `${item.daysLeft} days left`)
 
         return (
           <div

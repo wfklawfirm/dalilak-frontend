@@ -58,7 +58,14 @@ function parseProcessingDays(pt: string): number | null {
 
   // Named durations — Arabic (only reached when no explicit number found)
   if (lower.includes('يوم واحد') || lower.includes('يوم عمل واحد')) return 1
-  if (lower.includes('أسبوعين') || lower.includes('اسبوعين'))        return 14
+  // Both dual forms of "week" (أسبوع) mean "two weeks": أسبوعين (accusative/
+  // genitive) and أسبوعان (nominative — e.g. lib/enrichedProcedures.ts's
+  // mnl12-14 "أسبوعان." and the civil-status name-correction record, both
+  // confirmed "Two weeks." via processingTime_en). أسبوعان was missing here,
+  // so it fell through to the plain أسبوع → 7 check below (أسبوع is a
+  // substring of أسبوعان), silently halving the estimate — the exact same
+  // bug class already fixed below for شهرين/شهران.
+  if (lower.includes('أسبوعين') || lower.includes('اسبوعين') || lower.includes('أسبوعان')) return 14
   if (lower.includes('أسبوع') || lower.includes('اسبوع'))             return 7
   // Arabic dual "two months" (شهرين/شهران) both contain the substring شهر,
   // so without this explicit check they'd fall through to the generic

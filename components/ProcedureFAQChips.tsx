@@ -31,6 +31,21 @@ function normalize(s: string): string {
   return s.toLowerCase().replace(/[أإآ]/g, 'ا').replace(/[ةه]/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim()
 }
 
+// Some SERVICE_FAQ records (type:'procedure') deliberately leave `summary`
+// empty and put their real content in steps/requiredDocuments/fees/authority
+// instead (the same shape app/faq/page.tsx already falls back through for
+// its own rendering). Without this fallback, this chip's expanded body
+// silently rendered blank for those records — 14 of 52 live FAQ items,
+// e.g. mun_001 ("رخصة البناء") has summary:'' but 8 real steps that show
+// fine on /faq yet vanished here.
+function previewFor(faq: FAQItem): string {
+  if (faq.summary) return faq.summary
+  if (faq.steps.length > 0) return faq.steps.join(' • ')
+  if (faq.requiredDocuments.length > 0) return faq.requiredDocuments.join(' • ')
+  if (faq.fees && !/^[{[]/.test(faq.fees.trim())) return faq.fees
+  return faq.authority || faq.duration || ''
+}
+
 function scoreFAQ(faq: FAQItem, titleNorm: string, ministryNorm: string): number {
   const t = normalize(faq.title)
   const c = normalize(faq.category)
@@ -99,7 +114,10 @@ export default function ProcedureFAQChips({ ministry, title, isAr, onAsk }: Prop
               {isOpen && (
                 <div style={{ padding: '4px 10px 10px', borderTop: '1px solid #E6E2DC' }}>
                   <p style={{ fontSize: 10.5, color: '#5C534A', lineHeight: 1.55, margin: '6px 0 8px' }}>
-                    {faq.summary.length > 160 ? faq.summary.slice(0, 158) + '…' : faq.summary}
+                    {(() => {
+                      const preview = previewFor(faq)
+                      return preview.length > 160 ? preview.slice(0, 158) + '…' : preview
+                    })()}
                   </p>
                   <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
                     <button

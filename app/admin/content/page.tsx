@@ -1,10 +1,11 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken, isAdmin } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 import ModalCloseButton from '@/components/ModalCloseButton'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -55,6 +56,12 @@ export default function ContentGovernancePage() {
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [selected, setSelected] = useState<ContentItem | null>(null)
   const [showCreate, setShowCreate] = useState(false)
+  // batch #466: Create-content dialog is role="dialog" but was missing from
+  // the batch #360/361 app-wide Tab-focus-trap sweep (inline JSX inside this
+  // page rather than a named component, same root cause as the JourneySheet
+  // miss fixed in #465).
+  const createDialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(createDialogRef, showCreate)
   const [showAudit, setShowAudit] = useState(false)
   const [creating, setCreating] = useState(false)
   const [transitioning, setTransitioning] = useState(false)
@@ -293,11 +300,11 @@ export default function ContentGovernancePage() {
               {/* Transitions */}
               {STATUS_CONFIG[selected.status]?.next.length > 0 && (
                 <div style={{ padding: '16px 20px', borderBottom: '1px solid #E6E2DC' }}>
-                  <h3 style={{ fontSize: 12, fontWeight: 700, color: '#191713', margin: '0 0 10px' }}>تغيير الحالة</h3>
+                  <h3 style={{ fontSize: 12, fontWeight: 700, color: '#191713', margin: '0 0 10px' }}>{isAr ? 'تغيير الحالة' : 'Change status'}</h3>
                   <textarea
                     rows={2}
-                    aria-label="ملاحظة على تغيير الحالة"
-                    placeholder="ملاحظة (اختياري)..."
+                    aria-label={isAr ? 'ملاحظة على تغيير الحالة' : 'Status change note'}
+                    placeholder={isAr ? 'ملاحظة (اختياري)...' : 'Note (optional)...'}
                     value={transitionNote}
                     onChange={e => setTransitionNote(e.target.value)}
                     onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
@@ -391,50 +398,50 @@ export default function ContentGovernancePage() {
         {/* Create modal */}
         {showCreate && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, animation: 'cgModalFade 0.2s cubic-bezier(0.22,1,0.36,1) both' }} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }}>
-            <div role="dialog" aria-modal="true" aria-label={isAr ? 'إنشاء محتوى جديد' : 'Create new content'} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
+            <div ref={createDialogRef} role="dialog" aria-modal="true" aria-label={isAr ? 'إنشاء محتوى جديد' : 'Create new content'} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#191713', margin: 0 }}>{isAr ? 'إنشاء محتوى جديد' : 'Create new content'}</h2>
                 <ModalCloseButton onClick={() => setShowCreate(false)} isAr={isAr} iconSize={12} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div>
-                  <label htmlFor="content-title" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>العنوان</label>
+                  <label htmlFor="content-title" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>{isAr ? 'العنوان' : 'Title'}</label>
                   <input
                     id="content-title"
                     value={newItem.title_ar}
                     onChange={e => setNewItem(p => ({ ...p, title_ar: e.target.value }))}
-                    placeholder="عنوان المحتوى..."
+                    placeholder={isAr ? 'عنوان المحتوى...' : 'Content title...'}
                     onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                     style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#191713', background: '#FAFAF8', boxSizing: 'border-box' as const, transition: 'border-color 0.18s, box-shadow 0.18s' }}
                   />
                 </div>
                 <div>
-                  <label htmlFor="content-type" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>النوع</label>
+                  <label htmlFor="content-type" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>{isAr ? 'النوع' : 'Type'}</label>
                   <select
                     id="content-type"
-                    aria-label="نوع المحتوى"
+                    aria-label={isAr ? 'نوع المحتوى' : 'Content type'}
                     value={newItem.content_type}
                     onChange={e => setNewItem(p => ({ ...p, content_type: e.target.value }))}
                     onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                     style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#191713', background: '#FAFAF8', transition: 'border-color 0.18s, box-shadow 0.18s' }}
                   >
-                    <option value="procedure_update">تحديث إجراء</option>
-                    <option value="faq_answer">إجابة شائعة</option>
-                    <option value="authority_info">معلومات جهة</option>
-                    <option value="form_guide">دليل نموذج</option>
-                    <option value="announcement">إعلان</option>
+                    <option value="procedure_update">{isAr ? 'تحديث إجراء' : 'Procedure update'}</option>
+                    <option value="faq_answer">{isAr ? 'إجابة شائعة' : 'FAQ answer'}</option>
+                    <option value="authority_info">{isAr ? 'معلومات جهة' : 'Authority info'}</option>
+                    <option value="form_guide">{isAr ? 'دليل نموذج' : 'Form guide'}</option>
+                    <option value="announcement">{isAr ? 'إعلان' : 'Announcement'}</option>
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="content-body" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>المحتوى</label>
+                  <label htmlFor="content-body" style={{ fontSize: 12, fontWeight: 700, color: '#191713', display: 'block', marginBottom: 5 }}>{isAr ? 'المحتوى' : 'Content'}</label>
                   <textarea
                     id="content-body"
                     value={newItem.body_ar}
                     onChange={e => setNewItem(p => ({ ...p, body_ar: e.target.value }))}
                     rows={5}
-                    placeholder="اكتب المحتوى هنا..."
+                    placeholder={isAr ? 'اكتب المحتوى هنا...' : 'Write content here...'}
                     onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                     style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', color: '#191713', background: '#FAFAF8', boxSizing: 'border-box' as const, transition: 'border-color 0.18s, box-shadow 0.18s' }}

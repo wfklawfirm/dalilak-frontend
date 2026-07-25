@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { getToken } from '@/lib/auth'
 import BottomNav from '@/components/BottomNav'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import SavedItemsPanel from '@/components/SavedItemsPanel'
+import { getBookmarks, removeBookmark, type BookmarkEntry } from '@/components/ChatMessageActions'
 import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -43,6 +45,25 @@ export default function MyFilesPage() {
   const [notesDraft, setNotesDraft] = useState('')
   const [loadError, setLoadError] = useState(false)
   const detailRef = useRef<HTMLDivElement>(null)
+
+  // ── Bookmarked chat replies (batch #460) ──────────────────────────────────
+  // ChatMessageActions.tsx's "حفظ/Save" button on assistant messages (live,
+  // on the homepage chat) writes to dalilak_bookmarks via addBookmark(), but
+  // had no live display anywhere — the button only flashed a temporary
+  // "Saved" state with no way to ever see or revisit what was saved. Load and
+  // list them here (same page bookmarked procedures/services already live in,
+  // as of batch #459) rather than reviving a separate homepage widget.
+  const [bookmarks, setBookmarks] = useState<BookmarkEntry[]>([])
+  useEffect(() => {
+    const reload = () => setBookmarks(getBookmarks())
+    reload()
+    window.addEventListener('dalilak_bookmarks_change', reload)
+    return () => window.removeEventListener('dalilak_bookmarks_change', reload)
+  }, [])
+  const handleRemoveBookmark = (id: string) => {
+    removeBookmark(id)
+    setBookmarks(getBookmarks())
+  }
 
   // مزامنة مسودة الملاحظات مع الملف المختار — تُحدَّث عند تبديل الملف أو بعد كل حفظ ناجح
   useEffect(() => {
@@ -254,6 +275,69 @@ export default function MyFilesPage() {
             >
               <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
+          </div>
+        )}
+
+        {/* ── Saved items (bookmarks from SaveButton on /procedures + /services) ──
+            batch #459: SaveButton has been live on both pages, writing to
+            localStorage via lib/savedItems.ts, but its only display surface
+            (this panel) was not mounted anywhere reachable — likely lost when
+            the homepage was rebuilt into the v4.0 chat-first design. Mounted
+            here instead of on the homepage since /my-files is already the
+            page dedicated to "your saved stuff"; this component is fully
+            self-contained and renders nothing when there are no saved items,
+            so it has zero effect on users who haven't used SaveButton. */}
+        <SavedItemsPanel />
+
+        {/* ── Saved chat replies (batch #460) — see hook comment above ────── */}
+        {bookmarks.length > 0 && (
+          <div style={{
+            marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC',
+            borderRadius: 14, overflow: 'hidden',
+          }}>
+            <div style={{
+              padding: '10px 14px', background: '#FAFAF8', borderBottom: '1px solid #E6E2DC',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="#8F1D2C" stroke="none"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>
+                {isAr ? 'الردود المحفوظة' : 'Saved Replies'}
+              </span>
+              <span style={{
+                fontSize: 10.5, fontWeight: 700, color: '#8F1D2C',
+                background: '#F8EDEF', padding: '1px 6px', borderRadius: 10,
+              }}>
+                {bookmarks.length}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {bookmarks.map((b, i) => (
+                <div key={b.id} style={{
+                  padding: '10px 14px', display: 'flex', gap: 10, alignItems: 'flex-start',
+                  borderTop: i === 0 ? 'none' : '1px solid #F0EDE8',
+                }}>
+                  <p style={{
+                    flex: 1, margin: 0, fontSize: 12, color: '#191713', lineHeight: 1.6,
+                    display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                  }}>
+                    {b.text}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveBookmark(b.id)}
+                    aria-label={isAr ? 'إزالة من المحفوظات' : 'Remove from saved'}
+                    style={{
+                      flexShrink: 0, width: 26, height: 26, borderRadius: 7,
+                      border: '1px solid #E6E2DC', background: 'transparent',
+                      color: '#918B82', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

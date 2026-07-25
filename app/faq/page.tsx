@@ -290,7 +290,7 @@ export default function FAQPage() {
                       {/* Fees + authority + duration meta strip */}
                       {(item.fees || item.duration || item.authority) && (
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                          {item.fees && item.fees.trim() && !item.fees.startsWith('{') && (
+                          {item.fees && item.fees.trim() && !/^[{[]/.test(item.fees.trim()) && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '5px 10px' }}>
                               <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3"/></svg>
                               <span style={{ fontSize: 10.5, color: '#78350F', fontWeight: 600 }}>{item.fees.length > 50 ? item.fees.slice(0, 50) + '…' : item.fees}</span>

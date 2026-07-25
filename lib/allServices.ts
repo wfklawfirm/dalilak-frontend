@@ -10619,7 +10619,10 @@ export const ALL_SERVICES: ServiceItem[] = [
     phone: '1739 (الخط الساخن لوزارة المالية)',
     website: 'https://www.finance.gov.lb',
     working_hours: 'الاثنين إلى الجمعة: 8:00 صباحاً - 2:00 مساءً',
-    online_available: false,
+    // batch #475: name_ar/description explicitly call this an "electronic
+    // portal" complaint channel — online_available:false contradicted the
+    // record's own text (sibling fin_gen_001/004 are correctly flagged true).
+    online_available: true,
     forms_needed: ['استمارة شكوى إلكترونية - وزارة المالية'],
     important_notes: 'هذه البوابة منفصلة عن قناة الشكاوى الخاصة بالجمارك.',
     related_services: [],
@@ -10648,7 +10651,11 @@ export const ALL_SERVICES: ServiceItem[] = [
     phone: '1739 (الخط الساخن لوزارة المالية)',
     website: 'https://www.finance.gov.lb',
     working_hours: 'الاثنين إلى الجمعة: 8:00 صباحاً - 2:00 مساءً',
-    online_available: false,
+    // batch #475: description explicitly states payment happens "مباشرة عبر
+    // بوابة وزارة المالية الإلكترونية دون الحاجة لمراجعة الصندوق" (directly
+    // via the electronic portal, no cashier visit needed) — online_available
+    // :false contradicted the record's own text.
+    online_available: true,
     forms_needed: [],
     important_notes: 'الدفع الإلكتروني يغني عن الاصطفاف في صناديق قصور العدل لتسديد الرسوم القضائية.',
     related_services: [],

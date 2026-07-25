@@ -3,9 +3,17 @@
 /**
  * ProcedureStepHighlight — interactive step checklist with per-step done state.
  *
- * LS key: dalilak_step_done_{code}_{idx} → '1'
+ * LS key: dalilak_step_check_{code}_{idx} → '1'
  * Highlights the first uncompleted step as "current".
  * Shows overall progress bar.
+ *
+ * This is the SAME key schema written/read by ProcedureStepProgress.tsx,
+ * rendered in the same "steps" section of app/procedures/page.tsx for the
+ * identical steps array. Previously used a different prefix
+ * (dalilak_step_done_) that ProcedureStepProgress never read/wrote, so the
+ * two step checklists tracked completely disconnected state despite
+ * appearing to be the same checklist — same bug class fixed for documents
+ * in batch #454 (ProcedureDocReadinessBar / ProcedureDocumentChecklist).
  *
  * Props: { code: string; steps: string[]; isAr: boolean }
  */
@@ -18,7 +26,7 @@ interface Props {
   isAr: boolean
 }
 
-function lsKey(code: string, idx: number) { return `dalilak_step_done_${code}_${idx}` }
+function lsKey(code: string, idx: number) { return `dalilak_step_check_${code}_${idx}` }
 
 export default function ProcedureStepHighlight({ code, steps, isAr }: Props) {
   const [mounted, setMounted]   = useState(false)

@@ -32,7 +32,8 @@ import ChatEmojiReactions from '@/components/ChatEmojiReactions'
 import ChatSaveToNotes from '@/components/ChatSaveToNotes'
 import ChatAIBadge from '@/components/ChatAIBadge'
 import ChatScrollToBottomButton from '@/components/ChatScrollToBottomButton'
-import { saveChatSession } from '@/components/ChatHistoryPanel'
+import ChatHistoryPanel, { saveChatSession } from '@/components/ChatHistoryPanel'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import ProcedureCompletionCelebration from '@/components/ProcedureCompletionCelebration'
 import ChatSessionTimer from '@/components/ChatSessionTimer'
 import ChatVoiceInputBtn from '@/components/ChatVoiceInputBtn'
@@ -316,6 +317,14 @@ function JourneySheet({
   journey, onClose, onAsk,
 }: { journey: LifeJourney; onClose: () => void; onAsk: (q: string) => void }) {
   const { isAr } = useLanguage()
+  // batch #465: this dialog was missing from batch #360's app-wide Tab-trap
+  // sweep (it lives inline in app/page.tsx rather than its own component
+  // file, so a component-name-based audit skipped it) — Tab/Shift+Tab could
+  // leak focus out of the open sheet into the hidden page behind the
+  // overlay. Same fix already applied to every other role="dialog" in the
+  // app (see lib/useFocusTrap.ts's doc comment for the original 13).
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   return (
     <div
@@ -329,6 +338,7 @@ function JourneySheet({
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={isAr ? journey.titleAr : journey.titleEn}
@@ -1476,6 +1486,29 @@ Question: ${text}`
                           {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
                         </button>
                       </div>
+
+                      {/* batch #462: ChatDraftAutosave was already mounted on the
+                          in-conversation composer (below, bound to `input`), but a
+                          reload/tab-reopen always resets `messages` to [] (never
+                          persisted), so the welcome screen — bound to the SEPARATE
+                          `heroInput` state — is what actually renders after any
+                          refresh. The autosave/restore effect never ran for that
+                          input, so a typed-but-unsent question was silently lost on
+                          the exact refresh/reopen scenario this component's own doc
+                          comment describes. Reusing the same, unmodified component
+                          bound to heroInput/setHeroInput here fixes it — both screens
+                          share the same dalilak_chat_input_draft key, and only one of
+                          the two ever renders at a time (see the ternary below). */}
+                      <ChatDraftAutosave input={heroInput} setInput={setHeroInput} />
+
+                      {/* batch #461: ChatHistoryPanel's saveChatSession() was already
+                          called live (onNewChat/onHomeClick/onHome below), building up
+                          real localStorage history, but the component that lets a user
+                          browse/restore/delete those saved sessions was never mounted
+                          anywhere — a pure one-way data sink. It self-guards (renders
+                          null with no saved sessions), so this is a no-op for anyone
+                          who hasn't started 3+ messages and left/reset a chat before. */}
+                      <ChatHistoryPanel onRestore={msgs => { setMessages(msgs); setFollowupQuestions([]); setRetryMsg(null) }} />
                     </div>
 
                     {/* ── Right Column — Rotating Procedure Preview (desktop only) ── */}
