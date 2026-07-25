@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
 import AppLogo from '@/components/AppLogo'
+import SectionHeader from '@/components/SectionHeader'
 // batch #357 perf fix: GuidedFlow/TransactionStarter/ServiceGroupSheet are modal
 // overlays only mounted after a user action (start-guide, transaction-starter,
 // service-group tap) — they were being eager-imported into the main bundle on
@@ -1585,16 +1586,15 @@ Question: ${text}`
                   stays one tap away via "كل الفئات" → /services). ══ */}
               <section style={{ background:'var(--bg)', padding:'8px 0 32px' }}>
                 <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px' }}>
-                  <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:12, gap:16 }}>
-                    <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text-1)', margin:0 }}>
-                      {isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
-                    </h2>
-                    <button type="button" onClick={() => router.push('/services')}
-                      style={{ fontSize:13, fontWeight:600, color:'var(--brand)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4, whiteSpace:'nowrap', flexShrink:0 }}>
-                      {isAr ? 'كل الفئات' : 'All categories'}
+                  <SectionHeader
+                    title={isAr ? 'تصفّح حسب الفئة' : 'Browse by Category'}
+                    align="baseline"
+                    trailingLabel={isAr ? 'كل الفئات' : 'All categories'}
+                    onTrailingClick={() => router.push('/services')}
+                    trailingIcon={
                       <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/></svg>
-                    </button>
-                  </div>
+                    }
+                  />
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:12 }}>
                     {([
                       { ar:'الأحوال الشخصية',    en:'Personal Status',      q_ar:'ما هي معاملات الأحوال الشخصية في لبنان؟',        q_en:'What are personal status procedures in Lebanon?',

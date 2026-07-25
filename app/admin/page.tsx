@@ -9,6 +9,7 @@ import {
   adminGetContentGaps, adminUpdateContentGap,
 } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
+import SectionHeader from '@/components/SectionHeader'
 
 interface UserRow {
   username: string; email: string; full_name: string; phone: string
@@ -439,12 +440,21 @@ export default function AdminPage() {
         {tab === 'resets' && (
           <div style={{ maxWidth: 520 }}>
             <div style={SECTION}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>رموز استعادة كلمة المرور</h2>
-                <button type="button" onClick={loadResets} style={{ fontSize: 11, color: '#741622', background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, fontFamily: 'inherit' }}>
-                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>تحديث
-                </button>
-              </div>
+              <SectionHeader
+                title="رموز استعادة كلمة المرور"
+                titleSize={15}
+                titleWeight={800}
+                titleColor="#191713"
+                marginBottom={14}
+                trailingLabel="تحديث"
+                onTrailingClick={loadResets}
+                trailingColor="#741622"
+                trailingSize={11}
+                trailingIconPosition="before"
+                trailingIcon={
+                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                }
+              />
               <p style={{ fontSize: 12, color: '#918B82', marginBottom: 14 }}>عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.</p>
               {resets.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '28px 0', color: '#918B82', fontSize: 13 }}>لا توجد طلبات نشطة</div>
@@ -471,13 +481,20 @@ export default function AdminPage() {
         {/* ── FEEDBACK ── */}
         {tab === 'feedback' && (
           <div style={SECTION}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <SectionHeader
+              title={`تقييمات المستخدمين (${feedback.length})`}
+              titleIcon={
                 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                تقييمات المستخدمين ({feedback.length})
-              </h2>
-              <button type="button" onClick={loadFeedback} style={{ fontSize: 11, color: '#741622', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
-            </div>
+              }
+              titleSize={15}
+              titleWeight={800}
+              titleColor="#191713"
+              marginBottom={14}
+              trailingLabel="تحديث"
+              onTrailingClick={loadFeedback}
+              trailingColor="#741622"
+              trailingSize={11}
+            />
             {feedback.length === 0 ? (
               <p style={{ fontSize: 13, color: '#918B82', textAlign: 'center', padding: '28px 0' }}>لا توجد تقييمات بعد</p>
             ) : (
@@ -506,13 +523,20 @@ export default function AdminPage() {
         {/* ── ESCALATIONS ── */}
         {tab === 'escalations' && (
           <div style={SECTION}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-              <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <SectionHeader
+              title={`طلبات التصعيد (${escalations.length})`}
+              titleIcon={
                 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
-                طلبات التصعيد ({escalations.length})
-              </h2>
-              <button type="button" onClick={loadEscalations} style={{ fontSize: 11, color: '#741622', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>تحديث</button>
-            </div>
+              }
+              titleSize={15}
+              titleWeight={800}
+              titleColor="#191713"
+              marginBottom={14}
+              trailingLabel="تحديث"
+              onTrailingClick={loadEscalations}
+              trailingColor="#741622"
+              trailingSize={11}
+            />
             {escalations.length === 0 ? (
               <p style={{ fontSize: 13, color: '#918B82', textAlign: 'center', padding: '28px 0' }}>لا توجد طلبات بعد</p>
             ) : (
