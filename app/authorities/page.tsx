@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
+import StatsRow from '@/components/StatsRow'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -188,28 +189,13 @@ export default function AuthoritiesPage() {
 
       <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
-        {/* Stats banner — premium individual cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
-          {[
-            { value: String(stats.total),         label: isAr ? 'جهة رسمية' : 'Authorities' },
-            { value: String(stats.ministries),     label: isAr ? 'وزارة' : 'Ministries' },
-            { value: String(stats.withOnline),     label: isAr ? 'خدمات أونلاين' : 'Online services' },
-            { value: String(stats.totalServices),  label: isAr ? 'خدمة موثّقة' : 'Verified services' },
-          ].map((s, i) => (
-            <div key={s.label} style={{
-              padding: '13px 8px 15px', textAlign: 'center',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 12,
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              animation: 'authEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
-              animationDelay: `${0.05 + i * 0.06}s`,
-            }}>
-              <div style={{ fontSize: 'clamp(17px,5vw,21px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 9.5, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
+        {/* Stats banner — v4.0: extracted to components/StatsRow.tsx (batch #380) */}
+        <StatsRow columns={2} stats={[
+          { value: String(stats.total),        label: isAr ? 'جهة رسمية' : 'Authorities' },
+          { value: String(stats.ministries),    label: isAr ? 'وزارة' : 'Ministries' },
+          { value: String(stats.withOnline),    label: isAr ? 'خدمات أونلاين' : 'Online services' },
+          { value: String(stats.totalServices), label: isAr ? 'خدمة موثّقة' : 'Verified services' },
+        ]} />
 
         {/* Search — v4.0: extracted to components/SearchInput.tsx (batch #379) */}
         <SearchInput

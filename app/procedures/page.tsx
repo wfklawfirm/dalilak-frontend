@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import MobileHeader from '@/components/MobileHeader'
+import StatsRow from '@/components/StatsRow'
 import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabel } from '@/lib/procedures'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
@@ -267,25 +268,12 @@ export default function ProceduresPage() {
           }}
         />
 
-        {/* Stats strip — v4.0: flat cards, no gradient/shadow, matches homepage tokens */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
-          {[
-            { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
-            { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services' },
-            { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
-          ].map(stat => (
-            <div key={stat.label} style={{
-              padding: '14px 8px 16px', textAlign: 'center',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 14,
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-            }}>
-              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
+        {/* Stats strip — v4.0: extracted to components/StatsRow.tsx (batch #380) */}
+        <StatsRow stats={[
+          { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
+          { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services' },
+          { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
+        ]} />
 
         {/* Ministry filter chips — v4.0: flat outline pills */}
         <div style={{ marginBottom: 12, marginRight: -14, marginLeft: -14 }}>

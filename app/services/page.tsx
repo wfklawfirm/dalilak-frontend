@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
+import StatsRow from '@/components/StatsRow'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
@@ -462,7 +463,6 @@ export default function ServicesPage() {
         @keyframes svc-header-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes svc-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes svcEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes svcStatsIn { from { opacity: 0; transform: translateY(-5px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
         .sk-pulse { background: linear-gradient(90deg, #f0efed 25%, #e8e6e2 50%, #f0efed 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite linear; }
         .cat-chips-row::-webkit-scrollbar { display: none; }
@@ -522,27 +522,12 @@ export default function ServicesPage() {
             storageKey="dalilak_svc_more"
           >
             <div style={{ paddingTop: 8 }}>
-              {/* ── Stats strip — premium individual cards ─────────────────────────── */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
-                {[
-                  { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services' },
-                  { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories' },
-                  { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services' },
-                ].map((stat, i) => (
-                  <div key={stat.label} style={{
-                    padding: '14px 8px 16px', textAlign: 'center',
-                    background: 'var(--surface)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 12,
-                    display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    animation: 'svcStatsIn 0.28s cubic-bezier(0.22,1,0.36,1) both',
-                    animationDelay: `${0.06 + i * 0.07}s`,
-                  }}>
-                    <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{stat.value}</div>
-                    <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+              {/* ── Stats strip — v4.0: extracted to components/StatsRow.tsx (batch #380) ── */}
+              <StatsRow stats={[
+                { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة حكومية' : 'Services' },
+                { value: String(SERVICE_CATEGORIES.length), label: isAr ? 'فئة خدمية' : 'Categories' },
+                { value: ALL_SERVICES.filter(s => s.online_available).length + '+', label: isAr ? 'خدمة أونلاين' : 'Online services' },
+              ]} />
 
               {/* ── Map placeholder — find nearby offices ──────────────────────── */}
               <ServiceMapPlaceholder />

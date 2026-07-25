@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
+import StatsRow from '@/components/StatsRow'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -104,27 +105,12 @@ export default function FAQPage() {
 
       <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
-        {/* Stats — premium individual cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
-          {[
-            { labelAr: 'سؤال عملي', labelEn: 'Questions', value: String(SERVICE_FAQ.length), featured: true },
-            { labelAr: 'فئة خدمية', labelEn: 'Categories', value: String(FAQ_CATEGORIES.length), featured: false },
-            { labelAr: 'رقم طوارئ', labelEn: 'Emergency', value: '10+', featured: false },
-          ].map(({ labelAr, labelEn, value }, i) => (
-            <div key={labelAr} style={{
-              padding: '14px 8px 16px', textAlign: 'center',
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 12,
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              animation: 'faqEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
-              animationDelay: `${0.06 + i * 0.07}s`,
-            }}>
-              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{value}</div>
-              <div style={{ fontSize: 9.5, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 }}>{isAr ? labelAr : labelEn}</div>
-            </div>
-          ))}
-        </div>
+        {/* Stats — v4.0: extracted to components/StatsRow.tsx (batch #380) */}
+        <StatsRow stats={[
+          { label: isAr ? 'سؤال عملي' : 'Questions', value: String(SERVICE_FAQ.length) },
+          { label: isAr ? 'فئة خدمية' : 'Categories', value: String(FAQ_CATEGORIES.length) },
+          { label: isAr ? 'رقم طوارئ' : 'Emergency', value: '10+' },
+        ]} />
 
         {/* Search — v4.0: extracted to components/SearchInput.tsx (batch #379) */}
         <SearchInput
