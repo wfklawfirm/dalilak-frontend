@@ -155,7 +155,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 560, margin: '0 auto', padding: '18px 14px' }}>
+      <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '18px 14px' }}>
 
         {/* Language */}
         <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
@@ -279,7 +279,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} /></div>
     </div>

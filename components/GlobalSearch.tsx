@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PROCEDURES_DATA } from '@/lib/procedures'
 import { SERVICE_FAQ } from '@/lib/serviceFAQ'
@@ -145,6 +146,9 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
   const [query, setQuery] = useState('')
   const [activeIdx, setActiveIdx] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  // batch #360: trap Tab focus inside the panel while open (see lib/useFocusTrap.ts)
+  const panelRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(panelRef, open)
 
   const results = useMemo(() => search(query, isAr), [query, isAr])
 
@@ -285,6 +289,7 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
 
       {/* Panel */}
       <div
+        ref={panelRef}
         role="dialog"
         aria-label={isAr ? 'البحث السريع' : 'Quick search'}
         dir={isAr ? 'rtl' : 'ltr'}

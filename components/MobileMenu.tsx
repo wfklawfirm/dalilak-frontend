@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { clearToken, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -146,6 +147,11 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
     return () => document.removeEventListener('keydown', handleKey)
   }, [isOpen, onClose])
 
+  // batch #360: trap Tab focus inside the open drawer so keyboard users
+  // can't tab straight through to the page content hidden behind it.
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, isOpen)
+
   if (!isOpen) return null
 
   return (
@@ -165,6 +171,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
 
       {/* Drawer */}
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         dir={isAr ? 'rtl' : 'ltr'}

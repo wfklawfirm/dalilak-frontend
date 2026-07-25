@@ -63,41 +63,59 @@ export default function ChatResponseLength({ isAr }: Props) {
   ]
 
   return (
-    <div
-      dir={isAr ? 'rtl' : 'ltr'}
-      style={{
-        display: 'inline-flex', alignItems: 'center',
-        background: '#F5F3EE', borderRadius: 20,
-        border: '1.5px solid #E5E0D8',
-        padding: '2px', gap: 1,
-      }}
-      role="group"
-      aria-label={isAr ? 'طول الرد' : 'Response length'}
-    >
-      {opts.map(o => {
-        const active = mode === o.value
-        return (
-          <button
-            key={o.value || 'normal'}
-            type="button"
-            onClick={() => setMode(o.value)}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 3,
-              padding: '3px 9px', borderRadius: 16,
-              background: active ? '#fff' : 'transparent',
-              border: active ? '1.5px solid #D1CBC4' : '1.5px solid transparent',
-              cursor: 'pointer', fontFamily: 'inherit',
-              fontSize: 10, fontWeight: active ? 800 : 600,
-              color: active ? '#1C1917' : '#78716C',
-              transition: 'all 0.15s',
-              boxShadow: active ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-            }}
-          >
-            <span style={{ fontSize: 11 }}>{o.icon}</span>
-            {isAr ? o.ar : o.en}
-          </button>
-        )
-      })}
-    </div>
+    <>
+      {/* batch #358: on narrow screens this sits right next to ModeSelector's
+          compact single-button (which already collapses to an icon+label
+          button + bottom sheet below 640px — see MobileModeSheet.tsx). Text
+          labels here were forcing the row to wrap/crowd on phones. Below
+          640px we hide the text and keep only the icon + a11y label, so the
+          two controls sit comfortably on one row like ModeSelector does. */}
+      <style>{`
+        @media (max-width: 639px) {
+          .rl-label { display: none; }
+          .rl-btn { padding: 5px 8px !important; }
+        }
+      `}</style>
+      <div
+        dir={isAr ? 'rtl' : 'ltr'}
+        style={{
+          display: 'inline-flex', alignItems: 'center',
+          background: '#F5F3EE', borderRadius: 20,
+          border: '1.5px solid #E5E0D8',
+          padding: '2px', gap: 1,
+        }}
+        role="group"
+        aria-label={isAr ? 'طول الرد' : 'Response length'}
+      >
+        {opts.map(o => {
+          const active = mode === o.value
+          const label = isAr ? o.ar : o.en
+          return (
+            <button
+              key={o.value || 'normal'}
+              type="button"
+              className="rl-btn"
+              onClick={() => setMode(o.value)}
+              aria-label={label}
+              title={label}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 3,
+                padding: '3px 9px', borderRadius: 16,
+                background: active ? '#fff' : 'transparent',
+                border: active ? '1.5px solid #D1CBC4' : '1.5px solid transparent',
+                cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 10, fontWeight: active ? 800 : 600,
+                color: active ? '#1C1917' : '#78716C',
+                transition: 'all 0.15s',
+                boxShadow: active ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+              }}
+            >
+              <span style={{ fontSize: 11 }}>{o.icon}</span>
+              <span className="rl-label">{label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </>
   )
 }

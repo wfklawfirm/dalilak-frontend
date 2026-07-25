@@ -186,7 +186,7 @@ export default function ProfessionalWorkspacePage() {
   if (!authChecked) return null
 
   return (
-    <div style={{
+    <main id="main-content" style={{
       minHeight: '100vh', background: '#fafaf9',
       fontFamily: 'Cairo, Inter, sans-serif', direction: isAr ? 'rtl' : 'ltr',
     }}>
@@ -392,6 +392,6 @@ export default function ProfessionalWorkspacePage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

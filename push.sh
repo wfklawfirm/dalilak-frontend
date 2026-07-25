@@ -1130,11 +1130,77 @@
 #   available browser resize tool did not actually change the page's
 #   viewport width in this sandbox) — asked the user to confirm on a
 #   real phone after this deploys.
+#
+#   BATCH #356 — audited TopNav.tsx header height against the brief's
+#   56-64px spec. Found it's a fixed height:64 (line 112) — already at
+#   the top of the allowed range. No code change needed; documented in
+#   UX_AUDIT.md so this isn't re-audited from scratch later.
+#
+#   BATCH #357 — perf: GuidedFlow/TransactionStarter/ServiceGroupSheet
+#   were eager-imported into app/page.tsx even though all three are
+#   modals that only mount after an explicit user action (most visits
+#   never open them). Converted all three to next/dynamic with
+#   ssr:false (verified each returns null / is gated by a `{show &&}`
+#   wrapper when closed, so lazy mounting is safe). The type-only
+#   `StarterResult` import stayed a static import (types are erased at
+#   build time, no need to route it through dynamic()). tsc clean.
+#
+#   BATCH #358 — chat input-toolbar declutter. Audited every control
+#   above the message box (ModeSelector, ChatResponseLength,
+#   ChatContextBar, ChatKeyboardSendHint, ChatInputCharCounter,
+#   ChatDraftAutosave, ChatQuickReplies): most already self-hide when
+#   irrelevant (ChatContextBar hides when empty, ChatInputCharCounter
+#   hides under 200 chars, ChatKeyboardSendHint hides entirely on touch
+#   devices, ChatDraftAutosave renders nothing visible at all). The one
+#   real offender: ChatResponseLength renders a permanent 3-button
+#   full-text toggle right next to ModeSelector's already-compact
+#   single-button-plus-sheet mobile pattern, creating an asymmetric,
+#   crowded row on phones. Added a 640px breakpoint (matching
+#   ModeSelector's own breakpoint) that hides the text labels under
+#   640px, keeping icons + explicit aria-label/title per button (a
+#   small extra accessibility win, since the accessible name no longer
+#   depends solely on visible text). Zero functionality removed — same
+#   3 length options, just narrower on mobile. tsc clean.
+#
+#   BATCH #359 — WCAG 2.2 "Bypass Blocks" landmark-region audit via an
+#   Explore agent covering every app/**/page.tsx and all <nav>/<header>/
+#   <footer> usage. Found: (1) app/professional/page.tsx and
+#   app/settings/page.tsx had no id="main-content" at all — the global
+#   skip-link in app/layout.tsx was a dead link on both pages. Fixed by
+#   converting each page's content wrapper to <main id="main-content">,
+#   matching the same header-outside/BottomNav-outside pattern already
+#   used in procedures/page.tsx. All other 18 checked pages already had
+#   exactly one correctly-placed <main id="main-content">. (2) All <nav>
+#   elements already have distinct aria-labels — no fix needed. (3) The
+#   homepage (app/page.tsx) renders two <footer> landmarks
+#   simultaneously in the welcome state — the marketing footer and the
+#   always-mounted chat-input toolbar (which uses a <footer> tag despite
+#   being an input bar, not page contentinfo) — neither had a
+#   distinguishing aria-label. Added aria-label to both ("Page footer" /
+#   "Message input bar") without changing either element's tag (avoids
+#   any risk from CSS selectors keyed on the footer tag). tsc clean.
+#
+#   BATCH #360 — keyboard tab-order audit. grep confirmed zero positive
+#   tabIndex values anywhere (no anti-pattern). But found all 13
+#   role="dialog" components in the app (GlobalSearch, MobileMenu,
+#   ServiceGroupSheet, MobileModeSheet, GuidedFlow, TransactionStarter,
+#   ProcedureSearchModal, ProcedureFilterDrawer, PrintProcedureModal,
+#   EscalationModal, DocumentIntelligenceView, AccessibilityBar,
+#   FloatingHelpButton) handle Escape-to-close and body-scroll-lock but
+#   none trap Tab — a keyboard user can Tab straight out of an open
+#   dialog into hidden background content (WCAG 2.4.3 gap). Built a
+#   reusable lib/useFocusTrap.ts hook (cycles Tab/Shift+Tab within a
+#   container ref, focuses the first focusable element on open, restores
+#   focus to the trigger on close) and wired it into the two
+#   highest-traffic dialogs: GlobalSearch (Cmd+K) and MobileMenu (the
+#   primary mobile nav drawer). The other 11 components are a mechanical
+#   follow-up (same 2-line wiring each) — deferred to a future batch
+#   rather than editing 11 files unverified in one pass. tsc clean.
 # ================================================================
 set -e
 cd "$(dirname "$0")"
 rm -f .git/index.lock .git/HEAD.lock
 git add -A
-git diff --cached --quiet || git commit -m "feat: batch #284-355 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide) + batch #348 WCAG AA contrast audit (computed via relative-luminance formula): fixed --text-3 token (3.18:1->4.55:1) and migrated 89 real var(--text-4) text usages across 32 files to the fixed --text-3, plus fixed a critical regression where removing AccessibilityBar's FAB in batch #345 had silently broken the actual high-contrast/large-text/reduce-motion visual effect (CSS rules moved to globals.css + new render-nothing AccessibilityEffects.tsx restores it without re-adding a floating button) + batch #349 WCAG heading-hierarchy audit across 19 pages + fixes in 6 files: sr-only h1 for active chat view (app/page.tsx had zero headings during chat), h1 for ProcedureDetailClient not-found state + h3->h2 promotion for its Section component, sr-only h2 section labels before card grids/lists in services/my-files/admin-content pages, h3->h2 promotion for admin create-user/reset-codes tab panels + batch #350 homepage density pass: popular-procedures grid 6->4 cards, category chip row 10->6 chips + new 'All categories' link to /services (verified functional), hero confirmed already brief-compliant (2 CTAs + search-first), zero functionality removed + batch #351 WCAG 1.4.1 use-of-color audit across ~15 status/badge components: fixed QuickContacts open/closed dot (shape difference + sr-only label, was color-only even for screen readers) and HomepageCalendarWidget deadline/reminder markers (diamond vs circle shape + descriptive aria-label, was color-only), verified 12 other badge components already compliant, verified auth-page error boxes already use role=alert + batch #352 fixed mislabeled 'Wizard' button on procedure detail page that actually navigated to homepage (no wizard deep-link exists) — relabeled to 'Home' to match real behavior, zero functional change + batch #353 chat-interface declutter: per-message action row reduced from 10 always-visible controls to 4 (kept copy/share/save, folded pin/voice-playback/4-emoji-reactions/save-to-notes behind a new per-message 'More' toggle), zero components or functionality removed + batch #354 removed ~1.7MB of dead data imports (TX_ALL/TX_WITH_FORMS/TX_MINISTRIES/ENRICHED_PROCEDURES/ALL_SERVICES) from app/page.tsx, verified unused via grep + tsc, zero functional change + batch #355 fixed mobile section-padding density: all 7 homepage sections used clamp() floors tuned for desktop that never actually shrank at real phone widths, so every section always rendered at full desktop padding on mobile (~536px of stacked whitespace) — lowered floors only (verified desktop max unaffected), mobile total now ~316px (~40% less)"
+git diff --cached --quiet || git commit -m "feat: batch #284-360 — 31 new components + full mobile/desktop polish pass + settings page + PWA/SEO + reliability fixes + h1 + aria-label + focus-ring fixes + mobile floating-widget overlap fix + forms/[slug] bottom-padding fix + complete safe-area-inset-bottom coverage + ProcedureMinistryMap touch-target fix + declutter pass on procedure/services/form detail pages via SectionCollapseToggle + expat-property h1 fix + main-content landmark on ~20 pages + real WhatsApp support number for ProcedureHelpRequest + SectionCollapseToggle 44px touch target fix + GlobalSearch ⌘K hint hidden on mobile (gs-search-kbd) + SavedItemsPanel touch-visible remove/ask affordances + ProcedureVersionTag tap-to-reveal tooltip + SavedItemsPanel remove button 44px touch hit-area expansion + sitewide tap-hit-N utility sweep across 8 more components + HomepageMinistrySpotlight carousel button spacing fix + fix AI replies ignoring the UI language toggle + mobile re-audit + admin/admin-content sticky header overflow fix + batch #337 cross-page mobile consistency pass + batch #338 design-token hardening + batch #339 maxWidth/header-padding token migration + batch #340 floating-button touch-target sweep + batch #341 auth-page visual consistency fix + batch #342 world-class additions: Breadcrumbs + BreadcrumbList JSON-LD, Organization + WebSite/SearchAction JSON-LD, Escape-to-close fix across 5 modal/sheet components + batch #343 metadataBase + canonical URLs on 7 public pages + batch #344 form-field labeling audit: 19 unlabeled inputs fixed across 13 files + attached-file preview alt-text fix + batch #345 UX_AUDIT.md Phase 1+2: removed GlobalLangSwitch/AccessibilityBar/FloatingHelpButton floating widgets + MinistryQuickDial and KeyboardShortcutsHelp FABs converted to menu-triggered (zero functionality lost), fixed duplicate Authorities entry in MobileMenu, BottomNav reduced 5->4 items + batch #346 removed ~110-line dead/unreachable homepage-widget block (~30 components, verified via bracket trace) and its ~50 orphaned imports from app/page.tsx, zero visible/functional change, 2770->2602 lines + batch #347 converted FeedbackWidget from floating FAB to inline chat card (last floating-button exception, now zero exceptions app-wide) + batch #348 WCAG AA contrast audit (computed via relative-luminance formula): fixed --text-3 token (3.18:1->4.55:1) and migrated 89 real var(--text-4) text usages across 32 files to the fixed --text-3, plus fixed a critical regression where removing AccessibilityBar's FAB in batch #345 had silently broken the actual high-contrast/large-text/reduce-motion visual effect (CSS rules moved to globals.css + new render-nothing AccessibilityEffects.tsx restores it without re-adding a floating button) + batch #349 WCAG heading-hierarchy audit across 19 pages + fixes in 6 files: sr-only h1 for active chat view (app/page.tsx had zero headings during chat), h1 for ProcedureDetailClient not-found state + h3->h2 promotion for its Section component, sr-only h2 section labels before card grids/lists in services/my-files/admin-content pages, h3->h2 promotion for admin create-user/reset-codes tab panels + batch #350 homepage density pass: popular-procedures grid 6->4 cards, category chip row 10->6 chips + new 'All categories' link to /services (verified functional), hero confirmed already brief-compliant (2 CTAs + search-first), zero functionality removed + batch #351 WCAG 1.4.1 use-of-color audit across ~15 status/badge components: fixed QuickContacts open/closed dot (shape difference + sr-only label, was color-only even for screen readers) and HomepageCalendarWidget deadline/reminder markers (diamond vs circle shape + descriptive aria-label, was color-only), verified 12 other badge components already compliant, verified auth-page error boxes already use role=alert + batch #352 fixed mislabeled 'Wizard' button on procedure detail page that actually navigated to homepage (no wizard deep-link exists) — relabeled to 'Home' to match real behavior, zero functional change + batch #353 chat-interface declutter: per-message action row reduced from 10 always-visible controls to 4 (kept copy/share/save, folded pin/voice-playback/4-emoji-reactions/save-to-notes behind a new per-message 'More' toggle), zero components or functionality removed + batch #354 removed ~1.7MB of dead data imports (TX_ALL/TX_WITH_FORMS/TX_MINISTRIES/ENRICHED_PROCEDURES/ALL_SERVICES) from app/page.tsx, verified unused via grep + tsc, zero functional change + batch #355 fixed mobile section-padding density: all 7 homepage sections used clamp() floors tuned for desktop that never actually shrank at real phone widths, so every section always rendered at full desktop padding on mobile (~536px of stacked whitespace) — lowered floors only (verified desktop max unaffected), mobile total now ~316px (~40% less) + batch #356 verified TopNav header height (fixed 64px) already matches the 56-64px spec, no change needed + batch #357 lazy-loaded GuidedFlow/TransactionStarter/ServiceGroupSheet via next/dynamic ssr:false (modals only mounted after user action, were bloating the eager homepage bundle) + batch #358 chat input-toolbar declutter: ChatResponseLength now collapses to icon-only under 640px (matching ModeSelector's own compact-mobile pattern), other toolbar controls already self-hid correctly + batch #359 WCAG landmark audit: fixed dead skip-link on /professional and /settings (missing id=main-content, now wrapped in <main>), added distinguishing aria-labels to the two simultaneous <footer> landmarks on the homepage + batch #360 built reusable lib/useFocusTrap.ts (Tab/Shift+Tab cycling for the 13 role=dialog components that had none) and wired it into GlobalSearch + MobileMenu, remaining 11 dialogs are a mechanical follow-up"
 git push origin main
 echo "✅ Done"

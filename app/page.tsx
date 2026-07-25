@@ -1,10 +1,16 @@
 'use client'
 
 import React, { useState, useRef, useEffect, FormEvent, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
-import GuidedFlow from '@/components/GuidedFlow'
+// batch #357 perf fix: GuidedFlow/TransactionStarter/ServiceGroupSheet are modal
+// overlays only mounted after a user action (start-guide, transaction-starter,
+// service-group tap) — they were being eager-imported into the main bundle on
+// every homepage load even though most visits never open them. Lazy-loaded via
+// next/dynamic with ssr:false (pure client-side modals, no SEO/content impact).
+const GuidedFlow = dynamic(() => import('@/components/GuidedFlow'), { ssr: false })
 import MobileMenu from '@/components/MobileMenu'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
 import UserOnboarding from '@/components/UserOnboarding'
@@ -38,8 +44,9 @@ import ModeSelector from '@/components/MobileModeSheet'
 import TopNav from '@/components/TopNav'
 import { getToken, getUser, setUser, clearToken, authHeaders, isAdmin, type User } from '@/lib/auth'
 import { sanitizeInput } from '@/lib/sanitize'
-import TransactionStarter, { type StarterResult } from '@/components/TransactionStarter'
-import ServiceGroupSheet from '@/components/ServiceGroupSheet'
+import type { StarterResult } from '@/components/TransactionStarter'
+const TransactionStarter = dynamic(() => import('@/components/TransactionStarter'), { ssr: false })
+const ServiceGroupSheet = dynamic(() => import('@/components/ServiceGroupSheet'), { ssr: false })
 import { SERVICE_GROUPS, type ServiceGroup, type ServiceItem } from '@/lib/serviceGroups'
 import { useLanguage } from '@/lib/LanguageContext'
 // batch #354 perf fix: TX_ALL/TX_WITH_FORMS/TX_MINISTRIES (lib/allTransactions.ts, ~400KB
@@ -1729,7 +1736,10 @@ Question: ${text}`
               </section>
 
               {/* ══ FOOTER ══ */}
-              <footer style={{ background:'#191713', padding:'clamp(28px,5vw,64px) 0 clamp(20px,3vw,40px)' }}>
+              {/* batch #359: labeled so screen-reader landmark lists can tell
+                  this apart from the always-mounted input-toolbar <footer>
+                  below (which renders as a sibling outside <main>). */}
+              <footer aria-label={isAr ? 'تذييل الصفحة' : 'Page footer'} style={{ background:'#191713', padding:'clamp(28px,5vw,64px) 0 clamp(20px,3vw,40px)' }}>
                 <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 clamp(16px,3vw,32px)' }}>
                   <div className="fgrid" style={{ marginBottom:40 }}>
                     {/* Brand col */}
@@ -2160,7 +2170,7 @@ Question: ${text}`
         )}
 
         {/* ══════════════ FOOTER / INPUT ══════════════ */}
-        <footer className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
+        <footer aria-label={isAr ? 'شريط إدخال الرسالة' : 'Message input bar'} className={footerBottom > 0 ? '' : 'bottom-nav-padding'} style={{
           flexShrink: 0,
           background: messages.length > 0 ? 'linear-gradient(to top, rgba(242,237,230,1) 0%, rgba(242,237,230,0.96) 70%, rgba(242,237,230,0) 100%)' : 'transparent',
           paddingTop: messages.length > 0 ? 8 : 0,
