@@ -61,7 +61,9 @@ export default function ProcedureReminderBell({ code, titleAr, titleEn, isAr }: 
   const procTitle = isAr ? titleAr : (titleEn || titleAr)
 
   function refresh() {
-    const rems = getReminders().filter(r => !r.dismissed && r.title.includes(titleAr))
+    const rems = getReminders().filter(r =>
+      !r.dismissed && (r.title.includes(titleAr) || (titleEn && r.title.includes(titleEn)))
+    )
     setRemCount(rems.length)
   }
 

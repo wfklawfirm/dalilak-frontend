@@ -44,10 +44,13 @@ function parseFeesUSD(raw: string): number | null {
     || raw.match(/([\d,]+(?:\.\d+)?)\s*(?:USD|دولار|usd)/i)
   if (usdMatch) return parseFloat(usdMatch[1].replace(',', ''))
 
-  // Try LBP: X,XXX,XXX ل.ل
-  const lbpMatch = raw.match(/([\d,]+)\s*(?:ل\.ل|L\.L|LBP|ليرة)/i)
+  // Try LBP: X,XXX,XXX ل.ل — real fee data (lib/enrichedProcedures.ts) uses
+  // BOTH comma- and period-grouped thousands (e.g. "1.500.000 ل.ل."), so the
+  // capture class must allow both separators or a period-grouped amount like
+  // "1.500.000" only matches its last "000" segment, silently producing $0.
+  const lbpMatch = raw.match(/([\d.,]+)\s*(?:ل\.ل|L\.L|LBP|ليرة)/i)
   if (lbpMatch) {
-    const lbp = parseFloat(lbpMatch[1].replace(/,/g, ''))
+    const lbp = parseFloat(lbpMatch[1].replace(/[.,]/g, ''))
     // Post-crisis rate ~89,500 LBP/USD (approximate)
     return Math.round(lbp / 89_500)
   }

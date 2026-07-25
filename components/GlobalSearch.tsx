@@ -18,7 +18,8 @@ interface SearchResult {
   titleEn: string
   subtitleAr: string
   subtitleEn: string
-  aiPrompt?: string
+  aiPromptAr?: string
+  aiPromptEn?: string
   href?: string
 }
 
@@ -41,7 +42,8 @@ function buildIndex(): SearchResult[] {
       titleEn: p.title_en || p.title,
       subtitleAr: p.ministry,
       subtitleEn: p.ministry_en || p.ministry,
-      aiPrompt: `أخبرني بكل التفاصيل عن: ${p.title} — الإجراءات والوثائق والرسوم والمدة`,
+      aiPromptAr: `أخبرني بكل التفاصيل عن: ${p.title} — الإجراءات والوثائق والرسوم والمدة`,
+      aiPromptEn: `Tell me all the details about: ${p.title_en || p.title} — procedures, documents, fees, and duration`,
       href: `/procedures`,
     })
   }
@@ -56,7 +58,8 @@ function buildIndex(): SearchResult[] {
       titleEn: p.title_en,
       subtitleAr: p.category_ar,
       subtitleEn: p.category_en,
-      aiPrompt: `أرشدني خطوة بخطوة في معاملة: ${p.title_ar}`,
+      aiPromptAr: `أرشدني خطوة بخطوة في معاملة: ${p.title_ar}`,
+      aiPromptEn: `Guide me step by step through: ${p.title_en || p.title_ar}`,
       href: `/procedures`,
     })
   }
@@ -71,7 +74,10 @@ function buildIndex(): SearchResult[] {
       titleEn: f.title,
       subtitleAr: f.category,
       subtitleEn: f.category,
-      aiPrompt: f.chatPrompt,
+      // FAQItem has no English title/prompt fields (data-only limitation,
+      // out of scope here) — both langs fall back to the Arabic chatPrompt.
+      aiPromptAr: f.chatPrompt,
+      aiPromptEn: f.chatPrompt,
       href: `/faq`,
     })
   }
@@ -86,7 +92,8 @@ function buildIndex(): SearchResult[] {
       titleEn: j.titleEn,
       subtitleAr: j.subtitleAr,
       subtitleEn: j.subtitleEn,
-      aiPrompt: `أرشدني في رحلة: ${j.titleAr}`,
+      aiPromptAr: `أرشدني في رحلة: ${j.titleAr}`,
+      aiPromptEn: `Guide me through: ${j.titleEn}`,
     })
   }
 
@@ -213,16 +220,20 @@ export default function GlobalSearch({ onAsk, onJourneySelect }: GlobalSearchPro
       onJourneySelect(r.id.replace('jrn-', ''))
       return
     }
-    if (r.aiPrompt && onAsk) {
-      onAsk(r.aiPrompt)
+    // batch #432: pick the prompt matching the active UI language — these
+    // used to be hardcoded Arabic regardless of isAr, so English-mode users
+    // selecting a result got an Arabic message injected into the chat.
+    const prompt = isAr ? r.aiPromptAr : (r.aiPromptEn || r.aiPromptAr)
+    if (prompt && onAsk) {
+      onAsk(prompt)
       return
     }
     // fallback: navigate + store query in sessionStorage for the page to pick up
-    if (r.aiPrompt) {
-      try { sessionStorage.setItem('dalilak_pending_query', r.aiPrompt) } catch { /* ignore */ }
+    if (prompt) {
+      try { sessionStorage.setItem('dalilak_pending_query', prompt) } catch { /* ignore */ }
     }
     router.push(r.href || '/')
-  }, [close, onAsk, onJourneySelect, router])
+  }, [close, onAsk, onJourneySelect, router, isAr])
 
   if (!open) {
     return (

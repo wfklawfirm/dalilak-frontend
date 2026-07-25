@@ -698,6 +698,18 @@ Question: ${text}`
   const historyLoaded = useRef(false)
   // Prevents 8-second auto-rotate from overwriting enhance-generated chips
   const chipsLockedRef = useRef(false)
+  // Always-fresh handle to sendMessage (defined below, redefined every
+  // render) for the mount-only onboarding-question listener — see the
+  // comment on that useEffect for why a direct reference would go stale.
+  const sendMessageRef = useRef<(text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => void>(() => {})
+  // Bumped at the start of every sendMessage call. The fire-and-forget
+  // /suggest_followup fetch (no AbortController, no server-side ordering
+  // guarantee) captures the value at request time and only applies its
+  // result if it's still the latest request — otherwise a slow response to
+  // an older question could land after a newer question's own (possibly
+  // faster) follow-up chips and silently replace them with stale, unrelated
+  // suggestions. Frontend-only race-condition guard.
+  const sendSeqRef = useRef(0)
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
 
@@ -763,10 +775,17 @@ Question: ${text}`
   }, [])
 
   // ── Handle onboarding quick-start question ───────────────
+  // Registered once on mount (empty deps), so it must not call sendMessage
+  // directly — sendMessage is redefined every render and closes over
+  // lang/isAr/messages, so a direct reference here would freeze on the
+  // mount-time values. UserOnboarding lets a user switch language (step 1)
+  // and then tap a suggested question (step 3) seconds later; without the
+  // ref indirection below, that question would be sent using the pre-switch
+  // language, reintroducing the exact bug batch #334 fixed elsewhere.
   useEffect(() => {
     const handler = (e: Event) => {
       const q = (e as CustomEvent<{ q: string }>).detail?.q
-      if (q) sendMessage(q)
+      if (q) sendMessageRef.current(q)
     }
     window.addEventListener('dalilak_onboarding_question', handler)
     return () => window.removeEventListener('dalilak_onboarding_question', handler)
@@ -964,6 +983,7 @@ Question: ${text}`
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
+    const mySeq = ++sendSeqRef.current
     setFollowupQuestions([])
     setRetryMsg(null)
     setEnhanceSuggestion(null)
@@ -1065,7 +1085,11 @@ Question: ${text}`
             })
             if (extractRes.ok) {
               const analysis = await extractRes.json()
-              if (analysis?.kind === 'universal_document_analysis') {
+              // If the user has already sent another message while this
+              // extraction was in flight, sendSeqRef.current will have moved
+              // past mySeq — bail out so the stale analysis card doesn't get
+              // spliced into (or appended after) a newer, unrelated exchange.
+              if (analysis?.kind === 'universal_document_analysis' && sendSeqRef.current === mySeq) {
                 // Insert analysis message right after the user message (index = prev length)
                 setMessages(prev => {
                   // Find insertion point: right before the last assistant message (streaming)
@@ -1209,7 +1233,7 @@ Question: ${text}`
           body: JSON.stringify({ question: prefixedMessage.slice(0, 300), answer: accumulated.slice(0, 600), lang: isAr ? 'ar' : 'en' }),
         })
           .then(r => r.ok ? r.json() : null)
-          .then(d => { if (d?.questions?.length) setFollowupQuestions(d.questions.slice(0, 3)) })
+          .then(d => { if (d?.questions?.length && sendSeqRef.current === mySeq) setFollowupQuestions(d.questions.slice(0, 3)) })
           .catch(() => {})
       }
     } catch {
@@ -1224,6 +1248,7 @@ Question: ${text}`
       setLoading(false)
     }
   }
+  sendMessageRef.current = sendMessage
 
   const handleSubmit = (e: FormEvent) => { e.preventDefault(); sendMessage(input, attachedFile) }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -1986,7 +2011,7 @@ Question: ${text}`
 
         {/* ══ Retry chip on connection error ══ */}
         {retryMsg && !loading && (
-          <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 4px', direction: 'rtl' }}>
+          <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 4px', direction: isAr ? 'rtl' : 'ltr' }}>
             <button
               type="button"
               onClick={() => sendMessage(retryMsg!)}
@@ -2002,7 +2027,7 @@ Question: ${text}`
               onTouchStart={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FEE2E2'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)' }}
               onTouchEnd={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff5f5'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
             >
-              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> إعادة المحاولة
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 5 }}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> {isAr ? 'إعادة المحاولة' : 'Retry'}
             </button>
           </div>
         )}

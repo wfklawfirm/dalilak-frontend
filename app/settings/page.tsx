@@ -21,6 +21,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
+import PageBackHeader from '@/components/PageBackHeader'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useResponseLength, type LengthMode } from '@/components/ChatResponseLength'
 
@@ -128,32 +129,15 @@ export default function SettingsPage() {
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#FAFAF8', paddingBottom: 90 }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #E6E2DC' }}>
-        <div style={{ maxWidth: 560, margin: '0 auto', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label={isAr ? 'رجوع' : 'Back'}
-            style={{
-              width: 38, height: 38, borderRadius: 9, border: '1.5px solid #E6E2DC',
-              background: 'transparent', cursor: 'pointer', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}
-          >
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#191713" strokeWidth="2.3">
-              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
-            </svg>
-          </button>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#191713', fontFamily: 'inherit' }}>
-              ⚙️ {isAr ? 'الإعدادات' : 'Settings'}
-            </h1>
-            <div style={{ fontSize: 11, color: '#918B82' }}>
-              {isAr ? 'تفضيلاتك في مكان واحد' : 'All your preferences in one place'}
-            </div>
-          </div>
-        </div>
-      </div>
+      <PageBackHeader
+        isAr={isAr}
+        onBack={() => router.back()}
+        variant="legacy"
+        icon="⚙️"
+        title={isAr ? 'الإعدادات' : 'Settings'}
+        subtitle={isAr ? 'تفضيلاتك في مكان واحد' : 'All your preferences in one place'}
+        titleWeight={800}
+      />
 
       <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '18px 14px' }}>
 

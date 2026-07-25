@@ -17,11 +17,17 @@ interface Props {
 }
 
 function getReviewDate(code: string): Date {
-  // Deterministic: hash code → days offset from a base date
+  // Deterministic: hash code → days offset within a rolling 6-month window
+  // ending today. The window was previously anchored to a hardcoded
+  // '2025-01-01' base, so the latest reachable date was 2025-06-29 — once
+  // real time passed ~90 days beyond that (~late Sept 2025), freshnessColor()
+  // below could never return green/amber again, permanently showing every
+  // procedure as "stale" regardless of code. Anchoring to "now" keeps all
+  // three tiers reachable indefinitely.
   let h = 0
   for (let i = 0; i < code.length; i++) h = (h * 31 + code.charCodeAt(i)) >>> 0
-  const base = new Date('2025-01-01')
-  base.setDate(base.getDate() + (h % 180)) // within 6 months of base
+  const base = new Date()
+  base.setDate(base.getDate() - 180 + (h % 180)) // somewhere in the last 6 months
   return base
 }
 

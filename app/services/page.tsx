@@ -32,8 +32,10 @@ function ServiceSheet({ service, onClose, onAsk }: {
   const displayName = isAr ? service.name_ar : (service.name_en || service.name_ar)
   const displayAuthority = isAr ? service.authority_ar : (service.authority_en || service.authority_ar)
   const displayCategory = isAr ? service.category : (service.category_en || service.category)
-  const displayFees = isAr ? service.fees : (service.fees_en || service.fees)
-  const displayProcessingTime = isAr ? service.processing_time : (service.processing_time_en || service.processing_time)
+  const displayFees = (isAr ? service.fees : (service.fees_en || service.fees))
+    ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
+  const displayProcessingTime = (isAr ? service.processing_time : (service.processing_time_en || service.processing_time))
+    ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
   const displayDescription = isAr ? service.description : (service.description_en || service.description)
   const displayRequiredDocuments = isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents)
   const displayImportantNotes = isAr ? service.important_notes : (service.important_notes_en || service.important_notes)
@@ -332,7 +334,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             onClick={() => {
               const title = isAr ? service.name_ar : (service.name_en || service.name_ar)
               const auth = isAr ? service.authority_ar : (service.authority_en || service.authority_ar)
-              const docs = service.required_documents?.slice(0, 4) || []
+              const docs = (isAr ? service.required_documents : (service.required_documents_en?.length ? service.required_documents_en : service.required_documents))?.slice(0, 4) || []
               const lines = [
                 `🏛️ *${title}*`,
                 auth ? `📍 ${auth}` : '',
@@ -434,16 +436,24 @@ export default function ServicesPage() {
   // Filter services locally — instant, no API call
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
+    // batch #413: same bug class as /authorities (batch #412) — search must
+    // match the language actually displayed on cards (name_en/authority_en/
+    // etc. in English mode, lines 734/742 and ServiceSheet's displayName/
+    // displayAuthority), not hardcoded Arabic fields regardless of isAr.
     return ALL_SERVICES.filter(s => {
       const matchesCat = !selectedCat || s.categorySlug === selectedCat
+      const name = isAr ? s.name_ar : (s.name_en || s.name_ar)
+      const authority = isAr ? s.authority_ar : (s.authority_en || s.authority_ar)
+      const description = isAr ? (s.description || '') : (s.description_en || s.description || '')
+      const category = isAr ? s.category : (s.category_en || s.category)
       const matchesQ = !q ||
-        s.name_ar.toLowerCase().includes(q) ||
-        s.authority_ar.toLowerCase().includes(q) ||
-        (s.description || '').toLowerCase().includes(q) ||
-        s.category.toLowerCase().includes(q)
+        name.toLowerCase().includes(q) ||
+        authority.toLowerCase().includes(q) ||
+        description.toLowerCase().includes(q) ||
+        category.toLowerCase().includes(q)
       return matchesCat && matchesQ
     })
-  }, [search, selectedCat])
+  }, [search, selectedCat, isAr])
 
   const activeCatLabel = selectedCat
     ? (isAr
@@ -745,7 +755,8 @@ export default function ServicesPage() {
                 {/* Meta row */}
                 <div className="svc-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                   {(() => {
-                    const cardFees = isAr ? service.fees : (service.fees_en || service.fees)
+                    const cardFees = (isAr ? service.fees : (service.fees_en || service.fees))
+                      ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
                     return cardFees && (
                       <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                         {cardFees.length > 18 ? cardFees.slice(0, 18) + '…' : cardFees}
@@ -753,7 +764,8 @@ export default function ServicesPage() {
                     )
                   })()}
                   {(() => {
-                    const cardProcessingTime = isAr ? service.processing_time : (service.processing_time_en || service.processing_time)
+                    const cardProcessingTime = (isAr ? service.processing_time : (service.processing_time_en || service.processing_time))
+                      ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
                     return cardProcessingTime && (
                       <span style={{ fontSize: 10, color: '#92400E', background: '#FFFBEB', borderRadius: 999, padding: '2px 8px', border: '1px solid #FDE68A', fontWeight: 600 }}>
                         {cardProcessingTime}

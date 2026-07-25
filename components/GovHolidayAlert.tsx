@@ -21,6 +21,15 @@ interface Holiday {
   nameAr: string
   nameEn: string
   icon: string
+  // Lunar (Hijri) holidays shift ~10-11 days earlier every Gregorian year,
+  // so a fixed month/day pair silently drifts off the real date and starts
+  // firing on the wrong day (or never firing on the actual closure day)
+  // within a year or two. `year` restricts a fixed-date entry to the one
+  // Gregorian year it's actually verified correct for; checkAlert() below
+  // skips it in any other year rather than asserting an unverified date.
+  // Real Hijri-to-Gregorian conversion for future years would need a real
+  // calendar lookup/API, out of scope here.
+  year?: number
 }
 
 const HOLIDAYS: Holiday[] = [
@@ -31,11 +40,11 @@ const HOLIDAYS: Holiday[] = [
   { month: 5,  day: 1,  nameAr: 'عيد العمال',                nameEn: 'Labour Day',               icon: '⚒️' },
   { month: 5,  day: 6,  nameAr: 'عيد الشهداء',               nameEn: "Martyrs' Day",             icon: '🕊️' },
   { month: 5,  day: 25, nameAr: 'يوم المقاومة والتحرير',     nameEn: 'Resistance & Liberation',  icon: '🏳️' },
-  { month: 3,  day: 30, nameAr: 'عيد الفطر',                 nameEn: 'Eid Al-Fitr',             icon: '🌙' },
-  { month: 6,  day: 6,  nameAr: 'عيد الأضحى',                nameEn: 'Eid Al-Adha',             icon: '🌙' },
-  { month: 6,  day: 26, nameAr: 'رأس السنة الهجرية',         nameEn: 'Islamic New Year',         icon: '🌙' },
+  { month: 3,  day: 30, nameAr: 'عيد الفطر',                 nameEn: 'Eid Al-Fitr',             icon: '🌙', year: 2025 },
+  { month: 6,  day: 6,  nameAr: 'عيد الأضحى',                nameEn: 'Eid Al-Adha',             icon: '🌙', year: 2025 },
+  { month: 6,  day: 26, nameAr: 'رأس السنة الهجرية',         nameEn: 'Islamic New Year',         icon: '🌙', year: 2025 },
   { month: 8,  day: 15, nameAr: 'عيد انتقال السيدة العذراء', nameEn: 'Assumption Day',           icon: '🕊️' },
-  { month: 9,  day: 4,  nameAr: 'المولد النبوي الشريف',      nameEn: "Prophet's Birthday",       icon: '🌙' },
+  { month: 9,  day: 4,  nameAr: 'المولد النبوي الشريف',      nameEn: "Prophet's Birthday",       icon: '🌙', year: 2025 },
   { month: 11, day: 1,  nameAr: 'عيد جميع القديسين',         nameEn: "All Saints' Day",          icon: '✝️' },
   { month: 11, day: 22, nameAr: 'عيد الاستقلال',             nameEn: 'Independence Day',         icon: '🇱🇧' },
   { month: 12, day: 25, nameAr: 'عيد الميلاد المجيد',        nameEn: 'Christmas Day',            icon: '🎄' },
@@ -47,7 +56,12 @@ interface AlertInfo {
   nameAr: string
   nameEn: string
   daysAhead: number // 1 = tomorrow, 2 = day after, etc.
-  dateLabel: string
+  // batch #415: store the raw date instead of a pre-formatted string —
+  // checkAlert() runs once in a mount effect before isAr is known, so a
+  // string formatted here would be frozen to whichever locale was hardcoded
+  // (previously always 'en-GB', showing English weekday/month names mid-
+  // sentence even in the Arabic alert text). Format at render time instead.
+  date: Date
 }
 
 function getBeyrouthTomorrow(): Date {
@@ -65,8 +79,6 @@ function checkAlert(): AlertInfo | null {
   const m = tomorrow.getMonth() + 1
   const d = tomorrow.getDate()
 
-  const dateLabel = tomorrow.toLocaleDateString('en-GB', { weekday: 'long', month: 'short', day: 'numeric' })
-
   // Check weekend (Fri/Sat for Lebanon gov offices)
   if (dow === 5 || dow === 6) {
     return {
@@ -75,12 +87,13 @@ function checkAlert(): AlertInfo | null {
       nameAr: dow === 5 ? 'الجمعة — الدوائر الحكومية مغلقة' : 'السبت — الدوائر الحكومية مغلقة',
       nameEn: dow === 5 ? 'Friday — Government offices closed' : 'Saturday — Government offices closed',
       daysAhead: 1,
-      dateLabel,
+      date: tomorrow,
     }
   }
 
-  // Check public holiday
-  const hit = HOLIDAYS.find(h => h.month === m && h.day === d)
+  // Check public holiday (skip year-pinned lunar entries outside their
+  // verified year — see the `year` field comment on the Holiday interface)
+  const hit = HOLIDAYS.find(h => h.month === m && h.day === d && (h.year === undefined || h.year === tomorrow.getFullYear()))
   if (hit) {
     return {
       type: 'holiday',
@@ -88,7 +101,7 @@ function checkAlert(): AlertInfo | null {
       nameAr: hit.nameAr,
       nameEn: hit.nameEn,
       daysAhead: 1,
-      dateLabel,
+      date: tomorrow,
     }
   }
 
@@ -125,6 +138,7 @@ export default function GovHolidayAlert() {
   if (!mounted || !alert || dismissed) return null
 
   const isHoliday = alert.type === 'holiday'
+  const dateLabel = alert.date.toLocaleDateString(isAr ? 'ar-LB' : 'en-GB', { weekday: 'long', month: 'short', day: 'numeric' })
 
   return (
     <div
@@ -149,8 +163,8 @@ export default function GovHolidayAlert() {
         </div>
         <div style={{ fontSize: 10.5, color: isHoliday ? '#78350F' : '#0C4A6E', opacity: 0.8 }}>
           {isAr
-            ? `تأكد من إنهاء معاملاتك قبل الغد (${alert.dateLabel})`
-            : `Plan ahead — offices closed ${alert.dateLabel}`}
+            ? `تأكد من إنهاء معاملاتك قبل الغد (${dateLabel})`
+            : `Plan ahead — offices closed ${dateLabel}`}
         </div>
       </div>
 

@@ -235,6 +235,12 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
               const steps    = isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps)
               const fees     = isAr ? proc.fees : (proc.fees_en || proc.fees)
               const isFree   = fees?.includes('مجان') || fees?.toLowerCase().includes('free')
+              // batch #407: fees uses the "|"-delimited multi-value convention (same as
+              // fees/processingTime/whereToApply elsewhere) — slicing the raw string cut
+              // mid-value before the currency unit (e.g. "طابع أميري بـ 1000 ل.ل. على
+              // الطلب | رسم تحقيق..." → "طابع أميري بـ 1000" at 18 chars). Truncate the
+              // first segment only, so the badge never severs a number from its unit.
+              const feesLead = fees ? fees.split(/\s*\|\s*/)[0].trim() : ''
               const isActive = idx === activeIdx
 
               return (
@@ -289,7 +295,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
                           fontSize: 10, fontWeight: 700,
                           color: isFree ? '#059669' : '#d97706',
                         }}>
-                          · 💰 {isFree ? (isAr ? 'مجاني' : 'Free') : fees.slice(0, 18)}
+                          · 💰 {isFree ? (isAr ? 'مجاني' : 'Free') : (feesLead.length > 22 ? `${feesLead.slice(0, 22)}…` : feesLead)}
                         </span>
                       )}
                     </div>

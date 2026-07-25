@@ -75,6 +75,18 @@ export default function ProcedureNotesPanel({ code, isAr }: Props) {
     }
   }, [code])
 
+  // Cancel any pending debounced auto-save on unmount (or before re-running
+  // for a new `code`). Without this, collapsing the section/card while a
+  // 900ms auto-save is still pending leaves the timer running past unmount;
+  // it later fires against a detached instance and can write stale,
+  // already-superseded text to localStorage over whatever the next-mounted
+  // instance (or the user's blur-triggered save) already saved.
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [code])
+
   const persist = useCallback((value: string) => {
     if (value.trim()) {
       saveNote(code, value)

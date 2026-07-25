@@ -39,9 +39,21 @@ export default function PrintProcedureModal({ procedure: proc, onClose }: Props)
   const steps    = isAr
     ? (proc.steps || [])
     : (proc.steps_en?.length ? proc.steps_en : proc.steps || [])
-  const fees     = isAr ? proc.fees : (proc.fees_en || proc.fees)
-  const time     = isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime)
-  const where    = isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply)
+  // fees / processingTime / whereToApply all use the same "|"-delimited
+  // multi-value convention in the source data (e.g. fees:'480.000 ل.ل. فئة
+  // ثالثة | 960.000 ل.ل. فئة ثانية | 1.800.000 ل.ل. فئة أولى...') — render
+  // with a proper separator instead of the raw pipe character in this
+  // print view, matching the split already applied to these same fields'
+  // other consumers (CostEstimator/ProcedureEstimatedFeeChip/
+  // ProcedureCostBreakdown for fees, ProcedureEstimatedCompletion for
+  // processingTime, and app/procedures/page.tsx + ProcedureComparator for
+  // whereToApply).
+  const fees     = (isAr ? proc.fees : (proc.fees_en || proc.fees))
+    ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
+  const time     = (isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime))
+    ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
+  const where    = (isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply))
+    ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
 
   const handlePrint = () => window.print()
 

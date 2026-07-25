@@ -85,12 +85,14 @@ export default function ProcedureHistoryLog({ code, isAr }: Props) {
     setMounted(true)
 
     // Record "viewed" once per day
-    const viewKey = `dalilak_viewed_today_${code}`
-    const today = getTodayKey()
-    if (localStorage.getItem(viewKey) !== today) {
-      addHistoryEvent(code, 'viewed')
-      localStorage.setItem(viewKey, today)
-    }
+    try {
+      const viewKey = `dalilak_viewed_today_${code}`
+      const today = getTodayKey()
+      if (localStorage.getItem(viewKey) !== today) {
+        addHistoryEvent(code, 'viewed')
+        localStorage.setItem(viewKey, today)
+      }
+    } catch { /* ignore */ }
 
     setLog(loadHistory(code))
 

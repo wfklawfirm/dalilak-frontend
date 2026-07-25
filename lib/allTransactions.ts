@@ -4,7 +4,6 @@
 export interface TxItem {
   id: string; title: string; titleEn: string; ministry: string; ministryEn: string
   ministrySlug: string; icon: string; pdfUrl: string; hasForm: boolean
-  fee: string; duration: string
 }
 export interface MinistryItem {
   slug: string; ar: string; en: string; icon: string; count: number; formsCount: number
@@ -3408,7 +3407,7 @@ const _R:[string,number,0|1,string][]=[
 export const TX_ALL:TxItem[]=_R.map(([title,mid,hf,titleEn],i)=>({
   id:`tx-${i}`,title,titleEn:titleEn||title,
   ministry:_M[mid][0],ministryEn:_M[mid][1],ministrySlug:_M[mid][2],icon:_M[mid][3],
-  pdfUrl:_P[i]||'',hasForm:hf===1,fee:'',duration:''
+  pdfUrl:_P[i]||'',hasForm:hf===1
 }))
 export const TX_WITH_FORMS:TxItem[]=TX_ALL.filter(t=>t.hasForm)
 

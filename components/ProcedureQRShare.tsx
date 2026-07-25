@@ -98,7 +98,18 @@ const V3_EC_CW   = 26
 const V3_SIZE    = 29
 
 function encodeBytes(text: string): number[] {
-  const bytes = Array.from(new TextEncoder().encode(text))
+  // V3_DATA_CW is a hard cap on the codewords this matrix can hold. The
+  // 8-bit count field written below must always match what's actually
+  // encoded — previously the full untruncated byte length was written as
+  // the header, then the codeword array was silently sliced down to
+  // V3_DATA_CW afterwards (see the old trailing .slice(0, V3_DATA_CW))
+  // without ever correcting that header. Any text long enough to overflow
+  // (virtually every real Arabic procedure title once URL-encoded) ended
+  // up with a declared byte count that didn't match the truncated payload
+  // actually present, making the QR code structurally invalid. Truncating
+  // up front keeps the header honest.
+  const maxPayloadBytes = V3_DATA_CW - 2 // reserve ~2 codewords for the mode+count header
+  const bytes = Array.from(new TextEncoder().encode(text)).slice(0, maxPayloadBytes)
   const cw: number[] = []
   // Mode indicator: byte mode = 0100
   // Char count for version ≤9: 8 bits
@@ -123,12 +134,21 @@ function encodeBytes(text: string): number[] {
   void header
 }
 
-// Finder pattern (7×7)
+// Finder pattern (7×7). r/c range from -1 to 7: the 7×7 finder square
+// itself occupies 0-6, while -1/7 is the white separator ring just
+// outside it. inBorder previously used r/c === -1/7 (the separator
+// coordinates) instead of the finder square's own outer ring (0/6),
+// so the pattern rendered inverted — the finder's black outer square
+// was never drawn, and a false black ring was drawn one cell further
+// out where the white separator must be. Every generated QR code's
+// finder patterns failed the standard 1:1:3:1:1 shape real scanners
+// look for, in addition to the previously-fixed format-info bug.
 function placeFinderPattern(m: Matrix, row: number, col: number) {
   for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++) {
     const mr = row + r, mc = col + c
     if (mr < 0 || mr >= V3_SIZE || mc < 0 || mc >= V3_SIZE) continue
-    const inBorder = r === -1 || r === 7 || c === -1 || c === 7
+    const within   = r >= 0 && r <= 6 && c >= 0 && c <= 6
+    const inBorder = within && (r === 0 || r === 6 || c === 0 || c === 6)
     const inInner  = r >= 1 && r <= 5 && c >= 1 && c <= 5
     const inCore   = r >= 2 && r <= 4 && c >= 2 && c <= 4
     m[mr][mc] = (inBorder || inCore) && !inInner ? 1 : inCore ? 1 : 0
@@ -174,11 +194,13 @@ function generateQRMatrix(text: string): Matrix {
   m[size - 8][8] = 1; reserved[size - 8][8] = 1
 
   // Format info (mask 0, ECC M = 00, mask 000 → pattern bits 101010000010010)
-  // Format bits for ECC M (00) + mask 0 (000) with BCH = 101010000010010
+  // fmtBits IS already the final BCH-masked 15-bit format string (per the
+  // comment above) — it must be written as-is. It was previously being
+  // XORed against an identical copy of itself (fmtXor), which always
+  // produces all-zero bits (b ^ b === 0), silently corrupting the format
+  // info of every generated QR code and making it unscannable.
   const fmtBits = [1,0,1,0,1,0,0,0,0,0,1,0,0,1,0]
-  // XOR with 101010000010010
-  const fmtXor  = [1,0,1,0,1,0,0,0,0,0,1,0,0,1,0]
-  const fmt = fmtBits.map((b, i) => b ^ fmtXor[i])
+  const fmt = fmtBits
 
   // Place format info
   for (let i = 0; i < 6; i++) { m[8][i] = fmt[i] as Module; m[i][8] = fmt[i] as Module }

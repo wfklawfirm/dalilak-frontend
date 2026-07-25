@@ -21,12 +21,25 @@ interface MinistryEntry {
   icon: string
 }
 
+// batch #409: lib/enrichedProcedures.ts's real ministrySlug values use the
+// hyphenated forms 'general-security' and 'public-works' (confirmed as the
+// app's actual convention — app/procedures/page.tsx's own ministry filter
+// chips use these exact hyphenated slugs), but this map only had the
+// no-hyphen keys 'security'/'publicworks' — so 6 real procedures (3 using
+// 'general-security', 2 using 'public-works', verified via Node against
+// the live dataset) silently got no "Responsible Ministry" contact card at
+// all. Added hyphenated aliases pointing at the same verified contact info
+// already curated below (not new/guessed data).
 const SLUG_MAP: Record<string, MinistryEntry> = {
   interior: {
     ar: 'وزارة الداخلية والبلديات', en: 'Ministry of Interior',
     phone: '01-821001', hours: '8:00–14:30', icon: '🏛️',
   },
   security: {
+    ar: 'الأمن العام', en: 'General Security',
+    phone: '01-425610', hours: '8:00–14:00', icon: '🛂',
+  },
+  'general-security': {
     ar: 'الأمن العام', en: 'General Security',
     phone: '01-425610', hours: '8:00–14:00', icon: '🛂',
   },
@@ -59,6 +72,10 @@ const SLUG_MAP: Record<string, MinistryEntry> = {
     phone: '01-556800', hours: '8:00–14:30', icon: '👷',
   },
   publicworks: {
+    ar: 'وزارة الأشغال العامة والنقل', en: 'Ministry of Public Works',
+    phone: '05-455600', hours: '8:00–14:30', icon: '🏗️',
+  },
+  'public-works': {
     ar: 'وزارة الأشغال العامة والنقل', en: 'Ministry of Public Works',
     phone: '05-455600', hours: '8:00–14:30', icon: '🏗️',
   },

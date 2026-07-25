@@ -47,7 +47,40 @@ function parseLines(raw: string): FeeLine[] {
   // Split on newlines, then on | or dash at start of a segment
   const segments = raw
     .split(/\n|(?<=[^\d])\|(?=[^\d])/)  // split on \n and | (but not inside numbers like 1|2)
-    .flatMap(seg => seg.split(/(?<=\w)\s*—\s*(?=\w)/)) // em-dash between items
+    // em-dash between items. Lookbehind includes "." alongside \w/Arabic
+    // range because real Arabic fee clauses end in a period right before
+    // the em-dash (e.g. "...بقيمة 1000 ل.ل. — رسم الانتقال..." at
+    // lib/enrichedProcedures.ts line 668) — without "." in the lookbehind
+    // this never matched for Arabic text (only ASCII \w), so tiered
+    // Arabic fees using an em-dash separator stayed merged into one
+    // segment.
+    .flatMap(seg => seg.split(/(?<=[\w؀-ۿ.])\s*—\s*(?=[\w؀-ۿ])/))
+    // Real fee data (lib/enrichedProcedures.ts, e.g. the "1.500.000 ل.ل. للعامل
+    // من الفئة الأولى.- رسم بـ 800.000 ل.ل...." tiered-fee strings) uses a
+    // plain hyphen as an inline bullet with NO newline/pipe/em-dash between
+    // items — without this split the whole multi-tier fee text collapses
+    // into one segment, and classify() below sees the trailing "طابع أميري"
+    // clause and misclassifies the entire (often much larger) fee as
+    // stamp-only. Split on a hyphen that follows a period/Arabic char and
+    // precedes a new word (mirrors the em-dash rule above). Bare digit was
+    // removed from the lookbehind — it over-matched compound "N-word"
+    // spans like "24-hour" (real data at line 1095), incorrectly splitting
+    // them into "24" / "hour urgent service...".
+    .flatMap(seg => seg.split(/(?<=[.؀-ۿ])-\s*(?=[؀-ۿA-Za-z])/))
+    // Space-padded hyphen separator (" - "), the dominant multi-item
+    // separator in fees_en (e.g. line 336: "...worker. - A fee of
+    // 800,000 LBP..." and line 658: "Revenue stamp of 1,000 LBP - the
+    // transfer tax is calculated..."). Neither rule above matched this —
+    // the em-dash rule only matches em-dashes, and the tight-hyphen rule
+    // above requires no space between the preceding char and the hyphen —
+    // so these strings collapsed into one segment and, since they also
+    // contain "stamp"/"طابع", were misclassified as stamp-only, hiding a
+    // potentially much larger variable/fee clause. Verified against all
+    // 142 real fees/fees_en strings in lib/enrichedProcedures.ts: 27
+    // strings now split differently (7 previously mislabeled as
+    // stamp-only now correctly split out the larger fee), zero
+    // regressions (no string produces fewer segments than before).
+    .flatMap(seg => seg.split(/\s+-\s+(?=[؀-ۿA-Za-z0-9])/))
     .map(s => s.replace(/^[-–•]\s*/, '').trim())
     .filter(s => s.length > 2)
 

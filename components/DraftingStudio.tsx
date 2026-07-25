@@ -165,16 +165,26 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
   }
 
   const buildPrompt = () => {
+    // batch #414: this was hardcoded to Arabic regardless of `isAr`, unlike
+    // every other piece of UI in this component (template titles, field
+    // labels, buttons all already branch on isAr) — an English-mode user
+    // filling in English-labeled fields got a prompt built entirely in
+    // Arabic, ending with an explicit "write in Arabic only" instruction,
+    // silently forcing an Arabic-only response regardless of their choice.
     const tpl = TEMPLATES.find(t => t.slug === selectedSlug)
-    const lines = [`أنشئ مسودة ${tpl?.titleAr || 'وثيقة قانونية'} باللغة العربية بأسلوب قانوني رسمي لبناني.`]
+    const lines = [isAr
+      ? `أنشئ مسودة ${tpl?.titleAr || 'وثيقة قانونية'} باللغة العربية بأسلوب قانوني رسمي لبناني.`
+      : `Draft a ${tpl?.titleEn || 'legal document'} in English, in a formal Lebanese legal style.`]
     lines.push('')
-    lines.push('المعلومات المدخلة:')
+    lines.push(isAr ? 'المعلومات المدخلة:' : 'Entered information:')
     for (const field of fields) {
       const val = fieldValues[field.key]
-      if (val) lines.push(`- ${field.labelAr}: ${val}`)
+      if (val) lines.push(`- ${isAr ? field.labelAr : field.labelEn}: ${val}`)
     }
     lines.push('')
-    lines.push('المطلوب: وثيقة منسقة تشمل المقدمة والبنود والتوقيعات. اكتب بالعربية فقط.')
+    lines.push(isAr
+      ? 'المطلوب: وثيقة منسقة تشمل المقدمة والبنود والتوقيعات. اكتب بالعربية فقط.'
+      : 'Required: a formatted document including an introduction, clauses, and signatures. Write in English only.')
     return lines.join('\n')
   }
 

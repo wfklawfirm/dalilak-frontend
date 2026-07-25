@@ -32,6 +32,14 @@ function daysUntil(dateStr: string): number {
   return Math.round((d.getTime() - now.getTime()) / 86_400_000)
 }
 
+// Arabic number-agreement for "يوم" (day): 1 → مفرد, 2 → مثنى, 3-10 → جمع, 11+ → تمييز مفرد منصوب
+function arDays(n: number): string {
+  if (n === 1) return 'يوم واحد'
+  if (n === 2) return 'يومين'
+  if (n >= 3 && n <= 10) return `${n} أيام`
+  return `${n} يوماً`
+}
+
 interface NotiItem {
   id: string
   icon: string
@@ -67,7 +75,7 @@ function loadItems(): NotiItem[] {
           const [ar, en] = DOC_LABELS[id] || [id, id]
           items.push({
             id: `doc_${id}`, icon: '📄', labelAr: ar, labelEn: en, days, type: 'doc',
-            promptAr: `كيف أجدد ${ar}؟ تنتهي صلاحيته خلال ${days} يوم.`,
+            promptAr: `كيف أجدد ${ar}؟ تنتهي صلاحيته خلال ${arDays(days)}.`,
             promptEn: `How do I renew my ${en}? It expires in ${days} day(s).`,
           })
         }
@@ -85,7 +93,7 @@ function loadItems(): NotiItem[] {
         if (days >= 0 && days <= APPT_DAYS) {
           items.push({
             id: a.id, icon: '📅', labelAr: a.titleAr, labelEn: a.titleEn, days, type: 'appt',
-            promptAr: `ما هي المستندات والمتطلبات لـ«${a.titleAr}»؟ الموعد بعد ${days} يوم.`,
+            promptAr: `ما هي المستندات والمتطلبات لـ«${a.titleAr}»؟ الموعد بعد ${arDays(days)}.`,
             promptEn: `What do I need for "${a.titleEn}"? The appointment is in ${days} day(s).`,
           })
         }
@@ -213,7 +221,7 @@ export default function NotificationBell({ onAsk }: Props) {
               const color = urgencyColor(item.days)
               const dayLabel = item.days === 0
                 ? (isAr ? 'اليوم' : 'Today')
-                : isAr ? `خلال ${item.days} يوم` : `in ${item.days} day${item.days > 1 ? 's' : ''}`
+                : isAr ? `خلال ${arDays(item.days)}` : `in ${item.days} day${item.days > 1 ? 's' : ''}`
               return (
                 <button
                   key={item.id}

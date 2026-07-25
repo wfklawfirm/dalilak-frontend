@@ -75,6 +75,14 @@ import ProcedureSectionGroup from '@/components/ProcedureSectionGroup'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
 const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
+// TX_MINISTRIES has 52 raw entries but many share the same slug (e.g. 'other'
+// appears ~20 times, 'labor'/'interior'/'finance'/etc. each appear twice) —
+// each ministry was split by sub-department/portal source during data
+// generation and never deduplicated. app/forms/page.tsx already dedupes by
+// slug for its own ministry list; mirror that here for the authority count
+// so the stats strip shows the real number of distinct authorities, not the
+// raw (inflated) row count.
+const UNIQUE_AUTHORITY_COUNT = new Set(TX_MINISTRIES.map(m => m.slug)).size
 
 // Ministry filter data
 const MINISTRY_CHIPS = [
@@ -162,7 +170,10 @@ export default function ProceduresPage() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
   const [ministryFilter, setMinistryFilter] = useState('all')
-  const [enrichedMinistryLabel, setEnrichedMinistryLabel] = useState('')
+  // batch #429: keyed by the language-independent ministrySlug (not the
+  // localized ministry label) so the selection survives an in-place
+  // language toggle — see ProcedureTagSearch.tsx for the failure this fixes.
+  const [enrichedMinistrySlug, setEnrichedMinistrySlug] = useState('')
   const [printProc, setPrintProc] = useState<EnrichedProcedure | null>(null)
   const [searchModalOpen, setSearchModalOpen] = useState(false)
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
@@ -190,11 +201,8 @@ export default function ProceduresPage() {
     if (ministryFilter !== 'all') {
       list = list.filter(p => p.ministrySlug === ministryFilter)
     }
-    if (enrichedMinistryLabel) {
-      list = list.filter(p =>
-        p.ministry === enrichedMinistryLabel ||
-        p.ministry_en === enrichedMinistryLabel
-      )
+    if (enrichedMinistrySlug) {
+      list = list.filter(p => p.ministrySlug === enrichedMinistrySlug)
     }
     // Advanced filters
     if (advFilters.hasForm !== 'any') {
@@ -222,7 +230,7 @@ export default function ProceduresPage() {
       } catch { /* skip in SSR */ }
     }
     return list
-  }, [search, ministryFilter, enrichedMinistryLabel, advFilters])
+  }, [search, ministryFilter, enrichedMinistrySlug, advFilters])
 
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
@@ -273,7 +281,7 @@ export default function ProceduresPage() {
         <StatsRow stats={[
           { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
           { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services' },
-          { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
+          { value: String(UNIQUE_AUTHORITY_COUNT) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
         ]} />
 
         {/* Ministry filter chips — v4.0: flat outline pills */}
@@ -551,8 +559,8 @@ export default function ProceduresPage() {
             {filteredEnriched.length > 0 && (
               <div style={{ marginBottom: 6 }}>
                 <ProcedureTagSearch
-                  onSelect={setEnrichedMinistryLabel}
-                  selectedMinistry={enrichedMinistryLabel}
+                  onSelect={setEnrichedMinistrySlug}
+                  selectedMinistry={enrichedMinistrySlug}
                   isAr={isAr}
                 />
               </div>
@@ -565,9 +573,23 @@ export default function ProceduresPage() {
               const displayDescription = isAr ? proc.description : (proc.description_en || proc.description)
               const displayDocs = isAr ? proc.requiredDocuments : (proc.requiredDocuments_en?.length ? proc.requiredDocuments_en : proc.requiredDocuments)
               const displaySteps = isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps)
-              const displayFees = isAr ? proc.fees : (proc.fees_en || proc.fees)
-              const displayProcessingTime = isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime)
-              const displayWhereToApply = isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply)
+              // fees, processingTime, and whereToApply all sometimes list
+              // multiple values joined with " | " in the source data (e.g.
+              // fees:'رسم 480.000 ل.ل. فئة ثالثة | 960.000 ل.ل. فئة ثانية | ...'
+              // and processingTime:'فوراً | فوراً | يوم واحد | 3 – 4 أيام' in
+              // lib/enrichedProcedures.ts) — render all three with a proper
+              // separator instead of the raw pipe character. whereToApply
+              // already had this treatment; fees/processingTime were
+              // rendered raw everywhere they're consumed below (the
+              // "Processing time" chip, ProcedureFeeHistory,
+              // ProcedureCopySummaryLine, CostEstimator) until this fix.
+              const displayFees = (isAr ? proc.fees : (proc.fees_en || proc.fees))
+                ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
+              const displayProcessingTime = (isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime))
+                ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
+              const rawWhereToApply = isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply)
+              const displayWhereToApply = rawWhereToApply
+                ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
               return (
               <div key={proc.code} id={`proc-${proc.code}`} className="proc-card" style={{
                 background: 'var(--surface)', border: `1px solid ${expandedProc === proc.code ? 'var(--brand)' : 'var(--border)'}`,
@@ -754,7 +776,7 @@ export default function ProceduresPage() {
                           isAr={isAr}
                         />
                         <ProcedureDocumentPhotoTips isAr={isAr} />
-                        <ProcedureFeeHistory code={proc.code} fees={isAr ? proc.fees : proc.fees_en} isAr={isAr} />
+                        <ProcedureFeeHistory code={proc.code} fees={displayFees} isAr={isAr} />
                       </ProcedureSectionGroup>
                     )}
 

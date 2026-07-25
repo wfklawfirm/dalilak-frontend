@@ -35,6 +35,7 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
   const [toast, setToast]         = useState('')
   const recRef = useRef<AnySpeechRecognition>(null)
   const pulseTimer = useRef<ReturnType<typeof setInterval> | null>(null)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -45,7 +46,8 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
 
   function showToast(msg: string) {
     setToast(msg)
-    setTimeout(() => setToast(''), 3000)
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => { setToast(''); toastTimer.current = null }, 3000)
   }
 
   function startListening() {
@@ -94,7 +96,10 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
   }
 
   // Cleanup on unmount
-  useEffect(() => () => stopListening(), [])
+  useEffect(() => () => {
+    stopListening()
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+  }, [])
 
   // Always render after mount; on unsupported browsers we show a fallback toast
   if (!mounted) return null

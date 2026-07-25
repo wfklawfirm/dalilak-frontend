@@ -181,7 +181,10 @@ export default function FormsPage() {
                 background: ministryFilter === m.slug ? 'var(--brand-soft)' : '#fff',
                 color: ministryFilter === m.slug ? 'var(--brand)' : 'var(--text-2)',
               }}>
-                {m.ar.length > 22 ? m.ar.slice(0, 22) + '...' : m.ar}
+                {(() => {
+                  const label = isAr ? m.ar : m.en
+                  return label.length > 22 ? label.slice(0, 22) + '...' : label
+                })()}
               </button>
             ))}
           </div>
@@ -270,8 +273,6 @@ export default function FormsPage() {
                       <div style={{ fontSize: 10.5, color: 'var(--brand)', fontWeight: 600, marginBottom: 6 }}>{isAr ? tx.ministry : (tx.ministryEn || tx.ministry)}</div>
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A', fontWeight: 600 }}>{isAr ? 'نموذج متاح' : 'Form available'}</span>
-                        {tx.fee && <span style={{ fontSize: 9.5, color: '#854D0E', background: '#FFFBEB', borderRadius: 6, padding: '1px 7px', border: '1px solid #FEF3C7' }}>{tx.fee}</span>}
-                        {tx.duration && <span style={{ fontSize: 9.5, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 6, padding: '1px 7px', border: '1px solid var(--border-brand)' }}>{tx.duration}</span>}
                       </div>
                     </div>
                   </div>

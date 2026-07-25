@@ -16,6 +16,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/LanguageContext'
+import PageBackHeader from '@/components/PageBackHeader'
 
 const SECTIONS_AR = [
   {
@@ -62,27 +63,11 @@ export default function PrivacyPolicyPage() {
 
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 48 }}>
-      <div style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 560, margin: '0 auto', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label={isAr ? 'رجوع' : 'Back'}
-            style={{
-              width: 38, height: 38, borderRadius: 9, border: '1.5px solid var(--border)',
-              background: 'transparent', cursor: 'pointer', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}
-          >
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-1)" strokeWidth="2.3">
-              <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} />
-            </svg>
-          </button>
-          <h1 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-1)', fontFamily: 'inherit' }}>
-            {isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}
-          </h1>
-        </div>
-      </div>
+      <PageBackHeader
+        isAr={isAr}
+        onBack={() => router.back()}
+        title={isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}
+      />
 
       <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '20px 16px' }}>
         <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.7, margin: '0 0 24px' }}>

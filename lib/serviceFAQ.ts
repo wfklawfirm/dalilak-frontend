@@ -16,7 +16,7 @@ export interface FAQItem {
   chatPrompt: string
 }
 
-export const SERVICE_FAQ: FAQItem[] = [
+const SERVICE_FAQ_RAW: FAQItem[] = [
   {
     id:'emg_001',
     category:'الطوارئ والأرقام المهمة',
@@ -860,6 +860,16 @@ export const SERVICE_FAQ: FAQItem[] = [
     chatPrompt:'اعطني معلومات عن: برامج الدعم الاجتماعي الحكومية والدولية في لبنان في لبنان',
   },
 ]
+
+// 8 raw records (faq_001-faq_008) lost their title/summary/type during data
+// generation — they still carry real steps/requiredDocuments/authority data
+// but no title exists anywhere to restore, so they're filtered out here
+// rather than shown as blank cards on /faq or fed a malformed AI prompt
+// (chatPrompt for these was left as 'اعطني معلومات عن:  في لبنان' with no
+// actual topic). This single filter fixes all 4 real consumers of
+// SERVICE_FAQ (app/faq/page.tsx, ProcedureFAQChips, GlobalSearch,
+// HomepageFeaturedFAQ) at once.
+export const SERVICE_FAQ: FAQItem[] = SERVICE_FAQ_RAW.filter(f => f.title)
 
 export const FAQ_CATEGORIES: string[] = Array.from(new Set(SERVICE_FAQ.map(f => f.category)))
 

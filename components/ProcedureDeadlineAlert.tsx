@@ -48,7 +48,18 @@ interface DeadlineItem {
 function scanDeadlines(): DeadlineItem[] {
   const items: DeadlineItem[] = []
   const today = new Date(); today.setHours(0,0,0,0)
-  const snoozeToday = today.toISOString().slice(0,10)
+  // Snooze lookup key must use the same "local date, then ISO-stringify the
+  // current instant" technique as snooze() below (new Date().toISOString()),
+  // NOT today.toISOString() — today has been rolled back to local midnight
+  // via setHours(0,0,0,0), and converting THAT instant to a UTC ISO string
+  // rolls it back into the previous UTC calendar day for any positive-UTC
+  // timezone (Lebanon is UTC+2/+3). Since this is a Lebanon-only app, that
+  // mismatch previously happened for essentially the entire day (all but a
+  // ~2-3h window right after local midnight): a user tapping "Snooze 1 day"
+  // wrote key `..._{today}` but the very next scan looked up
+  // `..._{yesterday}`, found nothing, and the alert reappeared immediately —
+  // the snooze button was effectively non-functional for the whole user base.
+  const snoozeToday = new Date().toISOString().slice(0,10)
 
   try {
     for (let i = 0; i < localStorage.length; i++) {

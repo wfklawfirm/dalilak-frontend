@@ -5,13 +5,15 @@
  * modal/dialog/sheet instead of leaking out to the page content behind it.
  *
  * WCAG 2.4.3 (Focus Order) gap found in batch #360's keyboard tab-order
- * audit: every role="dialog" component in this app (13 found — GlobalSearch,
- * MobileMenu, ServiceGroupSheet, MobileModeSheet, GuidedFlow, TransactionStarter,
- * ProcedureSearchModal, ProcedureFilterDrawer, PrintProcedureModal,
- * EscalationModal, DocumentIntelligenceView, AccessibilityBar,
- * FloatingHelpButton) already handles Escape-to-close and body-scroll-lock,
- * but none of them trap Tab — a keyboard user can Tab straight out of the
- * open dialog into background page elements hidden behind the overlay.
+ * audit: every role="dialog" component in this app at the time (13 found —
+ * GlobalSearch, MobileMenu, ServiceGroupSheet, MobileModeSheet, GuidedFlow,
+ * TransactionStarter, ProcedureSearchModal, ProcedureFilterDrawer,
+ * PrintProcedureModal, DocumentIntelligenceView, AccessibilityBar,
+ * FloatingHelpButton — EscalationModal was in the original list but was
+ * confirmed dead/unreachable and removed in batch #386) already handled
+ * Escape-to-close and body-scroll-lock, but none of them trapped Tab — a
+ * keyboard user could Tab straight out of the open dialog into background
+ * page elements hidden behind the overlay.
  *
  * Usage:
  *   const dialogRef = useRef<HTMLDivElement>(null)

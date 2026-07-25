@@ -38,13 +38,17 @@ function getSuggestions(proc: EnrichedProcedure, isAr: boolean): EnrichedProcedu
       .map(w => w.toLowerCase())
   )
 
-  const keywordMatch = others.filter(p => {
+  // Per the documented algorithm, keyword matching is only meant to
+  // supplement results when there are fewer than 2 same-ministry matches —
+  // otherwise it dilutes a curated same-ministry list with loosely related
+  // procedures from unrelated ministries.
+  const keywordMatch = sameMinistry.length >= 2 ? [] : others.filter(p => {
     if (p.ministry === proc.ministry) return false // already in sameMinistry
     const words = (isAr ? p.title : (p.title_en || p.title))
       .split(/\s+/)
       .map(w => w.toLowerCase())
     const overlap = words.filter(w => titleWords.has(w))
-    return overlap.length >= 1
+    return overlap.length >= 2
   })
 
   // Combine: ministry first, then keyword, deduplicate

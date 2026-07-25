@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken, isAdmin } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
+import ModalCloseButton from '@/components/ModalCloseButton'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
@@ -80,6 +81,7 @@ export default function ContentGovernancePage() {
         : `${API_URL}/admin/content?status=${filterStatus}`
       const res = await fetch(url, { headers: authHeaders() })
       const data = await res.json()
+      if (!res.ok) throw new Error(data?.detail || (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content'))
       setItems(data.items || [])
     } catch (err) { setLoadError(err instanceof Error ? err.message : (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content')) }
     finally { setLoading(false) }
@@ -239,7 +241,7 @@ export default function ContentGovernancePage() {
                       <span style={{ fontSize: 11, padding: '2px 9px', borderRadius: 99, fontWeight: 700, ...STATUS_CONFIG[item.status]?.style }}>
                         {STATUS_CONFIG[item.status]?.label || item.status}
                       </span>
-                      <span style={{ fontSize: 11, color: '#918B82' }}>{new Date(item.updated_at).toLocaleDateString('ar-LB')}</span>
+                      <span style={{ fontSize: 11, color: '#918B82' }}>{new Date(item.updated_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US')}</span>
                     </div>
                     <h3 style={{ fontSize: 13, fontWeight: 800, color: '#191713', margin: '0 0 4px', textAlign: 'right' }}>{item.title_ar}</h3>
                     <p style={{ fontSize: 12, color: '#69645C', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{item.body_ar}</p>
@@ -266,25 +268,23 @@ export default function ContentGovernancePage() {
                   <span style={{ fontSize: 12, padding: '3px 12px', borderRadius: 99, fontWeight: 700, ...STATUS_CONFIG[selected.status]?.style }}>
                     {STATUS_CONFIG[selected.status]?.label}
                   </span>
-                  <button type="button" onClick={() => setSelected(null)} aria-label="إغلاق" style={{ width: 26, height: 26, borderRadius: '50%', background: '#E6E2DC', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C' }}>
-                    <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-                  </button>
+                  <ModalCloseButton onClick={() => setSelected(null)} isAr={isAr} size={26} iconSize={10} style={{ transition: 'none' }} />
                 </div>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#191713', margin: '0 0 10px' }}>{selected.title_ar}</h2>
                 <p style={{ fontSize: 13, color: '#69645C', lineHeight: 1.7, margin: '0 0 10px' }}>{selected.body_ar}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#918B82' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                     <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    أُنشئ: {new Date(selected.created_at).toLocaleString('ar-LB')}
+                    {isAr ? 'أُنشئ' : 'Created'}: {new Date(selected.created_at).toLocaleString(isAr ? 'ar-LB' : 'en-US')}
                   </span>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                     <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    آخر تعديل: {new Date(selected.updated_at).toLocaleString('ar-LB')}
+                    {isAr ? 'آخر تعديل' : 'Last modified'}: {new Date(selected.updated_at).toLocaleString(isAr ? 'ar-LB' : 'en-US')}
                   </span>
                   {selected.published_at && (
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                       <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18"/></svg>
-                      نُشر: {new Date(selected.published_at).toLocaleString('ar-LB')}
+                      {isAr ? 'نُشر' : 'Published'}: {new Date(selected.published_at).toLocaleString(isAr ? 'ar-LB' : 'en-US')}
                     </span>
                   )}
                 </div>
@@ -368,15 +368,15 @@ export default function ContentGovernancePage() {
                     <div key={i} style={{ fontSize: 12, padding: '10px 14px', borderRadius: 12, border: '1px solid #E6E2DC', background: '#FAFAF8', animation: 'cgAuditItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 20) * 0.03}s` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <span style={{ fontWeight: 700, color: '#741622' }}>{entry.action}</span>
-                        <span style={{ color: '#918B82', fontSize: 11 }}>{new Date(entry.ts).toLocaleString('ar-LB')}</span>
+                        <span style={{ color: '#918B82', fontSize: 11 }}>{new Date(entry.ts).toLocaleString(isAr ? 'ar-LB' : 'en-US')}</span>
                       </div>
                       <div style={{ color: '#69645C', fontSize: 11 }}>
-                        بواسطة: {entry.actor}
+                        {isAr ? 'بواسطة' : 'By'}: {entry.actor}
                         {entry.note && <span> · {entry.note}</span>}
                       </div>
                       {(entry.before || entry.after) && (
                         <div style={{ marginTop: 4, color: '#918B82', fontSize: 11 }}>
-                          {entry.before && <span>من: {entry.before} </span>}
+                          {entry.before && <span>{isAr ? 'من' : 'From'}: {entry.before} </span>}
                           {entry.after && <span>→ {entry.after}</span>}
                         </div>
                       )}
@@ -394,9 +394,7 @@ export default function ContentGovernancePage() {
             <div role="dialog" aria-modal="true" aria-label={isAr ? 'إنشاء محتوى جديد' : 'Create new content'} onKeyDown={e => { if (e.key === 'Escape') setShowCreate(false) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 500, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', animation: 'cgModalIn 0.3s cubic-bezier(0.22,1,0.36,1) both' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#191713', margin: 0 }}>{isAr ? 'إنشاء محتوى جديد' : 'Create new content'}</h2>
-                <button type="button" onClick={() => setShowCreate(false)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C', transition: 'background 0.12s' }}>
-                  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-                </button>
+                <ModalCloseButton onClick={() => setShowCreate(false)} isAr={isAr} iconSize={12} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div>

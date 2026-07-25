@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getToken, getUser, authHeaders, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend.onrender.com'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 // ── Section tabs ───────────────────────────────────────────────────────────────
 const SECTIONS = [

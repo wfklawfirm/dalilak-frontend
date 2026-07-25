@@ -15,6 +15,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import { getStartDate } from '@/components/ProcedureStartButton'
 
 const LS_COMPLETE = 'dalilak_completed_'
 const LS_STARTED  = 'dalilak_started_'
@@ -53,12 +54,23 @@ interface Props {
 
 export default function ProcedureCompletionBadge({ code, isAr }: Props) {
   const [completedDate, setCompletedDate] = useState<string | null>(null)
+  const [hasStarted, setHasStarted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    function refresh() {
+      setCompletedDate(getCompletionDate(code))
+      setHasStarted(!!getStartDate(code))
+    }
     setMounted(true)
-    setCompletedDate(getCompletionDate(code))
+    refresh()
+    window.addEventListener('dalilak_saved_change', refresh)
+    window.addEventListener('storage', refresh)
+    return () => {
+      window.removeEventListener('dalilak_saved_change', refresh)
+      window.removeEventListener('storage', refresh)
+    }
   }, [code])
 
   function handleComplete() {
@@ -74,6 +86,7 @@ export default function ProcedureCompletionBadge({ code, isAr }: Props) {
   }
 
   if (!mounted) return null
+  if (!hasStarted && !completedDate) return null
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex' }}>

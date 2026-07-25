@@ -16,6 +16,17 @@
 
 import React, { useState, useEffect } from 'react'
 
+// Arabic number-agreement for "رسالة" (message): 1 -> مفرد, 2 -> مثنى,
+// 3-10 -> جمع ("رسائل"), 11+ -> تمييز مفرد منصوب. The chip only ever shows
+// at messageCount >= threshold (default 10), so 10 is the most common
+// real-world value and needs the plural form, not the bare singular noun.
+function arMessages(n: number): string {
+  if (n === 1) return 'رسالة واحدة'
+  if (n === 2) return 'رسالتين'
+  if (n >= 3 && n <= 10) return `${n} رسائل`
+  return `${n} رسالة`
+}
+
 interface Props {
   messageCount: number
   isAr: boolean
@@ -71,7 +82,7 @@ export default function ChatSessionSummaryChip({
         <span style={{ fontSize: 12 }}>📋</span>
         <span style={{ fontSize: 10.5, fontWeight: 700, color: '#5B21B6' }}>
           {isAr
-            ? `${messageCount} رسالة — اضغط لتلخيص الجلسة`
+            ? `${arMessages(messageCount)} — اضغط لتلخيص الجلسة`
             : `${messageCount} messages — tap to summarize`}
         </span>
         <button

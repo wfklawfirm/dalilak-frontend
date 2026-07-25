@@ -29,12 +29,17 @@ function parseProcessingDays(pt: string): number | null {
   if (!pt) return null
   const lower = pt.toLowerCase()
 
-  // Named durations — Arabic
-  if (lower.includes('يوم واحد') || lower.includes('يوم عمل واحد')) return 1
-  if (lower.includes('أسبوعين') || lower.includes('اسبوعين'))        return 14
-  if (lower.includes('أسبوع') || lower.includes('اسبوع'))             return 7
-
-  // Numbers with units — Arabic
+  // Numbers with units are checked FIRST (before the named-phrase shortcuts
+  // below), because real data (lib/enrichedProcedures.ts) uses tiered/range
+  // strings like "فوراً | فوراً | يوم واحد | 3 – 4 أيام" or
+  // "يوم واحد — 3 أيام عمل" — if "يوم واحد" ("one day") matched first, it
+  // would short-circuit and return 1 for the whole string even though a
+  // later, larger, more relevant tier ("4 أيام"/"3 أيام") is present. Since
+  // .match() with no /g flag returns the FIRST digit+unit match in the
+  // string, and "يوم واحد" itself contains no digit, checking these first
+  // naturally finds the meaningful explicit number when one exists, while
+  // still falling through to the named-phrase checks for genuinely
+  // digit-free strings like a bare "يوم واحد".
   const arDayMatch   = pt.match(/(\d+)\s*(?:أيام|يوم)/)
   const arWeekMatch  = pt.match(/(\d+)\s*(?:أسابيع|أسبوع)/)
   const arMonthMatch = pt.match(/(\d+)\s*(?:أشهر|شهر|أشهر)/)
@@ -50,6 +55,18 @@ function parseProcessingDays(pt: string): number | null {
   if (enWeekMatch)  return parseInt(enWeekMatch[1], 10) * 7
   if (arMonthMatch) return parseInt(arMonthMatch[1], 10) * 30
   if (enMonthMatch) return parseInt(enMonthMatch[1], 10) * 30
+
+  // Named durations — Arabic (only reached when no explicit number found)
+  if (lower.includes('يوم واحد') || lower.includes('يوم عمل واحد')) return 1
+  if (lower.includes('أسبوعين') || lower.includes('اسبوعين'))        return 14
+  if (lower.includes('أسبوع') || lower.includes('اسبوع'))             return 7
+  // Arabic dual "two months" (شهرين/شهران) both contain the substring شهر,
+  // so without this explicit check they'd fall through to the generic
+  // شهر → 30 fallback below and be silently halved. Real shipped data in
+  // lib/enrichedProcedures.ts uses exactly these forms (e.g. processingTime:
+  // 'شهران' for agr132-02/agr132-03/agr12-03). Same pattern already used
+  // above for أسبوعين ("two weeks") vs أسبوع ("one week").
+  if (lower.includes('شهرين') || lower.includes('شهران'))            return 60
 
   // Single named — Arabic months/weeks
   if (lower.includes('شهر'))  return 30

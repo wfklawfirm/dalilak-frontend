@@ -37,13 +37,20 @@ function parseFeesAr(fees: string): ParseResult {
   if (f.includes('مجاني') || f.includes('مجانا') || f.includes('بدون رسوم') || f.includes('دون رسوم')) {
     return { cat: 'free', maxAmount: null }
   }
-  if ((f.includes('طابع') || f.includes('stamp')) && !f.match(/\d{5,}/)) {
+  // Real fee data (lib/enrichedProcedures.ts) groups thousands with BOTH
+  // commas and periods (e.g. "1.800.000 ل.ل."). A period-grouped amount
+  // splits into 3-digit chunks, so a bare /\d{5,}/ guard never fires even
+  // when a real, large fee is present — misclassifying e.g. a procedure
+  // costing up to 1,800,000 LBP as "stamp only" (~1,000 LBP). Also accept
+  // period/comma-grouped 4+-digit sequences (\d{1,3}(?:[.,]\d{3})+) as
+  // evidence of a real amount.
+  if ((f.includes('طابع') || f.includes('stamp')) && !f.match(/\d{1,3}(?:[.,]\d{3})+|\d{5,}/)) {
     return { cat: 'stamp', maxAmount: 1000 }
   }
 
-  // Extract all numeric values
-  const nums = (f.match(/[\d,]+/g) || [])
-    .map(m => parseInt(m.replace(/,/g, ''), 10))
+  // Extract all numeric values (period AND comma thousands separators)
+  const nums = (f.match(/[\d.,]+/g) || [])
+    .map(m => parseInt(m.replace(/[.,]/g, ''), 10))
     .filter(n => !isNaN(n) && n > 100)
 
   if (nums.length === 0) return { cat: 'varies', maxAmount: null }
@@ -66,10 +73,13 @@ const CONFIGS: Record<FeeCategory, {
   varies: { bg: '#F5F3EE', border: '#D1CBC4', color: '#6B5A4A', labelAr: 'رسوم متغيرة', labelEn: 'Varies',       icon: '📊' },
 }
 
+// Always format the digits with 'en-US' (Western numerals), even in Arabic
+// mode — matches the convention used everywhere else in the app (CostEstimator,
+// ProcedureFeeHistory, stat chips, etc). 'ar-EG' renders Eastern Arabic-Indic
+// digits (١٥٠٬٠٠٠) which, before this fix, made this one chip's numerals look
+// inconsistent next to every other Western-digit chip on the same card.
 function formatAmount(n: number, isAr: boolean): string {
-  const formatted = isAr
-    ? n.toLocaleString('ar-EG')
-    : n.toLocaleString('en-US')
+  const formatted = n.toLocaleString('en-US')
   return isAr ? `${formatted} ل.ل.` : `${formatted} LBP`
 }
 

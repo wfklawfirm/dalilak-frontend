@@ -17,12 +17,24 @@ interface GovLink {
   icon: string
 }
 
+// batch #409: lib/enrichedProcedures.ts's real ministrySlug values use the
+// hyphenated forms 'general-security' and 'public-works' (verified via
+// Node against the live dataset — the same convention app/procedures/
+// page.tsx's own ministry filter chips use), but this map only had the
+// no-hyphen keys 'security'/'publicworks', so 5 real procedures silently
+// fell back to the generic Dawlati links instead of their real curated
+// ministry portal links. Added hyphenated aliases to the same verified
+// entries already curated below (no new/guessed URLs).
 const LINKS_BY_SLUG: Record<string, GovLink[]> = {
   interior: [
     { labelAr: 'بوابة الداخلية', labelEn: 'MoI Portal', url: 'https://www.interior.gov.lb', icon: '🏛️' },
     { labelAr: 'النفوس اللبناني', labelEn: 'Civil Registry', url: 'https://www.dawlati.gov.lb', icon: '🪪' },
   ],
   security: [
+    { labelAr: 'الأمن العام', labelEn: 'General Security', url: 'https://www.general-security.gov.lb', icon: '🛂' },
+    { labelAr: 'تتبع الطلب', labelEn: 'Track request', url: 'https://www.general-security.gov.lb/ar/Pages/services', icon: '🔍' },
+  ],
+  'general-security': [
     { labelAr: 'الأمن العام', labelEn: 'General Security', url: 'https://www.general-security.gov.lb', icon: '🛂' },
     { labelAr: 'تتبع الطلب', labelEn: 'Track request', url: 'https://www.general-security.gov.lb/ar/Pages/services', icon: '🔍' },
   ],
@@ -50,6 +62,10 @@ const LINKS_BY_SLUG: Record<string, GovLink[]> = {
     { labelAr: 'وزارة التربية', labelEn: 'Ministry of Education', url: 'https://www.mehe.gov.lb', icon: '📚' },
   ],
   publicworks: [
+    { labelAr: 'الأشغال العامة', labelEn: 'Ministry of Public Works', url: 'https://www.public-works.gov.lb', icon: '🏗️' },
+    { labelAr: 'تراخيص البناء', labelEn: 'Building permits', url: 'https://www.public-works.gov.lb/ar', icon: '📐' },
+  ],
+  'public-works': [
     { labelAr: 'الأشغال العامة', labelEn: 'Ministry of Public Works', url: 'https://www.public-works.gov.lb', icon: '🏗️' },
     { labelAr: 'تراخيص البناء', labelEn: 'Building permits', url: 'https://www.public-works.gov.lb/ar', icon: '📐' },
   ],

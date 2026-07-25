@@ -147,13 +147,17 @@ export default function AuthoritiesPage() {
     if (typeFilter !== 'all') list = list.filter(a => a.type === typeFilter)
     if (search.trim()) {
       const q = search.trim()
+      // batch #412: search always matched against Arabic name/categories only,
+      // even in English mode (where the card itself displays name_en/
+      // categories_en, line 285) — an English query like "General Security"
+      // could never match, so English-mode search was effectively broken.
       list = list.filter(a =>
-        a.name_ar.includes(q) ||
-        a.categories.some(c => c.includes(q))
+        (isAr ? a.name_ar : (a.name_en || a.name_ar)).includes(q) ||
+        (isAr ? a.categories : (a.categories_en.length ? a.categories_en : a.categories)).some(c => c.includes(q))
       )
     }
     return list
-  }, [typeFilter, search])
+  }, [typeFilter, search, isAr])
 
   const stats = useMemo(() => ({
     total: ALL_AUTHORITIES.length,
@@ -373,7 +377,7 @@ export default function AuthoritiesPage() {
                   ) : (
                     <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{isAr ? 'بلا موقع' : 'No website'}</span>
                   )}
-                  <button type="button" aria-label={`اسأل دليلك عن: ${isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}`} onClick={() => askAI(auth.name_ar)}
+                  <button type="button" aria-label={`اسأل دليلك عن: ${isAr ? auth.name_ar : (auth.name_en || auth.name_ar)}`} onClick={() => askAI(isAr ? auth.name_ar : (auth.name_en || auth.name_ar))}
                     style={{
                     fontSize: 10.5, color: 'var(--brand)', fontWeight: 700,
                     background: 'var(--brand-soft)', border: '1px solid var(--border-brand)',

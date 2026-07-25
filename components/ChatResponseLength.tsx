@@ -26,7 +26,24 @@ export function useResponseLength() {
   const [mode, setModeState] = useState<LengthMode>('')
 
   useEffect(() => {
-    try { setModeState((localStorage.getItem(LS_KEY) as LengthMode) || '') } catch {}
+    function refresh() {
+      try { setModeState((localStorage.getItem(LS_KEY) as LengthMode) || '') } catch {}
+    }
+    refresh()
+    // Multiple independent components/hooks call useResponseLength() at once
+    // (the ChatResponseLength toggle chip + app/page.tsx's own instance used
+    // to build the outgoing message prefix). Without this listener each
+    // instance only reads localStorage once on mount, so toggling the chip
+    // in one instance never updates the mode read by another — the prefix
+    // silently stops working until a full page reload. Listening for the
+    // custom event (dispatched by setMode below) and storage keeps every
+    // mounted instance in sync.
+    window.addEventListener('dalilak_response_length_change', refresh)
+    window.addEventListener('storage', refresh)
+    return () => {
+      window.removeEventListener('dalilak_response_length_change', refresh)
+      window.removeEventListener('storage', refresh)
+    }
   }, [])
 
   function setMode(m: LengthMode) {

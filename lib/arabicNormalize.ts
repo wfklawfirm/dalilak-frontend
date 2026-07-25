@@ -18,8 +18,16 @@
 
 /** Remove all tashkeel (Arabic diacritics / harakat) */
 function removeTashkeel(text: string): string {
-  // Unicode range U+064B–U+065F covers all standard Arabic diacritics
-  return text.replace(/[ً-ٰٟ]/g, '')
+  // Unicode range U+064B–U+065F covers all standard Arabic diacritics.
+  // The character class below previously ended one Arabic character too
+  // far (superscript alef instead of the intended final diacritic), which
+  // silently widened the effective range to also swallow the Arabic-Indic
+  // digit block U+0660–U+0669 (٠-٩). Real data in
+  // lib/lifeJourneys.ts uses these digits (e.g. subtitleAr fields like
+  // ٤ إجراءات — ٣٠ يوماً), so a search query typed in Eastern Arabic-Indic
+  // numerals was silently stripped to an empty string, which then matched
+  // everything via String.prototype.includes('').
+  return text.replace(/[\u064B-\u065F]/g, '')
 }
 
 /** Normalize alef variants to bare alef (ا) */

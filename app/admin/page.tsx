@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, FormEvent } from 'react'
+import React, { useState, useEffect, useRef, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 import SectionHeader from '@/components/SectionHeader'
+import ModalCloseButton from '@/components/ModalCloseButton'
 
 interface UserRow {
   username: string; email: string; full_name: string; phone: string
@@ -83,17 +84,27 @@ export default function AdminPage() {
   const [deactivating, setDeactivating] = useState<string | null>(null)
   const [gapUpdating, setGapUpdating] = useState<string | null>(null)
 
+  // Always-fresh handle to isAr for loadStats/loadUsers below — both are
+  // called from the mount-only effect right under this (empty deps), whose
+  // closure freezes on first-render values. Without this ref, an admin who
+  // switches language while the initial (possibly slow/cold-start) fetch is
+  // still in flight would see a failure toast worded in the pre-switch
+  // language. Same stale-closure class as the sendMessageRef fix in
+  // app/page.tsx (batch #391).
+  const isArRef = useRef(isAr)
+  useEffect(() => { isArRef.current = isAr }, [isAr])
+
   useEffect(() => {
     if (!isAdmin()) { router.push('/login'); return }
     loadStats(); loadUsers()
   }, [])
 
   async function loadStats() {
-    try { setStats(await adminGetStats()) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ في تحميل الإحصائيات' : 'Failed to load stats'), true) }
+    try { setStats(await adminGetStats()) } catch (e) { flash(e instanceof Error ? e.message : (isArRef.current ? 'خطأ في تحميل الإحصائيات' : 'Failed to load stats'), true) }
   }
 
   async function loadUsers() {
-    try { setUsers((await adminListUsers()).users) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ في تحميل المستخدمين' : 'Failed to load users'), true) }
+    try { setUsers((await adminListUsers()).users) } catch (e) { flash(e instanceof Error ? e.message : (isArRef.current ? 'خطأ في تحميل المستخدمين' : 'Failed to load users'), true) }
   }
 
   async function loadResets() {
@@ -194,7 +205,12 @@ export default function AdminPage() {
 
   function fmtDate(s?: string) {
     if (!s) return '—'
-    try { return new Date(s).toLocaleDateString('ar-LB') } catch { return s }
+    // batch #416: hardcoded 'ar-LB' regardless of isAr, unlike the sibling
+    // fmtTs() a few lines above which already branches correctly — in
+    // English mode every other timestamp on the page switched language but
+    // this one (used for each user's last_login in the admin table) stayed
+    // Arabic-locale-formatted.
+    try { return new Date(s).toLocaleDateString(isAr ? 'ar-LB' : 'en-US') } catch { return s }
   }
 
   const me = getUser()
@@ -441,12 +457,12 @@ export default function AdminPage() {
           <div style={{ maxWidth: 520 }}>
             <div style={SECTION}>
               <SectionHeader
-                title="رموز استعادة كلمة المرور"
+                title={isAr ? 'رموز استعادة كلمة المرور' : 'Password reset codes'}
                 titleSize={15}
                 titleWeight={800}
                 titleColor="#191713"
                 marginBottom={14}
-                trailingLabel="تحديث"
+                trailingLabel={isAr ? 'تحديث' : 'Refresh'}
                 onTrailingClick={loadResets}
                 trailingColor="#741622"
                 trailingSize={11}
@@ -455,20 +471,26 @@ export default function AdminPage() {
                   <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 }
               />
-              <p style={{ fontSize: 12, color: '#918B82', marginBottom: 14 }}>عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.</p>
+              {/* batch #417: this entire block was hardcoded Arabic-only,
+                  unlike the rest of app/admin/page.tsx which branches on
+                  isAr throughout (TABS, flash messages, fmtDate/fmtTs) —
+                  including the toLocaleTimeString call flagged in batch
+                  #416. Translated the whole block for consistency rather
+                  than fixing only the date locale in isolation. */}
+              <p style={{ fontSize: 12, color: '#918B82', marginBottom: 14 }}>{isAr ? 'عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.' : 'When a user requests a password reset, the code appears here. Send it to them manually.'}</p>
               {resets.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '28px 0', color: '#918B82', fontSize: 13 }}>لا توجد طلبات نشطة</div>
+                <div style={{ textAlign: 'center', padding: '28px 0', color: '#918B82', fontSize: 13 }}>{isAr ? 'لا توجد طلبات نشطة' : 'No active requests'}</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {resets.map((r, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14 }}>
                       <div>
                         <div style={{ fontWeight: 700, color: '#191713', fontSize: 14 }}>{r.username}</div>
-                        <div style={{ fontSize: 11, color: '#918B82' }}>ينتهي: {new Date(r.expires_at).toLocaleTimeString('ar-LB')}</div>
+                        <div style={{ fontSize: 11, color: '#918B82' }}>{isAr ? 'ينتهي' : 'Expires'}: {new Date(r.expires_at).toLocaleTimeString(isAr ? 'ar-LB' : 'en-US')}</div>
                       </div>
                       <div style={{ textAlign: 'center' }}>
                         <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: 4, color: '#741622' }}>{r.token}</div>
-                        <button type="button" onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#918B82', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>نسخ</button>
+                        <button type="button" onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#918B82', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>{isAr ? 'نسخ' : 'Copy'}</button>
                       </div>
                     </div>
                   ))}
@@ -673,9 +695,7 @@ export default function AdminPage() {
           <div role="dialog" aria-modal="true" aria-label={`تعديل: ${editUser.username}`} onKeyDown={e => { if (e.key === 'Escape') setEditUser(null) }} style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 420, padding: 24, boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: 0 }}>{isAr ? 'تعديل' : 'Edit'}: {editUser.username}</h2>
-              <button type="button" onClick={() => setEditUser(null)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: '#E6E2DC', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#69645C', transition: 'background 0.12s' }}>
-                <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
+              <ModalCloseButton onClick={() => setEditUser(null)} isAr={isAr} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ padding: '10px 14px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #E6E2DC', fontSize: 12, color: '#69645C' }}>

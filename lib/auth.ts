@@ -19,13 +19,21 @@ export function getToken(): string | null {
   return localStorage.getItem('dalilak_token')
 }
 
+// try/catch: a throwing setItem (e.g. Safari private-browsing's 0-byte quota,
+// or storage disabled/full) must not turn an already-successful backend login
+// into a false "login failed" error for the caller — see login/register pages,
+// which call setToken/setUser inside their own try/catch right after a
+// successful apiLogin/apiRegister and would otherwise report failure despite
+// valid credentials.
 export function setToken(token: string): void {
-  localStorage.setItem('dalilak_token', token)
+  try { localStorage.setItem('dalilak_token', token) } catch { /* ignore */ }
 }
 
 export function clearToken(): void {
-  localStorage.removeItem('dalilak_token')
-  localStorage.removeItem('dalilak_user')
+  try {
+    localStorage.removeItem('dalilak_token')
+    localStorage.removeItem('dalilak_user')
+  } catch { /* ignore */ }
 }
 
 export function getUser(): User | null {
@@ -35,7 +43,7 @@ export function getUser(): User | null {
 }
 
 export function setUser(user: User): void {
-  localStorage.setItem('dalilak_user', JSON.stringify(user))
+  try { localStorage.setItem('dalilak_user', JSON.stringify(user)) } catch { /* ignore */ }
 }
 
 export function isLoggedIn(): boolean {

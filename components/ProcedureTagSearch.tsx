@@ -3,12 +3,25 @@
 /**
  * ProcedureTagSearch — clickable tag cloud of all unique ministry names.
  *
- * Extracts unique ministry labels from ENRICHED_PROCEDURES,
- * sorts by procedure count (most → fewest), renders as a compact
- * scrollable chip row. Clicking a tag fires onSelect(ministry).
+ * Extracts unique ministries from ENRICHED_PROCEDURES, sorts by procedure
+ * count (most → fewest), renders as a compact scrollable chip row.
+ * Clicking a tag fires onSelect(ministrySlug).
+ *
+ * batch #429: selection is keyed by the language-independent `ministrySlug`,
+ * not the localized display label. Previously onSelect/selectedMinistry
+ * carried the *localized* label text (proc.ministry / proc.ministry_en).
+ * Since language can be toggled client-side without remounting this page
+ * (see lib/LanguageContext), the parent's stored selection stayed frozen in
+ * whatever language it was picked in, while this component recomputes tag
+ * labels in the *new* language on every isAr change. `selectedMinistry ===
+ * label` then compared an old-language string to new-language labels and
+ * never matched — so after a language switch, no chip (including "All")
+ * ever showed as selected again, even though a ministry filter was still
+ * silently applied to the results. Slugs never change with language, so
+ * they stay valid across toggles.
  *
  * Props:
- *   { onSelect: (ministry: string) => void; selectedMinistry?: string; isAr: boolean }
+ *   { onSelect: (ministrySlug: string) => void; selectedMinistry?: string; isAr: boolean }
  *
  * Used on /procedures page as a quick-filter row above the procedure list.
  */
@@ -17,7 +30,7 @@ import React, { useMemo } from 'react'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 
 interface Props {
-  onSelect: (ministry: string) => void
+  onSelect: (ministrySlug: string) => void
   selectedMinistry?: string
   isAr: boolean
 }
@@ -39,14 +52,16 @@ function colorFor(label: string) {
 
 export default function ProcedureTagSearch({ onSelect, selectedMinistry, isAr }: Props) {
   const tags = useMemo(() => {
-    const countMap = new Map<string, number>()
+    const countMap = new Map<string, { label: string; count: number }>()
     for (const proc of ENRICHED_PROCEDURES) {
+      const slug = proc.ministrySlug
       const label = isAr ? proc.ministry : (proc.ministry_en || proc.ministry)
-      countMap.set(label, (countMap.get(label) || 0) + 1)
+      const entry = countMap.get(slug)
+      countMap.set(slug, { label, count: (entry?.count || 0) + 1 })
     }
     return Array.from(countMap.entries())
-      .sort((a, b) => b[1] - a[1])
-      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b[1].count - a[1].count)
+      .map(([slug, { label, count }]) => ({ slug, label, count }))
   }, [isAr])
 
   return (
@@ -77,14 +92,14 @@ export default function ProcedureTagSearch({ onSelect, selectedMinistry, isAr }:
         {isAr ? 'الكل' : 'All'} <span style={{ opacity: 0.7 }}>({ENRICHED_PROCEDURES.length})</span>
       </button>
 
-      {tags.map(({ label, count }) => {
-        const isSelected = selectedMinistry === label
+      {tags.map(({ slug, label, count }) => {
+        const isSelected = selectedMinistry === slug
         const { bg, border, text } = colorFor(label)
         return (
           <button
-            key={label}
+            key={slug}
             type="button"
-            onClick={() => onSelect(isSelected ? '' : label)}
+            onClick={() => onSelect(isSelected ? '' : slug)}
             style={{
               flexShrink: 0, padding: '3px 10px', borderRadius: 20,
               background: isSelected ? text : bg,

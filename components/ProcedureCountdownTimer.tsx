@@ -19,14 +19,25 @@ interface Props {
 
 function lsKey(code: string) { return `dalilak_countdown_${code}` }
 
+// Arabic number-agreement: 1 -> مفرد, 2 -> مثنى, 3-10 -> جمع, 11+ -> تمييز مفرد منصوب
+function arUnit(n: number, sing: string, dual: string, plural: string, many: string): string {
+  if (n === 1) return sing
+  if (n === 2) return dual
+  if (n >= 3 && n <= 10) return `${n} ${plural}`
+  return `${n} ${many}`
+}
+const arDaysUnit    = (n: number) => arUnit(n, 'يوم واحد', 'يومين', 'أيام', 'يوماً')
+const arHoursUnit   = (n: number) => arUnit(n, 'ساعة واحدة', 'ساعتين', 'ساعات', 'ساعة')
+const arMinutesUnit = (n: number) => arUnit(n, 'دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة')
+
 function formatCountdown(ms: number, isAr: boolean): string {
   if (ms <= 0) return isAr ? 'انتهى الوقت!' : 'Time\'s up!'
   const days    = Math.floor(ms / 86400000)
   const hours   = Math.floor((ms % 86400000) / 3600000)
   const minutes = Math.floor((ms % 3600000) / 60000)
-  if (days > 0) return isAr ? `${days} يوم و ${hours} ساعة` : `${days}d ${hours}h`
-  if (hours > 0) return isAr ? `${hours} ساعة و ${minutes} دقيقة` : `${hours}h ${minutes}m`
-  return isAr ? `${minutes} دقيقة` : `${minutes}m`
+  if (days > 0) return isAr ? `${arDaysUnit(days)} و ${arHoursUnit(hours)}` : `${days}d ${hours}h`
+  if (hours > 0) return isAr ? `${arHoursUnit(hours)} و ${arMinutesUnit(minutes)}` : `${hours}h ${minutes}m`
+  return isAr ? arMinutesUnit(minutes) : `${minutes}m`
 }
 
 export default function ProcedureCountdownTimer({ code, titleAr, isAr }: Props) {
