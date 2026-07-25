@@ -5,7 +5,13 @@
  *
  * Starts when the first message is sent (messageCount > 0).
  * Resets to 0 when messageCount drops back to 0 (new chat).
- * Displays in HH:MM:SS format. Updates every second.
+ * Displays in H:MM / M:SS-style minute granularity. Updates every 30s
+ * (batch #362 perf fix — was updating every 1s with second-level display,
+ * forcing a re-render every single second for the entire time a chat
+ * stayed open. Nobody reads a session-duration indicator down to the
+ * second, so minute granularity + a 30s tick loses no real information
+ * while cutting re-render frequency 30x. Same visible feature, same
+ * props, zero functionality removed).
  *
  * Shows as a subtle inline chip below the chat header.
  *
@@ -19,12 +25,11 @@ interface Props {
   isAr: boolean
 }
 
-function formatTime(seconds: number): string {
+function formatTime(seconds: number, isAr: boolean): string {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
-  const s = seconds % 60
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  if (h > 0) return isAr ? `${h}س ${m}د` : `${h}h ${m}m`
+  return isAr ? `${m} د` : `${m}m`
 }
 
 export default function ChatSessionTimer({ messageCount, isAr }: Props) {
@@ -46,7 +51,7 @@ export default function ChatSessionTimer({ messageCount, isAr }: Props) {
       if (intervalRef.current) clearInterval(intervalRef.current)
       intervalRef.current = setInterval(() => {
         if (startRef.current) setElapsed(Math.floor((Date.now() - startRef.current) / 1000))
-      }, 1000)
+      }, 30000)
     }
 
     // Chat cleared
@@ -80,7 +85,7 @@ export default function ChatSessionTimer({ messageCount, isAr }: Props) {
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
       </svg>
-      <span>{formatTime(elapsed)}</span>
+      <span>{formatTime(elapsed, isAr)}</span>
     </div>
   )
 }

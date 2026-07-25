@@ -1,9 +1,17 @@
 'use client'
 
 import React, { useState, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import AgentResponseRenderer from './AgentResponseRenderer'
-import UniversalDocumentAnalysisView from './DocumentIntelligenceView'
 import type { AgentSource, ConfidenceLevel } from '@/lib/types'
+
+// batch #363 perf fix: DocumentIntelligenceView (944 lines — the largest
+// component in the app) was eager-imported here even though
+// msg.documentAnalysis is only set for the rare message that came from an
+// uploaded-document analysis (most chat messages are plain text). Every
+// homepage/chat load was bundling it regardless. Lazy-loaded via
+// next/dynamic with ssr:false — pure client-side rendering, no SEO impact.
+const UniversalDocumentAnalysisView = dynamic(() => import('./DocumentIntelligenceView'), { ssr: false })
 
 export interface Message {
   role: 'user' | 'assistant'

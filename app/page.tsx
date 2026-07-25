@@ -13,7 +13,12 @@ import BottomNav from '@/components/BottomNav'
 const GuidedFlow = dynamic(() => import('@/components/GuidedFlow'), { ssr: false })
 import MobileMenu from '@/components/MobileMenu'
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp'
-import UserOnboarding from '@/components/UserOnboarding'
+// batch #363 perf fix: UserOnboarding (433 lines) only ever renders its
+// wizard for genuinely first-time visitors (internally gated by `show`
+// state derived from localStorage — returns null for everyone else) yet
+// was eager-imported into every homepage load. Lazy-loaded via
+// next/dynamic, ssr:false (pure client-side, no SEO content).
+const UserOnboarding = dynamic(() => import('@/components/UserOnboarding'), { ssr: false })
 import ChatSummaryCard from '@/components/ChatSummaryCard'
 import AppointmentReminder from '@/components/AppointmentReminder'
 import FeedbackWidget from '@/components/FeedbackWidget'
