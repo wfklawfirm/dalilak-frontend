@@ -61,7 +61,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
         aria-label={displayName}
         onKeyDown={e => { if (e.key === 'Escape') onClose() }}
         style={{
-        background: '#fff', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 'var(--container-md)',
+        background: 'var(--surface)', borderRadius: '20px 20px 0 0', width: '100%', maxWidth: 'var(--container-md)',
         margin: '0 auto', maxHeight: '82vh', overflow: 'hidden', display: 'flex',
         flexDirection: 'column', boxShadow: '0 -8px 40px rgba(0,0,0,0.2)',
       }}>
@@ -360,7 +360,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
             onTouchEnd={e => { e.currentTarget.style.background = 'var(--bg)' }}
             style={{
               padding: '13px 16px', borderRadius: 14, background: 'var(--bg)',
-              border: '1.5px solid var(--border)', color: 'var(--text-2)', fontSize: 12,
+              border: '1px solid var(--border)', color: 'var(--text-2)', fontSize: 12,
               fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
             }}
           >
@@ -377,7 +377,7 @@ function ServiceSheet({ service, onClose, onAsk }: {
 function ServiceCardSkeleton() {
   return (
     <div style={{
-      background: '#fff', borderRadius: 16, padding: 14,
+      background: 'var(--surface)', borderRadius: 16, padding: 14,
       border: '1px solid var(--border)', minHeight: 110,
       display: 'flex', flexDirection: 'column', gap: 10,
       overflow: 'hidden',
@@ -566,7 +566,7 @@ export default function ServicesPage() {
       <div style={{ maxWidth: 1024, margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 
         {/* ── Overview & nearby offices — collapsed by default to reduce clutter ── */}
-        <div style={{ marginBottom: 16, background: '#fff', border: '1.5px solid var(--border)', borderRadius: 16, padding: '12px 16px' }}>
+        <div style={{ marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '12px 16px' }}>
           <SectionCollapseToggle
             titleAr="نظرة عامة والمكاتب القريبة"
             titleEn="Overview & nearby offices"
@@ -730,9 +730,9 @@ export default function ServicesPage() {
                 type="button"
                 onClick={() => { setSearch(''); setSelectedCat(null) }}
                 onTouchStart={e => { e.currentTarget.style.background = 'var(--border)' }}
-                onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
+                onTouchEnd={e => { e.currentTarget.style.background = 'var(--surface)' }}
                 style={{
-                  padding: '10px 20px', background: '#fff', border: '1.5px solid var(--border)',
+                  padding: '10px 20px', background: 'var(--surface)', border: '1px solid var(--border)',
                   color: 'var(--text-2)', borderRadius: 12,
                   fontFamily: 'inherit', fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', transition: 'background 0.12s',
@@ -781,8 +781,8 @@ export default function ServicesPage() {
                 }}
                 className="svc-card"
                 style={{
-                  display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: 16,
-                  padding: '14px', border: '1.5px solid var(--border)',
+                  display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRadius: 16,
+                  padding: '14px', border: '1px solid var(--border)',
                   textAlign: 'right',
                   fontFamily: 'inherit', cursor: 'pointer', width: '100%',
                   transition: 'all 0.14s', position: 'relative', overflow: 'hidden',
@@ -790,7 +790,7 @@ export default function ServicesPage() {
                   animationDelay: `${Math.min(svcIdx, 20) * 0.03}s`,
                 }}
                 onTouchStart={e => { e.currentTarget.style.background = 'var(--brand-soft)'; e.currentTarget.style.borderColor = 'var(--border-brand)'; e.currentTarget.style.transform = 'scale(0.98)' }}
-                onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'scale(1)' }}
+                onTouchEnd={e => { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'scale(1)' }}
               >
                 {/* Top row: icon badge + chevron */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
