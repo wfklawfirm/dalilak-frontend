@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 type ResponseMode = 'quick' | 'detailed' | 'research'
 
@@ -73,6 +74,10 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
     return () => window.removeEventListener('keydown', handler)
   }, [isOpen, onClose])
 
+  // batch #361: trap Tab focus inside the sheet while open (lib/useFocusTrap.ts)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, isOpen)
+
   if (!isOpen) return null
   return (
     <>
@@ -83,7 +88,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
         backdropFilter: 'blur(1px)',
         animation: 'msFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both',
       }} />
-      <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'}
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={isAr ? 'اختر وضع الجواب' : 'Choose Response Mode'}
         tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
         style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,

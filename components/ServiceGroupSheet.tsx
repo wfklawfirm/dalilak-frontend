@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import type { ServiceGroup, ServiceItem } from '@/lib/serviceGroups'
 import { getVerificationLabel } from '@/lib/serviceGroups'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface ServiceGroupSheetProps {
   group: ServiceGroup | null
@@ -31,6 +32,10 @@ export default function ServiceGroupSheet({
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [group, onClose])
+
+  // batch #361: trap Tab focus inside the sheet while open (lib/useFocusTrap.ts)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, !!group)
 
   if (!group) return null
 
@@ -80,7 +85,7 @@ export default function ServiceGroupSheet({
       />
 
       {/* Sheet */}
-      <div role="dialog" aria-modal="true" aria-label={isAr ? group.titleAr : group.titleEn}
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={isAr ? group.titleAr : group.titleEn}
         tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
         style={{
         position: 'fixed', left: 0, right: 0, bottom: 0,

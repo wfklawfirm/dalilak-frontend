@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { getFlow, buildFlowPrompt } from '@/lib/flows'
 import type { FlowAnswers } from '@/lib/flows'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface GuidedFlowProps {
   isAr: boolean
@@ -50,6 +51,11 @@ type WizardPhase = 'pick_category' | 'pick_procedure' | 'flow_questions' | 'lega
 export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: GuidedFlowProps) {
   const initProc = initialSlug ? ALL_PROCEDURES.find(p => p.slug === initialSlug) ?? null : null
   const closeRef = useRef<HTMLButtonElement>(null)
+  // batch #361: trap Tab focus inside the wizard while mounted (it's only
+  // ever rendered when open — see the `{showGuide && <GuidedFlow/>}` gate
+  // in app/page.tsx — so the trap is simply always-active here).
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, true)
 
   // Focus close button when modal opens
   useEffect(() => { closeRef.current?.focus() }, [])
@@ -198,7 +204,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
       <div aria-hidden="true" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200, backdropFilter: 'blur(2px)', animation: 'gfFadeIn 0.2s cubic-bezier(0.22,1,0.36,1) both' }} />
 
       {/* Panel */}
-      <div role="dialog" aria-modal="true" aria-label={isAr ? 'اختيار الخدمة' : 'Select Service'} style={{
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={isAr ? 'اختيار الخدمة' : 'Select Service'} style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 201,
         background: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24,
         boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
