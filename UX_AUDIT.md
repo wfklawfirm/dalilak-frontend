@@ -1377,4 +1377,44 @@ const today = new Date().toISOString().slice(0,10)    // اللحظة الحال
 
 `tsc --noEmit` نظيف. إصلاح محصور بالكامل داخل `components/ProcedureDeadlineAlert.tsx`.
 
+### تحديث (batch #451) — حسم قرار batch #448: إزالة `ProcedureLastUpdatedBadge` نهائياً (بتفويض صريح من المستخدم لاختيار الحل الأصلح عالمياً)
+
+طلب المستخدم صراحة اختيار "الأنسب والأصلح عالمياً" بخصوص شارة "آخر مراجعة" المُختلَقة (batch #448). المعيار العالمي القياسي في تصميم واجهات الثقة (trust signals) هو عدم عرض بيانات مُختلَقة كحقيقة واقعة للمستخدم أبداً — وقاعدة المشروع نفسها تنص صراحة على منع Mock Data في النسخة النهائية. لا يوجد بديل "يُصلح" هذا سوى الحذف: الإبقاء على التاريخ الوهمي يخالف كلا المعيارين، واستبداله بعبارة غامضة لا تزال مُختلَقة لا يحل المشكلة الجوهرية.
+
+**الإصلاح**: أُزيل استيراد واستخدام `ProcedureLastUpdatedBadge` من `app/procedures/page.tsx` (كان مكاناً واحداً فقط)، وأُدرِج `components/ProcedureLastUpdatedBadge.tsx` في قائمة الحذف `rm -f` ضمن `push.sh` (لا يمكن حذف الملفات مباشرة من بيئة العمل الحالية). لم يتأثر أي عرض/وظيفة حقيقية أخرى.
+
+`tsc --noEmit` نظيف. إصلاح محصور بالكامل داخل `app/procedures/page.tsx` + حذف ملف واحد.
+
+### تحديث (batch #452) — `components/NotificationBell.tsx`: تنبيهات "انتهاء صلاحية الوثائق" لا يمكن أن تظهر أبداً — تقرأ مفتاحاً لا يكتبه أي مكوّن حيّ
+
+**المشكلة**: كان `NotificationBell` (حيّ، معروض عالمياً عبر `TopNav`/`MobileMenu` في كل صفحة) يقرأ مفتاح `localStorage` مسطّحاً واحداً `dalilak_doc_expiry` بصيغة JSON object، ويتوقّع مفاتيح ثابتة من قائمة تصنيف مكوّنة من 5 عناصر فقط (`passport`, `national_id`, `driving`, `residence`, `work`). لكن الكاتب الفعلي الوحيد والحيّ لهذا النوع من البيانات — `components/ProcedureDocumentStatus.tsx` (حيّ، الأداة الفعلية "+ تاريخ الانتهاء" تحت قائمة وثائق كل معاملة في `/procedures`) — يكتب بصيغة مختلفة كلياً: مفتاح منفصل لكل وثيقة `dalilak_doc_expiry_{code}_{index}` بقيمة تاريخ نصي مباشر، لأي وثيقة حقيقية من أي معاملة (لا تصنيف ثابت من 5 عناصر). الكاتب الوحيد للمفتاح المسطّح القديم كان `components/DocExpiryBanner.tsx` — تحقّقتُ عبر `grep` شامل أنه كود ميت تماماً (لا استيراد ولا استخدام JSX في أي مكان).
+
+**أثرها على المستخدم**: عند ضبط تاريخ انتهاء صلاحية أي وثيقة حقيقية (مثلاً بطاقة الهوية) عبر `ProcedureDocumentStatus` في `/procedures`، تتحدّث الشارة المحلية بشكل صحيح، ويُطلَق حدث `dalilak_saved_change` الذي يستمع إليه `NotificationBell` — لكن منطق القراءة يفحص مفتاحاً لا يُكتَب أبداً، فتنبيه انتهاء الوثيقة في الجرس العالمي لا يمكن أن يظهر إطلاقاً مهما بلغت درجة إلحاحه، لأي مستخدم حقيقي. (تنبيهات المواعيد في نفس المكوّن كانت تعمل بشكل صحيح لأن `AppointmentReminder.tsx` الحيّ يكتب فعلاً المفتاح `dalilak_appointments` الذي يقرأه `NotificationBell`.)
+
+**الإصلاح**: أُعيدت كتابة منطق فحص الوثائق في `loadItems()` ليمسح مفاتيح `localStorage` الحقيقية بصيغة `dalilak_doc_expiry_{code}_{index}` مباشرة، ويستخرج نص الوثيقة الفعلي عبر البحث في `ENRICHED_PROCEDURES` بنفس الكود والفهرس (نفس مصدر البيانات الذي يبني منه `app/procedures/page.tsx` مصفوفة `docs` الممرَّرة إلى `ProcedureDocumentStatus`)، بدل الاعتماد على قائمة التصنيف الثابتة الميتة. أُضيف أيضاً `components/DocExpiryBanner.tsx` (كود ميت مؤكَّد) إلى قائمة الحذف `rm -f`.
+
+`tsc --noEmit` نظيف. إصلاح محصور بالكامل داخل `components/NotificationBell.tsx` + حذف ملف ميت واحد.
+
+### تحديث (batch #453) — `ProcedureProgressBadge` + فلتر "بدأت تحضيرها": نفس نمط عطل batch #452 — يقرآن مفتاحاً لا يكتبه أي مكوّن حيّ
+
+**المشكلة**: `components/ProcedureProgressBadge.tsx` (حيّ، شارة "X/Y ✓" على كل بطاقة معاملة في `/procedures`) و `advFilters.started === 'yes'` في `app/procedures/page.tsx` (فلتر "بدأت تحضيرها" الحيّ ضمن `ProcedureFilterDrawer`) كانا يقرآن مفتاح `dalilak_checklist_{code}` — الكاتب الوحيد لهذا المفتاح هو `components/DocChecklistBuilder.tsx`، وتحقّقتُ عبر `grep` شامل أنه كود ميت تماماً (لا استيراد ولا استخدام JSX خارج ملفه). لذا كانت الشارة لا تظهر أبداً مهما تقدّم المستخدم فعلياً في تحضير وثائقه، وفلتر "بدأت تحضيرها" كان يُرجع دائماً قائمة فارغة.
+
+**البيانات الحقيقية الحيّة الموازية**: المكوّن الحيّ الفعلي لتتبّع تجهيز الوثائق هو `components/ProcedureDocumentChecklist.tsx` (معروض فعلياً في `/procedures`)، الذي يكتب مفتاحاً منفصلاً لكل وثيقة `dalilak_doc_{code}_{index}` بقيمة `'1'`/`'0'` — وهو نفس المخطط الذي يقرأه بالفعل مكوّنان حيّان آخران (`ProcedureChecklistExport.tsx`، `ProcedureDocumentShare.tsx`)، ما يجعله المرجع الأكثر اعتماداً بين المكوّنات الحيّة. تأكّدتُ أيضاً من تسمية الفلتر نفسها ("بدأت تحضيرها" / "Started preparing") لأتحقّق أنه يقصد تقدّم قائمة الوثائق تحديداً، لا حالة "بدء المعاملة" المنفصلة التي يتتبّعها `ProcedureStartButton` بمفتاح مختلف كلياً (`dalilak_started_{code}`).
+
+**الإصلاح**: أُعيدت كتابة `ProcedureProgressBadge` لتقرأ مفاتيح `dalilak_doc_{code}_{i}` الحقيقية (بدل المفتاح المسطّح الميت)، وحُدِّث فلتر "بدأت تحضيرها" في `app/procedures/page.tsx` ليطابق نفس المصدر. أُضيف أيضاً `components/DocChecklistBuilder.tsx` و`components/ProcedureProgressTracker.tsx` (كلاهما كود ميت مؤكَّد، الثاني يعتمد على نفس المفتاح الميت) إلى قائمة الحذف `rm -f`.
+
+`tsc --noEmit` نظيف. إصلاح في ملفين (`components/ProcedureProgressBadge.tsx`, `app/procedures/page.tsx`) + حذف ملفين ميتين.
+
+### تحديث (batch #454) — `ProcedureDocReadinessBar` و`ProcedureDocumentChecklist`: مكوّنان متجاوران يعرضان نفس قائمة الوثائق لكن بحالتين منفصلتين لا تتزامنان أبداً
+
+**المشكلة**: تُعرَض `ProcedureDocReadinessBar` و`ProcedureDocumentChecklist` متتاليتين في نفس قسم "المستندات المطلوبة" لكل معاملة موسَّعة، بنفس قائمة الوثائق تماماً (`docs` بنفس المصدر والفهرسة) — لكن كل واحدة تحتفظ بحالة منفصلة في `localStorage`: `ProcedureDocReadinessBar` كانت تستخدم `dalilak_doc_ready_{code}_{index}`، بينما `ProcedureDocumentChecklist` تستخدم `dalilak_doc_{code}_{index}` — وهو نفس المخطط الذي تعتمد عليه بالفعل 3 مكوّنات حيّة أخرى (`ProcedureDocumentShare`، `ProcedureChecklistExport`) بالإضافة إلى إصلاحَي batch #453 (`ProcedureProgressBadge` وفلتر "بدأت تحضيرها"). تحقّقتُ عبر `grep` أن `dalilak_doc_ready_` لم يكن يُقرأ أو يُكتَب في أي مكان آخر خارج نفس الملف.
+
+**أثرها على المستخدم**: تحديد وثيقة كـ"جاهزة" في `ProcedureDocReadinessBar` (الشريط الملوّن العلوي، مع رسالة "✅ جميع وثائقك جاهزة!") لا ينعكس إطلاقاً في مشاركة واتساب، أو تصدير PDF/نص، أو شارة التقدّم على البطاقة، أو فلتر "بدأت تحضيرها" — وكل هذه الأدوات تقرأ فقط من `ProcedureDocumentChecklist` المعروضة مباشرة أسفل الشريط. والعكس صحيح: تحديد مربّع في `ProcedureDocumentChecklist` لا يحدّث الشريط أعلاه أبداً. حالتان منفصلتان تماماً لنفس المهمة المفهومية، دون أن يدرك المستخدم ذلك.
+
+**الإصلاح**: وُحِّد مفتاح `ProcedureDocReadinessBar` مع المخطط الحقيقي المتفق عليه بين 5 مكوّنات حيّة أخرى (`dalilak_doc_{code}_{index}`). عند التحقّق، اكتُشِف خلل إضافي كان سيظهر بعد التوحيد: منطق القراءة في `ProcedureDocReadinessBar` كان يستخدم فحص truthy بسيط (`!!localStorage.getItem(...)`) بدل `=== '1'` الصريح المستخدم في كل القرّاء الآخرين — بما أن `ProcedureDocumentChecklist` يكتب السلسلة الحرفية `'0'` للوثيقة غير المحدَّدة (بدل حذف المفتاح)، وهي سلسلة غير فارغة (truthy)، كان هذا سيُظهر أي وثيقة "غير جاهزة" كُتِبت مسبقاً عبر `ProcedureDocumentChecklist` على أنها "جاهزة" خطأً في الشريط. أُصلِح الفحص ليطابق `=== '1'` الصريح المستخدم في كل مكان آخر.
+
+**ملاحظة**: مكوّن ثالث (`ReadinessChecker`، بمفتاح `dalilak_ready_enr-{code}` مختلف كلياً) معروض أيضاً في نفس القسم — تُرِك خارج نطاق هذا الإصلاح لأنه يبدو مكوّناً منفصلاً بتصميم مقصود (نفس البادئة `enr-` تُستخدَم أيضاً في `ProcedureTimeline` لتتبّع الخطوات)، وليس تكراراً عرَضياً — يُرصَد هنا للمراجعة المستقبلية إن رغب المستخدم بدمج/تبسيط قسم المستندات بالكامل.
+
+`tsc --noEmit` نظيف. إصلاح محصور بالكامل داخل `components/ProcedureDocReadinessBar.tsx`.
+
 هذا الملف سيُحدَّث مع كل دفعة تالية — لا يُعاد كتابته من الصفر، بل تُضاف/تُحدَّث بنوده.

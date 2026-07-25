@@ -4,7 +4,17 @@
  * ProcedureDocReadinessBar — visual readiness bar for required documents.
  *
  * Each doc is a checkable chip. Checked state in LS:
- *   dalilak_doc_ready_{code}_{index} = '1'
+ *   dalilak_doc_{code}_{index} = '1'
+ *
+ * This is the SAME key schema written/read by ProcedureDocumentChecklist.tsx
+ * (rendered directly below this component, for the same doc list) and read
+ * by ProcedureDocumentShare.tsx, ProcedureChecklistExport.tsx,
+ * ProcedureProgressBadge.tsx, and the "Started preparing" advanced filter in
+ * app/procedures/page.tsx. Previously used a different prefix
+ * (dalilak_doc_ready_) that no other component read/wrote, so checking a
+ * document here never showed up anywhere else and vice versa — two
+ * disconnected "same list, different local state" checklists stacked in the
+ * same UI section.
  *
  * Shows:
  *   - Colored progress bar (0% red → 50% amber → 100% green)
@@ -22,10 +32,14 @@ interface Props {
   isAr: boolean
 }
 
-function getKey(code: string, idx: number) { return `dalilak_doc_ready_${code}_${idx}` }
+function getKey(code: string, idx: number) { return `dalilak_doc_${code}_${idx}` }
 
 function loadReady(code: string, total: number): boolean[] {
-  try { return Array.from({ length: total }, (_, i) => !!localStorage.getItem(getKey(code, i))) }
+  // Must check === '1', not just truthiness — ProcedureDocumentChecklist.tsx
+  // (writing/reading this same key) writes the literal string '0' for an
+  // unchecked doc rather than removing the key, and '0' is a non-empty
+  // (truthy) string.
+  try { return Array.from({ length: total }, (_, i) => localStorage.getItem(getKey(code, i)) === '1') }
   catch { return new Array(total).fill(false) }
 }
 

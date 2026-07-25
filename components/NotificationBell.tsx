@@ -2,7 +2,8 @@
 
 /**
  * NotificationBell — badge in TopNav showing count of:
- *  • Documents expiring within 30 days (from dalilak_doc_expiry)
+ *  • Documents expiring within 30 days (from dalilak_doc_expiry_{code}_{i},
+ *    written by ProcedureDocumentStatus.tsx)
  *  • Appointments within 3 days (from dalilak_appointments)
  *
  * Reads localStorage directly so it works without prop drilling.
@@ -11,17 +12,24 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 
-// ── Types mirroring DocExpiryBanner + AppointmentTracker ────────────────────
+// ── Types mirroring AppointmentTracker ───────────────────────────────────────
 
-interface DocDates { [docId: string]: string }  // ISO date strings
 interface Appointment {
   id: string; titleAr: string; titleEn: string
   location: string; date: string; time?: string
   noteAr?: string; noteEn?: string; createdAt: number
 }
 
-const DOC_LS_KEY  = 'dalilak_doc_expiry'
+// Per-document expiry keys are written by ProcedureDocumentStatus.tsx as
+// dalilak_doc_expiry_{code}_{docIndex} -> plain 'YYYY-MM-DD' strings (one
+// key per tracked document), NOT a single flat 'dalilak_doc_expiry' JSON
+// object. This used to read that flat key, but its only producer,
+// DocExpiryBanner.tsx, has zero imports/JSX usage anywhere in the app —
+// so no live component ever wrote it, and document-expiry alerts could
+// never fire regardless of how urgent a real tracked document was.
+const DOC_LS_PREFIX = 'dalilak_doc_expiry_'
 const APPT_LS_KEY = 'dalilak_appointments'
 const WARN_DAYS   = 30
 const APPT_DAYS   = 3
@@ -51,34 +59,34 @@ interface NotiItem {
   promptEn: string
 }
 
-const DOC_LABELS: Record<string, [string, string]> = {
-  passport:     ['جواز السفر', 'Passport'],
-  national_id:  ['بطاقة الهوية', 'ID Card'],
-  driving:      ['رخصة القيادة', 'Driver\'s License'],
-  residence:    ['إقامة', 'Residence Permit'],
-  work:         ['تصريح العمل', 'Work Permit'],
-}
-
 function loadItems(): NotiItem[] {
   if (typeof window === 'undefined') return []
   const items: NotiItem[] = []
 
-  // Docs
+  // Docs — scan the real per-procedure/per-doc keys (see DOC_LS_PREFIX
+  // comment above) and resolve the human-readable doc name from the same
+  // ENRICHED_PROCEDURES dataset ProcedureDocumentStatus's `docs` prop is
+  // built from, so index i lines up with the actual document list.
   try {
-    const raw = localStorage.getItem(DOC_LS_KEY)
-    if (raw) {
-      const dates = JSON.parse(raw) as DocDates
-      Object.entries(dates).forEach(([id, dateStr]) => {
-        if (!dateStr) return
-        const days = daysUntil(dateStr)
-        if (days >= 0 && days <= WARN_DAYS) {
-          const [ar, en] = DOC_LABELS[id] || [id, id]
-          items.push({
-            id: `doc_${id}`, icon: '📄', labelAr: ar, labelEn: en, days, type: 'doc',
-            promptAr: `كيف أجدد ${ar}؟ تنتهي صلاحيته خلال ${arDays(days)}.`,
-            promptEn: `How do I renew my ${en}? It expires in ${days} day(s).`,
-          })
-        }
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (!key || !key.startsWith(DOC_LS_PREFIX)) continue
+      const m = key.slice(DOC_LS_PREFIX.length).match(/^(.+)_(\d+)$/)
+      if (!m) continue
+      const [, code, idxStr] = m
+      const idx = parseInt(idxStr, 10)
+      const dateStr = localStorage.getItem(key)
+      if (!dateStr) continue
+      const days = daysUntil(dateStr)
+      if (days < 0 || days > WARN_DAYS) continue
+      const proc = ENRICHED_PROCEDURES.find(p => p.code === code)
+      const ar = proc?.requiredDocuments?.[idx]
+      if (!proc || !ar) continue
+      const en = proc.requiredDocuments_en?.[idx] || ar
+      items.push({
+        id: `doc_${key}`, icon: '📄', labelAr: ar, labelEn: en, days, type: 'doc',
+        promptAr: `كيف أجدد ${ar}؟ تنتهي صلاحيته خلال ${arDays(days)}.`,
+        promptEn: `How do I renew my ${en}? It expires in ${days} day(s).`,
       })
     }
   } catch { /* ignore */ }

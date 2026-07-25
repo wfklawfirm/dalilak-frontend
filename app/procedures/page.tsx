@@ -55,7 +55,6 @@ import ProcedureBackToTopButton from '@/components/ProcedureBackToTopButton'
 import ProcedureFeeHistory from '@/components/ProcedureFeeHistory'
 import ProcedureDifficultyBadge from '@/components/ProcedureDifficultyBadge'
 import ProcedureViewCount from '@/components/ProcedureViewCount'
-import ProcedureLastUpdatedBadge from '@/components/ProcedureLastUpdatedBadge'
 import ProcedureLanguageToggleHint from '@/components/ProcedureLanguageToggleHint'
 import ProcedureCountdownTimer from '@/components/ProcedureCountdownTimer'
 import ProcedureAlternativeOffices from '@/components/ProcedureAlternativeOffices'
@@ -225,8 +224,14 @@ export default function ProceduresPage() {
       })
     }
     if (advFilters.started === 'yes') {
+      // Matches ProcedureProgressBadge's real data source (dalilak_doc_{code}_{i},
+      // written by the live ProcedureDocumentChecklist.tsx) — the old
+      // dalilak_checklist_{code} key here was never written by any live
+      // component, so this filter always returned zero results.
       try {
-        list = list.filter(p => localStorage.getItem(`dalilak_checklist_${p.code}`) !== null)
+        list = list.filter(p =>
+          p.requiredDocuments.some((_, i) => localStorage.getItem(`dalilak_doc_${p.code}_${i}`) === '1')
+        )
       } catch { /* skip in SSR */ }
     }
     return list
@@ -870,7 +875,6 @@ export default function ProceduresPage() {
                     {/* Progress tracking & reminders — grouped, collapsed by default (secondary tools) */}
                     <ProcedureSectionGroup icon="🗂️" titleAr="تتبع التقدم والتذكيرات" titleEn="Progress tracking & reminders" isAr={isAr}>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                        <ProcedureLastUpdatedBadge code={proc.code} isAr={isAr} />
                         <ProcedureLanguageToggleHint isAr={isAr} />
                       </div>
                       <ProcedureCountdownTimer code={proc.code} titleAr={proc.title} isAr={isAr} />

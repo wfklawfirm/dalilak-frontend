@@ -3,14 +3,19 @@
 /**
  * ProcedureProgressBadge — small inline checklist progress badge for procedure cards.
  *
- * Reads `dalilak_checklist_{code}` from localStorage.
- * If the user has no checklist data for this procedure, renders nothing.
+ * Reads the per-document `dalilak_doc_{code}_{index}` keys (the same live
+ * schema written by ProcedureDocumentChecklist.tsx and already read by
+ * ProcedureChecklistExport.tsx / ProcedureDocumentShare.tsx) — NOT a flat
+ * `dalilak_checklist_{code}` array key, which no live component in the app
+ * has ever written (its only writer, DocChecklistBuilder.tsx, is orphaned
+ * dead code), so this badge previously could never render for any real
+ * user regardless of actual checklist progress.
+ * If the user has no checked documents for this procedure, renders nothing.
  * Otherwise shows "X/Y ✓" in a compact colored badge.
  *
  * Colors:
  *   Green  — all checked (100%)
  *   Amber  — some checked (> 0%)
- *   Gray   — nothing checked yet (but key exists)
  *
  * Props:
  *   code      — procedure code (e.g. "PASS-001")
@@ -21,7 +26,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 
-const LS_PREFIX = 'dalilak_checklist_'
+const LS_PREFIX = 'dalilak_doc_'
 
 interface Props {
   code: string
@@ -29,13 +34,14 @@ interface Props {
   compact?: boolean
 }
 
-function loadChecked(code: string): Set<number> {
+function countChecked(code: string, total: number): number {
   try {
-    const raw = localStorage.getItem(LS_PREFIX + code)
-    if (!raw) return new Set()
-    const arr: number[] = JSON.parse(raw)
-    return new Set(arr)
-  } catch { return new Set() }
+    let n = 0
+    for (let i = 0; i < total; i++) {
+      if (localStorage.getItem(`${LS_PREFIX}${code}_${i}`) === '1') n++
+    }
+    return n
+  } catch { return 0 }
 }
 
 export default function ProcedureProgressBadge({ code, total, compact = false }: Props) {
@@ -48,23 +54,21 @@ export default function ProcedureProgressBadge({ code, total, compact = false }:
     setMounted(true)
 
     function refresh() {
-      const raw = localStorage.getItem(LS_PREFIX + code)
-      if (raw === null) { setHasData(false); return }
-      setHasData(true)
-      const set = loadChecked(code)
-      setChecked(set.size)
+      const n = countChecked(code, total)
+      setHasData(n > 0)
+      setChecked(n)
     }
 
     refresh()
     window.addEventListener('storage', refresh)
-    // Also listen to custom event from DocChecklistBuilder / ProcedureTimeline
+    // ProcedureDocumentChecklist.tsx dispatches dalilak_saved_change on every toggle
     const handler = () => refresh()
     window.addEventListener('dalilak_saved_change', handler)
     return () => {
       window.removeEventListener('storage', refresh)
       window.removeEventListener('dalilak_saved_change', handler)
     }
-  }, [code])
+  }, [code, total])
 
   if (!mounted || !hasData || total === 0) return null
 
