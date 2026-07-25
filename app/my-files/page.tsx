@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
 import BottomNav from '@/components/BottomNav'
+import LoadingSpinner from '@/components/LoadingSpinner'
 import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -180,7 +181,6 @@ export default function MyFilesPage() {
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: #E6E2DC; border-radius: 4px; }
         .proc-btn:hover { border-color: #8F1D2C !important; }
-        @keyframes mf-spin { to { transform: rotate(360deg) } }
         @keyframes mfHeaderIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
         @keyframes mfEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 767px) {
@@ -259,9 +259,8 @@ export default function MyFilesPage() {
 
         {/* ── Loading ─────────────────────────────────────────────────────── */}
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <div style={{ width: 36, height: 36, border: '3px solid #E6E2DC', borderTopColor: '#8F1D2C', borderRadius: '50%', margin: '0 auto 14px', animation: 'mf-spin 0.8s linear infinite' }} />
-            <p style={{ fontSize: 13, color: '#918B82', margin: 0 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</p>
+          <div style={{ padding: '80px 0' }}>
+            <LoadingSpinner isAr={isAr} />
           </div>
 
         ) : loadError ? (

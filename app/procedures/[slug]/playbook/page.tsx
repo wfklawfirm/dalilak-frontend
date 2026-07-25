@@ -10,6 +10,7 @@ import { useFlowchartProgress } from '@/lib/useFlowchartProgress'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
 import { PageHeader, SectionCard, EmptyState } from '@/components/ui'
 import BottomNav from '@/components/BottomNav'
+import LoadingSpinner from '@/components/LoadingSpinner'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export default function PlaybookPage() {
@@ -158,10 +159,14 @@ export default function PlaybookPage() {
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '20px 8px' }}>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', border: '2.5px solid #E6E2DC', borderTopColor: '#8F1D2C', animation: 'pfcSpin 0.8s linear infinite' }} />
-                <style>{`@keyframes pfcSpin { to { transform: rotate(360deg); } }`}</style>
-                <p style={{ fontSize: 12, color: '#918B82', margin: 0 }}>{isAr ? 'جارٍ توليد خارطة الإجراء بالذكاء الاصطناعي...' : 'Generating AI procedure map...'}</p>
+              <div style={{ padding: '20px 8px' }}>
+                <LoadingSpinner
+                  isAr={isAr}
+                  size={26}
+                  borderWidth={2.5}
+                  labelSize={12}
+                  label={isAr ? 'جارٍ توليد خارطة الإجراء بالذكاء الاصطناعي...' : 'Generating AI procedure map...'}
+                />
               </div>
             )}
           </SectionCard>
