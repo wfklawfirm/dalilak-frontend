@@ -3,6 +3,7 @@ import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
+import SearchInput from '@/components/SearchInput'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
@@ -400,7 +401,6 @@ export default function ServicesPage() {
   const router = useRouter()
   const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
-  const [searchFocused, setSearchFocused] = useState(false)
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -499,50 +499,14 @@ export default function ServicesPage() {
         )}
       />
 
-      {/* ── Search bar ─────────────────────────────────────────────────────── */}
+      {/* ── Search bar — v4.0: extracted to components/SearchInput.tsx (batch #379) ── */}
       <main id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
-        <div style={{ position: 'relative', background: 'var(--surface)', border: `1px solid ${searchFocused ? 'var(--brand)' : 'var(--border)'}`, borderRadius: 14, transition: 'border-color 0.18s' }}>
-          <span style={{
-            position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-            color: searchFocused ? 'var(--brand)' : '#B0A090', display: 'flex', alignItems: 'center', pointerEvents: 'none', transition: 'color 0.18s',
-          }}>
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
-            </svg>
-          </span>
-          <input
-            type="text"
-            aria-label={isAr ? 'ابحث في الخدمات' : 'Search services'}
-            placeholder={isAr ? 'ابحث: جواز سفر، تسجيل شركة، ترخيص بناء...' : 'Search: passport, company registration, building permit...'}
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            style={{
-              width: '100%', padding: '12px 44px 12px 42px', borderRadius: 14,
-              fontSize: 13.5, border: 'none', outline: 'none',
-              fontFamily: "'Cairo','Inter',sans-serif",
-              direction: isAr ? 'rtl' : 'ltr', color: 'var(--text-1)', background: 'transparent',
-            }}
-          />
-          {search && (
-            <button
-              type="button"
-              aria-label={isAr ? 'مسح البحث' : 'Clear search'}
-              onClick={() => setSearch('')}
-              style={{
-                position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)',
-                background: 'var(--border)', border: 'none', borderRadius: '50%',
-                width: 36, height: 36, cursor: 'pointer', color: 'var(--text-2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
-              </svg>
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={search} onChange={setSearch} isAr={isAr}
+          ariaLabel={isAr ? 'ابحث في الخدمات' : 'Search services'}
+          placeholder={isAr ? 'ابحث: جواز سفر، تسجيل شركة، ترخيص بناء...' : 'Search: passport, company registration, building permit...'}
+          style={{ marginBottom: 0 }}
+        />
       </main>
 
       {/* ── Main Content ───────────────────────────────────────────────────── */}

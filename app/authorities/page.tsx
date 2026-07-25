@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
+import SearchInput from '@/components/SearchInput'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -138,7 +139,6 @@ export default function AuthoritiesPage() {
   const { isAr, toggleLang } = useLanguage()
   const [typeFilter, setTypeFilter] = useState('all')
   const [search, setSearch] = useState('')
-  const [searchFocused, setSearchFocused] = useState(false)
 
   const filtered = useMemo(() => {
     let list = ALL_AUTHORITIES
@@ -211,49 +211,12 @@ export default function AuthoritiesPage() {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="search-wrap" style={{
-          position: 'relative', marginBottom: 12,
-          background: 'var(--surface)', borderRadius: 14,
-          border: `1px solid ${searchFocused ? 'var(--brand)' : 'var(--border)'}`,
-          transition: 'border-color 0.18s',
-        }}>
-          <span style={{
-            position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-            right: 14, color: searchFocused ? 'var(--brand)' : 'var(--text-3)', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s',
-          }}>
-<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/>
-            </svg>
-          </span>
-          <input
-            type="text"
-            aria-label={isAr ? 'ابحث عن جهة رسمية' : 'Search official authorities'}
-            placeholder={isAr ? 'ابحث عن جهة رسمية...' : 'Search official authorities...'}
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            style={{
-              width: '100%', padding: '11px 42px 11px 14px',
-              border: 'none', borderRadius: 14, fontSize: 13.5,
-              background: 'transparent', outline: 'none',
-              fontFamily: 'inherit', color: 'var(--text-1)',
-            }}
-          />
-          {search && (
-            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} className="tap-hit-2" style={{
-              position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-              left: 4, background: 'var(--bg)', border: 'none', borderRadius: '50%',
-              width: 36, height: 36, cursor: 'pointer', color: 'var(--text-2)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-<svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/>
-              </svg>
-            </button>
-          )}
-        </div>
+        {/* Search — v4.0: extracted to components/SearchInput.tsx (batch #379) */}
+        <SearchInput
+          value={search} onChange={setSearch} isAr={isAr}
+          ariaLabel={isAr ? 'ابحث عن جهة رسمية' : 'Search official authorities'}
+          placeholder={isAr ? 'ابحث عن جهة رسمية...' : 'Search official authorities...'}
+        />
 
         {/* Type filter chips */}
         <div className="type-chip-row" style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 16 }}>

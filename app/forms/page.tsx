@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
+import SearchInput from '@/components/SearchInput'
 import { searchForms } from '@/lib/procedures'
 import { TX_ALL, TX_WITH_FORMS, TX_MINISTRIES, filterTxAll, filterTxForms, type TxItem } from '@/lib/allTransactions'
 import type { FormItem } from '@/lib/types'
@@ -17,7 +18,6 @@ export default function FormsPage() {
   const [search, setSearch] = useState('')
   const [ministryFilter, setMinistryFilter] = useState('all')
   const [viewTab, setViewTab] = useState<ViewTab>('forms-tx')
-  const [searchFocused, setSearchFocused] = useState(false)
 
   const allForms = useMemo(() => searchForms(''), [])
 
@@ -111,24 +111,15 @@ export default function FormsPage() {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="search-wrap" style={{ position: 'relative', marginBottom: 12, border: `1px solid ${searchFocused ? 'var(--brand)' : 'var(--border)'}`, borderRadius: 14, background: 'var(--surface)', transition: 'border-color 0.18s' }}>
-          <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 14, color: searchFocused ? 'var(--brand)' : '#B0A090', pointerEvents: 'none', display: 'flex', transition: 'color 0.18s' }}>
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
-          </span>
-          <input type="text"
-            aria-label={isAr ? 'ابحث في النماذج والمعاملات' : 'Search forms and procedures'}
-            placeholder={isAr
-              ? (viewTab === 'all-tx' ? `ابحث في ${TX_ALL.length.toLocaleString('en-US')} معاملة...` : viewTab === 'forms-tx' ? `ابحث في ${TX_WITH_FORMS.length} نموذج PDF...` : 'ابحث في النماذج المنظّمة...')
-              : (viewTab === 'all-tx' ? `Search ${TX_ALL.length.toLocaleString('en-US')} transactions...` : viewTab === 'forms-tx' ? `Search ${TX_WITH_FORMS.length} PDF forms...` : 'Search curated forms...')
-            }
-            value={search} onChange={e => setSearch(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            style={{ width: '100%', padding: '11px 42px 11px 36px', border: 'none', borderRadius: 14, fontSize: 13, background: 'transparent', outline: 'none', fontFamily: 'inherit', color: 'var(--text-1)', direction: isAr ? 'rtl' : 'ltr' }}
-          />
-          {search && <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 4, background: 'var(--border)', border: 'none', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-2)' }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>}
-        </div>
+        {/* Search — v4.0: extracted to components/SearchInput.tsx (batch #379) */}
+        <SearchInput
+          value={search} onChange={setSearch} isAr={isAr}
+          ariaLabel={isAr ? 'ابحث في النماذج والمعاملات' : 'Search forms and procedures'}
+          placeholder={isAr
+            ? (viewTab === 'all-tx' ? `ابحث في ${TX_ALL.length.toLocaleString('en-US')} معاملة...` : viewTab === 'forms-tx' ? `ابحث في ${TX_WITH_FORMS.length} نموذج PDF...` : 'ابحث في النماذج المنظّمة...')
+            : (viewTab === 'all-tx' ? `Search ${TX_ALL.length.toLocaleString('en-US')} transactions...` : viewTab === 'forms-tx' ? `Search ${TX_WITH_FORMS.length} PDF forms...` : 'Search curated forms...')
+          }
+        />
 
         {/* Ministry filter — for transaction tabs */}
         {(viewTab === 'forms-tx' || viewTab === 'all-tx') && (
