@@ -155,7 +155,7 @@ function CopyBtn({ text, isAr }: { text: string; isAr: boolean }) {
 
 export default function ProceduresPage() {
   const router = useRouter()
-  const { isAr, toggleLang } = useLanguage()
+  const { isAr } = useLanguage()
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const [expandedProc, setExpandedProc] = useState<string | null>(null)
@@ -244,37 +244,26 @@ export default function ProceduresPage() {
         @keyframes procEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
 
-      {/* Header */}
+      {/* Header — v4.0: flat surface header (was a maroon gradient banner with
+          translucent white-on-color chrome). Calm Government Digital Service
+          spec calls for simple headers: back + title (+ optional small
+          filter) — the subtitle/stat count moved to the stats strip below,
+          and language toggle moved out (already reachable via MobileMenu). */}
       <header style={{
-        background: 'var(--header-gradient)',
+        background: 'var(--surface)',
+        borderBottom: '1px solid var(--border)',
         padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
-        boxShadow: '0 4px 24px rgba(80,10,10,0.3)',
-        animation: 'slideDown 0.3s cubic-bezier(0.22,1,0.36,1) both',
       }}>
         <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
-            className="nav-home-btn"
-            onTouchStart={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.22)' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
-            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 9, color: '#fff', cursor: 'pointer', padding: '6px 8px', display: 'flex', flexShrink: 0 }}>
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            onTouchStart={e => { e.currentTarget.style.background = 'var(--surface-2)' }}
+            onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
+            style={{ background: 'transparent', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </button>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
-            </div>
-            <div>
-              <h1 style={{ color: '#fff', fontSize: 15, fontWeight: 800, margin: 0, lineHeight: 1.2 }}>
-                {isAr ? 'المعاملات الحكومية' : 'Government Procedures'}
-              </h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: 0 }}>
-                {isAr ? `${PROCEDURES_TOTAL} إجراء موثّق بالخطوات والوثائق` : `${PROCEDURES_TOTAL} documented step-by-step`}
-              </p>
-            </div>
-          </div>
-          <button type="button" onClick={toggleLang} aria-label={isAr ? 'تغيير اللغة' : 'Switch language'} style={{ background: 'rgba(255,255,255,0.12)', border: '1.5px solid rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9, padding: '5px 12px', cursor: 'pointer', fontSize: 11, fontFamily: 'inherit', fontWeight: 700, flexShrink: 0 }}>
-            {isAr ? 'EN' : 'AR'}
-          </button>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
+            {isAr ? 'المعاملات الحكومية' : 'Government Procedures'}
+          </h1>
         </div>
       </header>
 
@@ -293,30 +282,27 @@ export default function ProceduresPage() {
           }}
         />
 
-        {/* Stats strip — premium individual cards */}
+        {/* Stats strip — v4.0: flat cards, no gradient/shadow, matches homepage tokens */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
           {[
-            { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures', featured: true },
-            { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services', featured: false },
-            { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities', featured: false },
-          ].map((stat, i) => (
+            { value: String(PROCEDURES_TOTAL), label: isAr ? 'إجراء موثّق' : 'Procedures' },
+            { value: String(ALL_SERVICES.length), label: isAr ? 'خدمة متاحة' : 'Services' },
+            { value: String(TX_MINISTRIES.length) + '+', label: isAr ? 'جهة مختصة' : 'Authorities' },
+          ].map(stat => (
             <div key={stat.label} style={{
               padding: '14px 8px 16px', textAlign: 'center',
-              background: stat.featured ? 'linear-gradient(135deg, #F8EDEF 0%, #FDE4E4 100%)' : '#fff',
-              border: stat.featured ? '1.5px solid rgba(143,29,44,0.18)' : '1.5px solid #E6E2DC',
-              borderRadius: 12,
-              boxShadow: stat.featured ? '0 2px 10px rgba(143,29,44,0.09)' : '0 1px 5px rgba(0,0,0,0.05)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 14,
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              animation: 'procEnter 0.28s cubic-bezier(0.22,1,0.36,1) both',
-              animationDelay: `${0.06 + i * 0.07}s`,
             }}>
-              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 900, color: '#8F1D2C', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
+              <div style={{ fontSize: 'clamp(18px,5vw,22px)', fontWeight: 700, color: 'var(--text-1)', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 }}>{stat.label}</div>
             </div>
           ))}
         </div>
 
-        {/* Ministry filter chips */}
+        {/* Ministry filter chips — v4.0: flat outline pills */}
         <div style={{ marginBottom: 12, marginRight: -14, marginLeft: -14 }}>
           <div className="proc-chip-row" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: 6, paddingRight: 14, paddingLeft: 14, paddingBottom: 2 }}>
             {MINISTRY_CHIPS.map(chip => {
@@ -325,24 +311,21 @@ export default function ProceduresPage() {
                 <button
                   type="button"
                   key={chip.slug}
-                  className="proc-chip"
+                  className="proc-chip tap-hit-5"
                   onClick={() => { setMinistryFilter(chip.slug); setExpandedProc(null) }}
                   aria-pressed={active}
-                  onTouchStart={e => { e.currentTarget.style.background = active ? '#FDE8E8' : '#FEF9F9'; e.currentTarget.style.borderColor = '#8F1D2C' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = active ? '#F8EDEF' : '#fff'; e.currentTarget.style.borderColor = active ? '#8F1D2C' : '#E6E2DC' }}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: 5,
-                    padding: '5px 12px', borderRadius: 20, cursor: 'pointer',
-                    fontFamily: 'inherit', fontSize: 11.5, fontWeight: active ? 700 : 600,
-                    border: active ? '2px solid #8F1D2C' : '1.5px solid #E6E2DC',
-                    background: active ? '#F8EDEF' : '#fff',
-                    color: active ? '#8F1D2C' : '#69645C',
-                    boxShadow: active ? '0 2px 8px rgba(143,29,44,0.12)' : 'none',
+                    padding: '6px 12px', borderRadius: 999, cursor: 'pointer',
+                    fontFamily: 'inherit', fontSize: 12, fontWeight: active ? 600 : 500,
+                    border: active ? '1.5px solid var(--brand)' : '1px solid var(--border)',
+                    background: active ? 'var(--brand-soft)' : 'var(--surface)',
+                    color: active ? 'var(--brand)' : 'var(--text-2)',
                     whiteSpace: 'nowrap', flexShrink: 0,
                   }}
                 >
                   {chip.slug !== 'all' && (
-                    <span style={{ color: active ? '#8F1D2C' : '#918B82', display: 'flex' }}>
+                    <span style={{ color: active ? 'var(--brand)' : 'var(--text-3)', display: 'flex' }}>
                       <MinistryIcon slug={chip.slug} size={13} />
                     </span>
                   )}
@@ -353,9 +336,9 @@ export default function ProceduresPage() {
           </div>
         </div>
 
-        {/* Search */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: `1.5px solid ${searchFocused ? '#8F1D2C' : '#E6E2DC'}`, borderRadius: 14, padding: '10px 14px', marginBottom: 10, boxShadow: searchFocused ? '0 0 0 3px rgba(143,29,44,0.08), 0 2px 12px rgba(143,29,44,0.06)' : '0 1px 6px rgba(0,0,0,0.05)', transition: 'border-color 0.18s, box-shadow 0.18s' }}>
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+        {/* Search — v4.0: flat 14px-radius field, no shadow */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface)', border: `1px solid ${searchFocused ? 'var(--brand)' : 'var(--border)'}`, borderRadius: 14, padding: '10px 14px', marginBottom: 10, transition: 'border-color 0.15s' }}>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -364,10 +347,10 @@ export default function ProceduresPage() {
             aria-label={isAr ? 'ابحث في الإجراءات' : 'Search procedures'}
             placeholder={isAr ? `ابحث في ${PROCEDURES_TOTAL} إجراء...` : `Search ${PROCEDURES_TOTAL} procedures...`}
             dir={isAr ? 'rtl' : 'ltr'}
-            style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 13.5, color: '#191713', fontFamily: 'inherit' }}
+            style={{ border: 'none', background: 'none', outline: 'none', flex: 1, fontSize: 14, color: 'var(--text-1)', fontFamily: 'inherit' }}
           />
           {search && (
-            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', display: 'flex', alignItems: 'center' }}>
+            <button type="button" aria-label={isAr ? 'مسح البحث' : 'Clear search'} onClick={() => setSearch('')} className="tap-hit-8" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', display: 'flex', alignItems: 'center' }}>
               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           )}
@@ -378,26 +361,28 @@ export default function ProceduresPage() {
             onClick={() => setSearchModalOpen(true)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-              background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
-              cursor: 'pointer', color: '#8F1D2C',
+              width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+              background: 'var(--bg)', border: '1px solid var(--border)',
+              cursor: 'pointer', color: 'var(--text-2)',
             }}
           >
             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h10M4 18h4"/>
             </svg>
           </button>
-          {/* Advanced filter button */}
+          {/* Advanced filter button — opens ProcedureFilterDrawer, already a
+              bottom sheet (see components/ProcedureFilterDrawer.tsx), which
+              satisfies the brief's "filters live in a bottom sheet" spec. */}
           <button
             type="button"
             title={isAr ? 'فلترة متقدمة' : 'Advanced filters'}
             onClick={() => setFilterDrawerOpen(true)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-              background: hasActiveFilters(advFilters) ? '#8F1D2C' : '#F8EDEF',
-              border: `1px solid ${hasActiveFilters(advFilters) ? '#8F1D2C' : 'rgba(143,29,44,0.2)'}`,
-              cursor: 'pointer', color: hasActiveFilters(advFilters) ? '#fff' : '#8F1D2C',
+              width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+              background: hasActiveFilters(advFilters) ? 'var(--brand)' : 'var(--bg)',
+              border: `1px solid ${hasActiveFilters(advFilters) ? 'var(--brand)' : 'var(--border)'}`,
+              cursor: 'pointer', color: hasActiveFilters(advFilters) ? '#fff' : 'var(--text-2)',
               position: 'relative',
             }}
           >
@@ -408,7 +393,7 @@ export default function ProceduresPage() {
               <span style={{
                 position: 'absolute', top: -4, [isAr ? 'left' : 'right']: -4,
                 width: 12, height: 12, borderRadius: '50%',
-                background: '#ef4444', border: '2px solid #fff',
+                background: 'var(--brand)', border: '2px solid var(--surface)',
                 fontSize: 7, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {Object.values(advFilters).filter(v => v !== 'any').length}
@@ -462,14 +447,11 @@ export default function ProceduresPage() {
               {isAr ? 'لم نجد إجراءات مطابقة' : 'No matching procedures'}
             </p>
             <button type="button" onClick={() => handleAsk(search)}
-              onTouchStart={e => { e.currentTarget.style.opacity = '0.82'; e.currentTarget.style.transform = 'scale(0.97)' }}
-              onTouchEnd={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1)' }}
+              className="btn-primary"
               style={{
               padding: '10px 22px', borderRadius: 12,
-              background: 'linear-gradient(135deg, #8F1D2C, #741622)',
+              background: 'var(--brand)',
               border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-              boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
-              transition: 'opacity 0.12s, transform 0.12s',
               display: 'inline-flex', alignItems: 'center', gap: 6,
             }}>
               <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -484,11 +466,10 @@ export default function ProceduresPage() {
               const isExpanded = expandedProc === proc.slug
               return (
                 <div key={proc.slug} className="proc-card" style={{
-                  background: '#fff',
-                  border: `1.5px solid ${isExpanded ? '#8F1D2C' : '#E6E2DC'}`,
+                  background: 'var(--surface)',
+                  border: `1px solid ${isExpanded ? 'var(--brand)' : 'var(--border)'}`,
                   borderRadius: 14, overflow: 'hidden',
-                  boxShadow: isExpanded ? '0 4px 16px rgba(143,29,44,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
-                  transition: 'all 0.18s',
+                  transition: 'border-color 0.15s',
                 }}>
                   <button
                     type="button"
@@ -496,37 +477,37 @@ export default function ProceduresPage() {
                     aria-expanded={isExpanded}
                     aria-label={isAr ? proc.title_ar : proc.title_en}
                     style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
-                    onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
+                    onTouchStart={e => { e.currentTarget.style.background = 'var(--bg)' }}
                     onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: 10, background: isExpanded ? 'rgba(143,29,44,0.1)' : '#F8EDEF', border: '1px solid rgba(143,29,44,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', flexShrink: 0 }}>
                       <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 9.5, fontWeight: 700, color: '#8F1D2C', background: 'rgba(143,29,44,0.08)', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.15)' }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 6, padding: '1px 7px' }}>
                           {isAr ? 'مُرشدة' : 'Guided'}
                         </span>
-                        <span style={{ fontSize: 9.5, borderRadius: 6, padding: '1px 7px', fontWeight: 600, background: getComplexityBg(proc.complexity), color: getComplexityColor(proc.complexity) }}>
+                        <span style={{ fontSize: 10, borderRadius: 6, padding: '1px 7px', fontWeight: 600, background: getComplexityBg(proc.complexity), color: getComplexityColor(proc.complexity) }}>
                           {getComplexityLabel(proc.complexity, isAr)}
                         </span>
                         {proc.estimatedDuration_ar && (
-                          <span style={{ fontSize: 9.5, color: '#69645C', background: '#E6E2DC', borderRadius: 6, padding: '1px 7px' }}>
+                          <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px' }}>
                             {isAr ? proc.estimatedDuration_ar : proc.estimatedDuration_en}
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: isExpanded ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>
                         {isAr ? proc.title_ar : proc.title_en}
                       </div>
                     </div>
-                    <span style={{ color: isExpanded ? '#8F1D2C' : '#918B82', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
+                    <span style={{ color: isExpanded ? 'var(--brand)' : 'var(--text-3)', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
                       <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
                     </span>
                   </button>
 
                   {isExpanded && (
-                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid #E6E2DC', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
+                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid var(--border)', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
                       <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.75, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #E6E2DC' }}>
                         {isAr ? proc.description_ar : proc.description_en}
                       </p>
@@ -625,12 +606,11 @@ export default function ProceduresPage() {
               const displayWhereToApply = isAr ? proc.whereToApply : (proc.whereToApply_en || proc.whereToApply)
               return (
               <div key={proc.code} id={`proc-${proc.code}`} className="proc-card" style={{
-                background: '#fff', border: `1.5px solid ${expandedProc === proc.code ? '#8F1D2C' : '#E6E2DC'}`,
+                background: 'var(--surface)', border: `1px solid ${expandedProc === proc.code ? 'var(--brand)' : 'var(--border)'}`,
                 borderRadius: 14, overflow: 'hidden',
-                transition: 'border-color 0.18s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
+                transition: 'border-color 0.15s',
                 animation: 'procEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
                 animationDelay: `${Math.min(filteredGuided.length + idx, 16) * 0.04}s`,
-                boxShadow: expandedProc === proc.code ? '0 4px 16px rgba(143,29,44,0.1)' : '0 1px 4px rgba(0,0,0,0.04)',
               }}>
                 <button
                   type="button"
@@ -651,21 +631,21 @@ export default function ProceduresPage() {
                   }}
                   aria-expanded={expandedProc === proc.code}
                   style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
-                  onTouchStart={e => { e.currentTarget.style.background = '#FEF5F5' }}
+                  onTouchStart={e => { e.currentTarget.style.background = 'var(--bg)' }}
                   onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
                 >
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: expandedProc === proc.code ? 'rgba(143,29,44,0.1)' : '#F8EDEF', border: '1px solid rgba(143,29,44,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', flexShrink: 0 }}>
                     <MinistryIcon slug={proc.ministrySlug} size={18} />
                   </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 9.5, fontWeight: 700, color: '#8F1D2C', background: 'rgba(143,29,44,0.07)', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.12)' }}>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--brand)', background: 'var(--brand-soft)', borderRadius: 6, padding: '1px 7px' }}>
                         {isAr
                           ? (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.ar || proc.ministry)
                           : (MINISTRY_CHIPS.find(c => c.slug === proc.ministrySlug)?.en || proc.ministry_en || proc.ministry)}
                       </span>
-                      {displayDocs.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
-                      {displaySteps.length > 0 && <span style={{ fontSize: 9.5, background: '#F8EDEF', color: '#8F1D2C', borderRadius: 6, padding: '1px 7px', border: '1px solid rgba(143,29,44,0.2)' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
+                      {displayDocs.length > 0 && <span style={{ fontSize: 10, background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 6, padding: '1px 7px' }}>{displayDocs.length} {isAr ? 'وثيقة' : 'doc'}</span>}
+                      {displaySteps.length > 0 && <span style={{ fontSize: 10, background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 6, padding: '1px 7px' }}>{displaySteps.length} {isAr ? 'خطوة' : 'step'}</span>}
                       <ProcedureDifficultyBadge stepCount={proc.steps.length} docCount={proc.requiredDocuments.length} isAr={isAr} />
                       <ProcedurePriorityTag code={proc.code} isAr={isAr} />
                       <ProcedureViewCount code={proc.code} isAr={isAr} />
@@ -689,12 +669,12 @@ export default function ProceduresPage() {
                       })()}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: expandedProc === proc.code ? '#8F1D2C' : '#191713', lineHeight: 1.4 }}>{displayTitle}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>{displayTitle}</div>
                       <ProcedureVersionTag code={proc.code} isAr={isAr} compact />
                       <ProcedureReminderBell code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
                       <ProcedureProgressBadge code={proc.code} total={proc.requiredDocuments.length} compact />
                     </div>
-                    <div style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, marginTop: 2 }}>{displayMinistry}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, marginTop: 2 }}>{displayMinistry}</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', marginTop: 3 }}>
                       <ProcedureEstimatedFeeChip fees={proc.fees} fees_en={proc.fees_en} isAr={isAr} />
                     </div>
@@ -705,12 +685,12 @@ export default function ProceduresPage() {
                       isAr={isAr}
                     />
                     {displayDescription && expandedProc !== proc.code && (
-                      <div style={{ fontSize: 10.5, color: '#6B5A4A', marginTop: 3, lineHeight: 1.5, opacity: 0.85 }}>
+                      <div style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3, lineHeight: 1.5 }}>
                         {displayDescription.length > 90 ? displayDescription.slice(0, 90) + '…' : displayDescription}
                       </div>
                     )}
                   </div>
-                  <span style={{ color: expandedProc === proc.code ? '#8F1D2C' : '#918B82', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
+                  <span style={{ color: expandedProc === proc.code ? 'var(--brand)' : 'var(--text-3)', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
                     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
                   </span>
                 </button>
