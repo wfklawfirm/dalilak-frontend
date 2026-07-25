@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
+import MobileHeader from '@/components/MobileHeader'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -178,32 +179,12 @@ export default function AuthoritiesPage() {
         @media (min-width: 481px) and (max-width: 720px) { .auth-grid { grid-template-columns: repeat(2, 1fr) !important; } }
       `}</style>
 
-      {/* Header — v4.0: flat surface header, same pattern as /procedures and /faq.
-          Language toggle (batch #373): no TopNav/MobileMenu on this page. */}
-      <header style={{
-        background: 'var(--surface)',
-        borderBottom: '1px solid var(--border)',
-        padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button type="button" aria-label={isAr ? 'الرئيسية' : 'Home'} onClick={() => router.push('/')}
-            onTouchStart={e => { e.currentTarget.style.background = 'var(--surface-2)' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
-            style={{ background: 'transparent', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <h1 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0, lineHeight: 1.2, flex: 1, fontFamily: 'inherit' }}>
-            {isAr ? 'دليل الجهات الرسمية' : 'Official Authorities Directory'}
-          </h1>
-          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
-            className="tap-hit-2"
-            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
-            {isAr ? 'EN' : 'AR'}
-          </button>
-        </div>
-      </header>
+      {/* Header — v4.0 flat surface header, extracted to components/MobileHeader.tsx
+          (batch #378). Same visual output as before. */}
+      <MobileHeader
+        titleAr="دليل الجهات الرسمية" titleEn="Official Authorities Directory"
+        isAr={isAr} onBack={() => router.push('/')} toggleLang={toggleLang}
+      />
 
       <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '16px 14px var(--bottom-nav-clearance)' }}>
 

@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
+import MobileHeader from '@/components/MobileHeader'
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { useLanguage } from '@/lib/LanguageContext'
 import { useFlowchart } from '@/lib/useFlowchart'
@@ -477,44 +478,26 @@ export default function ServicesPage() {
         @media (min-width: 600px) and (max-width: 899px) { .svc-grid { grid-template-columns: repeat(3, 1fr) !important; } }
       `}</style>
 
-      {/* ── Header — v4.0: flat surface header, same pattern as other pages ── */}
-      <header style={{
-        background: 'var(--surface)',
-        borderBottom: '1px solid var(--border)',
-        padding: 'var(--header-padding)', position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <div style={{ maxWidth: 1024, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button
-            type="button"
-            aria-label={isAr ? 'الرجوع' : 'Go back'}
-            onClick={() => router.push('/')}
-            onTouchStart={e => { e.currentTarget.style.background = 'var(--surface-2)' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'transparent' }}
-            style={{ background: 'transparent', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-          >
-            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" style={{ transform: isAr ? 'scaleX(-1)' : 'none', display: 'block' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <h1 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.2, fontFamily: 'inherit', flex: 1, minWidth: 0 }}>{isAr ? 'الخدمات الحكومية' : 'Government Services'}</h1>
-          {/* Search count badge */}
-          {(search || selectedCat) && (
-            <span style={{
-              fontSize: 11, fontWeight: 700, color: 'var(--brand)',
-              background: 'var(--brand-soft)', borderRadius: 999,
-              padding: '3px 10px', flexShrink: 0, border: '1px solid var(--border-brand)',
-            }}>
-              <span aria-live="polite" aria-atomic="true">{filtered.length} {isAr ? 'نتيجة' : 'results'}</span>
-            </span>
-          )}
-          {/* Language toggle (batch #373): no TopNav/MobileMenu on this page. */}
-          <button type="button" onClick={toggleLang} aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
-            className="tap-hit-2"
-            style={{ position: 'relative', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', cursor: 'pointer', height: 38, padding: '0 12px', fontSize: 12, fontWeight: 700, fontFamily: 'inherit', flexShrink: 0 }}>
-            {isAr ? 'EN' : 'AR'}
-          </button>
-        </div>
-      </header>
+      {/* Header — v4.0 flat surface header, extracted to components/MobileHeader.tsx
+          (batch #378). Same visual output as before, including this page's
+          pre-existing 1024px maxWidth (other pages use var(--container-md)/720px —
+          left as-is here, not "fixed" as a side effect of this refactor) and its
+          distinct "Go back" aria-label (other pages say "Home"). */}
+      <MobileHeader
+        titleAr="الخدمات الحكومية" titleEn="Government Services"
+        isAr={isAr} onBack={() => router.push('/')} toggleLang={toggleLang}
+        backLabelAr="الرجوع" backLabelEn="Go back"
+        maxWidth={1024}
+        rightSlot={(search || selectedCat) && (
+          <span style={{
+            fontSize: 11, fontWeight: 700, color: 'var(--brand)',
+            background: 'var(--brand-soft)', borderRadius: 999,
+            padding: '3px 10px', flexShrink: 0, border: '1px solid var(--border-brand)',
+          }}>
+            <span aria-live="polite" aria-atomic="true">{filtered.length} {isAr ? 'نتيجة' : 'results'}</span>
+          </span>
+        )}
+      />
 
       {/* ── Search bar ─────────────────────────────────────────────────────── */}
       <main id="main-content" style={{ background: 'transparent', padding: '12px 14px 0', maxWidth: 1024, margin: '0 auto' }}>
