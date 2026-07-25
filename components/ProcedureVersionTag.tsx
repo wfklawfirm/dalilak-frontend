@@ -29,10 +29,29 @@ function hashCode(s: string): number {
   return h % 100
 }
 
+// batch #482: bucket must be keyed off the SAME calendar month that
+// getDateLabel() below actually displays (Asia/Beirut), not the viewer's
+// device timezone. Before this fix, getUpdateBucket() used the browser's
+// local `new Date().getFullYear()/getMonth()` while getDateLabel() formats
+// with `timeZone: 'Asia/Beirut'` — around every month boundary, and for any
+// visitor outside Beirut's UTC+2/+3 offset (a real audience for an Arabic-
+// first Lebanon-diaspora app), the bucket (and therefore whether the badge
+// shows at all, since bucket>=4 hides it, plus its color) could disagree
+// with the Beirut month the label text claims — contradicting this file's
+// own "deterministic" design intent (same procedure, same real instant,
+// different visible badge depending on the viewer's clock).
+function getBeirutYearMonth(): { year: number; month: number } {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Beirut', year: 'numeric', month: 'numeric',
+  }).formatToParts(new Date())
+  const year = Number(parts.find(p => p.type === 'year')?.value)
+  const month = Number(parts.find(p => p.type === 'month')?.value) - 1
+  return { year, month }
+}
+
 /** Returns 0=this month, 1=last month, 2=2m ago, 3=3m ago, 4=older (hidden) */
 function getUpdateBucket(code: string): number {
-  const year = new Date().getFullYear()
-  const month = new Date().getMonth()
+  const { year, month } = getBeirutYearMonth()
   const h = hashCode(code + String(year * 12 + month))
   if (h < 20) return 0       // 20% → this month
   if (h < 40) return 1       // 20% → last month

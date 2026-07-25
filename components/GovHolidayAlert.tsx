@@ -73,6 +73,23 @@ function getBeyrouthTomorrow(): Date {
   return lbNow
 }
 
+// Beirut's calendar date as YYYY-MM-DD — must NOT use `new Date().toISOString()`
+// (always UTC), since Beirut is UTC+2/+3 and that silently drifts the
+// dismiss-key "day" up to ~3h out of sync with checkAlert()'s Beirut-based
+// today/tomorrow above. Without this, a user who dismisses the alert during
+// the daily ~2-3h window right after Beirut midnight (while UTC's date is
+// still the previous day) has it stored under yesterday's UTC-dated key;
+// once UTC's date catches up later that same Beirut day, the key mismatches
+// and the already-dismissed alert silently reappears.
+function getBeyrouthTodayKey(): string {
+  const now = new Date()
+  const lb = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Beirut' }))
+  const y = lb.getFullYear()
+  const m = String(lb.getMonth() + 1).padStart(2, '0')
+  const d = String(lb.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 function checkAlert(): AlertInfo | null {
   const tomorrow = getBeyrouthTomorrow()
   const dow = tomorrow.getDay() // 0=Sun, 5=Fri, 6=Sat
@@ -120,7 +137,7 @@ export default function GovHolidayAlert() {
     if (!info) return
 
     // Check dismiss key
-    const today = new Date().toISOString().slice(0, 10)
+    const today = getBeyrouthTodayKey()
     const key = `dalilak_holiday_alert_dismissed_${today}`
     try {
       if (localStorage.getItem(key)) return
@@ -130,7 +147,7 @@ export default function GovHolidayAlert() {
   }, [])
 
   function dismiss() {
-    const today = new Date().toISOString().slice(0, 10)
+    const today = getBeyrouthTodayKey()
     try { localStorage.setItem(`dalilak_holiday_alert_dismissed_${today}`, '1') } catch {}
     setDismissed(true)
   }
