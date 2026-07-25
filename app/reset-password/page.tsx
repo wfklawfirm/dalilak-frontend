@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { apiResetPassword } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
+import AppLogo from '@/components/AppLogo'
 
 function ResetForm() {
   const { isAr } = useLanguage()
@@ -197,19 +198,8 @@ export default function ResetPasswordPage() {
       `}</style>
 
       {/* Logo */}
-      <div style={{ textAlign: 'center', marginBottom: 20, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
-        <div style={{
-          width: 72, height: 72, borderRadius: 20,
-          background: '#F8EDEF',
-          border: '1.5px solid rgba(143,29,44,0.15)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 12px',
-        }}>
-          <img src="/logo-icon.png" alt="دليلك"
-            style={{ width: 50, height: 50, objectFit: 'contain' }} />
-        </div>
-        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#191713', margin: 0, letterSpacing: '-0.3px' }}>دليلك</h1>
-        <p style={{ fontSize: 12, color: '#918B82', marginTop: 3 }}>{isAr ? 'دليل المواطن اللبناني الذكي' : 'The smart Lebanese citizen guide'}</p>
+      <div style={{ marginBottom: 20, animation: 'authLogoIn 0.5s cubic-bezier(0.22,1,0.36,1) both' }}>
+        <AppLogo isAr={isAr} layout="stacked" size={72} radius={20} iconSize={50} titleTag="h1" titleSize={22} titleWeight={900} tagline="long" />
       </div>
 
       {/* Card */}

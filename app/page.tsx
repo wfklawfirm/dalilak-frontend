@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import ChatMessage, { Message } from '@/components/ChatMessage'
 import BottomNav from '@/components/BottomNav'
+import AppLogo from '@/components/AppLogo'
 // batch #357 perf fix: GuidedFlow/TransactionStarter/ServiceGroupSheet are modal
 // overlays only mounted after a user action (start-guide, transaction-starter,
 // service-group tap) — they were being eager-imported into the main bundle on
@@ -1235,13 +1236,17 @@ Question: ${text}`
   if (!authChecked) return (
     <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#F8F8F6', gap:20 }}>
       <style>{`@keyframes auth-dot { 0%,80%,100%{transform:translateY(0);opacity:0.3} 40%{transform:translateY(-6px);opacity:1} }`}</style>
-      <div style={{ width:64, height:64, borderRadius:18, background:'#F8EDEF', border:'1.5px solid rgba(143,29,44,0.15)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 20px rgba(143,29,44,0.12)' }}>
-        <img src="/logo-icon.png" alt="دليلك" style={{ width:42, height:42, objectFit:'contain' }} />
-      </div>
-      <div style={{ textAlign:'center' }}>
-        <div style={{ fontSize:18, fontWeight:900, color:'#191713', letterSpacing:'-0.5px', marginBottom:4 }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
-        <div style={{ fontSize:11, color:'#918B82', fontWeight:500 }}>{isAr ? 'الدليل الحكومي الذكي' : 'Smart Government Guide'}</div>
-      </div>
+      <AppLogo
+        isAr={isAr}
+        layout="stacked"
+        size={64}
+        radius={18}
+        iconSize={42}
+        badgeShadow
+        titleSize={18}
+        titleWeight={900}
+        customTagline={{ ar: 'الدليل الحكومي الذكي', en: 'Smart Government Guide' }}
+      />
       <div style={{ display:'flex', gap:7 }}>
         {[0,1,2].map(i => <span key={i} style={{ width:7, height:7, borderRadius:'50%', background:'#8F1D2C', display:'inline-block', animation:`auth-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
       </div>
@@ -1667,10 +1672,7 @@ Question: ${text}`
                   menu — nothing deleted, just no longer repeated here. ══ */}
               <footer aria-label={isAr ? 'تذييل الصفحة' : 'Page footer'} style={{ background:'var(--surface)', borderTop:'1px solid var(--border)', padding:'20px 0' }}>
                 <div style={{ maxWidth:720, margin:'0 auto', padding:'0 16px', display:'flex', flexDirection:'column', gap:10 }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width:18, height:18, objectFit:'contain' }} />
-                    <span style={{ fontSize:13, fontWeight:700, color:'var(--text-1)' }}>{isAr ? 'دليلك' : 'Dalilak'}</span>
-                  </div>
+                  <AppLogo isAr={isAr} badge={false} iconSize={18} titleTag="span" titleSize={13} titleWeight={700} style={{ gap: 8 }} />
                   <div style={{ display:'flex', flexWrap:'wrap', gap:'6px 16px', fontSize:12, color:'var(--text-3)' }}>
                     <span>{isAr ? '© ٢٠٢٦ دليلك' : '© 2026 Dalilak'}</span>
                     <button type="button" onClick={() => router.push('/settings')} style={{ background:'none', border:'none', color:'var(--text-3)', cursor:'pointer', fontFamily:'inherit', fontSize:12, padding:0 }}>{isAr ? 'حول دليلك' : 'About'}</button>

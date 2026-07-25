@@ -7,6 +7,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { useFocusTrap } from '@/lib/useFocusTrap'
 import NotificationBell from '@/components/NotificationBell'
 import GlobalSearch from '@/components/GlobalSearch'
+import AppLogo from '@/components/AppLogo'
 
 interface MobileMenuProps {
   isOpen: boolean
@@ -217,23 +218,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
             padding: '14px 16px 14px',
           }}>
             {/* Brand */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <div style={{
-                width: 34, height: 34, borderRadius: 10,
-                background: '#F8EDEF',
-                border: '1px solid rgba(143,29,44,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                overflow: 'hidden', flexShrink: 0,
-              }}>
-                <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
-              </div>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 900, color: '#191713', lineHeight: 1, letterSpacing: '-0.3px' }}>{isAr ? 'دليلك' : 'Dalilak'}</div>
-                <div style={{ fontSize: 9, color: '#918B82', marginTop: 2 }}>
-                  {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
-                </div>
-              </div>
-            </div>
+            <AppLogo isAr={isAr} size={34} radius={10} titleSize={15} titleWeight={900} tagline="short" />
             {/* Close */}
             <button
               type="button"

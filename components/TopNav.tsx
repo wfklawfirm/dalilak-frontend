@@ -6,6 +6,7 @@ import { isAdmin, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 import GlobalSearch from '@/components/GlobalSearch'
 import NotificationBell from '@/components/NotificationBell'
+import AppLogo from '@/components/AppLogo'
 
 interface TopNavProps {
   isAr?: boolean
@@ -133,36 +134,15 @@ export default function TopNav({
         }}>
 
           {/* ══ DESKTOP BRAND ══ */}
-          <button
-            type="button"
+          <AppLogo
+            isAr={isAr}
+            as="button"
             className="tn-desk-brand"
-            aria-label={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
+            ariaLabel={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
-            style={{
-              display: 'none', alignItems: 'center', gap: 9,
-              background: 'none', border: 'none',
-              cursor: 'pointer', padding: 0, flexShrink: 0,
-              marginInlineEnd: 32,
-            }}
-          >
-            <div style={{
-              width: 34, height: 34, borderRadius: 9,
-              background: 'var(--brand-soft)',
-              border: '1px solid var(--brand-ring)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden',
-            }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain', display: 'block' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-1)', lineHeight: 1, letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>
-                {isAr ? 'دليلك' : 'Dalilak'}
-              </div>
-              <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 1.5, whiteSpace: 'nowrap' }}>
-                {isAr ? 'دليل المواطن اللبناني' : 'Lebanese Citizens Guide'}
-              </div>
-            </div>
-          </button>
+            tagline="short"
+            style={{ display: 'none', marginInlineEnd: 32 }}
+          />
 
           {/* ══ DESKTOP NAV LINKS ══ */}
           <nav
@@ -209,30 +189,19 @@ export default function TopNav({
               absolutely centered — centering competed visually with the
               hamburger for "primary" attention; a fixed start-aligned logo
               reads as calmer and matches every reference government app. ══ */}
-          <button
-            type="button"
+          <AppLogo
+            isAr={isAr}
+            as="button"
             className="tn-mobile-brand"
-            aria-label={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
+            ariaLabel={isAr ? 'الصفحة الرئيسية — دليلك' : 'Home — Dalilak'}
             onClick={() => onNewChat ? onNewChat() : router.push('/')}
-            style={{
-              display: 'none',
-              alignItems: 'center', gap: 8,
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              flexShrink: 0,
-            }}
-          >
-            <div style={{
-              width: 28, height: 28, borderRadius: 7,
-              background: 'var(--brand-soft)', border: '1px solid var(--brand-ring)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-              flexShrink: 0,
-            }}>
-              <img src="/logo-icon.png" alt="" aria-hidden="true" style={{ width: 20, height: 20, objectFit: 'contain', display: 'block' }} />
-            </div>
-            <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-1)', letterSpacing: '-0.2px', lineHeight: 1 }}>
-              {isAr ? 'دليلك' : 'Dalilak'}
-            </span>
-          </button>
+            size={28}
+            radius={7}
+            iconSize={20}
+            titleSize={17}
+            titleWeight={700}
+            style={{ display: 'none', gap: 8 }}
+          />
 
           {/* ══ RIGHT ACTIONS ══ */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginInlineStart: 'auto', flexShrink: 0 }}>
