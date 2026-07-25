@@ -108,6 +108,20 @@ const CONFIDENCE_LABELS_EN: Record<'low' | 'medium' | 'high', string> = {
   low: 'Unverified',
 }
 
+// batch #485: Arabic number-noun agreement for "خطوة" (step) — same rule
+// already applied to ProcedureStepProgress.tsx (#484) for the SAME word,
+// just a different (dynamically-built flowchart) node count here. All 6
+// static fallback flowcharts in lib/flowchartData.ts have 6-8 nodes, and
+// AI-generated flowcharts follow the same real-procedure step counts
+// audited in #484 (dominated by the 3-10 plural range) — a bare
+// `${n} خطوة` is wrong for nearly every real flowchart.
+function flowStepPhraseAr(n: number): string {
+  if (n === 1) return 'خطوة واحدة'
+  if (n === 2) return 'خطوتين'
+  if (n >= 3 && n <= 10) return `${n} خطوات`
+  return `${n} خطوة`
+}
+
 export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, currentNodeId, completedNodeIds, onToggleNode }: Props) {
   const { nodes, edges } = flowchart
   const interactive = Boolean(onToggleNode)
@@ -147,7 +161,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
             <span style={{ fontSize: 10, color: '#918B82' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>
-            <span style={{ fontSize: 10, color: '#918B82' }}>{isAr ? `${nodes.length} خطوة` : `${nodes.length} steps`}</span>
+            <span style={{ fontSize: 10, color: '#918B82' }}>{isAr ? flowStepPhraseAr(nodes.length) : `${nodes.length} steps`}</span>
           </div>
         </div>
       )}

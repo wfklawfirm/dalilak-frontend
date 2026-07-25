@@ -49,7 +49,13 @@ function stripLegalCitations(f: string): string {
 function parseFeesAr(fees: string): ParseResult {
   const f = stripLegalCitations(fees.toLowerCase())
 
-  if (f.includes('مجاني') || f.includes('مجانا') || f.includes('بدون رسوم') || f.includes('دون رسوم')) {
+  // batch #490: also catch "لا رسوم"/"لا يتوجب أي رسم" phrasing used in
+  // lib/enrichedProcedures.ts (e.g. imu11-04, phe211-06, finance-tax-
+  // registration) -- without this, those records fell through to the
+  // numeric/varies logic below and showed "رسوم متغيرة" (varies) instead of
+  // "🆓 مجاني" (free), the same gap already fixed in CostEstimator.tsx
+  // (batch #489) for its own fee-parsing logic.
+  if (f.includes('مجاني') || f.includes('مجانا') || f.includes('بدون رسوم') || f.includes('دون رسوم') || /لا\s*(?:رسوم|يتوجب\s*أي\s*رسم)/.test(f)) {
     return { cat: 'free', maxAmount: null }
   }
   // Real fee data (lib/enrichedProcedures.ts) groups thousands with BOTH

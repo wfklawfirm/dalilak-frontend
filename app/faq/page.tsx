@@ -10,6 +10,17 @@ import AskDalilakButton from '@/components/AskDalilakButton'
 import { SERVICE_FAQ, FAQ_CATEGORIES, searchFAQ, type FAQItem } from '@/lib/serviceFAQ'
 import { useLanguage } from '@/lib/LanguageContext'
 
+// batch #491: detects a leaked Python dict.__repr__() fragment such as
+// "{'الاسم': 'SARL ..." (ref_004's summary). Broader than the old
+// `/^[{[]/` anchor used for `fees` below -- that only caught a dict/array
+// as the WHOLE value, missing a dict embedded after prefix text. Verified
+// against all 60 real SERVICE_FAQ summary/fees values: matches only
+// ref_004's corrupted summary and the already-known corrupted fees
+// records; no real Arabic-prose value contains a `{'...':` sequence.
+function isCorruptDictRepr(s: string): boolean {
+  return /\{'[^']*':/.test(s)
+}
+
 const CAT_EN: Record<string, string> = {
   'الطوارئ والأرقام المهمة':       'Emergency Numbers',
   'الخدمات البلدية':                'Municipal Services',
@@ -242,7 +253,7 @@ export default function FAQPage() {
                   {isOpen && (
                     <div style={{ padding: '0 14px 14px', borderTop: '1px solid var(--border)' }}>
                       {/* Summary */}
-                      {item.summary && (
+                      {item.summary && !isCorruptDictRepr(item.summary) && (
                         <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: 'var(--text-1)', lineHeight: 1.8, background: 'var(--bg)', borderRadius: 9, padding: '9px 12px', border: '1px solid var(--border)' }}>
                           {item.summary}
                         </p>
@@ -290,7 +301,7 @@ export default function FAQPage() {
                       {/* Fees + authority + duration meta strip */}
                       {(item.fees || item.duration || item.authority) && (
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                          {item.fees && item.fees.trim() && !/^[{[]/.test(item.fees.trim()) && (
+                          {item.fees && item.fees.trim() && !isCorruptDictRepr(item.fees) && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#FFFBEB', border: '1px solid #FEF3C7', borderRadius: 9, padding: '5px 10px' }}>
                               <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#92400E" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3"/></svg>
                               <span style={{ fontSize: 10.5, color: '#78350F', fontWeight: 600 }}>{item.fees.length > 50 ? item.fees.slice(0, 50) + '…' : item.fees}</span>

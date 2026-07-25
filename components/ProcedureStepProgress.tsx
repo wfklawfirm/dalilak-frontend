@@ -31,6 +31,22 @@ interface Props {
 
 function getKey(code: string, idx: number) { return `dalilak_step_check_${code}_${idx}` }
 
+// Arabic number-noun agreement for "خطوة" (step) — same rule already
+// applied to "يوم"/day (6 components) and "وثيقة"/document
+// (CostEstimator.tsx, batch #483): 1 -> مفرد, 2 -> مثنى, 3-10 -> جمع,
+// 11+ -> تمييز مفرد منصوب. Checked against all 71 real ENRICHED_PROCEDURES
+// steps-array lengths: distribution is 3-10 for 70 of 71 records (99%),
+// where a bare `${n} خطوة` is grammatically wrong (needs plural "خطوات").
+function stepPhraseAr(n: number): string {
+  if (n === 1) return 'خطوة واحدة'
+  // Genitive dual "خطوتين" (not nominative "خطوتان") — this phrase is
+  // always preceded by the preposition "من" ("X من Y خطوة"), which governs
+  // the genitive/accusative case.
+  if (n === 2) return 'خطوتين'
+  if (n >= 3 && n <= 10) return `${n} خطوات`
+  return `${n} خطوة`
+}
+
 function loadChecked(code: string, total: number): boolean[] {
   try {
     return Array.from({ length: total }, (_, i) => !!localStorage.getItem(getKey(code, i)))
@@ -92,7 +108,7 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
           </div>
           <div style={{ fontSize: 10, color: '#918B82', marginTop: 1 }}>
             {isAr
-              ? `${doneCount} من ${steps.length} خطوة${allDone ? ' — ✅ مكتمل!' : ''}`
+              ? `${doneCount} من ${stepPhraseAr(steps.length)}${allDone ? ' — ✅ مكتمل!' : ''}`
               : `${doneCount} of ${steps.length} steps${allDone ? ' — ✅ Complete!' : ''}`}
           </div>
         </div>

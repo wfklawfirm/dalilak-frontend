@@ -36,8 +36,12 @@ interface CostEstimatorProps {
 // ── Parse a fees string into a USD number ────────────────────────────────────
 function parseFeesUSD(raw: string): number | null {
   if (!raw) return null
-  // Handle "مجاني / Free"
-  if (/مجاني|free|gratis/i.test(raw)) return 0
+  // Handle "مجاني / Free" plus the "لا رسوم"/"لا يتوجب أي رسم" phrasing used
+  // in lib/enrichedProcedures.ts (batch #489) — without this, those 3 records
+  // fall through to the numeric fallback below, which either invents the
+  // hard-coded $20 default (no digits present) or misreads an unrelated
+  // number in the sentence (e.g. the "11%" VAT rate) as the fee itself.
+  if (/مجاني|free|gratis|لا\s*(?:رسوم|يتوجب\s*أي\s*رسم)/i.test(raw)) return 0
 
   // Try to find a USD amount: $X or X USD or X دولار
   const usdMatch = raw.match(/\$\s*([\d,]+(?:\.\d+)?)/i)
@@ -65,6 +69,21 @@ function parseFeesUSD(raw: string): number | null {
   }
 
   return null
+}
+
+// Arabic number-noun agreement for "وثيقة" (document): 1 -> مفرد ("وثيقة
+// واحدة"), 2 -> مثنى ("وثيقتين"), 3-10 -> جمع ("N وثائق"), 11+ -> تمييز
+// مفرد منصوب ("N وثيقة" -- the bare form, which happens to be what the old
+// code always used). Same rule already applied to "يوم" (day) counts
+// elsewhere in this app (e.g. ProcedureFeeHistory.tsx, NotificationBell.tsx).
+// Checked against all 71 real ENRICHED_PROCEDURES requiredDocuments counts:
+// 58 of 71 (82%) fall in the 2-10 range where the old bare `${n} وثيقة`
+// was grammatically wrong.
+function arDocsLabel(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
 }
 
 export default function CostEstimator({
@@ -124,7 +143,7 @@ export default function CostEstimator({
     // Notary / authentication
     if (docCount > 0) {
       result.push({
-        labelAr: `كاتب العدل / التوثيق (${docCount} وثيقة × $5)`,
+        labelAr: `كاتب العدل / التوثيق (${arDocsLabel(docCount)} × $5)`,
         labelEn: `Notary / Authentication (${docCount} docs × $5)`,
         amount: docCount * 5,
       })

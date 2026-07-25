@@ -75,9 +75,15 @@ function parseProcessingDays(pt: string): number | null {
   // above for أسبوعين ("two weeks") vs أسبوع ("one week").
   if (lower.includes('شهرين') || lower.includes('شهران'))            return 60
 
-  // Single named — Arabic months/weeks
-  if (lower.includes('شهر'))  return 30
-  if (lower.includes('month')) return 30
+  // Single named — Arabic months/weeks. Guard against the broken plural
+  // "أشهر" ("months") and English "months", which both contain the
+  // singular "شهر"/"month" as a substring (batch #492) — an unquantified
+  // plural means "an unspecified number of months" (e.g. real data
+  // 'يتفاوت حسب نوع القضية: أسابيع إلى أشهر' for justice-personal-status-
+  // court), not "one month", so it must fall through to the null/
+  // unparseable case below rather than being silently coerced to 30.
+  if (lower.includes('شهر') && !lower.includes('أشهر')) return 30
+  if (lower.includes('month') && !lower.includes('months')) return 30
 
   return null
 }

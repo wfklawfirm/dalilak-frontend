@@ -38,11 +38,24 @@ function normalize(s: string): string {
 // silently rendered blank for those records — 14 of 52 live FAQ items,
 // e.g. mun_001 ("رخصة البناء") has summary:'' but 8 real steps that show
 // fine on /faq yet vanished here.
+// batch #491: detects a leaked Python dict.__repr__() fragment such as
+// "{'الاسم': 'SARL ..." — the same corruption previously found (and guarded
+// for) in the `fees` field, but here caught in `summary` too (ref_004:
+// "شركة_ذات_مسؤولية_محدودة: {'الاسم': 'SARL (Société ...'"). Unlike the old
+// `/^[{[]/` anchor (which only catches a dict/array as the WHOLE value),
+// this also catches a dict embedded after some prefix text. Verified against
+// all 60 real SERVICE_FAQ summary/fees values: matches only the 1 corrupted
+// summary and the 13 already-known corrupted fees records, no other real
+// record (Arabic prose never contains a `{'...':` sequence).
+function isCorruptDictRepr(s: string): boolean {
+  return /\{'[^']*':/.test(s)
+}
+
 function previewFor(faq: FAQItem): string {
-  if (faq.summary) return faq.summary
+  if (faq.summary && !isCorruptDictRepr(faq.summary)) return faq.summary
   if (faq.steps.length > 0) return faq.steps.join(' • ')
   if (faq.requiredDocuments.length > 0) return faq.requiredDocuments.join(' • ')
-  if (faq.fees && !/^[{[]/.test(faq.fees.trim())) return faq.fees
+  if (faq.fees && !isCorruptDictRepr(faq.fees)) return faq.fees
   return faq.authority || faq.duration || ''
 }
 

@@ -3535,7 +3535,7 @@ export const ALL_SERVICES: ServiceItem[] = [
     processing_time: 'فوري لعقد الإيجار. نزاعات الإيجار تستغرق أشهراً إلى سنوات',
     required_documents: ['عقد الإيجار الموقّع بين الطرفين', 'هوية المالك والمستأجر', 'صك ملكية العقار (للمالك)', 'إيصالات دفع الإيجار', 'ضمان مالي (كفالة) إن اشترط المالك'],
     phone: '01/983555 (وزارة العدل)',
-    website: 'N/A (لا توجد جهة إلكترونية مركزية)',
+    website: '', // batch #487: was 'N/A (...)' sentinel — truthy string rendered as a dead clickable link; empty string matches this file's own no-website convention (10 other records)
     working_hours: 'الاثنين - الجمعة: 8:00 - 14:00',
     online_available: false,
     forms_needed: [],
@@ -5188,7 +5188,7 @@ export const ALL_SERVICES: ServiceItem[] = [
     processing_time: 'نفس اليوم',
     required_documents: ['هوية شخصية أو جواز سفر', 'إثبات السكن (فاتورة كهرباء، عقد إيجار)', 'رسوم المختار'],
     phone: 'يختلف حسب المنطقة',
-    website: 'N/A',
+    website: '', // batch #487: was 'N/A' sentinel — same dead-link bug as re_008 above
     working_hours: 'عادةً صباحاً - يُنصح بالاتصال مسبقاً',
     online_available: false,
     forms_needed: [],

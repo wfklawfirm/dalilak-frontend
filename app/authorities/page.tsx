@@ -67,6 +67,15 @@ function deriveAuthorities(): DerivedAuthority[] {
   return Array.from(map.values()).sort((a, b) => b.serviceCount - a.serviceCount)
 }
 
+// batch #488: some services' `phone` field is descriptive prose, not a real
+// number (e.g. 'يتفاوت بحسب البلدية' / 'varies by municipality', or '—').
+// Rendered verbatim as `tel:${auth.phone}` this produced a dead, garbage
+// tel: link (e.g. href="tel:—"). Only treat it as dialable if it contains
+// at least 2 digits, and strip non-digit separators before dialing.
+function isDialablePhone(p?: string): boolean {
+  return !!p && /\d{2,}/.test(p)
+}
+
 const ALL_AUTHORITIES = deriveAuthorities()
 
 const TYPE_FILTERS = [
@@ -341,15 +350,27 @@ export default function AuthoritiesPage() {
                 {(auth.phone || auth.working_hours) && (
                   <div style={{ marginBottom: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {auth.phone && (
-                      <a href={`tel:${auth.phone}`} style={{
-                        fontSize: 11, color: 'var(--brand)', textDecoration: 'none',
-                        display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
-                      }}>
+                      isDialablePhone(auth.phone) ? (
+                        <a href={`tel:${auth.phone.replace(/[^\d+]/g, '')}`} style={{
+                          fontSize: 11, color: 'var(--brand)', textDecoration: 'none',
+                          display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
+                        }}>
 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                        </svg>
-                        {auth.phone}
-                      </a>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                          </svg>
+                          {auth.phone}
+                        </a>
+                      ) : (
+                        <span style={{
+                          fontSize: 11, color: 'var(--text-2)',
+                          display: 'flex', alignItems: 'center', gap: 5, fontWeight: 600,
+                        }}>
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                          </svg>
+                          {auth.phone}
+                        </span>
+                      )
                     )}
                     {auth.working_hours && (
                       <span style={{ fontSize: 11, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 5 }}>

@@ -97,6 +97,7 @@ export default function GuidedFlow({ isAr, onSend, onClose, initialSlug }: Guide
       list = list.filter(p =>
         p.ar.includes(search.trim()) ||
         p.ar.toLowerCase().includes(q) ||
+        p.en.toLowerCase().includes(q) ||
         (p.authority && p.authority.includes(search.trim()))
       )
     }
