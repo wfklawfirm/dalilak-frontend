@@ -405,25 +405,24 @@ export default function ProceduresPage() {
         {/* Count + active filter badge */}
         <div aria-live="polite" aria-atomic="true" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{ width: 3.5, height: 16, borderRadius: 2, background: 'linear-gradient(180deg, #8F1D2C, #741622)', flexShrink: 0 }} />
-            <span style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', letterSpacing: '-0.2px' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-1)' }}>
               {totalResults === PROCEDURES_TOTAL
                 ? (isAr ? 'جميع الإجراءات' : 'All Procedures')
                 : `${totalResults} ${isAr ? 'إجراء' : 'procedures'}`}
             </span>
           </div>
           {search && (
-            <span style={{ fontSize: 11, color: '#8F1D2C', fontWeight: 600 }}>— &quot;{search}&quot;</span>
+            <span style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 500 }}>— &quot;{search}&quot;</span>
           )}
           {ministryFilter !== 'all' && (
             <>
-              <span style={{ color: '#D4C5B0', fontSize: 11 }}>·</span>
+              <span style={{ color: 'var(--text-3)', fontSize: 11 }}>·</span>
               <button
                 type="button"
                 onClick={() => setMinistryFilter('all')}
                 style={{
-                  fontSize: 10.5, color: '#8F1D2C', fontWeight: 700,
-                  background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)',
+                  fontSize: 11, color: 'var(--brand)', fontWeight: 600,
+                  background: 'var(--brand-soft)', border: 'none',
                   borderRadius: 20, padding: '2px 10px', cursor: 'pointer',
                   fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
                 }}
