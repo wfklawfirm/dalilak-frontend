@@ -266,7 +266,9 @@ export default function SettingsPage() {
         </div>
       </main>
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} /></div>
+      {/* batch #527: no activeTab was passed here, silently defaulting to
+          'home' and wrongly highlighting Home while the user is on Settings. */}
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="account" /></div>
     </div>
   )
 }

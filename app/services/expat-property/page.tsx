@@ -331,7 +331,10 @@ export default function ExpatPropertyPackPage() {
 
       </main>
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
+      {/* batch #527: 'services' hasn't been a BottomNav tab id since v4.0's
+          flatten-to-4-tabs pass — this never matched, so the bar showed
+          nothing highlighted. 'procedures' is the closest surviving tab. */}
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
     </div>
   )
 }
