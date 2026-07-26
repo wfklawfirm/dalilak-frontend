@@ -885,11 +885,30 @@ Question: ${text}`
   }, [lang, pool])
 
   // ── Keyboard / visualViewport fix ────────────────────────
+  // batch #523: user report — "bottom nav buttons need several taps before
+  // they register". Root cause traced to this handler: visualViewport
+  // 'resize'/'scroll' fire not only when the on-screen keyboard opens, but
+  // also on ordinary mobile scrolling, whenever the browser's own address
+  // bar chrome collapses/expands (a real, well-documented behavior on both
+  // iOS Safari and Chrome Android — typically a 40-60px height delta, vs a
+  // real keyboard's 250-350px+). This handler used to treat ANY positive
+  // offset as "keyboard is open": it set `footerBottom` on every single
+  // firing (which, mid-scroll, can be many times per second, each one a
+  // React re-render of this large page) AND removed the footer's
+  // `.bottom-nav-padding` class (see the footer below), letting the chat
+  // input's textarea silently expand into the fixed BottomNav's tap area
+  // for that instant. Gating on a minimum height comfortably below any real
+  // keyboard, but well above address-bar noise, fixes both: chrome-driven
+  // noise now collapses to the same `footerBottom = 0` no-op (React bails
+  // out of re-rendering on an unchanged primitive state value), and the
+  // padding-clearing class only ever drops for an actual keyboard.
+  const KEYBOARD_MIN_OFFSET_PX = 150
   useEffect(() => {
     const vv = (window as any).visualViewport
     if (!vv) return
     const onViewport = () => {
-      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
+      const rawOffset = window.innerHeight - vv.height - vv.offsetTop
+      const offset = rawOffset > KEYBOARD_MIN_OFFSET_PX ? rawOffset : 0
       setFooterBottom(offset)
       if (offset > 50) {
         setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
