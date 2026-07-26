@@ -20,7 +20,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { authHeaders } from '@/lib/auth'
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 const LS_KEY = 'dalilak_site_feedback'
 const SS_START = 'dalilak_session_start'
 const SS_COUNT = 'dalilak_msg_count'
@@ -103,6 +105,23 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
       const fb: StoredFeedback = { rating, comment, ts: Date.now() }
       localStorage.setItem(LS_KEY, JSON.stringify(fb))
     } catch {}
+    // batch #499: كان هذا التقييم يُخزَّن محلياً على جهاز المستخدم فقط ولا
+    // يصل لأي مكان — يعرض "شكراً على تقييمك" مع أن الفريق لا يرى شيئاً.
+    // يُرسَل الآن فعلياً لنقطة /feedback الحقيقية نفسها التي يستخدمها تقييم
+    // 👍/👎 على الردود (AgentResponseRenderer.tsx)، فيظهر ضمن لوحة
+    // /admin/feedback الحقيقية. لا تعديل على شكل الـ Backend API — فقط
+    // إعادة استخدام الحقول الموجودة أصلاً (rating بصيغة up/down، question،
+    // answer) بإسقاط تقييم النجوم عليها.
+    fetch(`${API_URL}/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({
+        question: 'تقييم عام لتجربة الموقع (Site Feedback Widget)',
+        answer: comment ? `${rating}/5 نجوم — ${comment}` : `${rating}/5 نجوم`,
+        rating: rating >= 4 ? 'up' : 'down',
+        confidence: 'site_feedback',
+      }),
+    }).catch(() => {})
     setSubmitted(true)
     setTimeout(() => { setOpen(false); setVisible(false) }, 2000)
   }

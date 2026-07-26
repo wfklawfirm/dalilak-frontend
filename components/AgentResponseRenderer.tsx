@@ -35,6 +35,10 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'الملخص':               { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'معلومات عامة':         { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'نظرة عامة':            { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  // batch #501: بطاقة "ما هي هذه الخدمة؟ ولماذا تحتاجها؟" — الفقرة التفسيرية
+  // الجديدة التي يبدأ بها أي رد عن معاملة/خدمة/مستند (راجع system_prompt.txt).
+  'ما هي هذه الخدمة':     { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
+  'what is this service': { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'summary':              { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'overview':             { bg: '#FDF8F0', border: '#E6E2DC', icon: SvgSummary,  labelColor: '#7C5C1C' },
   'المستندات المطلوبة':   { bg: '#F8EDEF', border: '#FECACA', icon: SvgDocs,     labelColor: '#8F1D2C' },
@@ -64,6 +68,10 @@ const SECTION_MAP: Record<string, { bg: string; border: string; icon: ReactNode;
   'الخطوة التالية':       { bg: '#F8EDEF', border: '#FECACA', icon: SvgArrow,    labelColor: '#8F1D2C' },
   'التوصية':              { bg: '#F8EDEF', border: '#FECACA', icon: SvgArrow,    labelColor: '#8F1D2C' },
   'next step':            { bg: '#F8EDEF', border: '#FECACA', icon: SvgArrow,    labelColor: '#8F1D2C' },
+  // batch #501: قسم "الخدمات المرتبطة" في نهاية الرد — نفس نمط "الخطوة
+  // التالية" لأنه أيضاً اقتراح إجراء متابعة، لا معلومة أساسية عن المعاملة.
+  'الخدمات المرتبطة':     { bg: '#F8EDEF', border: '#FECACA', icon: SvgArrow,    labelColor: '#8F1D2C' },
+  'related services':     { bg: '#F8EDEF', border: '#FECACA', icon: SvgArrow,    labelColor: '#8F1D2C' },
   'تنبيه مهم':            { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
   'تنبيه':                { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },
   'ملاحظة مهمة':          { bg: '#FFFBEB', border: '#FDE68A', icon: SvgWarn,     labelColor: '#B45309' },

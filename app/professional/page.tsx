@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getToken, getUser, authHeaders, type User } from '@/lib/auth'
+import { getToken, getUser, authHeaders, listTransactions, type User } from '@/lib/auth'
 import { useLanguage } from '@/lib/LanguageContext'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
@@ -22,8 +22,8 @@ const SECTIONS = [
 ]
 
 // ── Stat Card ──────────────────────────────────────────────────────────────────
-function StatCard({ icon, value, labelAr, labelEn, color, isAr }: {
-  icon: string; value: string | number; labelAr: string; labelEn: string; color: string; isAr: boolean
+function StatCard({ icon, value, labelAr, labelEn, color, isAr, soon }: {
+  icon: string; value: string | number; labelAr: string; labelEn: string; color: string; isAr: boolean; soon?: boolean
 }) {
   return (
     <div style={{
@@ -35,7 +35,18 @@ function StatCard({ icon, value, labelAr, labelEn, color, isAr }: {
         background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>{icon}</div>
       <div>
-        <div style={{ fontSize: 22, fontWeight: 900, color: '#1f2937', lineHeight: 1 }}>{value}</div>
+        {/* batch #499: قيمة "0" ثابتة كانت تُعرَض هنا لبطاقات لا يوجد لها
+            أي مصدر بيانات حقيقي فعلاً (لا حساب موكّلين، لا تخزين مسودات، لا
+            طلبات مراجعة) — تبدو كإحصائية حيّة رغم أنها رقم مكتوب يدوياً
+            دائماً. الآن تُعرَض "قريباً" بصراحة بدل رقم مضلِّل؛ البطاقات
+            المرتبطة ببيانات حقيقية (كالملفات المفتوحة) تعرض قيمتها الفعلية. */}
+        {soon ? (
+          <div style={{ fontSize: 12.5, fontWeight: 800, color: '#9ca3af', lineHeight: 1 }}>
+            {isAr ? 'قريباً' : 'Soon'}
+          </div>
+        ) : (
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#1f2937', lineHeight: 1 }}>{value}</div>
+        )}
         <div style={{ fontSize: 11.5, color: '#6b7280', marginTop: 3 }}>{isAr ? labelAr : labelEn}</div>
       </div>
     </div>
@@ -178,6 +189,7 @@ export default function ProfessionalWorkspacePage() {
   const [activeSection, setSection] = useState('overview')
   const [user, setUser]             = useState<User | null>(null)
   const [authChecked, setChecked]   = useState(false)
+  const [openFiles, setOpenFiles]   = useState<number | null>(null)
 
   useEffect(() => {
     const token = getToken()
@@ -186,6 +198,18 @@ export default function ProfessionalWorkspacePage() {
     setUser(u)
     setChecked(true)
   }, [router])
+
+  // batch #499: "ملفات مفتوحة" كانت قيمة "0" ثابتة بلا أي استعلام — الآن
+  // تُحسَب من نفس نقطة /transactions الحقيقية التي تعرضها صفحة "ملفاتي".
+  useEffect(() => {
+    if (!authChecked) return
+    listTransactions()
+      .then((res: any) => {
+        const list = Array.isArray(res) ? res : (res?.transactions || res?.items || [])
+        setOpenFiles(Array.isArray(list) ? list.length : 0)
+      })
+      .catch(() => setOpenFiles(0))
+  }, [authChecked])
 
   if (!authChecked) return null
 
@@ -252,10 +276,10 @@ export default function ProfessionalWorkspacePage() {
         {activeSection === 'overview' && (
           <div>
             <div className="prof-stat-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-              <StatCard icon="👥" value="0" labelAr="موكّلون نشطون" labelEn="Active Clients" color="#8F1D2C" isAr={isAr} />
-              <StatCard icon="📂" value="0" labelAr="ملفات مفتوحة" labelEn="Open Files" color="#B8860B" isAr={isAr} />
-              <StatCard icon="✍️" value="0" labelAr="مسودات محفوظة" labelEn="Saved Drafts" color="#6366f1" isAr={isAr} />
-              <StatCard icon="👨‍⚖️" value="0" labelAr="طلبات مراجعة" labelEn="Review Requests" color="#22c55e" isAr={isAr} />
+              <StatCard icon="👥" value="0" labelAr="موكّلون نشطون" labelEn="Active Clients" color="#8F1D2C" isAr={isAr} soon />
+              <StatCard icon="📂" value={openFiles ?? '…'} labelAr="ملفات مفتوحة" labelEn="Open Files" color="#B8860B" isAr={isAr} />
+              <StatCard icon="✍️" value="0" labelAr="مسودات محفوظة" labelEn="Saved Drafts" color="#6366f1" isAr={isAr} soon />
+              <StatCard icon="👨‍⚖️" value="0" labelAr="طلبات مراجعة" labelEn="Review Requests" color="#22c55e" isAr={isAr} soon />
             </div>
 
             {/* Quick actions */}
