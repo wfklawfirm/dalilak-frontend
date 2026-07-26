@@ -292,7 +292,13 @@ export default function ProfessionalWorkspacePage() {
                   { icon: '🔗', ar: 'إنشاء استمارة عميل', en: 'Create Client Intake', action: () => setSection('intake') },
                   { icon: '✍️', ar: 'إعداد مسودة قانونية', en: 'Prepare Legal Draft', action: () => router.push('/drafting-studio') },
                   { icon: '📂', ar: 'إنشاء ملف معاملة', en: 'Create Transaction File', action: () => router.push('/my-files') },
-                  { icon: '🔍', ar: 'تحليل مستند', en: 'Analyze Document', action: () => router.push('/') },
+                  // batch #531: this used to router.push('/') -- identical to
+                  // every other "go home" control, so it silently dropped the
+                  // user on the plain homepage with no analyze flow triggered.
+                  // Routes to the same TransactionStarter wizard the homepage's
+                  // own entry point uses (via /?openAnalyze=true, handled in
+                  // app/page.tsx's mount effect).
+                  { icon: '🔍', ar: 'تحليل مستند', en: 'Analyze Document', action: () => router.push('/?openAnalyze=true') },
                 ].map((item, i) => (
                   <button key={i} onClick={item.action} style={{
                     display: 'flex', alignItems: 'center', gap: 10,

@@ -840,6 +840,21 @@ Question: ${text}`
       requestAnimationFrame(tryFocusChat)
       return
     }
+    // batch #531: /professional's "تحليل مستند" (Analyze Document) quick
+    // action used to just router.push('/') -- identical to every other
+    // "go home" control, so it silently dropped the user on the plain
+    // homepage with no analyze flow triggered (found via broader dead-button
+    // audit, same family as #525/#526). Opens the same 3-step
+    // TransactionStarter modal the homepage's own "ابدأ معاملة" entry point
+    // uses; picking "تحليل مستند" inside it triggers the real file picker
+    // from a genuine in-modal click, which auto-clicking fileInputRef here
+    // instead could not reliably guarantee (browsers require a real user
+    // gesture to open a file picker).
+    if (params.get('openAnalyze') === 'true') {
+      window.history.replaceState({}, '', '/')
+      setShowTransactionStarter(true)
+      return
+    }
     const q = params.get('q')
     if (q) {
       window.history.replaceState({}, '', '/')
