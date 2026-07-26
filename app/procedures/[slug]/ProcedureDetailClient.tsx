@@ -7,44 +7,25 @@ import BottomNav from '@/components/BottomNav'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { useLanguage } from '@/lib/LanguageContext'
-import { ARCHIVE_DOCS } from '@/lib/archiveDocuments'
+import type { ArchiveDoc } from '@/lib/archiveDocuments'
 
-// كلمات دالة على أن الوثيقة نموذج/طلب فعلي (وليست قراراً أو تعميماً عاماً) —
-// استخدام مبني على النص الفعلي للعناوين، بلا أي تصنيف مُخترع، لترتيب
-// النماذج قبل غيرها ضمن نفس الجهة عند وجودها.
-const FORM_KEYWORDS = ['نموذج', 'طلب', 'استمارة', 'form', 'application']
+interface Props {
+  // batch #518: computed server-side in page.tsx (a Server Component) and
+  // passed down as a plain prop — was previously recomputed here from a
+  // full client-side import of ARCHIVE_DOCS (7.9MB / 5,234 docs), which
+  // shipped the entire archive dataset to the browser just to keep <=5 of
+  // them. `type`-only import above costs nothing at runtime; matching
+  // logic itself now lives in page.tsx's findRelatedArchiveDocs().
+  relatedArchiveDocs: ArchiveDoc[]
+}
 
-export default function ProcedureDetailClient() {
+export default function ProcedureDetailClient({ relatedArchiveDocs }: Props) {
   const router = useRouter()
   const params = useParams()
   const slug = typeof params?.slug === 'string' ? params.slug : ''
   const { isAr } = useLanguage()
 
   const proc = getProcedureBySlug(slug)
-
-  // دمج وثائق الأرشيف الرسمية الحقيقية في صفحة المعاملة، بطلب المستخدم
-  // ("ادمج النماذج التي تكون معملة إدارية أو رسمية في المعاملات"). لا يوجد
-  // حقل مطابقة مباشر بين Procedure والأرشيف، فنطابق بالجهة المختصة
-  // (authority.ministry_en/name_en) مقابل ArchiveDoc.institution (تطابق
-  // نصي بسيط، بدون أي تخمين/ابتكار روابط) — إن لم توجد جهة أو لم يطابق
-  // اسمها أي جهة في الأرشيف، لا تُعرض أي وثائق (لا نُخمّن علاقة غير مؤكدة).
-  // useMemo يُستدعى دائماً بدون شرط (قبل أي return مبكر) — كان مستدعى
-  // بعد فحص `if (!proc) return` مما يخالف قاعدة React rules-of-hooks
-  // (eslint: react-hooks/rules-of-hooks). الإصلاح: نقل الفحص داخل الدالة.
-  const relatedArchiveDocs = React.useMemo(() => {
-    if (!proc) return []
-    const needle = `${proc.authority?.ministry_en || ''} ${proc.authority?.name_en || ''}`.trim().toLowerCase()
-    if (!needle) return []
-    const matchedInstitutions = new Set<string>()
-    for (const d of ARCHIVE_DOCS) {
-      const inst = d.institution.toLowerCase()
-      if (inst.length >= 4 && needle.includes(inst)) matchedInstitutions.add(d.institution)
-    }
-    if (matchedInstitutions.size === 0) return []
-    const candidates = ARCHIVE_DOCS.filter(d => matchedInstitutions.has(d.institution))
-    const isForm = (d: typeof candidates[number]) => FORM_KEYWORDS.some(k => d.title.toLowerCase().includes(k))
-    return [...candidates].sort((a, b) => Number(isForm(b)) - Number(isForm(a))).slice(0, 5)
-  }, [proc])
 
   if (!proc) {
     return (
