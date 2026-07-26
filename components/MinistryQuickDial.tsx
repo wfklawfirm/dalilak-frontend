@@ -14,8 +14,9 @@
  * Tapping a number opens tel: link.
  */
 
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface Ministry {
   ar: string
@@ -79,6 +80,14 @@ export default function MinistryQuickDial() {
     return () => window.removeEventListener('dalilak-open-ministry-dial', openHandler)
   }, [])
 
+  // batch #516: this is a real role="dialog" sheet (20 tappable rows + a
+  // search input) that was missing from the useFocusTrap.ts audit trail —
+  // Tab could leak straight past it into hidden page content behind the
+  // backdrop. Same pattern already used by MobileModeSheet/ServiceGroupSheet
+  // (see lib/useFocusTrap.ts).
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, open)
+
   return (
     <>
       {/* Bottom sheet */}
@@ -97,6 +106,11 @@ export default function MinistryQuickDial() {
 
           {/* Sheet */}
           <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={isAr ? 'أرقام الوزارات والجهات الحكومية' : 'Ministry & Government Phone Numbers'}
+            tabIndex={-1}
             dir={isAr ? 'rtl' : 'ltr'}
             style={{
               position: 'fixed', bottom: 0, left: 0, right: 0,
