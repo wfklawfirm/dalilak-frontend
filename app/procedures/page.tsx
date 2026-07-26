@@ -72,7 +72,12 @@ import ProcedureStepTimer from '@/components/ProcedureStepTimer'
 import ProcedureSectionGroup from '@/components/ProcedureSectionGroup'
 
 const GUIDED_ACTIVE_COUNT = PROCEDURES_DATA.filter(p => p.status === 'active').length
-const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length
+// batch #503: كان هذا الإجمالي (98) يحسب فقط الإجراءات المرشَدة والموثّقة
+// بخطوات مرقّمة، بينما بنك الخدمات الحقيقي الكامل (ALL_SERVICES، 368 خدمة)
+// لم يكن مضمّناً في القائمة القابلة للتصفّح على هذه الصفحة أصلاً رغم ظهور
+// عدده في شريط الإحصائيات — أُضيف الآن فعلياً إلى نفس قائمة البحث (انظر
+// filteredServices أسفل)، فأصبح هذا الإجمالي يعكس ما هو قابل للتصفّح فعلاً.
+const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length + ALL_SERVICES.length
 // TX_MINISTRIES has 52 raw entries but many share the same slug (e.g. 'other'
 // appears ~20 times, 'labor'/'interior'/'finance'/etc. each appear twice) —
 // each ministry was split by sub-department/portal source during data
@@ -241,11 +246,61 @@ export default function ProceduresPage() {
     return list
   }, [search, ministryFilter, enrichedMinistrySlug, advFilters])
 
+  // batch #503: كان بنك الخدمات الحقيقي (ALL_SERVICES، 368 خدمة موثّقة
+  // فعلياً بأجور/مستندات/هاتف/ساعات عمل حقيقية) يُستشهَد به فقط كعدّاد
+  // إحصائي في رأس الصفحة، ولا يظهر إطلاقاً ضمن قائمة البحث والفلترة نفسها
+  // — 98 فقط (الإجراءات المرشَدة + الموثّقة بخطوات مرقّمة) كانت قابلة
+  // للتصفّح رغم أن الرأس يَعِد المستخدم بـ 368 خدمة. لا بيانات جديدة أو
+  // مُخترَعة هنا — فقط عرض البيانات الحقيقية الموجودة أصلاً في allServices.ts
+  // ضمن نفس قائمة البحث بدل حصرها في صفحة /services المنفصلة.
+  const [expandedServiceId, setExpandedServiceId] = useState<string | null>(null)
+  const filteredServices = useMemo(() => {
+    let list: typeof ALL_SERVICES = ALL_SERVICES
+    if (ministryFilter !== 'all') {
+      const label = MINISTRY_CHIPS.find(c => c.slug === ministryFilter)?.ar
+      list = label ? list.filter(s => s.authority_ar.includes(label)) : list
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      list = list.filter(s =>
+        s.name_ar.includes(search) || (s.name_en || '').toLowerCase().includes(q) ||
+        s.authority_ar.includes(search) || s.description.includes(search)
+      )
+    }
+    if (hasActiveFilters(advFilters)) {
+      if (advFilters.hasForm !== 'any') {
+        list = list.filter(s => advFilters.hasForm === 'yes' ? s.forms_needed.length > 0 : s.forms_needed.length === 0)
+      }
+      if (advFilters.feeType !== 'any') {
+        list = list.filter(s => {
+          const fees = s.fees || ''
+          if (!fees) return false
+          const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
+          return advFilters.feeType === 'free' ? isFree : !isFree
+        })
+      }
+      if (advFilters.speed !== 'any') {
+        list = list.filter(s => {
+          const pt = (s.processing_time || '').toLowerCase()
+          if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('أيام') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
+          if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('أسابيع') || pt.includes('week') || pt.includes('أسبوعين')
+          if (advFilters.speed === 'slow')   return pt.includes('شهر') || pt.includes('month') || pt.includes('سنة') || pt.includes('year')
+          return true
+        })
+      }
+      // لا وسيلة حقيقية لتتبّع "بدء" خدمة من هذا البنك (على عكس الإجراءات
+      // المرشَدة) — فلترة "بدأتها بالفعل" تُصرَّح بصراحة بلا نتائج بدل
+      // اختراع حالة "بدء" غير موجودة أصلاً لهذه البيانات.
+      if (advFilters.started === 'yes') list = []
+    }
+    return list
+  }, [search, ministryFilter, advFilters])
+
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
   }, [router])
 
-  const totalResults = filteredGuided.length + filteredEnriched.length
+  const totalResults = filteredGuided.length + filteredEnriched.length + filteredServices.length
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -1090,6 +1145,130 @@ export default function ProceduresPage() {
                   </div>
                 )}
               </div>
+              )
+            })}
+
+            {/* Section divider — batch #503: بنك الخدمات الحقيقي (368 خدمة
+                فعلية بأجور/مستندات/هاتف/ساعات عمل حقيقية من allServices.ts)
+                كان معدوداً في شريط الإحصائيات فقط ولا يظهر إطلاقاً هنا. */}
+            {filteredServices.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0) && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
+                <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
+                <span style={{ fontSize: 10, fontWeight: 700, color: '#918B82', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                  {isAr ? 'خدمات إضافية' : 'Additional services'}
+                </span>
+                <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
+              </div>
+            )}
+
+            {/* Services from the government services directory (allServices.ts) */}
+            {filteredServices.map(svc => {
+              const isExpanded = expandedServiceId === svc.id
+              const name = isAr ? svc.name_ar : (svc.name_en || svc.name_ar)
+              const authority = isAr ? svc.authority_ar : (svc.authority_en || svc.authority_ar)
+              const description = isAr ? svc.description : (svc.description_en || svc.description)
+              const fees = isAr ? svc.fees : (svc.fees_en || svc.fees)
+              const processingTime = isAr ? svc.processing_time : (svc.processing_time_en || svc.processing_time)
+              const docs = isAr ? svc.required_documents : (svc.required_documents_en?.length ? svc.required_documents_en : svc.required_documents)
+              return (
+                <div key={svc.id} className="proc-card" style={{
+                  background: 'var(--surface)', border: `1px solid ${isExpanded ? 'var(--brand)' : 'var(--border)'}`,
+                  borderRadius: 14, overflow: 'hidden', transition: 'border-color 0.15s',
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedServiceId(isExpanded ? null : svc.id)}
+                    aria-expanded={isExpanded}
+                    aria-label={name}
+                    style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
+                    onTouchStart={e => { e.currentTarget.style.background = 'var(--bg)' }}
+                    onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
+                  >
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, flexShrink: 0 }}>
+                      {svc.icon}
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 4, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px' }}>
+                          {isAr ? 'خدمة' : 'Service'}
+                        </span>
+                        <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{authority}</span>
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>{name}</div>
+                    </div>
+                    <span style={{ color: isExpanded ? 'var(--brand)' : 'var(--text-3)', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                  </button>
+
+                  {isExpanded && (
+                    <div style={{ padding: '0 14px 16px', borderTop: '1px solid var(--border)', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
+                      {description && (
+                        <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: '#2D1B0E', lineHeight: 1.75, background: '#FAFAF8', borderRadius: 9, padding: '9px 12px', border: '1px solid #E6E2DC' }}>
+                          {description}
+                        </p>
+                      )}
+                      {(fees || processingTime) && (
+                        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+                          {fees && (
+                            <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 9, padding: '6px 12px', flex: '1 1 auto', minWidth: 0 }}>
+                              <div style={{ fontSize: 9, fontWeight: 700, color: '#92400E', textTransform: 'uppercase' }}>{isAr ? 'الرسوم' : 'Fees'}</div>
+                              <div style={{ fontSize: 11, color: '#78350F', fontWeight: 600 }}>{fees}</div>
+                            </div>
+                          )}
+                          {processingTime && (
+                            <div style={{ background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.15)', borderRadius: 9, padding: '6px 12px', flex: '1 1 auto', minWidth: 0 }}>
+                              <div style={{ fontSize: 9, fontWeight: 700, color: '#8F1D2C', textTransform: 'uppercase' }}>{isAr ? 'مدة الإنجاز' : 'Processing time'}</div>
+                              <div style={{ fontSize: 11, color: '#5C1A1A', fontWeight: 600 }}>{processingTime}</div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {docs.length > 0 && (
+                        <div style={{ marginBottom: 12 }}>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 6 }}>
+                            {isAr ? '📄 الوثائق المطلوبة' : '📄 Required documents'}
+                          </div>
+                          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            {docs.map((d, i) => (
+                              <li key={i} style={{ fontSize: 12, color: 'var(--text-2)', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                                <span style={{ color: 'var(--brand)', flexShrink: 0 }}>•</span>{d}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {(svc.phone || svc.website || svc.working_hours) && (
+                        <div style={{ marginBottom: 12, background: 'var(--bg)', borderRadius: 9, padding: '9px 12px', fontSize: 11.5, color: 'var(--text-2)', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                          {svc.phone && <div>☎️ {svc.phone}</div>}
+                          {svc.website && <div>🔗 {svc.website}</div>}
+                          {svc.working_hours && <div>🕐 {svc.working_hours}</div>}
+                        </div>
+                      )}
+                      {svc.forms_needed?.length > 0 && (
+                        <div style={{ marginBottom: 12, fontSize: 11.5, color: 'var(--text-2)' }}>
+                          📝 {isAr ? 'النماذج المطلوبة: ' : 'Forms needed: '}{svc.forms_needed.join('، ')}
+                        </div>
+                      )}
+                      {svc.important_notes && (
+                        <div style={{ marginBottom: 12, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 9, padding: '9px 12px', fontSize: 11.5, color: '#78350F' }}>
+                          ⚠️ {svc.important_notes}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleAsk(svc.chatPrompt_ar || name)}
+                        style={{
+                          width: '100%', padding: '10px', borderRadius: 10,
+                          background: 'var(--brand)', color: '#fff', border: 'none',
+                          fontSize: 12.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        {isAr ? 'اسأل دليلك عن هذه الخدمة' : 'Ask Dalilak about this service'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               )
             })}
           </div>
