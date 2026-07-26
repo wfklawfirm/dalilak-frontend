@@ -14,22 +14,58 @@
  * Government Digital Service".
  */
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
 import ArchiveAISearch from '@/components/ArchiveAISearch'
-import { ARCHIVE_DOCS, ARCHIVE_INSTITUTIONS, ARCHIVE_CATEGORIES, ARCHIVE_CATEGORY_LABELS, type ArchiveDoc } from '@/lib/archiveDocuments'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import type { ArchiveDoc } from '@/lib/archiveDocuments'
 import { useLanguage } from '@/lib/LanguageContext'
 import { isLoggedIn } from '@/lib/auth'
 
 const PAGE_SIZE = 60
 
+// batch #521 (Big Track 3): lib/archiveDocuments.ts embeds the full 5,234-doc
+// archive as an inline JSON string (~3.9MB parsed) -- a *static* top-level
+// import of ARCHIVE_DOCS here (as this file used to have) bundles that whole
+// payload into /archive's initial client JS, which Big Track 2's real
+// Resource Timing measurement confirmed as this app's single heaviest page
+// (4.75MB decoded JS). app/page.tsx and app/procedures/page.tsx already avoid
+// this via `await import('@/lib/archiveDocuments')` after mount instead of a
+// static import (see their own batch #497/#504 comments) -- same fix applied
+// here. Only the TYPE import above is static: TS type-only imports are
+// erased entirely at compile time and carry zero runtime/bundle cost.
+interface ArchiveLoaded {
+  docs: ArchiveDoc[]
+  institutions: string[]
+  categories: string[]
+  categoryLabels: Record<string, { ar: string; en: string }>
+}
+
 export default function ArchivePage() {
   const router = useRouter()
   const { isAr, toggleLang } = useLanguage()
+  const [archive, setArchive] = useState<ArchiveLoaded | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    import('@/lib/archiveDocuments').then(m => {
+      if (cancelled) return
+      setArchive({
+        docs: m.ARCHIVE_DOCS,
+        institutions: m.ARCHIVE_INSTITUTIONS,
+        categories: m.ARCHIVE_CATEGORIES,
+        categoryLabels: m.ARCHIVE_CATEGORY_LABELS,
+      })
+    })
+    return () => { cancelled = true }
+  }, [])
+  const docs = archive?.docs ?? []
+  const institutions = archive?.institutions ?? []
+  const categories = archive?.categories ?? []
+  const categoryLabels = archive?.categoryLabels ?? {}
   const [search, setSearch] = useState('')
   const [institutionFilter, setInstitutionFilter] = useState('all')
   // batch #505: بطلب المستخدم "قم بتصنيفها" — كل وثيقة الآن مصنَّفة فعلياً
@@ -48,28 +84,28 @@ export default function ArchivePage() {
 
   const topInstitutions = useMemo(() => {
     const counts = new Map<string, number>()
-    for (const d of ARCHIVE_DOCS) counts.set(d.institution, (counts.get(d.institution) || 0) + 1)
-    return ARCHIVE_INSTITUTIONS
+    for (const d of docs) counts.set(d.institution, (counts.get(d.institution) || 0) + 1)
+    return institutions
       .slice()
       .sort((a, b) => (counts.get(b) || 0) - (counts.get(a) || 0))
       .slice(0, 14)
-  }, [])
+  }, [docs, institutions])
 
   // batch #505: توزيع الفئات الفعلي عبر كل الأرشيف — تُعرَض الشرائح مرتّبة
   // حسب العدد (الأكثر أولاً)، فقط للفئات التي لها وثيقة واحدة على الأقل.
   const categoryCounts = useMemo(() => {
     const counts = new Map<string, number>()
-    for (const d of ARCHIVE_DOCS) counts.set(d.category, (counts.get(d.category) || 0) + 1)
+    for (const d of docs) counts.set(d.category, (counts.get(d.category) || 0) + 1)
     return counts
-  }, [])
+  }, [docs])
   const topCategories = useMemo(
-    () => ARCHIVE_CATEGORIES.filter(c => (categoryCounts.get(c) || 0) > 0),
-    [categoryCounts]
+    () => categories.filter(c => (categoryCounts.get(c) || 0) > 0),
+    [categories, categoryCounts]
   )
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return ARCHIVE_DOCS.filter(d => {
+    return docs.filter(d => {
       if (institutionFilter !== 'all' && d.institution !== institutionFilter) return false
       if (categoryFilter !== 'all' && d.category !== categoryFilter) return false
       if (!q) return true
@@ -82,11 +118,32 @@ export default function ArchivePage() {
         (d.year ? String(d.year).includes(q) : false)
       )
     })
-  }, [search, institutionFilter, categoryFilter])
+  }, [docs, search, institutionFilter, categoryFilter])
 
   const askAI = (prompt: string) => router.push(`/?q=${encodeURIComponent(prompt)}`)
 
   const institutionLabel = (d: ArchiveDoc) => isAr ? d.institutionAr : d.institution
+
+  // batch #521: archive data (docs) loads async (see effect above) -- until
+  // it resolves, show the same header/bottom-nav shell with a spinner
+  // instead of the real content, rather than briefly rendering a misleading
+  // "0 documents / no results" empty state with docs defaulted to [].
+  if (!archive) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
+        <MobileHeader
+          titleAr="أرشيف الوثائق الرسمية" titleEn="Official Documents Archive"
+          isAr={isAr} onBack={() => router.push('/')} toggleLang={toggleLang}
+        />
+        <main id="main-content" style={{ maxWidth: 'var(--container-md)', margin: '0 auto', padding: '60px 14px' }}>
+          <LoadingSpinner isAr={isAr} />
+        </main>
+        <div className="bottom-nav-wrapper">
+          <BottomNav isAr={isAr} activeTab="procedures" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -114,8 +171,8 @@ export default function ArchivePage() {
         <StatsRow
           columns={3}
           stats={[
-            { value: ARCHIVE_DOCS.length.toLocaleString('en-US'), label: isAr ? 'وثيقة موثّقة' : 'Documents' },
-            { value: String(ARCHIVE_INSTITUTIONS.length), label: isAr ? 'جهة رسمية' : 'Institutions' },
+            { value: docs.length.toLocaleString('en-US'), label: isAr ? 'وثيقة موثّقة' : 'Documents' },
+            { value: String(institutions.length), label: isAr ? 'جهة رسمية' : 'Institutions' },
             { value: '1950–2026', label: isAr ? 'المدى الزمني' : 'Time span' },
           ]}
         />
@@ -144,7 +201,7 @@ export default function ArchivePage() {
         </div>
 
         {searchMode === 'ai' && (
-          <ArchiveAISearch isAr={isAr} docs={ARCHIVE_DOCS} onAskFull={askAI} />
+          <ArchiveAISearch isAr={isAr} docs={docs} onAskFull={askAI} />
         )}
 
         {searchMode === 'quick' && (
@@ -152,7 +209,7 @@ export default function ArchivePage() {
         <SearchInput
           value={search} onChange={setSearch} isAr={isAr}
           ariaLabel={isAr ? 'ابحث في أرشيف الوثائق الرسمية' : 'Search official documents archive'}
-          placeholder={isAr ? `ابحث في ${ARCHIVE_DOCS.length.toLocaleString('en-US')} وثيقة...` : `Search ${ARCHIVE_DOCS.length.toLocaleString('en-US')} documents...`}
+          placeholder={isAr ? `ابحث في ${docs.length.toLocaleString('en-US')} وثيقة...` : `Search ${docs.length.toLocaleString('en-US')} documents...`}
         />
 
         <div className="archive-filter-row" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, margin: '10px 0 12px' }}>
@@ -163,10 +220,10 @@ export default function ArchivePage() {
               background: institutionFilter === 'all' ? 'var(--brand-soft)' : '#fff',
               color: institutionFilter === 'all' ? 'var(--brand)' : 'var(--text-2)',
             }}>
-            {isAr ? 'الكل' : 'All'} ({ARCHIVE_DOCS.length.toLocaleString('en-US')})
+            {isAr ? 'الكل' : 'All'} ({docs.length.toLocaleString('en-US')})
           </button>
           {topInstitutions.map(inst => {
-            const doc = ARCHIVE_DOCS.find(d => d.institution === inst)
+            const doc = docs.find(d => d.institution === inst)
             const label = doc ? (isAr ? doc.institutionAr : inst) : inst
             return (
               <button type="button" key={inst} aria-pressed={institutionFilter === inst}
@@ -196,7 +253,7 @@ export default function ArchivePage() {
             {isAr ? 'كل الأنواع' : 'All types'}
           </button>
           {topCategories.map(cat => {
-            const label = ARCHIVE_CATEGORY_LABELS[cat] ? (isAr ? ARCHIVE_CATEGORY_LABELS[cat].ar : ARCHIVE_CATEGORY_LABELS[cat].en) : cat
+            const label = categoryLabels[cat] ? (isAr ? categoryLabels[cat].ar : categoryLabels[cat].en) : cat
             return (
               <button type="button" key={cat} aria-pressed={categoryFilter === cat}
                 onClick={() => { setCategoryFilter(cat); setVisibleCount(PAGE_SIZE) }}
@@ -238,7 +295,7 @@ export default function ArchivePage() {
                       <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', marginBottom: 6 }}>
                         <span style={{ fontSize: 10.5, color: 'var(--brand)', fontWeight: 600 }}>{institutionLabel(d)}</span>
                         <span style={{ fontSize: 9.5, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px', border: '1px solid var(--border)' }}>
-                          {ARCHIVE_CATEGORY_LABELS[d.category] ? (isAr ? ARCHIVE_CATEGORY_LABELS[d.category].ar : ARCHIVE_CATEGORY_LABELS[d.category].en) : d.category}
+                          {categoryLabels[d.category] ? (isAr ? categoryLabels[d.category].ar : categoryLabels[d.category].en) : d.category}
                         </span>
                         {d.year && (
                           <span style={{ fontSize: 9.5, color: 'var(--text-3)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px', border: '1px solid var(--border)' }}>{d.year}</span>
