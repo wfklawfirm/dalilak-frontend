@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import MobileHeader from '@/components/MobileHeader'
 import StatsRow from '@/components/StatsRow'
@@ -9,7 +9,7 @@ import { PROCEDURES_DATA, getComplexityColor, getComplexityBg, getComplexityLabe
 import { ALL_SERVICES, SERVICE_CATEGORIES } from '@/lib/allServices'
 import { ENRICHED_PROCEDURES, searchEnrichedProcedures, type EnrichedProcedure } from '@/lib/enrichedProcedures'
 import BottomNav from '@/components/BottomNav'
-import { TX_MINISTRIES } from '@/lib/allTransactions'
+import { TX_MINISTRIES, type TxItem } from '@/lib/allTransactions'
 import { useLanguage } from '@/lib/LanguageContext'
 import ReadinessChecker from '@/components/ReadinessChecker'
 import SaveButton from '@/components/SaveButton'
@@ -86,6 +86,40 @@ const PROCEDURES_TOTAL = GUIDED_ACTIVE_COUNT + ENRICHED_PROCEDURES.length + ALL_
 // so the stats strip shows the real number of distinct authorities, not the
 // raw (inflated) row count.
 const UNIQUE_AUTHORITY_COUNT = new Set(TX_MINISTRIES.map(m => m.slug)).size
+
+// batch #504: طلب المستخدم "ادرج المعاملات الناقصة و الموجودة في الأرشيف"
+// — بنك المعاملات الخام (lib/allTransactions.ts، 2,484 معاملة حقيقية
+// مأخوذة من أرشيف dawlati.gov.lb الرسمي، كل واحدة فيها عنوان + وزارة +
+// رابط PDF رسمي حقيقي عند وجوده) لم يكن مضمّناً في هذه الصفحة إطلاقاً —
+// كان مقروءاً فقط في /forms ضمن تبويب "معاملات". لتجنّب تكرار نفس
+// المعاملة بعنوانَين مختلفين قليلاً (لأن enrichedProcedures.ts/allServices.ts
+// أُنشِئا يدوياً من مصادر متعددة تتقاطع جزئياً مع هذا الأرشيف الخام)، نبني
+// هنا فهرس عناوين "مُغطّاة" فعلاً من كل القوائم الموثّقة الحالية (98+368)،
+// ونعرض من الأرشيف الخام فقط المعاملات التي لا تُطابق أي عنوان مُغطّى —
+// أي "الناقصة" فعلياً بالمعنى الحرفي لطلب المستخدم، لا تكراراً.
+function normalizeTxTitle(t: string): string {
+  return (t || '').trim().toLowerCase()
+    .replace(/\s*-\s*e-services detail\s*$/i, '')
+    .replace(/[‎‏\s]+/g, ' ')
+}
+const COVERED_TITLES: string[] = Array.from(new Set(
+  [
+    ...PROCEDURES_DATA.map(p => p.title_ar || ''), ...PROCEDURES_DATA.map(p => p.title_en || ''),
+    ...ENRICHED_PROCEDURES.map(p => p.title || ''), ...ENRICHED_PROCEDURES.map(p => p.title_en || ''),
+    ...ALL_SERVICES.map(s => s.name_ar || ''), ...ALL_SERVICES.map(s => s.name_en || ''),
+  ]
+    .map(normalizeTxTitle)
+    .filter(t => t.length >= 6)
+))
+function isTxAlreadyDocumented(tx: TxItem): boolean {
+  const nt = normalizeTxTitle(tx.title)
+  const nte = normalizeTxTitle(tx.titleEn)
+  for (const c of COVERED_TITLES) {
+    if (nt.includes(c) || c.includes(nt)) return true
+    if (nte && nte.length >= 6 && (nte.includes(c) || c.includes(nte))) return true
+  }
+  return false
+}
 
 // Ministry filter data
 const MINISTRY_CHIPS = [
@@ -296,11 +330,43 @@ export default function ProceduresPage() {
     return list
   }, [search, ministryFilter, advFilters])
 
+  // batch #504: بنك المعاملات الخام (2,484 معاملة حقيقية من أرشيف
+  // dawlati.gov.lb) — يُحمَّل عبر dynamic import بعد التركيب (لا استيراد
+  // ثابت في أعلى الملف) لأن حجمه الخام ~400KB، ولا يجوز تحميله ضمن حزمة
+  // هذه الصفحة دائماً لكل زائر — يُحمَّل مرة واحدة في الخلفية، ويُخزَّن في
+  // حالة محلية بعد أول تحميل (نفس نمط dynamic import المستخدم في app/page.tsx
+  // لـ lib/archiveDocuments.ts، batch #497).
+  const [txAll, setTxAll] = useState<TxItem[] | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    import('@/lib/allTransactions').then(m => { if (!cancelled) setTxAll(m.TX_ALL) })
+    return () => { cancelled = true }
+  }, [])
+
+  const [archiveShown, setArchiveShown] = useState(20)
+  useEffect(() => { setArchiveShown(20) }, [search, ministryFilter])
+  // مكلفة نسبياً (تُقارن ~2,484 × ~460 عنواناً) — تُحسَب مرة واحدة فقط عند
+  // تحميل txAll، لا مع كل ضغطة مفتاح في البحث (ذاك أدناه سريع/رخيص).
+  const uncoveredTx = useMemo(() => {
+    if (!txAll) return []
+    return txAll.filter(tx => !isTxAlreadyDocumented(tx))
+  }, [txAll])
+  const filteredArchiveTx = useMemo(() => {
+    if (hasActiveFilters(advFilters)) return []
+    let list = uncoveredTx
+    if (ministryFilter !== 'all') list = list.filter(tx => tx.ministrySlug === ministryFilter)
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      list = list.filter(tx => tx.title.includes(search) || tx.titleEn.toLowerCase().includes(q))
+    }
+    return list
+  }, [uncoveredTx, search, ministryFilter, advFilters])
+
   const handleAsk = useCallback((prompt: string) => {
     router.push(`/?q=${encodeURIComponent(prompt)}`)
   }, [router])
 
-  const totalResults = filteredGuided.length + filteredEnriched.length + filteredServices.length
+  const totalResults = filteredGuided.length + filteredEnriched.length + filteredServices.length + filteredArchiveTx.length
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo', 'Inter', sans-serif", overflowX: 'hidden' }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -1271,6 +1337,98 @@ export default function ProceduresPage() {
                 </div>
               )
             })}
+
+            {/* Section divider — batch #504: طلب المستخدم "ادرج المعاملات
+                الناقصة و الموجودة في الأرشيف" — بنك المعاملات الخام (2,484
+                معاملة حقيقية من أرشيف dawlati.gov.lb، كل واحدة بعنوان
+                ووزارة ورابط وثيقة PDF رسمية عند وجوده) كان مقروءاً فقط في
+                /forms ولا يظهر هنا إطلاقاً. المعروض هنا هو فقط ما لا
+                يُطابق عنوانه أي إجراء/خدمة موثّقة أصلاً (98+368) — أي
+                "الناقص" حرفياً، لا تكراراً لما هو موجود بالفعل. */}
+            {filteredArchiveTx.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0 || filteredServices.length > 0) && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
+                <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
+                <span style={{ fontSize: 10, fontWeight: 700, color: '#918B82', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                  {isAr ? 'من أرشيف المعاملات الرسمي (غير مُصنَّفة بعد)' : 'From the official transactions archive (not yet curated)'}
+                </span>
+                <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
+              </div>
+            )}
+
+            {filteredArchiveTx.length > 0 && (
+              <div style={{ fontSize: 10.5, color: 'var(--text-3)', padding: '2px 2px 4px' }}>
+                {isAr
+                  ? `${filteredArchiveTx.length.toLocaleString('en-US')} معاملة من الأرشيف الخام — بعنوان ووزارة ووثيقة رسمية فقط (بلا خطوات مفصّلة)`
+                  : `${filteredArchiveTx.length.toLocaleString('en-US')} raw archive transactions — title, ministry, and official document only (no detailed steps)`}
+              </div>
+            )}
+
+            {/* Raw archive transactions (allTransactions.ts) not covered elsewhere */}
+            {filteredArchiveTx.slice(0, archiveShown).map(tx => (
+              <div key={tx.id} style={{
+                background: 'var(--surface)', border: '1px solid var(--border)',
+                borderRadius: 12, padding: '10px 12px',
+                display: 'flex', alignItems: 'center', gap: 10,
+              }}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, flexShrink: 0 }}>
+                  {tx.icon}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 10, color: 'var(--text-3)', marginBottom: 2 }}>
+                    {isAr ? tx.ministry : (tx.ministryEn || tx.ministry)}
+                  </div>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>
+                    {isAr ? tx.title : (tx.titleEn || tx.title)}
+                  </div>
+                </div>
+                {tx.pdfUrl && (
+                  <a
+                    href={tx.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={isAr ? 'فتح الوثيقة الرسمية' : 'Open official document'}
+                    style={{
+                      flexShrink: 0, width: 32, height: 32, borderRadius: 8,
+                      background: 'var(--bg)', border: '1px solid var(--border)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'var(--brand)', textDecoration: 'none',
+                    }}
+                  >
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleAsk(isAr ? tx.title : (tx.titleEn || tx.title))}
+                  title={isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+                  style={{
+                    flexShrink: 0, width: 32, height: 32, borderRadius: 8,
+                    background: 'var(--brand-soft)', border: 'none',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--brand)', cursor: 'pointer',
+                  }}
+                >
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8-1.06 0-2.076-.163-3-.46L3 21l1.5-4.5C3.55 15.163 3 13.63 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                </button>
+              </div>
+            ))}
+
+            {filteredArchiveTx.length > archiveShown && (
+              <button
+                type="button"
+                onClick={() => setArchiveShown(n => n + 20)}
+                style={{
+                  width: '100%', padding: '10px', borderRadius: 10,
+                  background: 'var(--bg)', border: '1px solid var(--border)',
+                  color: 'var(--text-2)', fontSize: 12, fontWeight: 700,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                {isAr
+                  ? `عرض المزيد (${filteredArchiveTx.length - archiveShown} متبقية)`
+                  : `Show more (${filteredArchiveTx.length - archiveShown} remaining)`}
+              </button>
+            )}
           </div>
         )}
 
