@@ -804,12 +804,30 @@ Question: ${text}`
     }
     if (params.get('focusChat') === 'true') {
       window.history.replaceState({}, '', '/')
-      // rAF, not a bare call: the textarea needs one paint after mount/
-      // restore before focus + scrollIntoView reliably take effect.
-      requestAnimationFrame(() => {
-        textareaRef.current?.focus()
-        textareaRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
-      })
+      // batch #528: a single requestAnimationFrame here reliably lost the
+      // focus in live testing -- confirmed via Chrome MCP that tapping "Ask
+      // Dalilak" from another page never actually focused the textarea
+      // (document.activeElement stayed <body>), which is exactly why the
+      // user reported it "still takes me to the same place as Home": no
+      // keyboard pops up, nothing visibly happens. Root cause: Next.js's own
+      // post-navigation focus management (it moves focus to a hidden route
+      // announcer <div> for screen readers right after every client-side
+      // navigation) fires around the same time and can win the race, and a
+      // single rAF has no fallback if it's throttled or fires too early
+      // relative to that. Retry for ~1s instead of one attempt, so we always
+      // win eventually regardless of timing.
+      let attempts = 0
+      const tryFocusChat = () => {
+        attempts++
+        const ta = textareaRef.current
+        if (ta) {
+          ta.focus()
+          ta.scrollIntoView({ block: 'center', behavior: 'smooth' })
+          if (document.activeElement === ta) return
+        }
+        if (attempts < 10) setTimeout(tryFocusChat, 100)
+      }
+      requestAnimationFrame(tryFocusChat)
       return
     }
     const q = params.get('q')

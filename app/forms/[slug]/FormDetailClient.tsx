@@ -295,8 +295,13 @@ export default function FormDetailClient({ form }: Props) {
 
       </main>
 
+      {/* batch #529: dropped the onHomeClick override -- it sent Home to a
+          bare '/' instead of BottomNav's own default '/?reset=true', so
+          Home didn't do the save-then-clear "fresh landing" reset here that
+          it does on every other non-homepage page (found while auditing all
+          BottomNav usages after batch #526/#528). */}
       <div className="bottom-nav-wrapper">
-        <BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} />
+        <BottomNav isAr={isAr} activeTab="procedures" />
       </div>
     </div>
   )

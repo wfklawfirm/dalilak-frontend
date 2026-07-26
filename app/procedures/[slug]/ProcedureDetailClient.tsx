@@ -282,7 +282,10 @@ export default function ProcedureDetailClient({ relatedArchiveDocs }: Props) {
         </div>
 
       </main>
-      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" onHomeClick={() => router.push('/')} /></div>
+      {/* batch #529: dropped the onHomeClick override -- see FormDetailClient.tsx
+          for the same fix; it bypassed BottomNav's own default '/?reset=true'
+          so Home skipped the fresh-landing reset here unlike every other page. */}
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
     </div>
   )
 }
