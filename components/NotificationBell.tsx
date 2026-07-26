@@ -167,6 +167,7 @@ export default function NotificationBell({ onAsk }: Props) {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const bellBtnRef = useRef<HTMLButtonElement>(null)
 
   const reload = useCallback(() => setItems(loadItems()), [])
 
@@ -193,6 +194,18 @@ export default function NotificationBell({ onAsk }: Props) {
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
+  // Close on Escape — every other modal/sheet in the app supports this
+  // (batch #344), this dropdown was missed. Also returns focus to the bell
+  // button so keyboard users don't lose their place after dismissing.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setOpen(false); bellBtnRef.current?.focus() }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
   if (!mounted || items.length === 0) return null
 
   const hasUrgent = items.some(i => i.days <= 3)
@@ -208,8 +221,10 @@ export default function NotificationBell({ onAsk }: Props) {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
+        ref={bellBtnRef}
         type="button"
         aria-label={isAr ? `${count} تنبيه` : `${count} notification${count > 1 ? 's' : ''}`}
+        aria-expanded={open}
         onClick={() => setOpen(o => !o)}
         style={{
           position: 'relative',
