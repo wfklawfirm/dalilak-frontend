@@ -21,7 +21,7 @@ import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
 import ArchiveAISearch from '@/components/ArchiveAISearch'
-import { ARCHIVE_DOCS, ARCHIVE_INSTITUTIONS, type ArchiveDoc } from '@/lib/archiveDocuments'
+import { ARCHIVE_DOCS, ARCHIVE_INSTITUTIONS, ARCHIVE_CATEGORIES, ARCHIVE_CATEGORY_LABELS, type ArchiveDoc } from '@/lib/archiveDocuments'
 import { useLanguage } from '@/lib/LanguageContext'
 import { isLoggedIn } from '@/lib/auth'
 
@@ -32,6 +32,11 @@ export default function ArchivePage() {
   const { isAr, toggleLang } = useLanguage()
   const [search, setSearch] = useState('')
   const [institutionFilter, setInstitutionFilter] = useState('all')
+  // batch #505: بطلب المستخدم "قم بتصنيفها" — كل وثيقة الآن مصنَّفة فعلياً
+  // (عبر AI) ضمن 10 أنواع ثابتة (قانون/مرسوم/قرار/تعميم/نموذج/تقرير/بيان/
+  // دراسة/اتفاقية/أخرى). فلتر ثانوي اختياري بجانب فلتر الجهة الموجود أصلاً،
+  // بنفس أسلوب الشرائح (chips) المُتَّبع في /procedures (ministryFilter).
+  const [categoryFilter, setCategoryFilter] = useState('all')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   // البحث بالذكاء الاصطناعي هو الوضع الأساسي بطلب المستخدم ("اجعل البحث عبر
   // الذكاء الاصطناعي و ليس محرك بحث عادة") — لكنه يتطلب تسجيل دخول (نفس شرط
@@ -50,12 +55,26 @@ export default function ArchivePage() {
       .slice(0, 14)
   }, [])
 
+  // batch #505: توزيع الفئات الفعلي عبر كل الأرشيف — تُعرَض الشرائح مرتّبة
+  // حسب العدد (الأكثر أولاً)، فقط للفئات التي لها وثيقة واحدة على الأقل.
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const d of ARCHIVE_DOCS) counts.set(d.category, (counts.get(d.category) || 0) + 1)
+    return counts
+  }, [])
+  const topCategories = useMemo(
+    () => ARCHIVE_CATEGORIES.filter(c => (categoryCounts.get(c) || 0) > 0),
+    [categoryCounts]
+  )
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     return ARCHIVE_DOCS.filter(d => {
       if (institutionFilter !== 'all' && d.institution !== institutionFilter) return false
+      if (categoryFilter !== 'all' && d.category !== categoryFilter) return false
       if (!q) return true
       return (
+        d.displayTitle.toLowerCase().includes(q) ||
         d.title.toLowerCase().includes(q) ||
         d.snippet.toLowerCase().includes(q) ||
         d.institutionAr.toLowerCase().includes(q) ||
@@ -63,7 +82,7 @@ export default function ArchivePage() {
         (d.year ? String(d.year).includes(q) : false)
       )
     })
-  }, [search, institutionFilter])
+  }, [search, institutionFilter, categoryFilter])
 
   const askAI = (prompt: string) => router.push(`/?q=${encodeURIComponent(prompt)}`)
 
@@ -164,6 +183,35 @@ export default function ArchivePage() {
           })}
         </div>
 
+        {/* batch #505: فلتر التصنيف — ثانوي وأصغر من فلتر الجهة، لتجنّب عجقة
+            بصرية (شريطان بنفس الحجم) مع إبقاء التصنيف مرئياً وقابلاً للتصفية. */}
+        <div className="archive-filter-row" style={{ display: 'flex', gap: 5, overflowX: 'auto', paddingBottom: 4, margin: '0 0 12px' }}>
+          <button type="button" aria-pressed={categoryFilter === 'all'} onClick={() => { setCategoryFilter('all'); setVisibleCount(PAGE_SIZE) }}
+            style={{
+              padding: '3px 10px', borderRadius: 999, border: '1px solid', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+              borderColor: categoryFilter === 'all' ? 'var(--text-2)' : 'var(--border)',
+              background: categoryFilter === 'all' ? 'var(--bg)' : '#fff',
+              color: categoryFilter === 'all' ? 'var(--text-1)' : 'var(--text-3)',
+            }}>
+            {isAr ? 'كل الأنواع' : 'All types'}
+          </button>
+          {topCategories.map(cat => {
+            const label = ARCHIVE_CATEGORY_LABELS[cat] ? (isAr ? ARCHIVE_CATEGORY_LABELS[cat].ar : ARCHIVE_CATEGORY_LABELS[cat].en) : cat
+            return (
+              <button type="button" key={cat} aria-pressed={categoryFilter === cat}
+                onClick={() => { setCategoryFilter(cat); setVisibleCount(PAGE_SIZE) }}
+                style={{
+                  padding: '3px 10px', borderRadius: 999, border: '1px solid', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
+                  borderColor: categoryFilter === cat ? 'var(--text-2)' : 'var(--border)',
+                  background: categoryFilter === cat ? 'var(--bg)' : '#fff',
+                  color: categoryFilter === cat ? 'var(--text-1)' : 'var(--text-3)',
+                }}>
+                {label} ({(categoryCounts.get(cat) || 0).toLocaleString('en-US')})
+              </button>
+            )
+          })}
+        </div>
+
         <p aria-live="polite" aria-atomic="true" style={{ fontSize: 11, color: 'var(--text-3)', margin: '0 0 10px' }}>
           {isAr ? `${filtered.length.toLocaleString('en-US')} وثيقة` : `${filtered.length.toLocaleString('en-US')} documents`}
         </p>
@@ -183,9 +231,15 @@ export default function ArchivePage() {
                       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.4, marginBottom: 3 }}>{d.title}</div>
+                      {/* batch #505: العنوان المُحسَّن بالذكاء الاصطناعي (displayTitle)
+                          بدل title الخام — title الأصلي لا يزال محفوظاً للمطابقة
+                          الداخلية فقط (findArchiveDocByTitle)، لا للعرض. */}
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.4, marginBottom: 3 }}>{d.displayTitle}</div>
                       <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', marginBottom: 6 }}>
                         <span style={{ fontSize: 10.5, color: 'var(--brand)', fontWeight: 600 }}>{institutionLabel(d)}</span>
+                        <span style={{ fontSize: 9.5, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px', border: '1px solid var(--border)' }}>
+                          {ARCHIVE_CATEGORY_LABELS[d.category] ? (isAr ? ARCHIVE_CATEGORY_LABELS[d.category].ar : ARCHIVE_CATEGORY_LABELS[d.category].en) : d.category}
+                        </span>
                         {d.year && (
                           <span style={{ fontSize: 9.5, color: 'var(--text-3)', background: 'var(--bg)', borderRadius: 6, padding: '1px 7px', border: '1px solid var(--border)' }}>{d.year}</span>
                         )}
@@ -198,7 +252,7 @@ export default function ArchivePage() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
-                    <button type="button" onClick={() => askAI(isAr ? `لخّص لي هذه الوثيقة الرسمية: ${d.title}` : `Summarize this official document: ${d.title}`)}
+                    <button type="button" onClick={() => askAI(isAr ? `لخّص لي هذه الوثيقة الرسمية: ${d.displayTitle}` : `Summarize this official document: ${d.displayTitle}`)}
                       style={{ flex: 1, padding: '7px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 9, fontFamily: 'inherit', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
                       {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
                     </button>

@@ -229,7 +229,7 @@ export default function ProcedureDetailClient() {
               {relatedArchiveDocs.map(d => (
                 <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 9, padding: '8px 10px' }}>
                   <span style={{ flex: 1, minWidth: 0 }}>
-                    <span style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-1)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title}</span>
+                    <span style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-1)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.displayTitle}</span>
                     {d.year && <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{d.year}</span>}
                   </span>
                   <a href={d.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flexShrink: 0, fontSize: 10.5, fontWeight: 700, color: 'var(--brand)', textDecoration: 'none', border: '1px solid var(--border-brand)', borderRadius: 8, padding: '4px 9px' }}>

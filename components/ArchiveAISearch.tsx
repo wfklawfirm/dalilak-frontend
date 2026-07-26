@@ -201,7 +201,10 @@ export default function ArchiveAISearch({ isAr, docs, onAskFull }: Props) {
                 {sources.map((s, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11.5, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 9, padding: '7px 10px' }}>
                     <span style={{ flex: 1, minWidth: 0, color: 'var(--text-1)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {s.title}
+                      {/* batch #505: عرض العنوان المُحسَّن بالذكاء الاصطناعي (displayTitle)
+                          بدل s.title الخام العائد من الباك-إند عند توفّر تطابق حقيقي —
+                          المطابقة نفسها (matchDoc) تبقى تعمل على title الأصلي بلا تغيير. */}
+                      {s.doc?.displayTitle || s.title}
                     </span>
                     {s.doc && (
                       <a href={s.doc.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flexShrink: 0, color: 'var(--brand)', fontWeight: 700, textDecoration: 'none', fontSize: 10.5 }}>
