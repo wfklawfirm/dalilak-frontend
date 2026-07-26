@@ -52,7 +52,7 @@ const sectionHeader = (expanded: boolean, isAr: boolean): React.CSSProperties =>
   width: '100%', padding: '13px 16px',
   background: '#fff', border: 'none', cursor: 'pointer',
   display: 'flex', alignItems: 'center', gap: 10,
-  fontFamily: 'inherit', textAlign: (isAr ? 'right' : 'left') as const,
+  fontFamily: 'inherit', textAlign: isAr ? 'right' as const : 'left' as const,
   transition: 'background 0.15s',
 })
 
@@ -860,6 +860,7 @@ export default function DocumentIntelligenceView({
       {/* Missing requirements */}
       {(analysis.missingInformation.length > 0 || analysis.missingDocuments.length > 0) && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'النواقص' : 'Missing Requirements'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>}
         >
@@ -881,6 +882,7 @@ export default function DocumentIntelligenceView({
       {/* Risks */}
       {analysis.risks.length > 0 && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'المخاطر المحتملة' : 'Potential Risks'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6M9 9l6 6"/></svg>}
         >
@@ -901,6 +903,7 @@ export default function DocumentIntelligenceView({
       {/* Recommended drafts */}
       {analysis.recommendedDrafts.length > 0 && onSend && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'النماذج المقترحة' : 'Suggested Templates'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>}
         >
@@ -916,6 +919,7 @@ export default function DocumentIntelligenceView({
       {/* Next actions */}
       {analysis.nextActions.length > 0 && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'الخطوات التالية' : 'Next Steps'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>}
         >
@@ -930,6 +934,7 @@ export default function DocumentIntelligenceView({
 
       {/* Evidence & confidence */}
       <CollapsibleSection
+        isAr={isAr}
         title={isAr ? 'المصادر والثقة' : 'Sources & Confidence'}
         icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>}
         defaultOpen={false}

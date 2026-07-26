@@ -2473,4 +2473,106 @@ $ grep -n "direction: 'rtl'" components/DraftingStudio.tsx
 
 `tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/page.tsx` (سطر واحد).
 
+### تحديث (batch #516) — عناوين الأقسام القابلة للطي في "تحليل المستند الذكي" (7 أقسام) مُثبَّتة على محاذاة يمين دائماً، حتى في وضع اللغة الإنجليزية
+
+**المشكلة**: `components/DocumentIntelligenceView.tsx:51-57` — دالة تنسيق `sectionHeader` المشتركة لكل عناوين الأقسام القابلة للطي (`textAlign: 'right'` ثابت) لا تتفرّع على `isAr` إطلاقاً، ومكوّن `CollapsibleSection` (السطر 763-766) **لا يتلقى `isAr` كخاصية أصلاً** رغم استخدامه 7 مرات لأقسام تُعرَض عناوينها بالإنجليزية فعلياً في وضع اللغة الإنجليزية ("Extracted Data"، "Related Procedures"، "Missing Requirements"، "Potential Risks"، "Suggested Templates"، "Next Steps"، "Sources & Confidence").
+
+**التحقق من الحيوية**: `components/ChatMessage.tsx:14/292-294` يستورد المكوّن ديناميكياً (`dynamic(() => import('./DocumentIntelligenceView'))`) ويعرضه فعلياً مع `isAr={ar}` الحقيقي عند وجود `msg.documentAnalysis` (أي بعد أي تحليل مستند مرفوع). الغلاف الجذري للمكوّن نفسه (`components/DocumentIntelligenceView.tsx:798`) يضبط `direction: isAr ? 'rtl' : 'ltr'` بشكل صحيح — يؤكد أن الإغفال في `sectionHeader` سهو وليس تصميماً مقصوداً.
+
+**الأثر**: مستخدم بوضع اللغة الإنجليزية يرفع مستنداً للتحليل الذكي يرى عناوين الأقسام السبعة كلها (مثل "Extracted Data"، "Potential Risks") مدفوعة لحافة يمين شريط العنوان، ملتصقة بسهم الطي، بدل أن تتبع أيقونة القسم على اليسار بشكل طبيعي — عكس ترتيب القراءة LTR في كل الأقسام السبعة دفعة واحدة.
+
+**الإصلاح**: تمرير `isAr` كخاصية عبر `CollapsibleSection` إلى `sectionHeader`، وتحديث كل مواضع الاستدعاء السبعة:
+```diff
+-const sectionHeader = (expanded: boolean): React.CSSProperties => ({
++const sectionHeader = (expanded: boolean, isAr: boolean): React.CSSProperties => ({
+   ...
+-  fontFamily: 'inherit', textAlign: 'right' as const,
++  fontFamily: 'inherit', textAlign: isAr ? 'right' as const : 'left' as const,
+   ...
+ })
+
+ function CollapsibleSection({
+-  title, icon, children, defaultOpen = true,
+-}: { title: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }) {
++  title, icon, children, defaultOpen = true, isAr,
++}: { title: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean; isAr: boolean }) {
+   ...
+-  <button ... style={sectionHeader(open)} ...>
++  <button ... style={sectionHeader(open, isAr)} ...>
+```
+مع إضافة `isAr={isAr}` لكل من مواضع الاستدعاء السبعة (`<CollapsibleSection isAr={isAr} title={...}>`).
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/DocumentIntelligenceView.tsx`.
+
 هذا الملف سيُحدَّث مع كل دفعة تالية — لا يُعاد كتابته من الصفر، بل تُضاف/تُحدَّث بنوده.
+
+---
+
+### مشروع أرشيف الوثائق الرسمية (خارج ترقيم batch # المعتاد أعلاه)
+
+**المصدر:** أرشيف خارجي من 6504 ملف عبر ثلاثة مجلدات
+(`05_Administrative_Transactions`، `06_Official_Forms`، `07_Legal_Forms`)
+بناءً على طلب المستخدم صراحة لتحليل ورفع "آلاف النماذج القانونية والإدارية
+اللبنانية".
+
+**خط المعالجة الكامل** (سكريبتات في `forms_pipeline/` بجذر مشروع dalilak):
+1. `extract_text.py` — استخراج نص فعلي عبر `pdftotext` + `openpyxl` لكل
+   الـ6504 ملف (لا OCR في هذه المرحلة، لسرعة التغطية الكاملة أولاً).
+2. `ocr_pass.py` — تمريرة OCR منفصلة (PyMuPDF + pytesseract عربي/إنكليزي)
+   للملفات التي فشل فيها `pdftotext` (نص أقل من 40 حرفاً) — رتّبت حسب حجم
+   الملف تصاعدياً لزيادة عدد الملفات المُنجَزة ضمن كل تمريرة محدودة زمنياً.
+3. `merge_classify.py` — دمج النتائج + تصنيف الجهة الحكومية عبر مطابقة
+   الاسم الحرفي الموجود أصلاً في اسم الملف (لا حاجة لـ regex هش) + استبعاد:
+   - **353 ملف** امتداده فعلياً استعلام URL محفوظ خطأً كامتداد (`aspx?source=...`)
+     — كلها صفحات إعادة توجيه/تسجيل دخول ميتة من الزحف، تأكّد ذلك بأن نص
+     الاستخراج فارغ (0 حرف) للـ351 منها بلا استثناء.
+   - **122 ملف** داخلي لجامعة AUB (نماذج إدارية جامعية أو صفحات AUB ميتة) —
+     ليست محتوى حكومياً لبنانياً بحكم التعريف، فاستُبعدت كاملةً من "أرشيف
+     الوثائق الرسمية" (لم تُحذف من القرص، فقط لم تُدرَج).
+   - **1474 ملف** تعذّر استخراج نص حقيقي منه حتى بعد OCR (أقل من 30 حرفاً).
+4. `build_dataset.py` — إزالة **177 نسخة مكررة حرفياً** (نفس أول 1000 حرف من
+   النص)، تطبيع Unicode NFKC (يصحّح Arabic Presentation Forms التي ينتجها
+   `pdftotext` أحياناً في ملفات PDF عربية قديمة)، واشتقاق عنوان لكل وثيقة
+   من أول سطر متماسك فعلي في النص المستخرج (وليس نصاً مُختلَقاً) — مع بديل
+   احتياطي (اسم الجهة + رمز الملف المنظّف) حين يكون النص المستخرج غير
+   متماسك (شائع في نتائج OCR الرديئة).
+
+**الناتج النهائي: 4378 وثيقة حكومية لبنانية حقيقية** موزّعة على 18 جهة
+(وزارة الزراعة 1315، وزارة المالية 728، مصرف لبنان 569، وزارة الداخلية 361،
+مجلس النواب 312، ...). **اكتشاف مهم غيّر شكل الميزة الأصلي المخطَّط له:**
+غالبية المحتوى ليست "نماذج تعبئة" بل أرشيف وثائق حكومية متنوّع (تعاميم
+مصرف لبنان، تعديلات جمركية، تحقيقات وزارية، تقارير بيئية/إحصائية، مناهج
+تربوية، لوائح انتخابية، محاضر) — عُرض هذا على المستخدم صراحةً عبر سؤالين
+توضيحيين قبل المتابعة، وأكّد المستخدم صفحة أرشيف منفصلة بدل حشو
+`allTransactions.ts`.
+
+**الوجهتان المتفق عليهما (سؤال توضيحي، إجابة المستخدم):**
+- **Qdrant** (الأولوية، منجزة بالكامل): كل الـ4378 وثيقة مرفوعة إلى نفس
+  الـ collection الحالي `dalilak_ai_v2` (لا collection جديد، لا تغيير على
+  الـ Backend API) عبر `upload_archive_to_qdrant.py` — بنفس نموذج
+  `text-embedding-3-large` المعتمد أصلاً في `upload_to_qdrant.py`، بحقل
+  `domain=official_documents_archive` مفهرَس ككلمة مفتاحية للفلترة.
+  تحقّق: `qdrant.count(filter domain=official_documents_archive)` = 4378.
+- **Frontend**: صفحة جديدة `/archive` ("أرشيف الوثائق الرسمية") — بحث +
+  تصفية حسب الجهة (14 جهة الأكثر تكراراً كأزرار + "الكل") + بطاقات بنفس
+  نمط `/forms` (`MobileHeader` + `SearchInput` + `StatsRow` + بطاقة). بيانات
+  الصفحة في `lib/archiveDocuments.ts` (JSON مُضمَّن كسلسلة نصية مُفسَّرة عبر
+  `JSON.parse` بدل مصفوفة TS حرفية — تفادياً لخطأ `tsc` "TS2590: union type
+  too complex" الذي ظهر فعلياً عند تجربة 4378 عنصر ككائنات TS حرفية).
+  رابط تنقّل جديد أُضيف في `components/MobileMenu.tsx` (لا يوجد مكان في
+  `BottomNav` — أربعة عناصر فقط حسب قرار "Calm Government Digital Service"
+  الموثّق أعلاه، فاتُّبع نفس نمط `/services`/`/authorities` بالظهور في
+  القائمة الجانبية فقط).
+
+**قيد معروف يحتاج إجراءً من المستخدم:** حجم ملفات PDF الأصلية 1.8GB —
+كبير جداً لإدراجه داخل مستودع `dalilak-frontend`. بالاتفاق مع المستخدم
+(سؤال توضيحي)، جُهِّز مستودع GitHub منفصل `dalilak-forms-archive` (نفس
+حساب `wfklawfirm`) في `forms_pipeline/archive_staging/` مع `push_archive.sh`
+جاهز — **يتطلب من المستخدم إنشاء المستودع الفارغ على GitHub أولاً** (لا
+يمكن لأي أداة هنا إنشاء حساب/مستودع GitHub نيابة عن المستخدم). حتى يتم
+هذا الرفع، روابط "عرض الملف الأصلي" في `/archive` ستُرجع 404 — الصفحة
+ونصوص البحث تعمل بالكامل بغضّ النظر (البيانات النصية والفلترة والبحث لا
+تعتمد على استضافة الملفات).
+
+`tsc --noEmit` نظيف (exit 0) بعد إضافة `lib/archiveDocuments.ts` +
+`app/archive/page.tsx` + `app/archive/layout.tsx` + تعديل `MobileMenu.tsx`.
