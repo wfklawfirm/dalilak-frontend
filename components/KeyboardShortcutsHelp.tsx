@@ -12,8 +12,9 @@
  * adding reach. The keyboard shortcut still works exactly as before.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { useFocusTrap } from '@/lib/useFocusTrap'
 
 interface Shortcut {
   keys: string[]
@@ -60,6 +61,12 @@ export default function KeyboardShortcutsHelp() {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // batch #517: another real role="dialog" left out of the useFocusTrap.ts
+  // audit trail (see MinistryQuickDial's batch #516 fix for the same gap) —
+  // Tab could leak past this centered modal into the page behind it.
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(dialogRef, open)
+
   const categories = ['search', 'chat', 'navigation'] as const
 
   return (
@@ -77,6 +84,11 @@ export default function KeyboardShortcutsHelp() {
           onClick={() => setOpen(false)}
         >
           <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={isAr ? 'اختصارات لوحة المفاتيح' : 'Keyboard Shortcuts'}
+            tabIndex={-1}
             onClick={e => e.stopPropagation()}
             style={{
               background: 'var(--bg)',
