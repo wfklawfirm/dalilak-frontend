@@ -21,6 +21,21 @@ function isCorruptDictRepr(s: string): boolean {
   return /\{'[^']*':/.test(s)
 }
 
+// batch #500: 16 of the 60 records in lib/serviceFAQ.ts have `summary`
+// truncated at exactly 300 characters mid-word/mid-phrase by the original
+// generation pipeline, with no ellipsis marker (confirmed via a Node scan:
+// max summary length across all 60 records is exactly 300, and 16 of them
+// hit that exact length -- e.g. one ends "...بالتقسيط أو القرض المصرفي،
+// تُستوفى رسوم "). This component renders item.summary raw and in full
+// (unlike ProcedureFAQChips.tsx's previewFor(), which already re-truncates
+// at 160 chars with its own ellipsis), so these 16 answers visibly cut off
+// mid-sentence for users who expand them here. Appending an ellipsis when
+// the length hits the known truncation cutoff signals "more was cut"
+// without inventing or altering any real content.
+function displaySummary(s: string): string {
+  return s.length >= 300 ? s + '…' : s
+}
+
 const CAT_EN: Record<string, string> = {
   'الطوارئ والأرقام المهمة':       'Emergency Numbers',
   'الخدمات البلدية':                'Municipal Services',
@@ -255,7 +270,7 @@ export default function FAQPage() {
                       {/* Summary */}
                       {item.summary && !isCorruptDictRepr(item.summary) && (
                         <p style={{ margin: '12px 0 12px', fontSize: 12.5, color: 'var(--text-1)', lineHeight: 1.8, background: 'var(--bg)', borderRadius: 9, padding: '9px 12px', border: '1px solid var(--border)' }}>
-                          {item.summary}
+                          {displaySummary(item.summary)}
                         </p>
                       )}
                       {/* Steps */}

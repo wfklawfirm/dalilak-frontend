@@ -15,7 +15,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { getStartDate } from '@/components/ProcedureStartButton'
+import { getStartDate, todayLb } from '@/components/ProcedureStartButton'
 
 const LS_COMPLETE = 'dalilak_completed_'
 const LS_STARTED  = 'dalilak_started_'
@@ -24,8 +24,13 @@ export function getCompletionDate(code: string): string | null {
   try { return localStorage.getItem(LS_COMPLETE + code) } catch { return null }
 }
 
+// batch #495: was new Date().toISOString().slice(0, 10) (UTC calendar date)
+// -- same bug as ProcedureStartButton.tsx's setStartDate(), fixed alongside
+// it. During the ~2-3h window after Beirut midnight but before UTC
+// midnight, this recorded and permanently displayed the wrong (previous
+// day's) completion date. Now uses the shared todayLb() helper.
 export function markCompleted(code: string) {
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayLb()
   try { localStorage.setItem(LS_COMPLETE + code, today) } catch {}
   window.dispatchEvent(new Event('dalilak_saved_change'))
   window.dispatchEvent(new Event('storage'))
@@ -75,7 +80,7 @@ export default function ProcedureCompletionBadge({ code, isAr }: Props) {
 
   function handleComplete() {
     markCompleted(code)
-    setCompletedDate(new Date().toISOString().slice(0, 10))
+    setCompletedDate(todayLb())
     setShowConfetti(true)
     setTimeout(() => setShowConfetti(false), 1800)
   }

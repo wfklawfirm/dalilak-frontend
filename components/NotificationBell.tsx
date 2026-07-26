@@ -15,7 +15,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { ENRICHED_PROCEDURES } from '@/lib/enrichedProcedures'
-import { getReminders } from '@/components/SmartReminder'
+import { getReminders, dismissReminderById } from '@/components/SmartReminder'
 
 // ── Types mirroring AppointmentTracker ───────────────────────────────────────
 
@@ -46,10 +46,22 @@ const APPT_DAYS   = 3
 // decluttered (see UX_AUDIT.md) — so without reading it here, reminders
 // set via either live writer were saved but never surfaced again.
 
+// batch #498: was `new Date(); now.setHours(0,0,0,0)` -- the device's LOCAL
+// timezone midnight, not Beirut's. For a Lebanese-diaspora user on a non-
+// Beirut device clock (a real audience for this app, see
+// ProcedureVersionTag.tsx), this produced a different day-count than
+// ProcedureDocumentStatus.tsx's getStatus() (already fixed in batch #494 to
+// anchor on Asia/Beirut) even though both read the identical
+// dalilak_doc_expiry_{code}_{i} localStorage keys -- the exact contradiction
+// ProcedureDocumentStatus.tsx's own comment warned about but didn't
+// propagate here. Also brings this in line with the Beirut-anchored `today`
+// already used a few lines below (line ~127) for reminder due-filtering,
+// which was itself inconsistently paired with this device-local daysUntil()
+// for the displayed day count.
 function daysUntil(dateStr: string): number {
-  const now = new Date(); now.setHours(0, 0, 0, 0)
+  const todayLb = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
   const d = new Date(dateStr + 'T00:00:00')
-  return Math.round((d.getTime() - now.getTime()) / 86_400_000)
+  return Math.round((d.getTime() - new Date(todayLb + 'T00:00:00').getTime()) / 86_400_000)
 }
 
 // Arabic number-agreement for "يوم" (day): 1 → مفرد, 2 → مثنى, 3-10 → جمع, 11+ → تمييز مفرد منصوب
@@ -69,6 +81,11 @@ interface NotiItem {
   type: 'doc' | 'appt' | 'reminder'
   promptAr: string
   promptEn: string
+  // batch #501: raw dalilak_reminders entry id (undoing the `rem_` prefix
+  // used for `id` above), needed so a dismiss button can call
+  // dismissReminderById() -- see loadItems()'s reminder push below and the
+  // dismiss button added in the item render.
+  rawId?: string
 }
 
 function loadItems(): NotiItem[] {
@@ -132,6 +149,7 @@ function loadItems(): NotiItem[] {
         id: `rem_${r.id}`, icon: '🔔', labelAr: r.title, labelEn: r.title, days, type: 'reminder',
         promptAr: `ذكّرتني بـ: ${r.title}. ماذا يجب أن أفعل الآن؟`,
         promptEn: `You reminded me about: ${r.title}. What should I do now?`,
+        rawId: r.id,
       })
     })
   } catch { /* ignore */ }
@@ -258,50 +276,82 @@ export default function NotificationBell({ onAsk }: Props) {
                 ? (isAr ? 'اليوم' : 'Today')
                 : isAr ? `خلال ${arDays(item.days)}` : `in ${item.days} day${item.days > 1 ? 's' : ''}`
               return (
-                <button
+                <div
                   key={item.id}
-                  type="button"
-                  onClick={() => {
-                    if (onAsk) onAsk(isAr ? item.promptAr : item.promptEn)
-                    setOpen(false)
-                  }}
                   style={{
-                    display: 'flex', width: '100%', alignItems: 'flex-start', gap: 10,
-                    padding: '10px 14px', background: 'transparent', border: 'none',
-                    borderBottom: '1px solid var(--border)', cursor: 'pointer',
-                    fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
-                    transition: 'background 0.12s',
+                    display: 'flex', width: '100%', alignItems: 'stretch',
+                    borderBottom: '1px solid var(--border)',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-muted)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
-                  <span style={{
-                    flexShrink: 0, width: 30, height: 30, borderRadius: 8,
-                    background: `${color}18`, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: 14,
-                  }}>
-                    {item.icon}
-                  </span>
-                  <div>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.4 }}>
-                      {isAr ? item.labelAr : item.labelEn}
-                    </div>
-                    <div style={{ fontSize: 11, color, fontWeight: 600, marginTop: 2 }}>
-                      {item.type === 'doc'
-                        ? (isAr ? `تنتهي الصلاحية ${dayLabel}` : `Expires ${dayLabel}`)
-                        : item.type === 'appt'
-                        ? (isAr ? `موعد ${dayLabel}` : `Appointment ${dayLabel}`)
-                        : (item.days < 0
-                          ? (isAr ? `تذكير متأخر — ${arDays(-item.days)}` : `Overdue reminder — ${-item.days} day(s)`)
-                          : (isAr ? 'تذكير اليوم' : 'Reminder — today'))}
-                    </div>
-                    {onAsk && (
-                      <div style={{ fontSize: 10.5, color: 'var(--brand)', marginTop: 3, fontWeight: 600 }}>
-                        {isAr ? 'اضغط لاسأل دليلك ←' : 'Tap to ask Dalilak →'}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onAsk) onAsk(isAr ? item.promptAr : item.promptEn)
+                      setOpen(false)
+                    }}
+                    style={{
+                      display: 'flex', flex: 1, minWidth: 0, alignItems: 'flex-start', gap: 10,
+                      padding: '10px 14px', background: 'transparent', border: 'none',
+                      cursor: 'pointer', fontFamily: 'inherit', textAlign: isAr ? 'right' : 'left',
+                      transition: 'background 0.12s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-muted)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <span style={{
+                      flexShrink: 0, width: 30, height: 30, borderRadius: 8,
+                      background: `${color}18`, display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', fontSize: 14,
+                    }}>
+                      {item.icon}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)', lineHeight: 1.4 }}>
+                        {isAr ? item.labelAr : item.labelEn}
                       </div>
-                    )}
-                  </div>
-                </button>
+                      <div style={{ fontSize: 11, color, fontWeight: 600, marginTop: 2 }}>
+                        {item.type === 'doc'
+                          ? (isAr ? `تنتهي الصلاحية ${dayLabel}` : `Expires ${dayLabel}`)
+                          : item.type === 'appt'
+                          ? (isAr ? `موعد ${dayLabel}` : `Appointment ${dayLabel}`)
+                          : (item.days < 0
+                            ? (isAr ? `تذكير متأخر — ${arDays(-item.days)}` : `Overdue reminder — ${-item.days} day(s)`)
+                            : (isAr ? 'تذكير اليوم' : 'Reminder — today'))}
+                      </div>
+                      {onAsk && (
+                        <div style={{ fontSize: 10.5, color: 'var(--brand)', marginTop: 3, fontWeight: 600 }}>
+                          {isAr ? 'اضغط لاسأل دليلك ←' : 'Tap to ask Dalilak →'}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                  {/* batch #501: reminders added via ProcedureReminderBell.tsx had
+                      no dismiss control anywhere in the live app -- once due, they
+                      stayed in this dropdown forever, re-appearing daily with no
+                      way to clear them short of wiping localStorage. Doc-expiry
+                      and appointment items already have a resolution path
+                      elsewhere (editing/clearing the expiry date, or the
+                      appointment feature itself), so only the reminder type gets
+                      a direct dismiss button here. */}
+                  {item.type === 'reminder' && item.rawId && (
+                    <button
+                      type="button"
+                      onClick={() => { dismissReminderById(item.rawId!); reload() }}
+                      aria-label={isAr ? 'إخفاء هذا التذكير' : 'Dismiss this reminder'}
+                      title={isAr ? 'إخفاء' : 'Dismiss'}
+                      style={{
+                        flexShrink: 0, width: 34, minHeight: 44,
+                        background: 'transparent', border: 'none',
+                        borderInlineStart: '1px solid var(--border)',
+                        color: 'var(--text-3)', cursor: 'pointer', fontSize: 13,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'background 0.12s, color 0.12s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-muted)'; e.currentTarget.style.color = '#DC2626' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-3)' }}
+                    >✕</button>
+                  )}
+                </div>
               )
             })}
           </div>

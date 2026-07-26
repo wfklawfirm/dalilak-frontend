@@ -901,7 +901,13 @@ export default function ProceduresPage() {
                             <input
                               type="date"
                               defaultValue={savedDeadline}
-                              min={new Date().toISOString().slice(0, 10)}
+                              // batch #496: was new Date().toISOString().slice(0, 10) (UTC
+                              // calendar date) -- during the ~2-3h window after Beirut
+                              // midnight (before UTC midnight), this made yesterday's date
+                              // still pickable as a "deadline", which ProcedureDeadlineAlert
+                              // (using local-midnight severity math) then immediately flagged
+                              // as an already-past deadline right after the user saved it.
+                              min={new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })}
                               aria-label={isAr ? 'حدّد موعداً نهائياً لهذه المعاملة' : 'Set a deadline for this procedure'}
                               onChange={e => {
                                 const val = e.target.value

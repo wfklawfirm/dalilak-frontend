@@ -51,9 +51,24 @@ function arDaysLeft(n: number): string {
   return `${n} يوماً`
 }
 
+// batch #494: was `Math.ceil((new Date(dateStr).getTime() - Date.now()) /
+// 86_400_000)` -- a bare 'YYYY-MM-DD' is parsed as UTC midnight per spec,
+// diffed against the real current instant. NotificationBell.tsx's
+// daysUntil() reads these SAME dalilak_doc_expiry_{code}_{i} keys but
+// computes a calendar-midnight-to-calendar-midnight day count instead --
+// for a Beirut-timezone user the two formulas disagree by up to a full day
+// depending on time of day (e.g. an expiry set to "tomorrow" checked at
+// 01:00 Beirut time showed "1 day left" in the bell but "2 أيام" here),
+// so the two simultaneously-rendered widgets contradicted each other for
+// the identical stored date. Anchoring on Asia/Beirut calendar days
+// (matching the timezone convention already used elsewhere in the app,
+// e.g. GovHolidayAlert.tsx/ProcedureVersionTag.tsx) resolves the mismatch.
 function getStatus(dateStr: string): { color: string; bg: string; label: string; labelEn: string } | null {
   if (!dateStr) return null
-  const days = Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86_400_000)
+  const todayLb = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
+  const days = Math.round(
+    (new Date(dateStr + 'T00:00:00').getTime() - new Date(todayLb + 'T00:00:00').getTime()) / 86_400_000
+  )
   if (days < 0)   return { color: '#991B1B', bg: '#FEF2F2', label: 'منتهية', labelEn: 'Expired' }
   if (days <= 30) return { color: '#92400E', bg: '#FFFBEB', label: arDaysLeft(days), labelEn: `${days}d left` }
   return { color: '#065F46', bg: '#ECFDF5', label: 'صالحة', labelEn: 'Valid' }

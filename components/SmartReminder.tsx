@@ -29,6 +29,24 @@ export function getReminders(): ReminderEntry[] {
   try { return JSON.parse(localStorage.getItem('dalilak_reminders') || '[]') } catch { return [] }
 }
 
+// batch #501: reminders added via ProcedureReminderBell.tsx's per-procedure
+// bell icon have NO dismiss/delete UI anywhere they're add-only there, and
+// NotificationBell.tsx (the only other live surface reading dalilak_reminders)
+// had no dismiss control either -- so once due, a bell reminder stayed in
+// the global notification dropdown forever, re-appearing every day with no
+// way to clear it short of clearing localStorage manually. This mirrors the
+// dismiss logic already written inline in this file's own default-exported
+// component (see dismiss() below), which is never mounted anywhere live, so
+// exporting it here lets NotificationBell.tsx reuse the real logic instead
+// of duplicating it.
+export function dismissReminderById(id: string) {
+  try {
+    const list = getReminders().map(r => r.id === id ? { ...r, dismissed: true } : r)
+    localStorage.setItem('dalilak_reminders', JSON.stringify(list))
+    window.dispatchEvent(new Event('dalilak_saved_change'))
+  } catch {}
+}
+
 function saveReminders(list: ReminderEntry[]) {
   try {
     localStorage.setItem('dalilak_reminders', JSON.stringify(list))

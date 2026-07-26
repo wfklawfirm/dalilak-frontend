@@ -24,8 +24,20 @@ export function getStartDate(code: string): string | null {
   try { return localStorage.getItem(LS_PREFIX + code) } catch { return null }
 }
 
+// batch #495: was new Date().toISOString().slice(0, 10) -- toISOString()
+// always returns the UTC calendar date, which lags Beirut's local date by
+// one day during the ~2-3h window after Beirut midnight (before UTC
+// midnight, since Beirut is UTC+2/+3). A user tapping "start" in that
+// window got yesterday's date stored, so daysElapsed() (below) immediately
+// showed "started 1 day ago" instead of "started today". Same bug class
+// already fixed in GovHolidayAlert.tsx/ProcedureVersionTag.tsx/
+// ProcedureDocumentStatus.tsx (batches #481/#482/#494).
+export function todayLb(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
+}
+
 export function setStartDate(code: string) {
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayLb()
   try { localStorage.setItem(LS_PREFIX + code, today) } catch {}
   window.dispatchEvent(new Event('dalilak_saved_change'))
   window.dispatchEvent(new Event('storage'))
@@ -91,7 +103,7 @@ export default function ProcedureStartButton({ code, isAr }: Props) {
   return (
     <button
       type="button"
-      onClick={() => { setStartDate(code); setStartDateState(new Date().toISOString().slice(0, 10)) }}
+      onClick={() => { setStartDate(code); setStartDateState(todayLb()) }}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 5,
         padding: '5px 12px', borderRadius: 20,

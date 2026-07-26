@@ -180,8 +180,14 @@ export default function ProcedureDetailClient() {
                         <p style={{ fontSize: 11.5, color: 'var(--text-2)', margin: '0 0 5px', lineHeight: 1.55 }}>{isAr ? step.description_ar : step.description_en}</p>
                       )}
                       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                        {step.authority && <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
-                        {step.duration && <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{step.duration}</span>}
+                        {/* batch #497: step.authority/step.duration are Arabic-only strings in
+                            lib/procedures.ts (no _en counterpart exists, unlike title/description
+                            which have title_en/description_en). Rendering them unconditionally
+                            leaked raw Arabic text (e.g. "الأمن العام", "1–2 أسابيع") into English-mode
+                            pages. Hiding these chips in English mode until real translations exist
+                            avoids mixed-language output without inventing data. */}
+                        {step.authority && isAr && <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>{step.authority}</span>}
+                        {step.duration && isAr && <span style={{ fontSize: 10, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 6, padding: '2px 7px', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3"/></svg>{step.duration}</span>}
                       </div>
                     </div>
                   </div>

@@ -24,9 +24,24 @@ function today() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
 }
 
+// batch #499: was `new Date(iso + 'T00:00:00+03:00')` -- a hardcoded
+// summer (+03:00) UTC offset for Beirut. Lebanon is only at UTC+3 during
+// DST (roughly late March-late October); the rest of the year it's UTC+2.
+// Confirmed via ICU data (Asia/Beirut) that Jan/Mar/Nov/Dec all resolve to
+// GMT+2. During winter months this parsed the stored payment date one
+// hour too early, so for the last hour of each winter calendar day
+// (23:00-24:00 Beirut time) daysDiff() flipped forward a full day before
+// local midnight actually arrived -- "Paid today" showed "1 day ago" an
+// hour early, and the 30-day amber/green threshold (below) shifted with
+// it. Fixed by anchoring both sides on the Beirut calendar-date string
+// (matching NotificationBell.tsx's daysUntil() and other Beirut-anchored
+// helpers), which is immune to DST since it never touches a wall-clock
+// offset at all.
 function daysDiff(iso: string): number {
-  const then = new Date(iso + 'T00:00:00+03:00').getTime()
-  return Math.floor((Date.now() - then) / 86400000)
+  const todayLb = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
+  const then = new Date(iso + 'T00:00:00').getTime()
+  const now  = new Date(todayLb + 'T00:00:00').getTime()
+  return Math.round((now - then) / 86400000)
 }
 
 // Arabic number-agreement for "days ago" (يوم): 1 -> مفرد, 2 -> مثنى,
