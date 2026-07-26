@@ -678,7 +678,11 @@ export default function ProceduresPage() {
             {filteredGuided.length > 0 && filteredEnriched.length > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                {/* batch #519: background was #F5F0EB — axe measured var(--text-3)
+                    on it at only 4.27:1 (fails 4.5:1). --text-3 is verified safe
+                    against var(--bg)/#fff/#FAFAF8 elsewhere in the app, so
+                    switched to var(--bg) here too instead of the darker cream hex. */}
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: 'var(--bg)', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'إجراءات موثّقة' : 'Documented procedures'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
@@ -754,8 +758,16 @@ export default function ProceduresPage() {
                   onTouchStart={e => { e.currentTarget.nextElementSibling && ((e.currentTarget.nextElementSibling as HTMLElement).style.background = 'var(--bg)') }}
                   onTouchEnd={e => { e.currentTarget.nextElementSibling && ((e.currentTarget.nextElementSibling as HTMLElement).style.background = 'none') }}
                 />
+                {/* batch #519 correction: this div must NOT be aria-hidden.
+                    It carries real informative content (ministry, doc/step
+                    count, title, badges) that screen-reader users need —
+                    pointer-events:none only affects mouse/touch hit-testing,
+                    it has no effect on the accessibility tree, so hiding it
+                    was an unnecessary regression (axe caught it as
+                    aria-hidden-focus: the 2 real focusable widget buttons
+                    inside it would've been reachable by Tab but invisible to
+                    AT, a worse bug than the one being fixed). */}
                 <div
-                  aria-hidden="true"
                   style={{ position: 'relative', pointerEvents: 'none', width: '100%', padding: '13px 14px', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                 >
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', flexShrink: 0 }}>
@@ -1246,7 +1258,11 @@ export default function ProceduresPage() {
             {filteredServices.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                {/* batch #519: background was #F5F0EB — axe measured var(--text-3)
+                    on it at only 4.27:1 (fails 4.5:1). --text-3 is verified safe
+                    against var(--bg)/#fff/#FAFAF8 elsewhere in the app, so
+                    switched to var(--bg) here too instead of the darker cream hex. */}
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: 'var(--bg)', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'خدمات إضافية' : 'Additional services'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
@@ -1374,7 +1390,11 @@ export default function ProceduresPage() {
             {filteredArchiveTx.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0 || filteredServices.length > 0) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                {/* batch #519: background was #F5F0EB — axe measured var(--text-3)
+                    on it at only 4.27:1 (fails 4.5:1). --text-3 is verified safe
+                    against var(--bg)/#fff/#FAFAF8 elsewhere in the app, so
+                    switched to var(--bg) here too instead of the darker cream hex. */}
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: 'var(--bg)', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'من أرشيف المعاملات الرسمي (غير مُصنَّفة بعد)' : 'From the official transactions archive (not yet curated)'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />

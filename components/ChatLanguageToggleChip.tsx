@@ -44,7 +44,12 @@ export default function ChatLanguageToggleChip({ onAsk, isAr, messageCount }: Pr
   }
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+    // batch #519 (axe-core target-size audit): gap raised 4->10 to give the
+    // now-24x24 dismiss button room without its hit-area overlapping the
+    // pill button's own hit-area (a real risk with tight gaps + WCAG 2.2
+    // 2.5.8's 24x24px minimum, since a naive fix that only enlarges the
+    // button can eat into a small neighboring gap).
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
       <button
         type="button"
         onClick={handle}
@@ -63,13 +68,20 @@ export default function ChatLanguageToggleChip({ onAsk, isAr, messageCount }: Pr
         <span style={{ fontSize: 13 }}>🌐</span>
         {isAr ? `تحدث بـ${targetLangAr}` : `Switch to ${targetLang}`}
       </button>
+      {/* batch #519: was a bare 2px-padded 11px-font icon (~12x15px real
+          hit-area, axe-core target-size violation — needs >=24x24). Given
+          fixed explicit size instead of an inset::before expansion, since
+          this button sits right next to a sibling pill and an expanded
+          invisible hit-zone risked overlapping it. */}
       <button
         type="button"
         onClick={() => setDismissed(true)}
         aria-label={isAr ? 'إغلاق' : 'Dismiss'}
         style={{
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          width: 24, height: 24,
           background: 'none', border: 'none', cursor: 'pointer', color: '#93C5FD',
-          fontSize: 11, padding: 2, lineHeight: 1, fontFamily: 'inherit', flexShrink: 0,
+          fontSize: 11, padding: 0, lineHeight: 1, fontFamily: 'inherit', flexShrink: 0,
         }}
       >
         ✕

@@ -89,7 +89,12 @@ export default function ProcedureTagSearch({ onSelect, selectedMinistry, isAr }:
           whiteSpace: 'nowrap',
         }}
       >
-        {isAr ? 'الكل' : 'All'} <span style={{ opacity: 0.7 }}>({ENRICHED_PROCEDURES.length})</span>
+        {/* batch #519: opacity:0.7 on this count span blended its color
+            toward the chip background and dropped contrast below 4.5:1
+            (axe-core color-contrast). Text at full opacity already has
+            enough contrast on its own — opacity was purely decorative
+            de-emphasis and not worth the WCAG failure, so removed. */}
+        {isAr ? 'الكل' : 'All'} <span>({ENRICHED_PROCEDURES.length})</span>
       </button>
 
       {tags.map(({ slug, label, count }) => {
@@ -110,7 +115,11 @@ export default function ProcedureTagSearch({ onSelect, selectedMinistry, isAr }:
               whiteSpace: 'nowrap',
             }}
           >
-            {label} <span style={{ opacity: 0.6 }}>({count})</span>
+            {/* batch #519: same opacity-blend contrast fix as the "All" chip
+                above — removed opacity:0.6, which pushed several of the 6
+                COLORS palette pairs below 4.5:1 (axe measured as low as
+                2.93:1 on the worst pair). */}
+            {label} <span>({count})</span>
           </button>
         )
       })}
