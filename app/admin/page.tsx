@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef, FormEvent } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -113,6 +114,12 @@ export default function AdminPage() {
   const isArRef = useRef(isAr)
   useEffect(() => { isArRef.current = isAr }, [isAr])
 
+  // Mount-only guard + initial load. `loadStats`/`loadUsers` are plain
+  // functions (not useCallback-memoized) redefined every render — adding
+  // them to the dep array would refetch on every render instead of once on
+  // mount, which is not the intended behavior here. `router` from
+  // useRouter() is a stable reference across renders in Next.js.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!isAdmin()) { router.push('/login'); return }
     loadStats(); loadUsers()
@@ -268,7 +275,7 @@ export default function AdminPage() {
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+              <Image src="/logo-icon.png" alt="دليلك" width={24} height={24} style={{ objectFit: 'contain' }} />
             </div>
             <div style={{ minWidth: 0 }}>
               <h1 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: '#fff' }}>{isAr ? 'لوحة التحكم — دليلك' : 'Admin Panel — Dalilak'}</h1>

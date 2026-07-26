@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken } from '@/lib/auth'
@@ -251,7 +252,7 @@ export default function MyFilesPage() {
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, flex: 1 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+              <Image src="/logo-icon.png" alt="دليلك" width={24} height={24} style={{ objectFit: 'contain', display: 'block' }} />
             </div>
             <div>
               <h1 style={{ fontSize: 15, fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: 0 }}>{isAr ? 'ملفاتي' : 'My Files'}</h1>

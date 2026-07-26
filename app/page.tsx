@@ -730,7 +730,7 @@ Question: ${text}`
     const q = params.get('q')
     if (q) {
       window.history.replaceState({}, '', '/')
-      sendMessage(q)
+      sendMessageRef.current(q)
       return
     }
     // DraftingStudio sends ?draft=true + stores prompt in sessionStorage
@@ -740,7 +740,7 @@ Question: ${text}`
       const draft = sessionStorage.getItem('dalilak_draft_prompt')
       if (draft) {
         sessionStorage.removeItem('dalilak_draft_prompt')
-        sendMessage(draft)
+        sendMessageRef.current(draft)
       }
       return
     }
@@ -748,8 +748,12 @@ Question: ${text}`
     const pending = sessionStorage.getItem('dalilak_pending_query')
     if (pending) {
       sessionStorage.removeItem('dalilak_pending_query')
-      sendMessage(pending)
+      sendMessageRef.current(pending)
     }
+    // sendMessage itself is intentionally omitted from deps — called via the
+    // always-fresh sendMessageRef (see its declaration above) instead of a
+    // direct reference, so this effect only needs to re-run when authChecked
+    // changes, not on every render (sendMessage is redefined each render).
   }, [authChecked])
 
   // ── Auth guard ────────────────────────────────────────────
@@ -874,7 +878,11 @@ Question: ${text}`
     refresh()
     const interval = setInterval(refresh, 8000)
     return () => clearInterval(interval)
-  }, [lang])
+    // `pool` is derived from `lang` (module-level constant arrays, stable
+    // reference per language) — listed alongside `lang` to satisfy
+    // exhaustive-deps without changing behavior (pool's identity only
+    // changes when lang does).
+  }, [lang, pool])
 
   // ── Keyboard / visualViewport fix ────────────────────────
   useEffect(() => {
@@ -964,7 +972,13 @@ Question: ${text}`
     }
     reader.readAsDataURL(file)
     e.target.value = ''
-  }, [])
+    // `isAr` was missing from deps — meant the 10MB-limit error message could
+    // stay frozen in whichever language was active when this callback was
+    // last memoized, instead of the language active at the moment the user
+    // picks an oversized file. Adding it is a genuine fix, not just lint
+    // hygiene (isAr is a plain boolean, so this never over-recreates when it
+    // hasn't actually changed).
+  }, [isAr])
 
   const formatSize = (b: number) => b < 1048576 ? Math.round(b / 1024) + ' KB' : (b / 1048576).toFixed(1) + ' MB'
 

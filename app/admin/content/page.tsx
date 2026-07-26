@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getToken, isAdmin } from '@/lib/auth'
@@ -146,7 +147,7 @@ export default function ContentGovernancePage() {
               {isAr ? 'لوحة التحكم' : 'Admin panel'}
             </Link>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              <img src="/logo-icon.png" alt="دليلك" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+              <Image src="/logo-icon.png" alt="دليلك" width={24} height={24} style={{ objectFit: 'contain', display: 'block' }} />
             </div>
             <h1 style={{ color: '#fff', fontSize: 17, fontWeight: 800, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{isAr ? 'إدارة المحتوى' : 'Content management'}</h1>
           </div>

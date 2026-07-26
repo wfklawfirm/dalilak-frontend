@@ -19,6 +19,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import BottomNav from '@/components/BottomNav'
 import PageBackHeader from '@/components/PageBackHeader'
@@ -252,7 +253,7 @@ export default function SettingsPage() {
             width: 36, height: 36, borderRadius: 9, background: 'rgba(143,29,44,0.08)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0,
           }}>
-            <img src="/logo-icon.png" alt="دليلك" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+            <Image src="/logo-icon.png" alt="دليلك" width={26} height={26} style={{ objectFit: 'contain' }} />
           </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useCallback } from 'react'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import AgentResponseRenderer from './AgentResponseRenderer'
 import type { AgentSource, ConfidenceLevel } from '@/lib/types'
@@ -268,7 +269,7 @@ export default function ChatMessage({
           boxShadow: '0 2px 8px rgba(143,29,44,0.15)',
           overflow: 'hidden',
         }}>
-          <img src="/logo-icon.png" alt="دليلك" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+          <Image src="/logo-icon.png" alt="دليلك" width={22} height={22} style={{ objectFit: 'contain' }} />
         </div>
       )}
 

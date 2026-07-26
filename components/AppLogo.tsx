@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 
 interface AppLogoProps {
   isAr: boolean
@@ -59,11 +60,13 @@ export default function AppLogo({
   const stacked = layout === 'stacked'
 
   const iconEl = (
-    <img
+    <Image
       src="/logo-icon.png"
       alt=""
       aria-hidden="true"
-      style={{ width: icon, height: icon, objectFit: 'contain', display: 'block' }}
+      width={icon}
+      height={icon}
+      style={{ objectFit: 'contain', display: 'block' }}
     />
   )
 
