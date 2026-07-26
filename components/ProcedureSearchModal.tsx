@@ -161,6 +161,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
             <button
               type="button"
               onClick={() => setQuery('')}
+              aria-label={isAr ? 'مسح نص البحث' : 'Clear search text'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 18 }}
             >×</button>
           )}

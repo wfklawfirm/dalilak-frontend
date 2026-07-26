@@ -106,6 +106,7 @@ export default function ChatHistoryPanel({ onRestore }: Props) {
       <button
         type="button"
         onClick={() => setExpanded(v => !v)}
+        aria-expanded={expanded}
         style={{
           width: '100%', display: 'flex', alignItems: 'center', gap: 8,
           padding: '10px 14px', background: 'none', border: 'none',
@@ -158,6 +159,7 @@ export default function ChatHistoryPanel({ onRestore }: Props) {
                     {isAr ? 'استعادة' : 'Restore'}
                   </button>
                   <button type="button" onClick={() => deleteSession(s.id)}
+                    aria-label={isAr ? 'حذف هذه المحادثة المحفوظة' : 'Delete this saved chat'}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8C2BB', fontSize: 13 }}>
                     ✕
                   </button>

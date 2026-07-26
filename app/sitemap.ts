@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/procedures`,     lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/forms`,          lastModified: now, changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${BASE}/authorities`,    lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/archive`,        lastModified: now, changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/faq`,            lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
     { url: `${BASE}/drafting-studio`,lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     // Procedure detail pages — auto-synced from PROCEDURES_DATA

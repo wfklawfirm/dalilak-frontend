@@ -180,6 +180,7 @@ export default function HomepageChatSuggestionsBar({ onAsk, isAr, messageCount }
         <button
           type="button"
           onClick={() => setDismissed(true)}
+          aria-label={isAr ? 'إغلاق الاقتراحات السريعة' : 'Dismiss quick suggestions'}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C5BEB6', fontSize: 11, lineHeight: 1, padding: '1px 2px' }}
         >✕</button>
       </div>

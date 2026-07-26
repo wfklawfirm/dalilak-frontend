@@ -152,10 +152,12 @@ export default function SmartReminder() {
               </div>
             </div>
             <button type="button" onClick={() => dismiss(r.id)}
+              aria-label={isAr ? `تعليم "${r.title}" كمنجز` : `Mark "${r.title}" as done`}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color, fontSize: 18, padding: 0 }}>
               ✓
             </button>
             <button type="button" onClick={() => deleteReminder(r.id)}
+              aria-label={isAr ? `حذف تذكير "${r.title}"` : `Delete reminder "${r.title}"`}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color, fontSize: 13, opacity: 0.6, padding: 0 }}>
               ✕
             </button>
@@ -181,6 +183,8 @@ export default function SmartReminder() {
             )}
           </div>
           <button type="button" onClick={() => setShowAll(v => !v)}
+            aria-expanded={showAll}
+            aria-label={isAr ? (showAll ? 'إخفاء التذكيرات القادمة' : 'عرض التذكيرات القادمة') : (showAll ? 'Hide upcoming reminders' : 'Show upcoming reminders')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 13 }}>
             {showAll ? '▲' : `▼`}
           </button>

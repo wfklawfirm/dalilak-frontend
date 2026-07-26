@@ -144,6 +144,7 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
           <button
             type="button"
             onClick={e => { e.stopPropagation(); setDismissed(true) }}
+            aria-label={isAr ? 'إغلاق ملخص المحادثة' : 'Dismiss conversation summary'}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               color: 'var(--text-3)', fontSize: 16, padding: '2px 4px',

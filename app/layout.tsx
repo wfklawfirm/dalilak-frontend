@@ -1,6 +1,22 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
+import { Cairo } from 'next/font/google'
 import './globals.css'
+
+// batch #514: was a render-blocking <link rel="stylesheet"> fetch to
+// fonts.googleapis.com on every page load (flagged by the real
+// `@next/next/no-page-custom-font` ESLint warning seen in `npm run lint`
+// output). next/font/google self-hosts the exact same font (same family,
+// same weights, same display:swap) at build time — same rendered
+// typography, no extra network round-trip, no external request to Google.
+// `--font-cairo` is applied on <html> below and referenced by name in the
+// <body> fontFamily, so the visible font is unchanged.
+const cairo = Cairo({
+  subsets: ['arabic', 'latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  variable: '--font-cairo',
+})
 import { LanguageProvider } from '@/lib/LanguageContext'
 import OfflineNotice from '@/components/OfflineNotice'
 import MinistryQuickDial from '@/components/MinistryQuickDial'
@@ -125,16 +141,15 @@ const WEBSITE_JSON_LD = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" className={cairo.variable}>
       <head>
-        {/* DNS + TLS handshake early — fonts */}
+        {/* DNS + TLS handshake early — globals.css still @imports IBM Plex Sans
+            Arabic (+ a Cairo subset) from fonts.googleapis.com directly, so
+            these preconnects still save a real round-trip for that fetch.
+            Cairo itself no longer needs its own Google Fonts request — see
+            the next/font/google import above (batch #514). */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* Cairo — primary Arabic + Latin font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
         {/* Security headers via meta */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -147,7 +162,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
         />
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Cairo', 'Inter', sans-serif" }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: "var(--font-cairo), 'Inter', sans-serif" }}>
         <LanguageProvider>
           <a href="#main-content" className="skip-link">
             انتقل إلى المحتوى الرئيسي / Skip to main content

@@ -264,6 +264,7 @@ export default function NotificationBell({ onAsk }: Props) {
             <button
               type="button"
               onClick={() => setOpen(false)}
+              aria-label={isAr ? 'إغلاق قائمة التنبيهات' : 'Close notifications panel'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', padding: 2, fontSize: 14 }}
             >×</button>
           </div>

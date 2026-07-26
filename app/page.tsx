@@ -1663,9 +1663,18 @@ Question: ${text}`
                             </div>
                             {/* Navigation dots */}
                             <div style={{ padding:'10px 18px', display:'flex', alignItems:'center', justifyContent:'center', gap:6, borderTop:'1px solid var(--border)' }}>
-                              {HERO_CARDS.map((_, idx) => (
+                              {HERO_CARDS.map((c, idx) => (
                                 <button key={idx} type="button"
-                                  aria-label={`Procedure ${idx + 1}`}
+                                  // Was a hardcoded English "Procedure N" label
+                                  // regardless of UI language — a screen-reader
+                                  // user in Arabic mode would hear an abrupt,
+                                  // meaningless English announcement for every
+                                  // dot. Now uses the actual card title (each
+                                  // HERO_CARDS entry already carries titleAr/
+                                  // titleEn) and marks the active dot via
+                                  // aria-current, per the tab/carousel pattern.
+                                  aria-label={isAr ? `الانتقال إلى: ${c.titleAr}` : `Go to: ${c.titleEn}`}
+                                  aria-current={idx === displayCard ? 'true' : undefined}
                                   onClick={() => setActiveCard(idx)}
                                   style={{ width: idx===displayCard ? 20 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.2s cubic-bezier(0.22,1,0.36,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
                                 />

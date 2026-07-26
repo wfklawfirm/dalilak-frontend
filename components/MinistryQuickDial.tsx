@@ -128,7 +128,7 @@ export default function MinistryQuickDial() {
                   {isAr ? `${MINISTRIES.length} جهة حكومية` : `${MINISTRIES.length} government offices`}
                 </div>
               </div>
-              <button type="button" onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 20 }}>✕</button>
+              <button type="button" onClick={() => setOpen(false)} aria-label={isAr ? 'إغلاق قائمة أرقام الوزارات' : 'Close ministry phone list'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 20 }}>✕</button>
             </div>
 
             {/* Search */}

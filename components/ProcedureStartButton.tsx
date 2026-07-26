@@ -101,6 +101,7 @@ export default function ProcedureStartButton({ code, isAr }: Props) {
           type="button"
           onClick={() => { clearStartDate(code); setStartDateState(null) }}
           title={isAr ? 'إلغاء التعيين' : 'Unmark'}
+          aria-label={isAr ? 'إلغاء تعيين هذه المعاملة كمبدوءة' : 'Unmark this procedure as started'}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
             color: '#059669', fontSize: 11, padding: 0,
