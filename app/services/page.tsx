@@ -791,7 +791,14 @@ export default function ServicesPage() {
         />
       )}
 
-      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="services" /></div>
+      {/* batch #527: BottomNav no longer has a 'services' tab (dropped in
+          v4.0's flatten-to-4-tabs pass, see BottomNav.tsx's own top
+          comment) — this activeTab value never matched any of the 4
+          current tab ids, so the bar showed with nothing highlighted on
+          this page. 'procedures' is the closest still-existing tab
+          (matches /forms, /archive, /procedures/[slug] etc., which are
+          the same "browse services/procedures" family of pages). */}
+      <div className="bottom-nav-wrapper"><BottomNav isAr={isAr} activeTab="procedures" /></div>
     </div>
   )
 }
