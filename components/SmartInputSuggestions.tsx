@@ -79,47 +79,31 @@ interface Props {
   input: string
   onSelect: (suggestion: string) => void
   isAr: boolean
+  // batch #512: activeIdx/onHover are now controlled by the parent via
+  // useSmartSuggestionsKeyDown() — this component used to keep its own
+  // separate activeIdx (updated only by onMouseEnter) while the actual
+  // keyboard handler wired to the textarea lived in a totally different
+  // state machine (the hook below), so ArrowDown/Enter moved a selection
+  // index that was never reflected in this component's highlight, and
+  // Enter could silently swap the user's message for an unrelated
+  // suggestion with no visual indication anything was "active". Passing
+  // the hook's activeIdx/setActiveIdx down makes both keyboard and mouse
+  // selection share one source of truth.
+  activeIdx: number
+  onHover: (i: number) => void
 }
 
-export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) {
+export default function SmartInputSuggestions({ input, onSelect, isAr, activeIdx, onHover }: Props) {
   const [suggestions, setSuggestions] = useState<string[]>([])
-  const [activeIdx, setActiveIdx] = useState(-1)
-  const [dismissed, setDismissed] = useState(false)
   const prevInputRef = useRef(input)
 
   // Recompute suggestions when input changes
   useEffect(() => {
-    if (input !== prevInputRef.current) {
-      setDismissed(false)
-      setActiveIdx(-1)
-    }
     prevInputRef.current = input
     setSuggestions(getSuggestions(input, isAr))
   }, [input, isAr])
 
-  // Keyboard handler — must be attached to the textarea via onKeyDown prop
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (!suggestions.length || dismissed) return
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setActiveIdx(i => Math.min(i + 1, suggestions.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setActiveIdx(i => Math.max(i - 1, -1))
-    } else if (e.key === 'Enter' && activeIdx >= 0) {
-      e.preventDefault()
-      onSelect(suggestions[activeIdx])
-      setDismissed(true)
-    } else if (e.key === 'Escape') {
-      setDismissed(true)
-    } else if (e.key === 'Tab' && suggestions.length > 0) {
-      e.preventDefault()
-      onSelect(suggestions[activeIdx >= 0 ? activeIdx : 0])
-      setDismissed(true)
-    }
-  }, [suggestions, dismissed, activeIdx, onSelect])
-
-  if (!suggestions.length || dismissed) return null
+  if (!suggestions.length) return null
 
   return (
     <div
@@ -145,9 +129,8 @@ export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) 
           onMouseDown={e => {
             e.preventDefault() // don't blur textarea
             onSelect(s)
-            setDismissed(true)
           }}
-          onMouseEnter={() => setActiveIdx(i)}
+          onMouseEnter={() => onHover(i)}
           style={{
             display: 'flex', alignItems: 'center', gap: 9,
             width: '100%', padding: '9px 12px', border: 'none',
@@ -180,14 +163,13 @@ export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) 
       </div>
     </div>
   )
-
-  // Export keyboard handler so parent can attach it
-  // Note: parent must use onKeyDown={handleKeyDown} on the textarea
-  void handleKeyDown // TypeScript — suppress unused warning
 }
 
 export { SmartInputSuggestions }
-// Also export the keyboard handler creator for parent use
+// Keyboard handler + shared activeIdx/dismissed state for parent use — this
+// is the single source of truth for which suggestion is "active"; the
+// rendered dropdown above receives activeIdx/onHover as props instead of
+// keeping its own separate copy (see batch #512 comment on Props above).
 export function useSmartSuggestionsKeyDown(
   input: string,
   isAr: boolean,
@@ -219,5 +201,5 @@ export function useSmartSuggestionsKeyDown(
     }
   }, [suggestions, dismissed, activeIdx, onSelect])
 
-  return { suggestions: dismissed ? [] : suggestions, activeIdx, handleKeyDown, setDismissed }
+  return { suggestions: dismissed ? [] : suggestions, activeIdx, setActiveIdx, handleKeyDown, setDismissed }
 }

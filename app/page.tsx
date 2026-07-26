@@ -601,7 +601,7 @@ export default function Home() {
   // ── Smart input suggestions autocomplete ──────────────────────────────────
   const { getPrefix: getLengthPrefix } = useResponseLength()
 
-  const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(
+  const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, setActiveIdx: setSmartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(
     input, isAr, (s) => { setInput(s); textareaRef.current?.focus() }
   )
 
@@ -2069,7 +2069,7 @@ Question: ${text}`
         {quotaRemaining !== null && quotaRemaining >= 0 && quotaRemaining <= 10 && (
           <div style={{
             maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 2px',
-            direction: 'rtl', textAlign: 'right',
+            direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left',
           }}>
             <span style={{
               display: 'inline-block', fontSize: 11.5, color: quotaRemaining <= 3 ? '#8F1D2C' : '#92400e',
@@ -2139,7 +2139,7 @@ Question: ${text}`
                     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                   </div>
                 )}
-                <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
+                <div style={{ flex: 1, minWidth: 0, textAlign: isAr ? 'right' : 'left' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {attachedFile.name}
                   </div>
@@ -2323,6 +2323,8 @@ Question: ${text}`
                 input={input}
                 onSelect={s => { setInput(s); textareaRef.current?.focus(); setSmartDismissed(true) }}
                 isAr={isAr}
+                activeIdx={smartActiveIdx}
+                onHover={setSmartActiveIdx}
               />
             )}
 

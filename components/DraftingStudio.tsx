@@ -324,7 +324,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                     placeholder={field.placeholder || (isAr ? field.labelAr : field.labelEn)}
                     rows={3}
                     aria-required={field.required}
-                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', resize: 'vertical', color: '#191713', direction: 'rtl', transition: 'border-color 0.18s, box-shadow 0.18s' }}
+                    style={{ width: '100%', padding: '10px 12px', border: '1.5px solid #E6E2DC', borderRadius: 10, fontSize: 13, fontFamily: 'inherit', outline: 'none', resize: 'vertical', color: '#191713', direction: isAr ? 'rtl' : 'ltr', transition: 'border-color 0.18s, box-shadow 0.18s' }}
                     onFocus={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(143,29,44,0.08)' }}
                     onBlur={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.boxShadow = 'none' }}
                   />

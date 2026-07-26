@@ -2137,4 +2137,340 @@ export function markCompleted(code: string) {
 
 `tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ProcedureStartButton.tsx` و`components/ProcedureCompletionBadge.tsx` (استيراد + سطر واحد لكل منهما).
 
+### تحديث (batch #506) — فلتر "سرعة الإنجاز" في البحث المتقدم يُقصي 30% من الإجراءات الحقيقية من كل تصنيف بسبب صيغة الجمع المكسّر
+
+**المشكلة**: `app/procedures/page.tsx:216-224` — فلتر `advFilters.speed` (ضمن `filteredEnriched`) يتحقق من احتواء `processingTime` على الكلمة المفردة فقط:
+```ts
+if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('day') || ...
+if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('week') || ...
+```
+لكن الجمع المكسّر العربي لـ"يوم" هو "أيام" وليس "أياموم" أو ما يحتوي حرفياً على "يوم" كسلسلة فرعية — الهمزة في بداية "أيام" تكسر التطابق النصي. نفس الأمر لـ"أسبوع" وجمعها "أسابيع":
+```
+$ node -e "console.log('أيام'.includes('يوم')); console.log('أسابيع'.includes('أسبوع'));"
+false
+false
+```
+
+**التحقق من الحيوية**: `app/procedures/page.tsx:27/1173` يستورد ويعرض `ProcedureFilterDrawer` فعلياً كزر "فلترة متقدمة" على صفحة `/procedures`؛ `filteredEnriched` (الذي يطبّق هذا الفلتر) هو نفسه المصفوفة المعروضة كقائمة الإجراءات، و`totalResults={filteredEnriched.length + filteredGuided.length}` هو العدد المعروض على زر "عرض N نتيجة" في نفس الدرج.
+
+**التحقق من البيانات الحقيقية**: فحص كل الإجراءات الـ71 في `lib/enrichedProcedures.ts`:
+```
+$ node -e "... يفحص processingTime لكل سجل ..."
+{ total: 71, nonEmpty: 70, matchedNone: 21 }   // قبل الإصلاح: 21 من 70 سجلاً حقيقياً لا يُصنَّف تحت أي تصنيف سرعة
+```
+من الأمثلة: `'3–5 أيام عمل'` (إجراء وزارة العمل للموافقة المسبقة على عاملة/عامل خدمة منزلية — عملية من 3-5 أيام فقط، يجب أن تُصنَّف "سريع")، و`'4–8 أسابيع'` (يتكرر 4 مرات، يجب أن يُصنَّف "عادي"). فحص الإيجابيات الكاذبة: السجلات بصيغة المفرد/المثنى/التنوين (`'يوم واحد'`، `'يومان'`، `'15 يوماً'`، `'أسبوعان'`) كانت تُطابَق بشكل صحيح أصلاً، والسجلات بـ"أشهر" كانت تُطابَق بشكل صحيح أصلاً لأن "أشهر" تحتوي فعلياً على "شهر" كسلسلة فرعية — الخلل خاص بالجمع المكسّر لـ"يوم" و"أسبوع" فقط، وليس عطلاً عاماً.
+
+**الأثر**: مستخدم يفتح "فلترة متقدمة" على `/procedures` ويختار أي خيار سرعة (سريع/عادي/طويل) يفقد 21 إجراءً حقيقياً من كل نتيجة — بينها إجراءات سريعة فعلاً (3-5 أيام) وإجراءات متوسطة فعلاً (4-8 أسابيع)، بغض النظر عن التصنيف المختار. عداد النتائج على الدرج نفسه يعكس هذا النقص أيضاً.
+
+**الإصلاح**: إضافة صيغتي الجمع المكسّر لكل من "يوم" و"أسبوع":
+```diff
+-        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
+-        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('week') || pt.includes('أسبوعين')
++        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('أيام') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
++        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('أسابيع') || pt.includes('week') || pt.includes('أسبوعين')
+```
+بعد الإصلاح: `matchedNone` انخفض من 21 إلى 3 سجلات فقط — المتبقية هي `'فوراً.'` (نص حر بلا وحدة زمنية)، `'حسب جدول الامتحانات الرسمية'` (مرتبط بجدول خارجي لا بمدة ثابتة)، و`'3 ايام عمل'` (تهجئة نادرة بلا همزة على الألف، سجل واحد فقط) — هذه الحالات الثلاث نصوص حرة أو تهجئات شاذة لا يمكن إصلاحها بإضافة كلمة مفتاحية بسيطة دون توسيع نطاق التغيير، ويُترك توثيقها هنا كملاحظة للدفعة القادمة إن استدعى الأمر.
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/procedures/page.tsx` (سطرين).
+
+### تحديث (batch #507) — فلتر "الرسوم" في البحث المتقدم يُصنِّف 7 إجراءات بلا بيانات رسوم كـ"مدفوعة" افتراضياً، رغم أن أحدها بعنوانه "رسم انتقال"
+
+**المشكلة**: `app/procedures/page.tsx:209-214` — فلتر `advFilters.feeType` يتحقق فقط من كون النص يحتوي على "مجان"/"free"/"0"؛ عندما يكون حقل `fees` فارغاً تماماً (`''`)، تفشل كل هذه الشروط فتُصبح `isFree = false`، فيُصنَّف الإجراء تلقائياً كـ"مدفوع" رغم عدم وجود أي بيانات رسوم فعلية له إطلاقاً:
+```ts
+const fees = p.fees || ''
+const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
+return advFilters.feeType === 'free' ? isFree : !isFree   // fees === '' ⇒ isFree=false ⇒ يُحسب "مدفوع"
+```
+
+**التحقق من الحيوية**: نفس مسار `advFilters` المُتحقَّق منه في batch #506 (`ProcedureFilterDrawer` مستورد ومعروض في `app/procedures/page.tsx:27/1173`؛ `filteredEnriched` هو المصفوفة المعروضة فعلياً).
+
+**التحقق من البيانات الحقيقية**: فحص `lib/enrichedProcedures.ts` يُظهر 7 سجلات حقيقية بحقل `fees:''` فارغ تماماً:
+```
+$ grep -c "fees:''" lib/enrichedProcedures.ts
+7
+```
+من بينها 6 إجراءات مساعدات/منح اجتماعية يُرجَّح أنها مجانية فعلاً (`'طلب منح مدرسية لأولاد الشهداء'`، `'طلب منح مدرسية لأبناء المعتقلين'`، `'طلب مساعدة إضافية'`، `'طلب الانتساب إلى سجل المرضى المصابين بالقصور الكلوي المزمن'`، وغيرها من مجلس الجنوب ووزارة الصحة) — **لكن** السجل السابع عنوانه حرفياً `'إستكمال المستندات وتحرير التركة وتحقيق رسم الإنتقال'` (رسم انتقال تركة)، وهو يشير بوضوح إلى وجود رسم فعلي رغم أن الحقل فارغ. هذا يمنع أي افتراض آمن بأن "الحقل الفارغ = مجاني" — البيانات الحقيقية متضاربة، وتخمين المحتوى الفعلي (المبلغ أو حتى "مجاني") يخالف قاعدة عدم استبدال المحتوى الحقيقي بتخمينات.
+
+**الأثر**: مستخدم يفلتر بـ"مدفوعة" يرى ضمن النتائج 6 إجراءات مساعدات لا تحمل أي بيانات فعلية تؤكد أنها مدفوعة (تصنيف مضلِّل)؛ ومستخدم يفلتر بـ"مجانية" لا يرى أياً من هذه الـ7 رغم أن معظمها على الأرجح مجاني فعلاً.
+
+**الإصلاح**: بدلاً من تخمين أن الحقل الفارغ يعني "مجاني" (وهو تخمين غير آمن نظراً لوجود سجل "رسم الانتقال")، تم استثناء السجلات بحقل رسوم فارغ من نتائج الفلتر بالكامل — بدل تصنيفها الخاطئ كـ"مدفوعة":
+```diff
+       list = list.filter(p => {
+         const fees = p.fees || ''
++        if (!fees) return false // fee not recorded for this procedure — don't assert it's paid or free
+         const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
+         return advFilters.feeType === 'free' ? isFree : !isFree
+       })
+```
+هذا يزيل التصنيف الخاطئ كـ"مدفوعة" دون افتراض عكسي غير مؤكَّد بأنها "مجانية" — سلوك فلتر "مجانية" يبقى كما هو (استبعاد هذه السجلات، لأنها غير مؤكَّدة)، وسلوك فلتر "مدفوعة" يصبح صحيحاً (استبعادها بدل تضمينها خطأً). ملء بيانات الرسوم الفعلية للسجلات السبعة يتطلّب مصدراً رسمياً موثوقاً ويُترك لدفعة مستقبلية بتوثيق البيانات الحقيقية (خاصة سجل "رسم الانتقال" الذي على الأرجح ليس مجانياً).
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/procedures/page.tsx` (سطر واحد).
+
+### تحديث (batch #508) — قسم "الإجراءات المُرشدة" (27 إجراءً) يتجاهل فلاتر البحث المتقدم كلياً ويبقى ظاهراً بلا استثناء
+
+**المشكلة**: `app/procedures/page.tsx:182-195` — القائمة `filteredGuided` (مصدرها `PROCEDURES_DATA`، وهو نظام بيانات منفصل عن `lib/enrichedProcedures.ts`) لا تستخدم `advFilters` إطلاقاً في منطقها ولا في مصفوفة الاعتماديات:
+```tsx
+const filteredGuided = useMemo(() => {
+  let list = PROCEDURES_DATA.filter(p => p.status === 'active')
+  ...
+  return list
+}, [search, ministryFilter])   // advFilters غائب تماماً
+```
+بينما `filteredEnriched` (السطر 197-238) وحدها تطبّق `advFilters.hasForm`/`feeType`/`speed`/`started`. الأهم: بيانات `PROCEDURES_DATA` لا تملك حقل `hasForm` إطلاقاً (`grep -c "hasForm" lib/procedures.ts` → 0)، لذا لا يمكن تطبيق هذا الفلتر عليها حتى من حيث المبدأ.
+
+**التحقق من الحيوية**: `filteredGuided.map(...)` يُعرَض مباشرة في السطر 442؛ `totalResults={filteredEnriched.length + filteredGuided.length}` في السطر 1178 يُمرَّر إلى `ProcedureFilterDrawer` (مستورد ومعروض فعلياً في السطر 27/1173-1180) ويظهر على زر "عرض N نتيجة".
+
+**التحقق من البيانات الحقيقية**: `grep -c "status: 'active'" lib/procedures.ts` → 27 إجراءً مُرشداً نشطاً يبقى معروضاً دون أي فلترة. مثال ملموس: `lib/procedures.ts:262` — `slug: 'property-transfer'` ("نقل ملكية العقار") يحمل رسوماً حقيقية (`'رسوم تسجيل نقل الملكية' — '5% من قيمة العقار المقدّرة'` و`'رسوم كاتب العدل' — '0.5–1% من قيمة العقار'`) — ومع ذلك يبقى ظاهراً حتى عند اختيار فلتر "الرسوم: مجانية" أو "السرعة: سريع" أو "نموذج رسمي: يملك نموذجاً".
+
+**الأثر**: مستخدم يفتح "فلترة متقدمة" ويختار أي خيار (رسوم/سرعة/نموذج/بدأ الإجراء) ويضغط "عرض N نتيجة" — يرى الـ27 إجراءً المُرشداً كاملة دون استثناء، وبينها إجراءات تناقض الفلتر المختار صراحة (كإجراء نقل ملكية عقار مدفوع تحت فلتر "مجانية"). الفلتر يبدو معطلاً لثلث محتوى الصفحة تقريباً في كل استخدام.
+
+**الإصلاح**: بما أن بيانات `PROCEDURES_DATA` لا تملك حقولاً مكافئة لتطبيق `advFilters` عليها، تم إخفاء هذا القسم كلياً عند تفعيل أي فلتر متقدم (باستخدام الدالة الموجودة أصلاً `hasActiveFilters` من `ProcedureFilterDrawer.tsx`)، بدل تجاهل الفلتر بصمت:
+```diff
+   const filteredGuided = useMemo(() => {
++    // advFilters (hasForm/feeType/speed/started) has no matching field on
++    // guided PROCEDURES_DATA — showing this section unfiltered while an
++    // advanced filter is active silently defeats the filter for it.
++    if (hasActiveFilters(advFilters)) return []
+     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
+     ...
+     return list
+-  }, [search, ministryFilter])
++  }, [search, ministryFilter, advFilters])
+```
+`hasActiveFilters` كانت مستوردة أصلاً في السطر 27 دون استخدام لهذا الغرض تحديداً.
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/procedures/page.tsx` (4 أسطر).
+
+### تحديث (batch #509) — استرجاع "المحادثات السابقة" يحذف بصمت أحدث الرسائل من أي محادثة تتجاوز 40 رسالة
+
+**المشكلة**: `components/ChatHistoryPanel.tsx:45` — دالة `saveChatSession()` تحفظ `messages.slice(0, 40)` أي **أقدم** 40 رسالة (المصفوفة زمنية تصاعدية، الرسائل الجديدة تُضاف في النهاية عبر `setMessages(prev => [...prev, ...])`)، بينما `messageCount` المحفوظ يبقى العدد الحقيقي الكامل:
+```ts
+const session: ChatSession = {
+  ...
+  messageCount: messages.length,                 // العدد الحقيقي الكامل
+  messages: messages.slice(0, 40).map(...),       // لكن المحفوظ فعلياً هو أقدم 40 رسالة فقط!
+}
+```
+
+**التحقق من الحيوية**: `app/page.tsx:35` يستورد `saveChatSession`، وتُستدعى فعلياً عند "محادثة جديدة" (`onNewChat` السطر 1352) وعند الضغط على الصفحة الرئيسية (`onHomeClick` السطر 2507، `onHome` السطر 2590) بتمرير `messages` الحقيقية للمحادثة الحالية. `setMessages(prev => [...prev, newMsg])` مؤكَّد في مواضع متعددة (مثلاً السطور 1054، 1060) — أي أن المصفوفة زمنية تصاعدية فعلاً، وأحدث رسالة دوماً في النهاية. زر "استرجاع" في `ChatHistoryPanel.tsx` يمرر `s.messages` مباشرة إلى `onRestore` الذي يستدعي `setMessages(msgs)` في `app/page.tsx:1511`.
+
+**الأثر**: مستخدم لديه محادثة تتجاوز 40 رسالة، يضغط "محادثة جديدة" أو الصفحة الرئيسية — الشارة المعروضة في اللوحة تقول العدد الحقيقي (مثلاً "52 رسالة")، لكن الضغط على "استرجاع" يعيد فقط أول 40 رسالة، أي يحذف بصمت آخر 12+ رسالة (عادة الأهم والأحدث) دون أي تنبيه بأن شيئاً فُقِد. التناقض بين الشارة والمحتوى الفعلي المسترجَع ملحوظ ومباشر.
+
+**الإصلاح**: الاحتفاظ بأحدث 40 رسالة بدل أقدمها:
+```diff
+-      messages: messages.slice(0, 40).map(m => ({ role: m.role, content: m.content.slice(0, 2000) })),
++      messages: messages.slice(-40).map(m => ({ role: m.role, content: m.content.slice(0, 2000) })),
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ChatHistoryPanel.tsx` (سطر واحد).
+
+### تحديث (batch #510) — زر "حفظ في الملاحظات" أسفل ردود المحادثة يعرض علامة نجاح خضراء، لكن الملاحظة تختفي إلى الأبد ولا يمكن استرجاعها أبداً
+
+**المشكلة**: `components/ChatSaveToNotes.tsx:14/30` يكتب النص المحفوظ إلى `localStorage['dalilak_notepad']`، ويعرض علامة "✓" خضراء توحي بالنجاح (السطر 54). لكن المكوّن الوحيد الآخر في الكود الذي يشير إلى نفس المفتاح النصي `'dalilak_notepad'` هو `components/QuickNotepad.tsx`، وله عيبان مزدوجان:
+1. **لا يُستخدم في أي مكان بالتطبيق إطلاقاً** — لا استيراد ولا استخدام JSX له خارج ملفه (تأكيد بالبحث الشامل).
+2. حتى لو كان مُركَّباً، فهو يقرأ من `sessionStorage` وليس `localStorage` (`components/QuickNotepad.tsx:13/25/35`)، أي واجهة تخزين مختلفة تماماً رغم تطابق اسم المفتاح النصي.
+
+**التحقق من الحيوية**:
+```
+$ grep -rn "ChatSaveToNotes" app components --include="*.tsx"
+app/page.tsx:32:import ChatSaveToNotes from '@/components/ChatSaveToNotes'
+app/page.tsx:1974:  <ChatSaveToNotes text={msg.content} isAr={isAr} />
+```
+الزر مُركَّب فعلياً في صف إجراءات كل رد مساعد على الصفحة الرئيسية (بجانب زر "حفظ الرد" الذي أُصلِح مسبقاً في batch #460 لنفس فئة الخلل).
+```
+$ grep -rn "QuickNotepad" app components --include="*.tsx"
+components/ChatSaveToNotes.tsx:4: * ... saves an AI message snippet to QuickNotepad.
+components/QuickNotepad.tsx:15:export default function QuickNotepad() {
+```
+لا نتيجة JSX خارج ملف `QuickNotepad.tsx` نفسه — غير مُركَّب في أي صفحة.
+
+**هذا نفس فئة الخلل التي أُصلِحت مرتين سابقاً** لمكوّنين شقيقين: `dalilak_bookmarks` (batch #460) و`dalilak_chat_sessions` (batch #461) — لكن `ChatSaveToNotes`/`QuickNotepad`، رغم وجودهما في نفس صف الإجراءات المجاورة تماماً، فاتا التدقيق السابق، وخللهما أخطر لوجود طبقة عطل إضافية (تعارض `localStorage`/`sessionStorage`).
+
+**الأثر**: مستخدم يقرأ رد الذكاء الاصطناعي ويضغط "📝 حفظ في الملاحظات" — يرى علامة نجاح خضراء توحي أن الملاحظة حُفظت. النص فعلياً يُكتب في `localStorage['dalilak_notepad']`، لكن لا توجد صفحة أو لوحة في التطبيق الحي تقرأ هذا المفتاح إطلاقاً — الملاحظة تُفقد نهائياً وبصمت رغم أن الواجهة تؤكد للمستخدم أن الحفظ نجح.
+
+**الإصلاح**: بنفس النمط المُتَّبع مسبقاً لـ`dalilak_bookmarks` (إضافة قسم عرض في `app/my-files/page.tsx`، الصفحة المخصصة أصلاً لـ"ملفاتك المحفوظة")، تمت إضافة قراءة مباشرة لـ`localStorage['dalilak_notepad']` (وليس `sessionStorage`، لأن الكاتب الحي الوحيد يستخدم `localStorage`) وعرضها في قسم "الملاحظات المحفوظة" مجاور لقسم "الردود المحفوظة" الموجود أصلاً، مع زر "مسح":
+```ts
+const NOTEPAD_LS_KEY = 'dalilak_notepad'
+const [notepadText, setNotepadText] = useState('')
+useEffect(() => {
+  try { setNotepadText(localStorage.getItem(NOTEPAD_LS_KEY) || '') } catch {}
+}, [])
+const clearNotepad = () => {
+  try { localStorage.removeItem(NOTEPAD_LS_KEY) } catch {}
+  setNotepadText('')
+}
+```
+لم يُلمَس `QuickNotepad.tsx` (يبقى مكوّناً منفصلاً غير مُركَّب، خارج نطاق هذا الإصلاح المحصور بمسار الكتابة الحي الفعلي).
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/my-files/page.tsx` (إضافة state + قسم عرض).
+
+### تحديث (batch #511) — ملاحظة تدقيق فقط: تذكيرات المواعيد (`AppointmentReminder` + قسم في `NotificationBell`) بلا أي مصدر كتابة إطلاقاً في الكود
+
+**الملاحظة**: `components/AppointmentReminder.tsx:25` و`components/NotificationBell.tsx:36` كلاهما يقرأ `localStorage['dalilak_appointments']` (توست أسفل الصفحة + قسم في جرس الإشعارات، كلاهما مُركَّب فعلياً وحي: `AppointmentReminder` في `app/page.tsx:25/2489`، و`NotificationBell` في الهيدر على كل الصفحات). لكن بحثاً شاملاً في `app/` و`components/` و`lib/` لا يُظهر أي موضع `setItem('dalilak_appointments', ...)` إطلاقاً — لا نموذج "إضافة موعد"، ولا أي مصدر بيانات آخر يكتب هذا المفتاح:
+```
+$ grep -rn "dalilak_appointments" app components lib --include="*.tsx" --include="*.ts"
+components/NotificationBell.tsx:7 (تعليق فقط)
+components/NotificationBell.tsx:36 (تعريف المفتاح)
+components/AppointmentReminder.tsx:5 (تعليق فقط)
+components/AppointmentReminder.tsx:25 (تعريف المفتاح)
+```
+لا توجد نتيجة `setItem` واحدة لهذا المفتاح في كامل الكود.
+
+**لماذا لم يُصلَح**: هذا يختلف عن الأخطاء المُصلَحة سابقاً (مثل batch #460/#461/#510) حيث كان هناك زر حي يكتب البيانات لكن لا عارض لها — هنا العكس تماماً: العارضان حيّان وصحيحان، لكن لا يوجد أي مصدر كتابة على الإطلاق. الإصلاح الحقيقي يتطلب بناء ميزة "إضافة موعد" كاملة من الصفر (نموذج، تخزين، تحقق) — وهذا تصميم ميزة جديدة كاملة وليس إصلاح خلل بحد ذاته، ويتجاوز نطاق "إصلاح جراحي محصور" المتَّبع في هذا السجل. بما أن التذكير يفشل بصمت (يُرجع `null` فقط) دون أي رسالة مضللة للمستخدم، فالأثر الحالي محدود (ميزة خاملة لا ميزة تكذب)، ويُترك توثيقه هنا كملاحظة تدقيق لدفعة مستقبلية قد تتضمن تصميم نموذج إضافة المواعيد إن اتُّخذ قرار ببناء هذه الميزة فعلياً.
+
+لا تعديل على أي ملف في هذه الدفعة — ملاحظة توثيقية فقط.
+
+### تحديث (batch #512) — اقتراحات الإكمال التلقائي في صندوق المحادثة: التنقل بالسهمين لا يُظهر أي تحديد بصرياً، وضغط Enter قد يستبدل رسالة المستخدم بصمت بدل إرسالها
+
+**المشكلة**: يوجد تطبيقان منفصلان تماماً لنفس ميزة اقتراحات الإكمال التلقائي في `components/SmartInputSuggestions.tsx`:
+1. المكوّن الافتراضي `SmartInputSuggestions` (السطر 84 سابقاً) — يعرض القائمة المنسدلة فعلياً، ويملك متغير حالة `activeIdx` خاصاً به، لكن هذا المتغير **لا يُحدَّث إلا عبر `onMouseEnter`** (تمرير الفأرة)، وليس عبر لوحة المفاتيح.
+2. الخطاف المُصدَّر `useSmartSuggestionsKeyDown` (السطر 191 سابقاً) — يملك متغير `activeIdx` **منفصلاً وثانياً بالكامل**، وهو المرتبط فعلياً بحدث `onKeyDown` في مربع النص.
+
+في `app/page.tsx:604-606` يُستخدم الخطاف فقط لالتقاط ضغطات لوحة المفاتيح، بينما المكوّن `<SmartInputSuggestions>` (السطر 2322 سابقاً) **لا يتلقى `activeIdx` كخاصية (prop) إطلاقاً** — واجهته (`Props`) لم تكن تتضمنه أصلاً. كل مكوّن يدير نسخته الخاصة من "العنصر النشط" بمعزل عن الآخر.
+
+**التحقق من الحيوية**:
+```
+$ grep -rn "SmartInputSuggestions\|useSmartSuggestionsKeyDown" app/page.tsx
+43:  import SmartInputSuggestions, { useSmartSuggestionsKeyDown } from '@/components/SmartInputSuggestions'
+604: const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(...)
+2322: <SmartInputSuggestions ... />   // بلا تمرير activeIdx
+2368: onKeyDown={e => { smartKeyDown(e); if (!e.defaultPrevented) handleKeyDown(e) }}
+```
+`smartActiveIdx` كان يُستخرَج من الخطاف لكن لا يُستخدم في أي مكان آخر — لم يكن يُمرَّر للمكوّن أبداً. سطر `onKeyDown` يُظهر أن معالج الإرسال العادي (`handleKeyDown`، الذي يرسل الرسالة عند Enter) لا يعمل إلا إذا لم يُستدعَ `e.preventDefault()` مسبقاً من `smartKeyDown`.
+
+**تتبّع السيناريو الفعلي (وليس افتراضياً)**:
+1. المستخدم يكتب 3 أحرف أو أكثر في صندوق المحادثة الرئيسي → تظهر قائمة اقتراحات (حتى 3 اقتراحات من `SUGGESTIONS_AR`)، ونص الإرشاد أسفلها يقول حرفياً: `'↑↓ للتنقل · Enter للاختيار · Esc للإغلاق'`.
+2. المستخدم يضغط `ArrowDown` (سلوك متوقَّع تماماً بناءً على النص الإرشادي المعروض) → `activeIdx` في **الخطاف** يتغيّر من -1 إلى 0، و`e.preventDefault()` يُنفَّذ. لكن بصرياً: لا شيء يتغيّر — `activeIdx` في **المكوّن المعروض** يبقى -1 (لأنه لا يتحدّث إلا بتمرير الفأرة)، فلا يظهر أي تظليل لأي اقتراح.
+3. المستخدم يضغط `Enter` معتقداً أنه سيرسل رسالته الأصلية → داخل `smartKeyDown`، الشرط `e.key === 'Enter' && activeIdx >= 0` أصبح صحيحاً (activeIdx الخطاف = 0)، فيُستدعى `onSelect(suggestions[0])` الذي يستبدل نص المستخدم المكتوب بالكامل باقتراح جاهز غير متعلق بالضرورة بما كتبه، و`e.preventDefault()` يمنع معالج الإرسال الحقيقي من العمل — **الرسالة لا تُرسَل إطلاقاً**.
+
+**الأثر**: في صندوق المحادثة الرئيسي (نقطة التفاعل الأساسية في التطبيق)، أي مستخدم يضغط سهم لوحة المفاتيح أثناء ظهور قائمة الاقتراحات (وهو بالضبط ما يرشده النص المعروض على الشاشة للقيام به) لا يرى أي تحديد بصري، ثم يفاجأ بأن ضغط Enter لم يرسل رسالته بل استبدلها بصمت باقتراح آخر. هذا خلل حتمي وقابل للتكرار دوماً، وليس حالة نادرة، ويتناقض مباشرة مع تعليمات الاستخدام المعروضة على الشاشة لنفس الميزة.
+
+**الإصلاح**: توحيد مصدر الحقيقة — تمرير `activeIdx` و`setActiveIdx` من الخطاف كخاصيتين (`activeIdx`، `onHover`) للمكوّن المعروض بدل احتفاظه بنسخته الخاصة، وحذف معالج لوحة المفاتيح الميت داخل المكوّن (كان مُعلَّقاً بتعليق `void handleKeyDown` يعترف أن الأب "يجب أن" يستخدمه، لكن هذا لم يحدث فعلياً قط):
+```diff
+ interface Props {
+   input: string
+   onSelect: (suggestion: string) => void
+   isAr: boolean
++  activeIdx: number
++  onHover: (i: number) => void
+ }
+
+-export default function SmartInputSuggestions({ input, onSelect, isAr }: Props) {
++export default function SmartInputSuggestions({ input, onSelect, isAr, activeIdx, onHover }: Props) {
+   const [suggestions, setSuggestions] = useState<string[]>([])
+-  const [activeIdx, setActiveIdx] = useState(-1)
+-  const [dismissed, setDismissed] = useState(false)
+   ...
+-  // معالج لوحة مفاتيح ميت لم يُستخدَم قط من الأب
+-  const handleKeyDown = useCallback(...)
+-  if (!suggestions.length || dismissed) return null
++  if (!suggestions.length) return null
+   ...
+-  onMouseEnter={() => setActiveIdx(i)}
++  onMouseEnter={() => onHover(i)}
+```
+```diff
+-  return { suggestions: dismissed ? [] : suggestions, activeIdx, handleKeyDown, setDismissed }
++  return { suggestions: dismissed ? [] : suggestions, activeIdx, setActiveIdx, handleKeyDown, setDismissed }
+```
+وفي `app/page.tsx`:
+```diff
+-  const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(...)
++  const { suggestions: smartSuggestions, activeIdx: smartActiveIdx, setActiveIdx: setSmartActiveIdx, handleKeyDown: smartKeyDown, setDismissed: setSmartDismissed } = useSmartSuggestionsKeyDown(...)
+   ...
+   <SmartInputSuggestions
+     input={input}
+     onSelect={s => { setInput(s); textareaRef.current?.focus(); setSmartDismissed(true) }}
+     isAr={isAr}
++    activeIdx={smartActiveIdx}
++    onHover={setSmartActiveIdx}
+   />
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/SmartInputSuggestions.tsx` و`app/page.tsx`.
+
+### تحديث (batch #513) — شارة تحذير الحصة اليومية المتبقية مُثبَّتة على RTL دائماً حتى في وضع اللغة الإنجليزية
+
+**المشكلة**: `app/page.tsx:2068-2073` — حاوية شارة "الحصة المتبقية" (تظهر عندما `quotaRemaining <= 10`) مُثبَّتة على `direction: 'rtl', textAlign: 'right'` بلا أي تفريع على `isAr`، رغم أن نص الشارة نفسه يتفرّع بشكل صحيح على `isAr` (`'Daily quota exhausted'` مقابل `'استنفذت حصتك اليومية'`):
+```tsx
+<div style={{
+  maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 2px',
+  direction: 'rtl', textAlign: 'right',   // ثابت بلا تفريع
+}}>
+```
+بالمقارنة، الشريحة الشقيقة المجاورة مباشرة فوقها في نفس الملف ("إعادة المحاولة عند خطأ الاتصال"، `app/page.tsx:2047`) تُصلِحت سابقاً (batch #424) لتتفرّع بشكل صحيح: `direction: isAr ? 'rtl' : 'ltr'` — لكن شارة الحصة المتبقية لم تحصل على نفس المعالجة قط.
+
+**التحقق من الحيوية**: `app/page.tsx` هي صفحة المحادثة الرئيسية الحية (`/`)؛ `quotaRemaining` (السطر 580) يُملأ فعلياً من استجابة الخادم الحقيقية عبر SSE:
+```
+$ grep -n "metaRemaining|setQuotaRemaining" app/page.tsx
+580:  const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null)
+1173:      let metaRemaining: number | null = null
+1206:              if (typeof p.remaining === 'number') metaRemaining = p.remaining
+1237:      if (metaRemaining !== null) setQuotaRemaining(metaRemaining)
+```
+لا يوجد مسار بيانات وهمي — أي مستخدم حقيقي تنخفض حصته اليومية إلى 10 أسئلة أو أقل يرى هذه الشارة في الإنتاج.
+
+**الأثر**: مستخدم بوضع اللغة الإنجليزية توشك حصته اليومية على النفاد (10 أسئلة أو أقل، وتصبح حمراء عند 3 أو أقل) يرى الشارة التحذيرية معروضة داخل حاوية RTL بمحاذاة يمين، بينما بقية تخطيط الصفحة بوضع اللغة الإنجليزية LTR بمحاذاة يسار — بالضبط نفس النمط الذي أُصلِح مسبقاً للشريحة المجاورة. هذا يظهر بشكل غير متسق ومقلوب بصرياً في لحظة مهمة (تحذير المستخدم من اقتراب انتهاء حصته).
+
+**الإصلاح**: تفريع `direction`/`textAlign` على `isAr` بنفس نمط الشريحة الشقيقة المجاورة:
+```diff
+           <div style={{
+             maxWidth: 'var(--container-md)', margin: '0 auto', padding: '0 12px 2px',
+-            direction: 'rtl', textAlign: 'right',
++            direction: isAr ? 'rtl' : 'ltr', textAlign: isAr ? 'right' : 'left',
+           }}>
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/page.tsx` (سطر واحد).
+
+### تحديث (batch #514) — حقول "استوديو الصياغة" النصية الطويلة (textarea) مُثبَّتة على RTL دائماً حتى في وضع اللغة الإنجليزية، بعكس حقول الإدخال المجاورة
+
+**المشكلة**: `components/DraftingStudio.tsx:327` — نمط `<textarea>` (المُستخدَم لكل الحقول من نوع `'textarea'` عبر القوالب الثمانية، 14 حقلاً مثل "سبب الإخلاء"، "وصف الحالة"، "ملاحظات") يحمل `direction: 'rtl'` ثابتاً بلا أي تفريع على `isAr`:
+```tsx
+style={{ ..., direction: 'rtl', ... }}
+```
+بينما نمط `<input>` المجاور مباشرة أسفله (السطر 332-348، لنفس الحقول من نوع نصي عادي) **لا يحمل أي تجاوز لـ`direction` إطلاقاً** — يرث الاتجاه الصحيح تلقائياً من `dir` الصفحة الأم (`isAr ? 'rtl' : 'ltr'`).
+
+**التحقق من الحيوية**: `app/drafting-studio/page.tsx:5/93` يستورد ويعرض `<DraftingStudio isAr={isAr} .../>` فعلياً على مسار حي `/drafting-studio`، مع تمرير حالة اللغة الحقيقية للتطبيق.
+```
+$ grep -c "type: 'textarea'" components/DraftingStudio.tsx
+14
+$ grep -n "direction: 'rtl'" components/DraftingStudio.tsx
+327: ... direction: 'rtl', ...   ← نمط واحد مشترك لكل الحقول الـ14
+```
+
+**الأثر**: مستخدم بوضع اللغة الإنجليزية يملأ نموذج "استوديو الصياغة" (مثل "Reason for Eviction" أو "Case Description") يجد حقل النص الطويل مفروضاً عليه اتجاه RTL رغم كتابته بالإنجليزية، بينما حقل الاسم النصي القصير المجاور مباشرة على نفس النموذج يبقى LTR بشكل صحيح — تناقض بصري مباشر ومربك على نفس الشاشة، مطابق تماماً لخلل الشارة المُصلَح للتو في batch #513 لكن في مكوّن مختلف تماماً.
+
+**الإصلاح**: تفريع `direction` على `isAr` بنفس نمط حقل `<input>` المجاور:
+```diff
+-                    style={{ ..., direction: 'rtl', ... }}
++                    style={{ ..., direction: isAr ? 'rtl' : 'ltr', ... }}
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/DraftingStudio.tsx` (سطر واحد).
+
+### تحديث (batch #515) — معاينة الملف المرفق في صندوق المحادثة مُثبَّتة على محاذاة يمين حتى في وضع اللغة الإنجليزية
+
+**المشكلة**: `app/page.tsx:2142` — حاوية نص معاينة الملف المرفق (اسم الملف + الحجم + "جاهز للتحليل") مُثبَّتة على `textAlign: 'right'` بلا أي تفريع على `isAr`، رغم أن `isAr` في النطاق فعلياً ويُستخدَم بشكل صحيح سطرين لاحقاً لنص الحالة نفسه (`isAr ? 'جاهز للتحليل' : 'Ready to analyze'`):
+```tsx
+<div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>   // ثابت بلا تفريع
+  <div>{attachedFile.name}</div>
+  <div>{formatSize(attachedFile.size)}</div>
+  <div>{isAr ? 'جاهز للتحليل' : 'Ready to analyze'}</div>   // هذا السطر يتفرّع بشكل صحيح
+</div>
+```
+هذه نفس فئة الخلل المُصلَحة للتو في batch #513 (شارة الحصة المتبقية) وbatch #514 (حقول Drafting Studio) — نمط تكرر للمرة الثالثة في مكوّن مختلف تماماً.
+
+**التحقق من الحيوية**: `app/page.tsx:554/556/566` — `Home()` هي صفحة المحادثة الرئيسية على `/`، و`isAr` في النطاق (`const { lang, isAr, toggleLang } = useLanguage()`)، و`attachedFile` حالة حقيقية (`useState<AttachedFile | null>(null)`) تُملأ عند إرفاق أي ملف فعلي عبر زر الإرفاق في شريط الإدخال — هذا الكتلة تُعرَض مباشرة عند `attachedFile !== null`، أي في كل مرة يرفق فيها مستخدم حقيقي ملفاً. الغلاف الأعلى للصفحة (`app/page.tsx:1376`) يضبط `direction: isAr ? 'rtl' : 'ltr'` بشكل صحيح، أي أن هذه الكتلة تُعرَض ضمن سياق LTR فعلي بوضع اللغة الإنجليزية، لكن محاذاة نصها الداخلي مُثبَّتة يمين رغم ذلك.
+
+**الأثر**: مستخدم بوضع اللغة الإنجليزية يرفق ملفاً (صورة أو مستند) لرسالة محادثة يرى اسم الملف وحجمه ونص "Ready to analyze" مُلتصقة بالحافة اليمنى لبطاقة المعاينة بدل أن تتبع أيقونة نوع الملف على اليسار بشكل طبيعي — عكس ترتيب القراءة الطبيعي لـLTR، ومتناقض مع بقية عناصر الشاشة الإنجليزية.
+
+**الإصلاح**: تفريع `textAlign` على `isAr`:
+```diff
+-                <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
++                <div style={{ flex: 1, minWidth: 0, textAlign: isAr ? 'right' : 'left' }}>
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `app/page.tsx` (سطر واحد).
+
 هذا الملف سيُحدَّث مع كل دفعة تالية — لا يُعاد كتابته من الصفر، بل تُضاف/تُحدَّث بنوده.

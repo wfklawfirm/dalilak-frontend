@@ -42,7 +42,7 @@ export function saveChatSession(messages: SavedMessage[]) {
       savedAt: new Date().toISOString(),
       messageCount: messages.length,
       preview: firstUser.slice(0, 100),
-      messages: messages.slice(0, 40).map(m => ({ role: m.role, content: m.content.slice(0, 2000) })),
+      messages: messages.slice(-40).map(m => ({ role: m.role, content: m.content.slice(0, 2000) })),
     }
     const existing: ChatSession[] = JSON.parse(localStorage.getItem('dalilak_chat_sessions') || '[]')
     const updated = [session, ...existing].slice(0, 5)

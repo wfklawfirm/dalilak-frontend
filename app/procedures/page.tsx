@@ -180,6 +180,10 @@ export default function ProceduresPage() {
   const [deadlineInput, setDeadlineInput] = useState<string>('')
 
   const filteredGuided = useMemo(() => {
+    // advFilters (hasForm/feeType/speed/started) has no matching field on
+    // guided PROCEDURES_DATA — showing this section unfiltered while an
+    // advanced filter is active silently defeats the filter for it.
+    if (hasActiveFilters(advFilters)) return []
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
     if (ministryFilter !== 'all') {
       list = list.filter(p => (CAT_TO_MINISTRY[p.categorySlug] || 'interior') === ministryFilter)
@@ -192,7 +196,7 @@ export default function ProceduresPage() {
       )
     }
     return list
-  }, [search, ministryFilter])
+  }, [search, ministryFilter, advFilters])
 
   const filteredEnriched = useMemo(() => {
     let list = searchEnrichedProcedures(search)
@@ -209,6 +213,7 @@ export default function ProceduresPage() {
     if (advFilters.feeType !== 'any') {
       list = list.filter(p => {
         const fees = p.fees || ''
+        if (!fees) return false // fee not recorded for this procedure — don't assert it's paid or free
         const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
         return advFilters.feeType === 'free' ? isFree : !isFree
       })
@@ -216,8 +221,8 @@ export default function ProceduresPage() {
     if (advFilters.speed !== 'any') {
       list = list.filter(p => {
         const pt = (p.processingTime || '').toLowerCase()
-        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
-        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('week') || pt.includes('أسبوعين')
+        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('أيام') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
+        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('أسابيع') || pt.includes('week') || pt.includes('أسبوعين')
         if (advFilters.speed === 'slow')   return pt.includes('شهر') || pt.includes('month') || pt.includes('سنة') || pt.includes('year')
         return true
       })

@@ -48,11 +48,11 @@ const card: React.CSSProperties = {
   marginBottom: 10,
 }
 
-const sectionHeader = (expanded: boolean): React.CSSProperties => ({
+const sectionHeader = (expanded: boolean, isAr: boolean): React.CSSProperties => ({
   width: '100%', padding: '13px 16px',
   background: '#fff', border: 'none', cursor: 'pointer',
   display: 'flex', alignItems: 'center', gap: 10,
-  fontFamily: 'inherit', textAlign: 'right' as const,
+  fontFamily: 'inherit', textAlign: (isAr ? 'right' : 'left') as const,
   transition: 'background 0.15s',
 })
 
@@ -761,14 +761,14 @@ interface DocumentIntelligenceViewProps {
 }
 
 function CollapsibleSection({
-  title, icon, children, defaultOpen = true,
+  title, icon, children, defaultOpen = true, isAr,
 }: {
-  title: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean
+  title: string; icon: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean; isAr: boolean
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div style={{ ...card }}>
-      <button type="button" aria-expanded={open} style={sectionHeader(open)} onClick={() => setOpen(o => !o)}
+      <button type="button" aria-expanded={open} style={sectionHeader(open, isAr)} onClick={() => setOpen(o => !o)}
         onTouchStart={e => { e.currentTarget.style.background = '#FAFAF8' }}
         onTouchEnd={e => { e.currentTarget.style.background = '#fff' }}
       >
@@ -819,6 +819,7 @@ export default function DocumentIntelligenceView({
       {/* Extracted facts */}
       {analysis.extractedFacts.length > 0 && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'البيانات المستخرجة' : 'Extracted Data'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>}
         >
@@ -836,6 +837,7 @@ export default function DocumentIntelligenceView({
       {/* Related procedures */}
       {analysis.relatedProcedures.length > 0 && (
         <CollapsibleSection
+          isAr={isAr}
           title={isAr ? 'المعاملات المرتبطة' : 'Related Procedures'}
           icon={<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>}
         >

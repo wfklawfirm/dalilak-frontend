@@ -65,6 +65,24 @@ export default function MyFilesPage() {
     setBookmarks(getBookmarks())
   }
 
+  // ── Notepad snippets saved from chat (batch #510) ──────────────────────────
+  // ChatSaveToNotes.tsx's "📝 Save to notepad" button (live, under every
+  // assistant chat message) writes to localStorage['dalilak_notepad'], but the
+  // only other file referencing that key, QuickNotepad.tsx, is never mounted
+  // anywhere in app/ AND reads from sessionStorage instead of localStorage —
+  // so a "saved" note was previously unrecoverable by any user despite the
+  // button flashing a success checkmark. Surface it here, same pattern as the
+  // bookmarks section above.
+  const NOTEPAD_LS_KEY = 'dalilak_notepad'
+  const [notepadText, setNotepadText] = useState('')
+  useEffect(() => {
+    try { setNotepadText(localStorage.getItem(NOTEPAD_LS_KEY) || '') } catch {}
+  }, [])
+  const clearNotepad = () => {
+    try { localStorage.removeItem(NOTEPAD_LS_KEY) } catch {}
+    setNotepadText('')
+  }
+
   // مزامنة مسودة الملاحظات مع الملف المختار — تُحدَّث عند تبديل الملف أو بعد كل حفظ ناجح
   useEffect(() => {
     setNotesDraft(selected?.notes || '')
@@ -338,6 +356,41 @@ export default function MyFilesPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ── Saved notepad snippets (batch #510) — see hook comment above ── */}
+        {notepadText.trim() !== '' && (
+          <div style={{
+            marginBottom: 16, background: '#fff', border: '1.5px solid #E6E2DC',
+            borderRadius: 14, overflow: 'hidden',
+          }}>
+            <div style={{
+              padding: '10px 14px', background: '#FAFAF8', borderBottom: '1px solid #E6E2DC',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <span style={{ fontSize: 14 }}>📝</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#191713', flex: 1 }}>
+                {isAr ? 'الملاحظات المحفوظة' : 'Saved Notes'}
+              </span>
+              <button
+                type="button"
+                onClick={clearNotepad}
+                style={{
+                  background: 'none', border: '1px solid #E6E2DC', borderRadius: 7,
+                  color: '#918B82', fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                  padding: '3px 8px', fontFamily: 'inherit',
+                }}
+              >
+                {isAr ? 'مسح' : 'Clear'}
+              </button>
+            </div>
+            <p style={{
+              margin: 0, padding: '10px 14px', fontSize: 12.5, color: '#191713',
+              lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+            }}>
+              {notepadText}
+            </p>
           </div>
         )}
 
