@@ -406,55 +406,103 @@ export default function TopNav({
                       animation: 'tn-drop 0.15s ease both',
                     }}
                   >
-                    {currentUser && (
-                      <div style={{
-                        padding: '12px 14px 10px',
-                        borderBottom: '1px solid var(--border)',
-                      }}>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
-                          {currentUser.full_name || currentUser.username}
-                        </div>
-                        <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>
-                          {currentUser.email}
-                        </div>
-                      </div>
-                    )}
-                    {[
-                      { href: '/my-files', ar: '📁 ملفاتي', en: '📁 My Files' },
-                      { href: '/procedures', ar: '📋 المعاملات', en: '📋 Procedures' },
-                      { href: '/settings', ar: '⚙️ الإعدادات', en: '⚙️ Settings' },
-                    ].map(item => (
-                      <button
-                        key={item.href}
-                        type="button"
-                        onClick={() => { router.push(item.href); setUserMenuOpen(false) }}
-                        style={{
-                          display: 'block', width: '100%', padding: '9px 14px',
-                          background: 'none', border: 'none', cursor: 'pointer',
-                          textAlign: isAr ? 'right' : 'left',
-                          fontSize: 12.5, color: 'var(--text-2)', fontFamily: 'inherit',
+                    {currentUser ? (
+                      <>
+                        <div style={{
+                          padding: '12px 14px 10px',
                           borderBottom: '1px solid var(--border)',
-                        }}
-                      >
-                        {isAr ? item.ar : item.en}
-                      </button>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        router.push('/login')
-                        setUserMenuOpen(false)
-                      }}
-                      style={{
-                        display: 'block', width: '100%', padding: '9px 14px',
-                        background: 'none', border: 'none', cursor: 'pointer',
-                        textAlign: isAr ? 'right' : 'left',
-                        fontSize: 12.5, color: '#dc2626', fontFamily: 'inherit',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {isAr ? '🚪 تسجيل الخروج' : '🚪 Sign Out'}
-                    </button>
+                        }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
+                            {currentUser.full_name || currentUser.username}
+                          </div>
+                          <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>
+                            {currentUser.email}
+                          </div>
+                        </div>
+                        {[
+                          { href: '/my-files', ar: '📁 ملفاتي', en: '📁 My Files' },
+                          { href: '/procedures', ar: '📋 المعاملات', en: '📋 Procedures' },
+                          { href: '/settings', ar: '⚙️ الإعدادات', en: '⚙️ Settings' },
+                        ].map(item => (
+                          <button
+                            key={item.href}
+                            type="button"
+                            onClick={() => { router.push(item.href); setUserMenuOpen(false) }}
+                            style={{
+                              display: 'block', width: '100%', padding: '9px 14px',
+                              background: 'none', border: 'none', cursor: 'pointer',
+                              textAlign: isAr ? 'right' : 'left',
+                              fontSize: 12.5, color: 'var(--text-2)', fontFamily: 'inherit',
+                              borderBottom: '1px solid var(--border)',
+                            }}
+                          >
+                            {isAr ? item.ar : item.en}
+                          </button>
+                        ))}
+                        {/* batch #506: real sign-out (clears the token) — the
+                            previous button here was mislabeled "تسجيل الخروج"
+                            (Sign Out) but only ever did router.push('/login')
+                            without clearing anything, and it rendered for
+                            anonymous visitors too (nonsensical — nothing to
+                            sign out of). clearToken is dynamically imported
+                            to avoid adding a new static import for a single
+                            click handler. */}
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const { clearToken } = await import('@/lib/auth')
+                            clearToken()
+                            setUserMenuOpen(false)
+                            router.push('/')
+                          }}
+                          style={{
+                            display: 'block', width: '100%', padding: '9px 14px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            textAlign: isAr ? 'right' : 'left',
+                            fontSize: 12.5, color: '#dc2626', fontFamily: 'inherit',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {isAr ? '🚪 تسجيل الخروج' : '🚪 Sign Out'}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {/* batch #506: anonymous visitors used to see the same
+                            logged-in menu (My Files / Settings / a "Sign Out"
+                            button that didn't sign anything out) — this is
+                            the single clear sign-in action the public
+                            homepage needs instead. */}
+                        <div style={{ padding: '10px 14px', fontSize: 11.5, color: 'var(--text-3)', borderBottom: '1px solid var(--border)' }}>
+                          {isAr ? 'سجّل الدخول لحفظ المعاملات ومتابعتها' : 'Sign in to save and track your procedures'}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { router.push('/login'); setUserMenuOpen(false) }}
+                          style={{
+                            display: 'block', width: '100%', padding: '9px 14px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            textAlign: isAr ? 'right' : 'left',
+                            fontSize: 12.5, color: 'var(--brand)', fontFamily: 'inherit', fontWeight: 700,
+                            borderBottom: '1px solid var(--border)',
+                          }}
+                        >
+                          {isAr ? '🔑 تسجيل الدخول' : '🔑 Sign in'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { router.push('/register'); setUserMenuOpen(false) }}
+                          style={{
+                            display: 'block', width: '100%', padding: '9px 14px',
+                            background: 'none', border: 'none', cursor: 'pointer',
+                            textAlign: isAr ? 'right' : 'left',
+                            fontSize: 12.5, color: 'var(--text-2)', fontFamily: 'inherit',
+                          }}
+                        >
+                          {isAr ? '✍️ إنشاء حساب' : '✍️ Create account'}
+                        </button>
+                      </>
+                    )}
                   </div>
                 </>
               )}

@@ -22,6 +22,30 @@ export default function ProcedureDetailClient() {
 
   const proc = getProcedureBySlug(slug)
 
+  // دمج وثائق الأرشيف الرسمية الحقيقية في صفحة المعاملة، بطلب المستخدم
+  // ("ادمج النماذج التي تكون معملة إدارية أو رسمية في المعاملات"). لا يوجد
+  // حقل مطابقة مباشر بين Procedure والأرشيف، فنطابق بالجهة المختصة
+  // (authority.ministry_en/name_en) مقابل ArchiveDoc.institution (تطابق
+  // نصي بسيط، بدون أي تخمين/ابتكار روابط) — إن لم توجد جهة أو لم يطابق
+  // اسمها أي جهة في الأرشيف، لا تُعرض أي وثائق (لا نُخمّن علاقة غير مؤكدة).
+  // useMemo يُستدعى دائماً بدون شرط (قبل أي return مبكر) — كان مستدعى
+  // بعد فحص `if (!proc) return` مما يخالف قاعدة React rules-of-hooks
+  // (eslint: react-hooks/rules-of-hooks). الإصلاح: نقل الفحص داخل الدالة.
+  const relatedArchiveDocs = React.useMemo(() => {
+    if (!proc) return []
+    const needle = `${proc.authority?.ministry_en || ''} ${proc.authority?.name_en || ''}`.trim().toLowerCase()
+    if (!needle) return []
+    const matchedInstitutions = new Set<string>()
+    for (const d of ARCHIVE_DOCS) {
+      const inst = d.institution.toLowerCase()
+      if (inst.length >= 4 && needle.includes(inst)) matchedInstitutions.add(d.institution)
+    }
+    if (matchedInstitutions.size === 0) return []
+    const candidates = ARCHIVE_DOCS.filter(d => matchedInstitutions.has(d.institution))
+    const isForm = (d: typeof candidates[number]) => FORM_KEYWORDS.some(k => d.title.toLowerCase().includes(k))
+    return [...candidates].sort((a, b) => Number(isForm(b)) - Number(isForm(a))).slice(0, 5)
+  }, [proc])
+
   if (!proc) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Cairo','Inter',sans-serif" }}>
@@ -43,26 +67,6 @@ export default function ProcedureDetailClient() {
     const q = isAr ? proc.chatPrompt_ar : proc.chatPrompt_en
     router.push(`/?q=${encodeURIComponent(q)}`)
   }
-
-  // دمج وثائق الأرشيف الرسمية الحقيقية في صفحة المعاملة، بطلب المستخدم
-  // ("ادمج النماذج التي تكون معملة إدارية أو رسمية في المعاملات"). لا يوجد
-  // حقل مطابقة مباشر بين Procedure والأرشيف، فنطابق بالجهة المختصة
-  // (authority.ministry_en/name_en) مقابل ArchiveDoc.institution (تطابق
-  // نصي بسيط، بدون أي تخمين/ابتكار روابط) — إن لم توجد جهة أو لم يطابق
-  // اسمها أي جهة في الأرشيف، لا تُعرض أي وثائق (لا نُخمّن علاقة غير مؤكدة).
-  const relatedArchiveDocs = React.useMemo(() => {
-    const needle = `${proc.authority?.ministry_en || ''} ${proc.authority?.name_en || ''}`.trim().toLowerCase()
-    if (!needle) return []
-    const matchedInstitutions = new Set<string>()
-    for (const d of ARCHIVE_DOCS) {
-      const inst = d.institution.toLowerCase()
-      if (inst.length >= 4 && needle.includes(inst)) matchedInstitutions.add(d.institution)
-    }
-    if (matchedInstitutions.size === 0) return []
-    const candidates = ARCHIVE_DOCS.filter(d => matchedInstitutions.has(d.institution))
-    const isForm = (d: typeof candidates[number]) => FORM_KEYWORDS.some(k => d.title.toLowerCase().includes(k))
-    return [...candidates].sort((a, b) => Number(isForm(b)) - Number(isForm(a))).slice(0, 5)
-  }, [proc])
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>

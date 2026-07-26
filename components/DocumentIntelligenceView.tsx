@@ -363,7 +363,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
                 <div style={{ fontSize: 11.5, color: '#191713' }}>{e.claim}</div>
                 {e.excerpt && (
                   <div style={{ fontSize: 10.5, color: '#69645C', marginTop: 5, fontStyle: 'italic', borderRight: '3px solid #D5CEC4', paddingRight: 8 }}>
-                    "{e.excerpt}"
+                    &ldquo;{e.excerpt}&rdquo;
                   </div>
                 )}
               </div>

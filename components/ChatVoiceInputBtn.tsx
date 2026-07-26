@@ -24,7 +24,6 @@ interface Props {
   disabled?: boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySpeechRecognition = any
 
 export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }: Props) {
@@ -39,7 +38,6 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
 
   useEffect(() => {
     setMounted(true)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     setSupported(!!SR)
   }, [])
@@ -53,7 +51,6 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
   function startListening() {
     if (listening) { stopListening(); return }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) {
       // Fallback: guide user to use native keyboard mic
@@ -74,7 +71,6 @@ export default function ChatVoiceInputBtn({ onTranscript, isAr, lang, disabled }
       pulseTimer.current = setInterval(() => { setPulse(p => (p + 1) % 3) }, 500)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rec.onresult = (e: any) => {
       const t = e.results[0]?.[0]?.transcript?.trim()
       if (t) onTranscript(t)

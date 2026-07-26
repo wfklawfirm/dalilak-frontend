@@ -753,11 +753,27 @@ Question: ${text}`
   }, [authChecked])
 
   // ── Auth guard ────────────────────────────────────────────
-  // Strategy: show UI instantly from cached user, validate in background.
-  // This hides the Render cold-start delay (up to 30s on free tier).
+  // batch #506: this used to `router.push('/login')` immediately whenever
+  // there was no token — which meant the public root URL forced every
+  // anonymous visitor straight to the login form before they ever saw the
+  // product (reported issue: "root URL redirects visitors directly to
+  // /login, hiding the platform's value"). "/" must work as a public
+  // landing/discovery screen; only the actual protected action (sending a
+  // message to the AI, which the backend genuinely requires a Bearer token
+  // for — see sendMessage's own guard below) should ask an anonymous user
+  // to sign in. Strategy now: anonymous visitors skip the network round
+  // trip entirely and see the home screen instantly (authChecked=true,
+  // currentUser=null — every consumer of currentUser in this file/TopNav/
+  // MobileMenu already renders correctly for null, verified by inspection).
+  // Logged-in users keep the original "show cached user instantly, validate
+  // in background" behavior, hiding the Render cold-start delay (up to 30s
+  // on the free tier) — plus a bounded timeout (batch #506) so a slow/failed
+  // backend can never leave a first-time login stuck on the splash screen
+  // forever (reported issue: "splash screen can remain visible for too
+  // long, making the application appear frozen").
   useEffect(() => {
     const token = getToken()
-    if (!token) { router.push('/login'); return }
+    if (!token) { setAuthChecked(true); return }
 
     // Wake the backend early (fire-and-forget — don't await)
     fetch(`${API_URL}/ping`).catch(() => {})
@@ -769,19 +785,36 @@ Question: ${text}`
       setAuthChecked(true)
     }
 
+    // Bounded fallback: never block the splash indefinitely. If neither the
+    // success nor error branch below has resolved within 6s (e.g. backend
+    // cold-start taking longer than usual, or a silently hanging request),
+    // show the app anyway rather than freeze it. Cleared as soon as either
+    // branch actually settles.
+    let settled = false
+    const timeoutId = !cached ? window.setTimeout(() => {
+      if (!settled) setAuthChecked(true)
+    }, 6000) : null
+
     // Background validation — update user data silently
     fetch(`${API_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(async res => {
-      if (!res.ok) { clearToken(); localStorage.removeItem(CHAT_HISTORY_KEY); router.push('/login'); return }
+      settled = true
+      if (timeoutId) clearTimeout(timeoutId)
+      if (!res.ok) { clearToken(); localStorage.removeItem(CHAT_HISTORY_KEY); setCurrentUser(null); setAuthChecked(true); return }
       const data = await res.json()
       setUser(data)          // refresh localStorage cache
       setCurrentUser(data)
-      if (!cached) setAuthChecked(true)   // first login: no cache yet
+      setAuthChecked(true)
     }).catch(() => {
-      // Network error — keep showing cached user
-      if (!cached) setAuthChecked(true)
+      settled = true
+      if (timeoutId) clearTimeout(timeoutId)
+      // Network error — keep showing cached user if we had one, otherwise
+      // fall back to the anonymous home view instead of hanging.
+      setAuthChecked(true)
     })
+
+    return () => { if (timeoutId) clearTimeout(timeoutId) }
   }, [])
 
   // ── Handle onboarding quick-start question ───────────────
@@ -993,6 +1026,30 @@ Question: ${text}`
   const sendMessage = async (text: string, file?: AttachedFile | null, overrideMode?: ResponseMode) => {
     const hasContent = text.trim() || file
     if (!hasContent || loading) return
+
+    // batch #506: the page-level redirect that used to gate the entire "/"
+    // route is gone (see the auth-guard useEffect above) — anonymous
+    // visitors can now browse the home screen freely. The backend's
+    // /chat/stream genuinely requires a Bearer token (standing constraint:
+    // no backend/auth-logic changes), so the ONLY point that still needs to
+    // gate on login is the actual send action. Reuses the existing
+    // `dalilak_pending_query` sessionStorage key (already read by the ?q=
+    // mount effect above, and already used the same way by GlobalSearch) so
+    // the question is asked automatically once the user signs in — this is
+    // the "preserve intended destination after login" behavior for the
+    // single most common case (asking a question), without needing a new
+    // `next=` redirect-param system. File attachments aren't preserved this
+    // way (no safe/simple place to stash a base64 payload across a redirect
+    // for an anonymous user) — an anonymous user attaching a file is simply
+    // sent to sign in and can re-attach after.
+    if (!getToken()) {
+      if (text.trim()) {
+        try { sessionStorage.setItem('dalilak_pending_query', text) } catch {}
+      }
+      router.push('/login')
+      return
+    }
+
     const mySeq = ++sendSeqRef.current
     setFollowupQuestions([])
     setRetryMsg(null)

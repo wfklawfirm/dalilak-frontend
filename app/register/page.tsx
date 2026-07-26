@@ -124,44 +124,52 @@ export default function RegisterPage() {
 
           <div>
             <label htmlFor="reg-fullname" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'الاسم الكامل' : 'Full name'}</label>
-            <input id="reg-fullname" type="text" aria-invalid={!!error} aria-describedby={error ? "reg-error" : undefined} value={form.full_name} onChange={e => update('full_name', e.target.value)}
-              className="auth-input" placeholder={isAr ? 'أحمد علي' : 'John Doe'} dir="auto" />
+            <input id="reg-fullname" name="name" type="text" aria-invalid={!!error} aria-describedby={error ? "reg-error" : undefined} value={form.full_name} onChange={e => update('full_name', e.target.value)}
+              className="auth-input" placeholder={isAr ? 'أحمد علي' : 'John Doe'} dir="auto" autoComplete="name" />
           </div>
 
           <div>
             <label htmlFor="reg-username" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
               {isAr ? 'اسم المستخدم' : 'Username'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
-            <input id="reg-username" type="text" value={form.username}
+            <input id="reg-username" name="username" type="text" value={form.username}
               onChange={e => update('username', e.target.value.toLowerCase().replace(/\s/g, ''))}
               className="auth-input" placeholder="username" required minLength={3}
-              dir="ltr" style={{ textAlign: 'left' }} />
+              autoComplete="username" dir="ltr" style={{ textAlign: 'left' }} />
           </div>
 
           <div>
             <label htmlFor="reg-email" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
               {isAr ? 'البريد الإلكتروني' : 'Email'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
-            <input id="reg-email" type="email" value={form.email} onChange={e => update('email', e.target.value)}
+            <input id="reg-email" name="email" type="email" value={form.email} onChange={e => update('email', e.target.value)}
               className="auth-input" placeholder="you@example.com" required
-              dir="ltr" style={{ textAlign: 'left' }} />
+              autoComplete="email" inputMode="email" dir="ltr" style={{ textAlign: 'left' }} />
           </div>
 
           <div>
             <label htmlFor="reg-phone" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>{isAr ? 'رقم الهاتف' : 'Phone number'}</label>
-            <input id="reg-phone" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
+            <input id="reg-phone" name="tel" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
               className="auth-input" placeholder="+961 xx xxx xxx"
-              dir="ltr" style={{ textAlign: 'left' }} />
+              autoComplete="tel" inputMode="tel" dir="ltr" style={{ textAlign: 'left' }} />
           </div>
 
           <div>
             <label htmlFor="reg-password" style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#69645C', marginBottom: 5 }}>
               {isAr ? 'كلمة المرور' : 'Password'} <span style={{ color: '#8F1D2C' }}>*</span>
             </label>
+            {/* batch #506: password rule must be visible before a failed
+                submission, not only surfaced as an error afterward — and in
+                the user's own language, not a hardcoded English placeholder
+                shown even in Arabic mode. */}
+            <p id="reg-password-hint" style={{ margin: '0 0 6px', fontSize: 11, color: '#918B82' }}>
+              {isAr ? '6 أحرف على الأقل' : 'At least 6 characters'}
+            </p>
             <div style={{ position: 'relative' }}>
-              <input id="reg-password" type={showPass ? 'text' : 'password'} value={form.password}
+              <input id="reg-password" name="new-password" type={showPass ? 'text' : 'password'} value={form.password}
                 onChange={e => update('password', e.target.value)}
-                className="auth-input" placeholder="min. 6 characters" required minLength={6}
+                aria-describedby="reg-password-hint"
+                className="auth-input" placeholder={isAr ? 'كلمة مرور' : 'Password'} required minLength={6}
                 autoComplete="new-password" style={{ direction: 'ltr', textAlign: 'left', paddingLeft: 44 }} />
               <button type="button" tabIndex={-1}
                 aria-label={showPass ? (isAr ? 'إخفاء كلمة المرور' : 'Hide password') : (isAr ? 'إظهار كلمة المرور' : 'Show password')}
@@ -182,6 +190,7 @@ export default function RegisterPage() {
             </label>
             <input
               id="reg-confirm"
+              name="new-password"
               type={showPass ? 'text' : 'password'}
               value={form.confirm}
               onChange={e => update('confirm', e.target.value)}
@@ -192,6 +201,17 @@ export default function RegisterPage() {
               style={{ direction: 'ltr', textAlign: 'left' }}
             />
           </div>
+
+          {/* batch #506: clearer, honest consent line — links only to the
+              real /privacy page that exists in this app; no /terms link
+              since no terms page exists in the repo (Phase 7 explicitly
+              forbids inventing legal pages that aren't there). */}
+          <p style={{ fontSize: 10.5, color: '#918B82', textAlign: 'center', margin: '2px 0 0', lineHeight: 1.6 }}>
+            {isAr ? 'بإنشاء حساب أنت توافق على ' : 'By creating an account you agree to our '}
+            <Link href="/privacy" style={{ color: '#8F1D2C', fontWeight: 600, textDecoration: 'none' }}>
+              {isAr ? 'سياسة الخصوصية' : 'privacy policy'}
+            </Link>
+          </p>
 
           {/* Submit */}
           <button type="submit" disabled={loading} className="auth-btn" style={{ marginTop: 4 }}>

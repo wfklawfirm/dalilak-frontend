@@ -105,6 +105,7 @@ export default function LoginPage() {
             </label>
             <input
               id="login-username"
+              name="username"
               type="text"
               aria-describedby={error ? "login-error" : undefined}
               aria-invalid={!!error}
@@ -126,6 +127,7 @@ export default function LoginPage() {
             <div style={{ position: 'relative' }}>
               <input
                 id="login-password"
+                name="password"
                 type={showPass ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
