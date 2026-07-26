@@ -351,7 +351,7 @@ export default function ProcedureQRShare({ code, titleAr, titleEn }: Props) {
                 <div style={{ fontSize: 14, fontWeight: 800, color: '#191713' }}>
                   {isAr ? 'مشاركة عبر QR' : 'Share via QR'}
                 </div>
-                <div style={{ fontSize: 10.5, color: '#918B82', marginTop: 1 }}>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 1 }}>
                   {isAr ? titleAr : (titleEn || titleAr)}
                 </div>
               </div>
@@ -379,7 +379,7 @@ export default function ProcedureQRShare({ code, titleAr, titleEn }: Props) {
               {svgData
                 ? <div dangerouslySetInnerHTML={{ __html: svgData }} style={{ lineHeight: 0 }} />
                 : (
-                  <div style={{ fontSize: 11, color: '#918B82', textAlign: 'center', padding: 40 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center', padding: 40 }}>
                     {isAr ? 'جارٍ التوليد...' : 'Generating...'}
                   </div>
                 )

@@ -116,7 +116,7 @@ export default function ProcedureMiniMap({ anchorPrefix, isAr }: Props) {
               padding: '5px 8px', borderRadius: 8, border: 'none', cursor: 'pointer',
               background: isActive ? '#F8EDEF' : 'transparent',
               fontFamily: 'inherit', fontSize: 10.5, fontWeight: isActive ? 800 : 600,
-              color: isActive ? '#8F1D2C' : '#918B82',
+              color: isActive ? '#8F1D2C' : 'var(--text-3)',
               transition: 'all 0.15s',
               whiteSpace: 'nowrap',
             }}

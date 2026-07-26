@@ -63,7 +63,7 @@ export default function ProcedureQuickAskChips({ titleAr, titleEn, isAr, onAsk }
       dir={isAr ? 'rtl' : 'ltr'}
       style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}
     >
-      <div style={{ width: '100%', fontSize: 9.5, fontWeight: 700, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>
+      <div style={{ width: '100%', fontSize: 9.5, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>
         {isAr ? 'اسأل دليلك عن هذه المعاملة' : 'Ask Dalilak about this procedure'}
       </div>
       {chips.map((chip, i) => (

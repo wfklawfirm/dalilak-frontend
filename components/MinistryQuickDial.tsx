@@ -138,17 +138,17 @@ export default function MinistryQuickDial() {
                 <div style={{ fontSize: 15, fontWeight: 800, color: '#191713' }}>
                   {isAr ? 'أرقام الوزارات والجهات الحكومية' : 'Ministry & Gov. Phone Numbers'}
                 </div>
-                <div style={{ fontSize: 10.5, color: '#918B82' }}>
+                <div style={{ fontSize: 10.5, color: 'var(--text-3)' }}>
                   {isAr ? `${MINISTRIES.length} جهة حكومية` : `${MINISTRIES.length} government offices`}
                 </div>
               </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label={isAr ? 'إغلاق قائمة أرقام الوزارات' : 'Close ministry phone list'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 20 }}>✕</button>
+              <button type="button" onClick={() => setOpen(false)} aria-label={isAr ? 'إغلاق قائمة أرقام الوزارات' : 'Close ministry phone list'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 20 }}>✕</button>
             </div>
 
             {/* Search */}
             <div style={{ padding: '10px 16px 6px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F8F8F6', border: '1px solid #E6E2DC', borderRadius: 10, padding: '8px 12px' }}>
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/></svg>
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
@@ -181,7 +181,7 @@ export default function MinistryQuickDial() {
                     <div style={{ fontSize: 11.5, fontWeight: 700, color: '#191713', lineHeight: 1.3 }}>
                       {isAr ? m.ar : m.en}
                     </div>
-                    <div style={{ fontSize: 10, color: '#918B82', marginTop: 2 }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 2 }}>
                       {isAr ? `ساعات: ${m.hours}` : `Hours: ${m.hours}`}
                     </div>
                   </div>
@@ -196,7 +196,7 @@ export default function MinistryQuickDial() {
                 </a>
               ))}
               {filtered.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '28px 0', color: '#918B82', fontSize: 13 }}>
+                <div style={{ textAlign: 'center', padding: '28px 0', color: 'var(--text-3)', fontSize: 13 }}>
                   {isAr ? 'لا توجد نتائج' : 'No results found'}
                 </div>
               )}

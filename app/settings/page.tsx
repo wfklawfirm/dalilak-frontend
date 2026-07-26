@@ -62,7 +62,7 @@ function ToggleRow({
         <div style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>
           {isAr ? titleAr : titleEn}
         </div>
-        <div style={{ fontSize: 11, color: '#918B82', marginTop: 1 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>
           {isAr ? descAr : descEn}
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function SettingsPage() {
       <main id="main-content" style={{ maxWidth: 560, margin: '0 auto', padding: '18px 14px' }}>
 
         {/* Language */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
           {isAr ? 'اللغة' : 'Language'}
         </div>
         <div style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 12, overflow: 'hidden', marginBottom: 20 }}>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
               <div style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>
                 {isAr ? 'لغة الواجهة' : 'Interface language'}
               </div>
-              <div style={{ fontSize: 11, color: '#918B82', marginTop: 1 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>
                 {isAr ? 'العربية حالياً — اضغط للتبديل إلى الإنجليزية' : 'English currently — tap to switch to Arabic'}
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Accessibility */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
           {isAr ? 'إمكانية الوصول' : 'Accessibility'}
         </div>
         <div style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 12, overflow: 'hidden', marginBottom: 20 }}>
@@ -206,14 +206,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Chat preferences */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
           {isAr ? 'تفضيلات المحادثة' : 'Chat preferences'}
         </div>
         <div style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 12, padding: '13px 16px', marginBottom: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#191713', marginBottom: 3 }}>
             {isAr ? 'الطول الافتراضي لردود دليلك' : 'Default answer length'}
           </div>
-          <div style={{ fontSize: 11, color: '#918B82', marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 10 }}>
             {isAr ? 'يمكنك أيضاً تغييره من داخل المحادثة في أي وقت' : 'You can also change this from inside the chat at any time'}
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', background: '#F5F3EE', borderRadius: 20, border: '1.5px solid #E5E0D8', padding: 2, gap: 1 }}>
@@ -245,7 +245,7 @@ export default function SettingsPage() {
         </div>
 
         {/* About */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 4px 8px' }}>
           {isAr ? 'عن التطبيق' : 'About'}
         </div>
         <div style={{ background: '#fff', border: '1px solid #E6E2DC', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -259,7 +259,7 @@ export default function SettingsPage() {
             <div style={{ fontSize: 13, fontWeight: 700, color: '#191713' }}>
               {isAr ? 'دليلك' : 'Dalilak'}
             </div>
-            <div style={{ fontSize: 11, color: '#918B82' }}>
+            <div style={{ fontSize: 11, color: 'var(--text-3)' }}>
               {isAr ? 'دليل المواطن اللبناني للمعاملات الحكومية' : 'Lebanese Citizens\' Government Procedures Guide'}
             </div>
           </div>

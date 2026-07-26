@@ -101,7 +101,7 @@ export default function ChatMessageActions({ text, isAr }: Props) {
     padding: '3px 8px', borderRadius: 12,
     background: active ? '#F8EDEF' : 'transparent',
     border: `1px solid ${active ? 'rgba(143,29,44,0.25)' : 'transparent'}`,
-    color: active ? '#8F1D2C' : '#918B82',
+    color: active ? '#8F1D2C' : 'var(--text-3)',
     fontSize: 10, fontWeight: active ? 700 : 600,
     cursor: 'pointer', fontFamily: 'inherit',
     transition: 'all 0.15s',

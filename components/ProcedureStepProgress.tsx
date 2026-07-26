@@ -106,7 +106,7 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
           <div style={{ fontSize: 12, fontWeight: 800, color: '#191713' }}>
             {isAr ? 'تقدّم الخطوات' : 'Step Progress'}
           </div>
-          <div style={{ fontSize: 10, color: '#918B82', marginTop: 1 }}>
+          <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>
             {isAr
               ? `${doneCount} من ${stepPhraseAr(steps.length)}${allDone ? ' — ✅ مكتمل!' : ''}`
               : `${doneCount} of ${steps.length} steps${allDone ? ' — ✅ Complete!' : ''}`}
@@ -116,7 +116,7 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
           <button
             type="button" onClick={reset}
             style={{
-              fontSize: 10, color: '#918B82', background: 'none', border: 'none',
+              fontSize: 10, color: 'var(--text-3)', background: 'none', border: 'none',
               cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline', flexShrink: 0,
             }}
           >
@@ -166,7 +166,7 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
             <span
               onClick={() => toggle(i)}
               style={{
-                fontSize: 11, lineHeight: 1.5, color: checked[i] ? '#918B82' : '#191713',
+                fontSize: 11, lineHeight: 1.5, color: checked[i] ? 'var(--text-3)' : '#191713',
                 textDecoration: checked[i] ? 'line-through' : 'none',
                 transition: 'color 0.15s',
                 flex: 1,

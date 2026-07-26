@@ -71,7 +71,7 @@ export default function ChatTypingIndicator({ isAr }: Props) {
           />
         ))}
         <span style={{
-          fontSize: 10.5, fontWeight: 600, color: '#918B82',
+          fontSize: 10.5, fontWeight: 600, color: 'var(--text-3)',
           marginInlineStart: 6,
         }}>
           {isAr ? 'دليلك يفكر...' : 'Dalilak is thinking...'}

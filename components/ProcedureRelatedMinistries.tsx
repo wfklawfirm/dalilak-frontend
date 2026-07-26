@@ -115,7 +115,7 @@ export default function ProcedureRelatedMinistries({ ministrySlug, isAr }: Props
       dir={isAr ? 'rtl' : 'ltr'}
       style={{ marginBottom: 12 }}
     >
-      <div style={{ fontSize: 9.5, fontWeight: 700, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 5 }}>
+      <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 5 }}>
         {label}
       </div>
       <div style={{
@@ -136,7 +136,7 @@ export default function ProcedureRelatedMinistries({ ministrySlug, isAr }: Props
         {/* Name + hours */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 11.5, fontWeight: 700, color: '#191713', lineHeight: 1.3 }}>{name}</div>
-          <div style={{ fontSize: 10, color: '#918B82', marginTop: 2 }}>
+          <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 2 }}>
             {isAr ? `ساعات العمل: ${entry.hours}` : `Hours: ${entry.hours}`}
           </div>
         </div>

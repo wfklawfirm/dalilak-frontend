@@ -317,7 +317,7 @@ export default function ExpatPropertyPackPage() {
             onTouchStart={e => (e.currentTarget.style.opacity = '0.5')}
             onTouchEnd={e => (e.currentTarget.style.opacity = '1')}
             style={{
-              background: 'none', border: 'none', color: '#918B82',
+              background: 'none', border: 'none', color: 'var(--text-3)',
               fontSize: 12, cursor: 'pointer', fontFamily: 'inherit',
               display: 'inline-flex', alignItems: 'center', gap: 5,
             }}

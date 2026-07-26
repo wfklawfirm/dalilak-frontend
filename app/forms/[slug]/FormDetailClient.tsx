@@ -114,7 +114,7 @@ export default function FormDetailClient({ form }: Props) {
             <div style={{ flex: 1 }}>
               <h2 style={{ margin: '0 0 4px', fontSize: 17, fontWeight: 700, color: '#191713' }}>{title}</h2>
               <p style={{ margin: '0 0 2px', fontSize: 13, color: '#69645C' }}>{authority}</p>
-              <p style={{ margin: 0, fontSize: 12, color: '#918B82' }}>{ministry}</p>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--text-3)' }}>{ministry}</p>
             </div>
           </div>
 
@@ -272,7 +272,7 @@ export default function FormDetailClient({ form }: Props) {
                         <span style={{ display: 'flex', flexShrink: 0 }}><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.6"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                         <div>
                           <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#191713' }}>{isAr ? p.title_ar : p.title_en}</p>
-                          <p style={{ margin: 0, fontSize: 12, color: '#918B82' }}>{isAr ? p.category_ar : p.category_en}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-3)' }}>{isAr ? p.category_ar : p.category_en}</p>
                         </div>
                       </button>
                     ))}

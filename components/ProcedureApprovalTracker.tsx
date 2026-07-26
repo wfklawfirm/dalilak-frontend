@@ -100,7 +100,7 @@ export default function ProcedureApprovalTracker({ code, isAr }: Props) {
           const isLast     = i === stages.length - 1
 
           const circleColor = isActive ? '#8F1D2C' : isPast ? '#10B981' : '#D1CBC4'
-          const textColor   = isActive ? '#8F1D2C' : isPast ? '#047857' : '#918B82'
+          const textColor   = isActive ? '#8F1D2C' : isPast ? '#047857' : 'var(--text-3)'
 
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flexShrink: 0 }}>

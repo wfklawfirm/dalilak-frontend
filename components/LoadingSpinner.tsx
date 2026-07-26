@@ -25,7 +25,7 @@ export default function LoadingSpinner({
   spinColor = '#8F1D2C',
   label,
   showLabel = true,
-  labelColor = '#918B82',
+  labelColor = 'var(--text-3)',
   labelSize = 13,
   fullPage = false,
   style,

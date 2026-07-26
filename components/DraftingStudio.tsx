@@ -217,7 +217,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             {isAr ? 'استوديو الصياغة' : 'Drafting Studio'}
           </h2>
-          <p style={{ fontSize: 11.5, color: '#918B82', margin: 0 }}>
+          <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0 }}>
             {isAr ? 'أنشئ مسودات قانونية أولية عبر دليلك' : 'Generate initial legal drafts with Dalilak'}
           </p>
         </div>
@@ -250,7 +250,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
                 fontSize: 11,
                 fontWeight: 700,
                 background: stage === s ? '#fff' : 'transparent',
-                color: stage === s ? '#8F1D2C' : stage > s ? '#78350F' : '#918B82',
+                color: stage === s ? '#8F1D2C' : stage > s ? '#78350F' : 'var(--text-3)',
                 boxShadow: stage === s ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
                 cursor: clickable ? 'pointer' : 'default',
                 transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
@@ -289,7 +289,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
               >
                 <div style={{ marginBottom: 10, width: 42, height: 42, borderRadius: 11, background: 'linear-gradient(135deg, #F8EDEF, #FDE4E4)', border: '1px solid rgba(143,29,44,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8F1D2C', flexShrink: 0 }}><TemplateIcon slug={tpl.slug} size={20} /></div>
                 <p style={{ fontSize: 12.5, fontWeight: 800, color: '#191713', margin: '0 0 3px' }}>{isAr ? tpl.titleAr : tpl.titleEn}</p>
-                <p style={{ fontSize: 10.5, color: '#918B82', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
+                <p style={{ fontSize: 10.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.4 }}>{tpl.descriptionAr}</p>
               </button>
             ))}
           </div>
@@ -305,7 +305,7 @@ export default function DraftingStudio({ isAr, initialTemplateSlug, prefillData,
             </div>
             <div>
               <p style={{ fontSize: 13.5, fontWeight: 800, color: '#8F1D2C', margin: '0 0 2px' }}>{isAr ? selectedTemplate.titleAr : selectedTemplate.titleEn}</p>
-              <p style={{ fontSize: 10.5, color: '#918B82', margin: 0 }}>{selectedTemplate.descriptionAr}</p>
+              <p style={{ fontSize: 10.5, color: 'var(--text-3)', margin: 0 }}>{selectedTemplate.descriptionAr}</p>
             </div>
           </div>
 

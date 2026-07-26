@@ -61,7 +61,7 @@ export default function ProcedureAIAssistButton({ title, title_en, code, isAr, o
           padding: 6, zIndex: 50, minWidth: 230,
           display: 'flex', flexDirection: 'column', gap: 3,
         }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '2px 6px 4px' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '2px 6px 4px' }}>
             {isAr ? 'اختر سؤالاً سريعاً' : 'Pick a quick question'}
           </div>
           {PRESETS.map((p, i) => (

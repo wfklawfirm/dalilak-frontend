@@ -43,7 +43,7 @@ export default function ProcedureSectionGroup({ icon, titleAr, titleEn, isAr, de
           {isAr ? titleAr : titleEn}
         </span>
         <span style={{
-          color: '#918B82', transform: open ? 'rotate(180deg)' : 'none',
+          color: 'var(--text-3)', transform: open ? 'rotate(180deg)' : 'none',
           transition: 'transform 0.2s', display: 'inline-flex', flexShrink: 0,
         }}>
           <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

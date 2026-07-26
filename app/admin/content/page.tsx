@@ -206,7 +206,7 @@ export default function ContentGovernancePage() {
           {/* List */}
           <div>
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '48px 0', color: '#918B82', fontSize: 13 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</div>
+              <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-3)', fontSize: 13 }}>{isAr ? 'جارٍ التحميل...' : 'Loading...'}</div>
             ) : loadError ? (
               <div style={{ background: '#F8EDEF', border: '1px solid rgba(143,29,44,0.2)', borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -218,7 +218,7 @@ export default function ContentGovernancePage() {
                 <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
                   <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </div>
-                <p style={{ color: '#918B82', fontSize: 13, margin: 0 }}>{isAr ? `لا يوجد محتوى ${filterStatus !== 'all' ? `في حالة "${STATUS_CONFIG[filterStatus]?.label}"` : 'بعد'}` : `No content ${filterStatus !== 'all' ? `in status "${STATUS_CONFIG[filterStatus]?.label}"` : 'yet'}`}</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>{isAr ? `لا يوجد محتوى ${filterStatus !== 'all' ? `في حالة "${STATUS_CONFIG[filterStatus]?.label}"` : 'بعد'}` : `No content ${filterStatus !== 'all' ? `in status "${STATUS_CONFIG[filterStatus]?.label}"` : 'yet'}`}</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -249,16 +249,16 @@ export default function ContentGovernancePage() {
                       <span style={{ fontSize: 11, padding: '2px 9px', borderRadius: 99, fontWeight: 700, ...STATUS_CONFIG[item.status]?.style }}>
                         {STATUS_CONFIG[item.status]?.label || item.status}
                       </span>
-                      <span style={{ fontSize: 11, color: '#918B82' }}>{new Date(item.updated_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US')}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{new Date(item.updated_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US')}</span>
                     </div>
                     <h3 style={{ fontSize: 13, fontWeight: 800, color: '#191713', margin: '0 0 4px', textAlign: 'right' }}>{item.title_ar}</h3>
                     <p style={{ fontSize: 12, color: '#69645C', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{item.body_ar}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#918B82' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--text-3)' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         {item.created_by}
                       </span>
-                      <svg aria-hidden="true" width="4" height="4" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="#918B82"/></svg>
+                      <svg aria-hidden="true" width="4" height="4" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" fill="var(--text-3)"/></svg>
                       <span>{item.content_type}</span>
                     </div>
                   </button>
@@ -280,7 +280,7 @@ export default function ContentGovernancePage() {
                 </div>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: '#191713', margin: '0 0 10px' }}>{selected.title_ar}</h2>
                 <p style={{ fontSize: 13, color: '#69645C', lineHeight: 1.7, margin: '0 0 10px' }}>{selected.body_ar}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: '#918B82' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, fontSize: 11, color: 'var(--text-3)' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                     <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     {isAr ? 'أُنشئ' : 'Created'}: {new Date(selected.created_at).toLocaleString(isAr ? 'ar-LB' : 'en-US')}
@@ -341,7 +341,7 @@ export default function ContentGovernancePage() {
                         fontSize: 10, padding: '2px 8px', borderRadius: 99, fontWeight: s === selected.status ? 800 : 500,
                         outline: s === selected.status ? '2px solid #8F1D2C' : 'none',
                         outlineOffset: 1,
-                        ...(s === selected.status ? STATUS_CONFIG[s].style : { background: '#E6E2DC', color: '#918B82' }),
+                        ...(s === selected.status ? STATUS_CONFIG[s].style : { background: '#E6E2DC', color: 'var(--text-3)' }),
                       }}>
                         {STATUS_CONFIG[s]?.label || s}
                       </span>
@@ -363,27 +363,27 @@ export default function ContentGovernancePage() {
           <div style={{ marginTop: 20, background: '#fff', borderRadius: 18, border: '1.5px solid #E6E2DC', overflow: 'hidden' }}>
             <div style={{ padding: '14px 20px', borderBottom: '1px solid #E6E2DC', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800, color: '#191713' }}>{isAr ? 'سجل التغييرات' : 'Change log'}</h3>
-              <button type="button" onClick={() => setShowAudit(false)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82' }}>
+              <button type="button" onClick={() => setShowAudit(false)} aria-label={isAr ? 'إغلاق' : 'Close'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)' }}>
                 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>
             <div style={{ maxHeight: 400, overflowY: 'auto' }}>
               {auditLog.length === 0 ? (
-                <p style={{ padding: '24px', textAlign: 'center', color: '#918B82', fontSize: 13 }}>{isAr ? 'لا توجد سجلات بعد' : 'No records yet'}</p>
+                <p style={{ padding: '24px', textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>{isAr ? 'لا توجد سجلات بعد' : 'No records yet'}</p>
               ) : (
                 <div style={{ padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {auditLog.map((entry, i) => (
                     <div key={i} style={{ fontSize: 12, padding: '10px 14px', borderRadius: 12, border: '1px solid #E6E2DC', background: '#FAFAF8', animation: 'cgAuditItem 0.18s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${Math.min(i, 20) * 0.03}s` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <span style={{ fontWeight: 700, color: '#741622' }}>{entry.action}</span>
-                        <span style={{ color: '#918B82', fontSize: 11 }}>{new Date(entry.ts).toLocaleString(isAr ? 'ar-LB' : 'en-US')}</span>
+                        <span style={{ color: 'var(--text-3)', fontSize: 11 }}>{new Date(entry.ts).toLocaleString(isAr ? 'ar-LB' : 'en-US')}</span>
                       </div>
                       <div style={{ color: '#69645C', fontSize: 11 }}>
                         {isAr ? 'بواسطة' : 'By'}: {entry.actor}
                         {entry.note && <span> · {entry.note}</span>}
                       </div>
                       {(entry.before || entry.after) && (
-                        <div style={{ marginTop: 4, color: '#918B82', fontSize: 11 }}>
+                        <div style={{ marginTop: 4, color: 'var(--text-3)', fontSize: 11 }}>
                           {entry.before && <span>{isAr ? 'من' : 'From'}: {entry.before} </span>}
                           {entry.after && <span>→ {entry.after}</span>}
                         </div>

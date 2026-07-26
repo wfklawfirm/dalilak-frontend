@@ -400,7 +400,7 @@ export function TrustBadge({
         <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B8860B" strokeWidth="2" style={{ flexShrink: 0 }}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <div style={{ flex: 1, fontSize: 10, color: '#918B82', lineHeight: 1.5 }}>
+        <div style={{ flex: 1, fontSize: 10, color: 'var(--text-3)', lineHeight: 1.5 }}>
           {!hasSources
             ? (isAr
                 ? 'لم يتم ربط هذه الإجابة بمصدر موثّق. تحقق قبل التصرف.'
@@ -415,7 +415,7 @@ export function TrustBadge({
           </span>
         )}
         {hasSources && (
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         )}
@@ -477,7 +477,7 @@ export function TrustBadge({
                     </a>
                   )}
                   {src.lastUpdated && (
-                    <span style={{ fontSize: 9, color: '#918B82', display: 'block' }}>
+                    <span style={{ fontSize: 9, color: 'var(--text-3)', display: 'block' }}>
                       {isAr ? `آخر تحديث: ${src.lastUpdated}` : `Last updated: ${src.lastUpdated}`}
                     </span>
                   )}
@@ -496,7 +496,7 @@ export function TrustBadge({
             )
           })}
           {lastReviewed && (
-            <p style={{ fontSize: 9, color: '#918B82', margin: '4px 0 0' }}>
+            <p style={{ fontSize: 9, color: 'var(--text-3)', margin: '4px 0 0' }}>
               {isAr ? `آخر مراجعة: ${lastReviewed}` : `Last reviewed: ${lastReviewed}`}
             </p>
           )}

@@ -126,14 +126,14 @@ export default function ProcedureHistoryLog({ code, isAr }: Props) {
           <div style={{ fontSize: 10.5, fontWeight: 700, color: '#191713' }}>
             {isAr ? 'سجل النشاط' : 'Activity log'}
           </div>
-          <div style={{ fontSize: 9, color: '#918B82' }}>
+          <div style={{ fontSize: 9, color: 'var(--text-3)' }}>
             {isAr ? 'آخر حدث:' : 'Last:'} {latestIcon} {latestLabel} — {formatTs(latest.ts, isAr)}
           </div>
         </div>
         <span style={{ fontSize: 9.5, background: '#E6E2DC', color: '#6B5A4A', borderRadius: 10, padding: '1px 6px', fontWeight: 700 }}>
           {log.length}
         </span>
-        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2.5" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
+        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.5" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0 }}>
           <polyline points="6 9 12 15 18 9"/>
         </svg>
       </button>

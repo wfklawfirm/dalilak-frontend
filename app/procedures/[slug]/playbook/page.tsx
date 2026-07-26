@@ -141,7 +141,7 @@ export default function PlaybookPage() {
                   <button
                     type="button"
                     onClick={progress.reset}
-                    style={{ background: 'none', border: 'none', color: '#918B82', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-3)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
                   >
                     {isAr ? 'إعادة ضبط التقدم' : 'Reset progress'}
                   </button>
@@ -302,7 +302,7 @@ export default function PlaybookPage() {
                 <p style={{ fontSize: 13.5, fontWeight: 700, color: '#191713', margin: 0 }}>
                   {isAr ? (proc?.authority || activeFlowchart.authorityAr || '') : (proc?.authority || activeFlowchart.authorityEn || activeFlowchart.authorityAr || '')}
                 </p>
-                <p style={{ fontSize: 11, color: '#918B82', margin: '2px 0 0' }}>
+                <p style={{ fontSize: 11, color: 'var(--text-3)', margin: '2px 0 0' }}>
                   {isAr ? 'الجهة المخوّلة بإتمام هذه المعاملة' : 'Authority responsible for this procedure'}
                 </p>
               </div>
@@ -357,7 +357,7 @@ export default function PlaybookPage() {
           <button
             type="button"
             onClick={() => router.push(`/procedures/${slug}`)}
-            style={{ background: 'none', border: 'none', color: '#918B82', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5 }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-3)', fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 5 }}
           >
             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}/>

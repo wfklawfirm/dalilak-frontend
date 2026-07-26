@@ -119,7 +119,7 @@ export default function ProcedureReminderBell({ code, titleAr, titleEn, isAr }: 
         }}
       >
         <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none"
-          stroke={isActive ? '#D97706' : '#918B82'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          stroke={isActive ? '#D97706' : 'var(--text-3)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
           style={{ animation: isActive ? 'bellRing 1.4s infinite' : 'none' }}
         >
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -164,7 +164,7 @@ export default function ProcedureReminderBell({ code, titleAr, titleEn, isAr }: 
                 }}
               >
                 {opt.label}
-                <span style={{ fontSize: 9.5, color: '#918B82' }}>{opt.date}</span>
+                <span style={{ fontSize: 9.5, color: 'var(--text-3)' }}>{opt.date}</span>
               </button>
             ))}
 

@@ -177,7 +177,7 @@ export default function SmartReminder() {
               {isAr ? 'التذكيرات' : 'Reminders'}
             </div>
             {upcoming.length > 0 && (
-              <div style={{ fontSize: 9.5, color: '#918B82' }}>
+              <div style={{ fontSize: 9.5, color: 'var(--text-3)' }}>
                 {isAr ? `${upcoming.length} تذكير قادم` : `${upcoming.length} upcoming`}
               </div>
             )}
@@ -185,7 +185,7 @@ export default function SmartReminder() {
           <button type="button" onClick={() => setShowAll(v => !v)}
             aria-expanded={showAll}
             aria-label={isAr ? (showAll ? 'إخفاء التذكيرات القادمة' : 'عرض التذكيرات القادمة') : (showAll ? 'Hide upcoming reminders' : 'Show upcoming reminders')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', fontSize: 13 }}>
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 13 }}>
             {showAll ? '▲' : `▼`}
           </button>
           <button type="button" onClick={() => setShowForm(v => !v)}
@@ -234,7 +234,7 @@ export default function SmartReminder() {
                   style={{
                     padding: '7px 14px', borderRadius: 8, border: 'none',
                     background: title.trim() && date ? '#8F1D2C' : '#E6E2DC',
-                    color: title.trim() && date ? '#fff' : '#918B82',
+                    color: title.trim() && date ? '#fff' : 'var(--text-3)',
                     fontSize: 11.5, fontWeight: 700, cursor: title.trim() && date ? 'pointer' : 'default',
                     fontFamily: 'inherit',
                   }}>
@@ -256,7 +256,7 @@ export default function SmartReminder() {
                 <span style={{ fontSize: 13 }}>📅</span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: '#191713' }}>{r.title}</div>
-                  <div style={{ fontSize: 9.5, color: '#918B82' }}>{formatDate(r.date)}</div>
+                  <div style={{ fontSize: 9.5, color: 'var(--text-3)' }}>{formatDate(r.date)}</div>
                 </div>
                 <button type="button" onClick={() => deleteReminder(r.id)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8C2BB', fontSize: 13 }}>✕</button>
@@ -265,7 +265,7 @@ export default function SmartReminder() {
           </div>
         )}
         {showAll && upcoming.length === 0 && due.length === 0 && (
-          <div style={{ borderTop: '1px solid #E6E2DC', padding: '10px 12px', fontSize: 11, color: '#918B82', textAlign: 'center' }}>
+          <div style={{ borderTop: '1px solid #E6E2DC', padding: '10px 12px', fontSize: 11, color: 'var(--text-3)', textAlign: 'center' }}>
             {isAr ? 'لا توجد تذكيرات' : 'No reminders yet'}
           </div>
         )}

@@ -76,12 +76,12 @@ export default function ChatSessionTimer({ messageCount, isAr }: Props) {
         padding: '3px 8px', borderRadius: 20,
         background: 'rgba(143,29,44,0.06)',
         border: '1px solid rgba(143,29,44,0.12)',
-        fontSize: 10, fontWeight: 700, color: '#918B82',
+        fontSize: 10, fontWeight: 700, color: 'var(--text-3)',
         fontVariantNumeric: 'tabular-nums',
         letterSpacing: '0.02em',
       }}
     >
-      <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2">
+      <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2">
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
       </svg>

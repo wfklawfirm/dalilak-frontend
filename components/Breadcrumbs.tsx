@@ -29,7 +29,7 @@ export default function Breadcrumbs({ items, style }: { items: BreadcrumbItem[];
         flexWrap: 'wrap',
         gap: 5,
         fontSize: 12,
-        color: 'var(--text-3, #918B82)',
+        color: 'var(--text-3)',
         marginBottom: 10,
         ...style,
       }}

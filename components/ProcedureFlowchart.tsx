@@ -66,8 +66,20 @@ const NODE_LABELS_EN: Record<NodeType, string> = {
   warning: 'Warning',
 }
 
+// STATUS_COLORS keeps raw hex values (including for not_started) because they
+// feed `${statusColor}15`-style alpha-blend background strings below — var()
+// can't be alpha-suffixed as a string. STATUS_TEXT_COLORS is the WCAG-AA text
+// color actually rendered on top of that faint tint.
 const STATUS_COLORS: Record<NonNullable<NodeStatus>, string> = {
   not_started: '#918B82',
+  current: '#B8860B',
+  completed: '#B45309',
+  blocked: '#8F1D2C',
+  needs_review: '#CA8A04',
+}
+
+const STATUS_TEXT_COLORS: Record<NonNullable<NodeStatus>, string> = {
+  not_started: 'var(--text-3)',
   current: '#B8860B',
   completed: '#B45309',
   blocked: '#8F1D2C',
@@ -160,8 +172,8 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
             <div style={{ height: '100%', width: `${progressPct}%`, background: progressPct >= 80 ? 'linear-gradient(90deg, #78350F, #B45309)' : progressPct >= 50 ? 'linear-gradient(90deg, #B8860B, #CA8A04)' : 'linear-gradient(90deg, #741622, #8F1D2C)', borderRadius: 4, transition: 'width 0.5s ease' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-            <span style={{ fontSize: 10, color: '#918B82' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>
-            <span style={{ fontSize: 10, color: '#918B82' }}>{isAr ? flowStepPhraseAr(nodes.length) : `${nodes.length} steps`}</span>
+            <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{isAr ? `${completedCount} مكتمل` : `${completedCount} complete`}</span>
+            <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{isAr ? flowStepPhraseAr(nodes.length) : `${nodes.length} steps`}</span>
           </div>
         </div>
       )}
@@ -196,6 +208,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
           const isCurrent = effectiveStatus === 'current'
           const nodeColor = nodeDone ? '#065F46' : (NODE_COLORS[node.type] || '#69645C')
           const statusColor = STATUS_COLORS[effectiveStatus]
+          const statusTextColor = STATUS_TEXT_COLORS[effectiveStatus]
           const outgoingEdges = edgesByFrom[node.id] || []
           const isLast = idx === nodes.length - 1
 
@@ -267,7 +280,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                     <span style={{ fontSize: 9.5, fontWeight: 700, color: nodeColor, background: `${nodeColor}18`, borderRadius: 6, padding: '1px 7px' }}>
                       {isAr ? NODE_LABELS_AR[node.type] : NODE_LABELS_EN[node.type]}
                     </span>
-                    <span style={{ fontSize: 9.5, fontWeight: 700, color: statusColor, background: `${statusColor}15`, borderRadius: 6, padding: '1px 7px' }}>
+                    <span style={{ fontSize: 9.5, fontWeight: 700, color: statusTextColor, background: `${statusColor}15`, borderRadius: 6, padding: '1px 7px' }}>
                       {isAr ? STATUS_LABELS_AR[effectiveStatus] : STATUS_LABELS_EN[effectiveStatus]}
                     </span>
                     {node.confidence && (
@@ -305,7 +318,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                   {/* Evidence — real sources resolved server-side for AI-generated maps */}
                   {!compact && node.sourceRefs && node.sourceRefs.length > 0 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 6, paddingTop: 6, borderTop: '1px dashed #E6E2DC' }}>
-                      <span style={{ fontSize: 9.5, fontWeight: 700, color: '#918B82' }}>{isAr ? 'المصادر:' : 'Sources:'}</span>
+                      <span style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--text-3)' }}>{isAr ? 'المصادر:' : 'Sources:'}</span>
                       {node.sourceRefs.map((s, si) => (
                         s.website ? (
                           <a key={si} href={s.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 10.5, color: '#8F1D2C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -326,7 +339,7 @@ export default function ProcedureFlowchartComponent({ flowchart, isAr, compact, 
                 <div style={{ display: 'flex', paddingRight: compact ? 18 : 22, margin: compact ? '3px 0' : '5px 0' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, paddingRight: compact ? 0 : 0 }}>
                     {outgoingEdges.length > 0 && (outgoingEdges[0].labelAr ?? outgoingEdges[0].labelEn) && (
-                      <span style={{ fontSize: 9.5, color: '#918B82', background: '#E6E2DC', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: 9.5, color: 'var(--text-3)', background: '#E6E2DC', padding: '1px 8px', borderRadius: 99, whiteSpace: 'nowrap' }}>
                         {outgoingEdges[0].labelAr ?? outgoingEdges[0].labelEn}
                       </span>
                     )}

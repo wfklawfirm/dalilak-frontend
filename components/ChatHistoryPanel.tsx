@@ -118,11 +118,14 @@ export default function ChatHistoryPanel({ onRestore }: Props) {
           <div style={{ fontSize: 12, fontWeight: 800, color: '#191713' }}>
             {isAr ? 'المحادثات السابقة' : 'Previous Chats'}
           </div>
-          <div style={{ fontSize: 10, color: '#918B82' }}>
+          <div style={{ fontSize: 10, color: 'var(--text-3)' }}>
             {isAr ? `${sessions.length} ${sessions.length === 1 ? 'محادثة' : 'محادثات'} محفوظة` : `${sessions.length} saved`}
           </div>
         </div>
-        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2.5"
+        {/* batch #519: was #918B82 (2.9:1, fails WCAG 1.4.3) — var(--text-3)
+            is the design system's pre-audited small-caption color (4.9:1+ on
+            this card's white background). See same fix at lines below. */}
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.5"
           style={{ flexShrink: 0, transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
           <polyline points="6 9 12 15 18 9"/>
         </svg>
@@ -140,7 +143,7 @@ export default function ChatHistoryPanel({ onRestore }: Props) {
                   <div style={{ fontSize: 10.5, fontWeight: 700, color: '#191713', lineHeight: 1.4 }}>
                     {s.preview.length > 70 ? s.preview.slice(0, 70) + '…' : s.preview || (isAr ? 'محادثة محفوظة' : 'Saved chat')}
                   </div>
-                  <div style={{ fontSize: 9.5, color: '#918B82', marginTop: 3, display: 'flex', gap: 8 }}>
+                  <div style={{ fontSize: 9.5, color: 'var(--text-3)', marginTop: 3, display: 'flex', gap: 8 }}>
                     <span>{formatDate(s.savedAt)}</span>
                     <span>·</span>
                     <span>{s.messageCount} {isAr ? 'رسالة' : 'msgs'}</span>
@@ -173,7 +176,7 @@ export default function ChatHistoryPanel({ onRestore }: Props) {
               try { localStorage.removeItem('dalilak_chat_sessions') } catch {}
               refresh()
             }}
-            style={{ fontSize: 10, color: '#918B82', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline', marginTop: 2 }}
+            style={{ fontSize: 10, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline', marginTop: 2 }}
           >
             {isAr ? 'حذف السجل' : 'Clear history'}
           </button>

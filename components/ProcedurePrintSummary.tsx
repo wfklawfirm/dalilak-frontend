@@ -68,10 +68,10 @@ export default function ProcedurePrintSummary({
   .header{border-bottom:3px solid #8F1D2C;padding-bottom:14px;margin-bottom:22px}
   .brand{font-size:11px;font-weight:800;color:#8F1D2C;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
   h1{font-size:22px;font-weight:900;color:#191713;line-height:1.2;margin-bottom:4px}
-  .ministry{font-size:13px;color:#918B82}
+  .ministry{font-size:13px;color:#76716A}
   .meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:22px}
   .meta-item{background:#F5F3F0;border-radius:8px;padding:8px 12px}
-  .meta-item .label{font-size:9px;font-weight:800;color:#918B82;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px}
+  .meta-item .label{font-size:9px;font-weight:800;color:#76716A;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px}
   .meta-item .value{font-size:12px;font-weight:700;color:#191713}
   section{margin-bottom:20px}
   h2{font-size:13px;font-weight:800;color:#8F1D2C;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;padding-bottom:4px;border-bottom:1px solid #F0EDE8}

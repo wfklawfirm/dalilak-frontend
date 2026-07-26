@@ -412,6 +412,24 @@ input:focus {
   .tap-hit-14::before { inset: -14px; }
 }
 
+/* WCAG 2.2 AA 2.5.8 (Target Size Minimum) hit-area expansion — unlike
+   .tap-hit-N above, this is NOT gated to @media (pointer: coarse): the
+   2.5.8 criterion requires a 24x24 CSS px minimum pointer target for ANY
+   pointer type (mouse included), not just touch. Found via an axe-core
+   audit of the live site: the homepage's desktop-only hero-card carousel
+   dots (app/page.tsx, .hp class) were 6x6px with effectively 0px of safe
+   clickable space between them. -8px inset needs an 8px real dot size and
+   a >=16px gap between dots to avoid two neighboring expanded hit-areas
+   overlapping (which would make clicks near the boundary ambiguous) — see
+   the dot-size/gap change made alongside this class. The element using
+   this class must have `position: relative` set inline so the ::before
+   anchors correctly — same requirement as .tap-hit-N. */
+.wcag-target-8::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
 @media (min-width: 640px) {
   .mode-mobile  { display: none; }
   .mode-desktop { display: flex; }

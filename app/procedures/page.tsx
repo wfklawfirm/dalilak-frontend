@@ -551,7 +551,7 @@ export default function ProceduresPage() {
 
         {/* Results */}
         {totalResults === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 20px', color: '#918B82' }}>
+          <div style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--text-3)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
               <svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.4"><circle cx="11" cy="11" r="8"/><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35"/></svg>
             </div>
@@ -630,7 +630,7 @@ export default function ProceduresPage() {
                           <div style={{ fontSize: 11, fontWeight: 800, color: '#191713', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
                             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
                             {isAr ? 'خطوات الإجراء' : 'Steps'}
-                            <span style={{ fontWeight: 600, color: '#918B82', fontSize: 10 }}>({proc.steps.length} {isAr ? 'خطوات' : 'steps'})</span>
+                            <span style={{ fontWeight: 600, color: 'var(--text-3)', fontSize: 10 }}>({proc.steps.length} {isAr ? 'خطوات' : 'steps'})</span>
                           </div>
                           {proc.steps.map((s, i) => {
                             const isLastStep = i === proc.steps.length - 1
@@ -678,7 +678,7 @@ export default function ProceduresPage() {
             {filteredGuided.length > 0 && filteredEnriched.length > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#918B82', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'إجراءات موثّقة' : 'Documented procedures'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
@@ -722,12 +722,26 @@ export default function ProceduresPage() {
                 ?.split(/\s*\|\s*/).filter(Boolean).join(isAr ? '، ' : ', ')
               return (
               <div key={proc.code} id={`proc-${proc.code}`} className="proc-card" style={{
+                position: 'relative',
                 background: 'var(--surface)', border: `1px solid ${expandedProc === proc.code ? 'var(--brand)' : 'var(--border)'}`,
                 borderRadius: 14, overflow: 'hidden',
                 transition: 'border-color 0.15s',
                 animation: 'procEnter 0.22s cubic-bezier(0.22,1,0.36,1) both',
                 animationDelay: `${Math.min(filteredGuided.length + idx, 16) * 0.04}s`,
               }}>
+                {/* batch #519 (axe-core nested-interactive audit, 71 real
+                    violations page-wide): this used to be a single <button>
+                    wrapping the whole header row AND two nested interactive
+                    widgets (ProcedurePriorityTag, ProcedureReminderBell) —
+                    invalid, a <button> can't contain other buttons per HTML/
+                    ARIA. Fixed with the standard "stretched target" pattern:
+                    this invisible button is the ONLY interactive element for
+                    expand/collapse, absolutely positioned to cover the whole
+                    header. The visible header content below is now a plain,
+                    pointer-events:none div (clicks pass through to this
+                    button) — except the 2 real widgets, which get their own
+                    pointer-events:auto wrapper below so they stay clickable
+                    above this one. No visual/layout change. */}
                 <button
                   type="button"
                   onClick={() => {
@@ -735,9 +749,14 @@ export default function ProceduresPage() {
                     setExpandedProc(next)
                   }}
                   aria-expanded={expandedProc === proc.code}
-                  style={{ width: '100%', padding: '13px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
-                  onTouchStart={e => { e.currentTarget.style.background = 'var(--bg)' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
+                  aria-label={isAr ? `${expandedProc === proc.code ? 'طي' : 'توسيع'} تفاصيل معاملة: ${displayTitle}` : `${expandedProc === proc.code ? 'Collapse' : 'Expand'} procedure details: ${displayTitle}`}
+                  style={{ position: 'absolute', inset: 0, zIndex: 1, width: '100%', height: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: 0, margin: 0 }}
+                  onTouchStart={e => { e.currentTarget.nextElementSibling && ((e.currentTarget.nextElementSibling as HTMLElement).style.background = 'var(--bg)') }}
+                  onTouchEnd={e => { e.currentTarget.nextElementSibling && ((e.currentTarget.nextElementSibling as HTMLElement).style.background = 'none') }}
+                />
+                <div
+                  aria-hidden="true"
+                  style={{ position: 'relative', pointerEvents: 'none', width: '100%', padding: '13px 14px', fontFamily: 'inherit', textAlign: 'right', display: 'flex', alignItems: 'center', gap: 10 }}
                 >
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', flexShrink: 0 }}>
                     <MinistryIcon slug={proc.ministrySlug} size={18} />
@@ -764,14 +783,21 @@ export default function ProceduresPage() {
                         </span>
                       )}
                       <ProcedureDifficultyBadge stepCount={proc.steps.length} docCount={proc.requiredDocuments.length} isAr={isAr} />
-                      <ProcedurePriorityTag code={proc.code} isAr={isAr} />
+                      {/* pointer-events:auto re-enables clicks on this real button
+                          (the wrapping row above has pointer-events:none so clicks
+                          fall through to the stretched toggle button behind it) */}
+                      <span style={{ position: 'relative', zIndex: 2, pointerEvents: 'auto' }}>
+                        <ProcedurePriorityTag code={proc.code} isAr={isAr} />
+                      </span>
                       <ProcedureViewCount code={proc.code} isAr={isAr} />
                       {proc.hasForm && <span style={{ fontSize: 9.5, background: '#FFFBEB', color: '#854D0E', borderRadius: 6, padding: '1px 7px', border: '1px solid #FDE68A' }}>{isAr ? 'نموذج' : 'Form'}</span>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', lineHeight: 1.4 }}>{displayTitle}</div>
                       <ProcedureVersionTag code={proc.code} isAr={isAr} compact />
-                      <ProcedureReminderBell code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
+                      <span style={{ position: 'relative', zIndex: 2, pointerEvents: 'auto' }}>
+                        <ProcedureReminderBell code={proc.code} titleAr={proc.title} titleEn={proc.title_en} isAr={isAr} />
+                      </span>
                       <ProcedureProgressBadge code={proc.code} total={proc.requiredDocuments.length} compact />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', marginTop: 3 }}>
@@ -786,7 +812,7 @@ export default function ProceduresPage() {
                   <span style={{ color: expandedProc === proc.code ? 'var(--brand)' : 'var(--text-3)', transform: expandedProc === proc.code ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', flexShrink: 0, display: 'inline-flex' }}>
                     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg>
                   </span>
-                </button>
+                </div>
 
                 {expandedProc === proc.code && (
                   <div style={{ padding: '0 14px 18px', borderTop: '1px solid #E6E2DC', animation: 'slideDown 0.2s cubic-bezier(0.22,1,0.36,1)' }}>
@@ -941,7 +967,7 @@ export default function ProceduresPage() {
                           />
                         </div>
                         <div>
-                          <div style={{ fontSize: 10, fontWeight: 800, color: '#918B82', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <div style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-3)', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
                             ⏱ {isAr ? 'مؤقّت الخطوات' : 'Step timers'}
                           </div>
                           <ProcedureStepTimer
@@ -1220,7 +1246,7 @@ export default function ProceduresPage() {
             {filteredServices.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#918B82', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'خدمات إضافية' : 'Additional services'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
@@ -1348,7 +1374,7 @@ export default function ProceduresPage() {
             {filteredArchiveTx.length > 0 && (filteredGuided.length > 0 || filteredEnriched.length > 0 || filteredServices.length > 0) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 2px' }}>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
-                <span style={{ fontSize: 10, fontWeight: 700, color: '#918B82', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-3)', whiteSpace: 'nowrap', padding: '3px 10px', background: '#F5F0EB', borderRadius: 20, border: '1px solid #E6E2DC' }}>
                   {isAr ? 'من أرشيف المعاملات الرسمي (غير مُصنَّفة بعد)' : 'From the official transactions archive (not yet curated)'}
                 </span>
                 <div style={{ flex: 1, height: 1, background: '#E6E2DC' }} />
@@ -1460,7 +1486,7 @@ export default function ProceduresPage() {
               <div style={{ fontSize: 13, fontWeight: 700, color: '#191713', marginBottom: 3 }}>
                 {isAr ? 'دليل الخدمات الحكومية' : 'Government Services Directory'}
               </div>
-              <div style={{ fontSize: 11, color: '#918B82' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-3)' }}>
                 {isAr ? `${ALL_SERVICES.length} خدمة · ${SERVICE_CATEGORIES.length} فئة` : `${ALL_SERVICES.length} services · ${SERVICE_CATEGORIES.length} categories`}
               </div>
             </div>

@@ -306,7 +306,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
               onTouchStart={e => { if (!isActive) e.currentTarget.style.background = '#F8EDEF' }}
               onTouchEnd={e => { if (!isActive) e.currentTarget.style.background = 'none' }}
             >
-              <span style={{ color: isActive ? '#8F1D2C' : '#918B82', flexShrink: 0 }}>{item.icon}</span>
+              <span style={{ color: isActive ? '#8F1D2C' : 'var(--text-3)', flexShrink: 0 }}>{item.icon}</span>
               <span>{isAr ? item.label_ar : item.label_en}</span>
               {isActive && (
                 <span style={{ marginRight: 'auto' }}>
@@ -443,7 +443,7 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
           >
             <span style={{ fontSize: 16, flexShrink: 0 }}>📞</span>
             <span style={{ flex: 1 }}>{isAr ? 'أرقام الوزارات والطوارئ' : 'Ministries & Emergency Numbers'}</span>
-            <span style={{ color: '#918B82' }} aria-hidden="true">
+            <span style={{ color: 'var(--text-3)' }} aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d={isAr ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}/>
               </svg>

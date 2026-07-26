@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
             <p style={{ fontSize: 13, color: '#69645C', lineHeight: 1.6, margin: '0 0 8px' }}>
               {resultMsg || (isAr ? 'إذا كان بريدك مسجّلاً، سيتواصل معك فريق الدعم خلال 24 ساعة برمز الاستعادة.' : 'If your email is registered, our support team will contact you within 24 hours with your recovery code.')}
             </p>
-            <p style={{ fontSize: 11.5, color: '#918B82', margin: '0 0 20px' }}>
+            <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: '0 0 20px' }}>
               {resultInfo || (isAr ? 'يمكنك أيضاً التواصل معنا مباشرةً عبر WhatsApp أو البريد الإلكتروني.' : 'You can also contact us directly via WhatsApp or email.')}
             </p>
             <Link
@@ -115,7 +115,7 @@ export default function ForgotPasswordPage() {
             <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 6px', textAlign: 'center' }}>
               {isAr ? 'استعادة كلمة المرور' : 'Recover password'}
             </h2>
-            <p style={{ fontSize: 12.5, color: '#918B82', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: 12.5, color: 'var(--text-3)', textAlign: 'center', margin: '0 0 20px', lineHeight: 1.5 }}>
               {isAr ? 'أدخل بريدك الإلكتروني وسنرسل لك رمز الاستعادة' : 'Enter your email and we will send you a recovery code'}
             </p>
 
@@ -153,7 +153,7 @@ export default function ForgotPasswordPage() {
               </button>
             </form>
 
-            <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
+            <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: 'var(--text-3)' }}>
               <Link href="/login" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
                 {isAr ? 'العودة لتسجيل الدخول' : 'Back to login'}
               </Link>
@@ -161,7 +161,7 @@ export default function ForgotPasswordPage() {
           </>
         )}
 
-        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: '#918B82' }}>
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 12.5, color: 'var(--text-3)' }}>
           {isAr ? 'لديك رمز الاستعادة بالفعل؟' : 'Already have a recovery code?'}{' '}
           <Link href="/reset-password" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'أدخله هنا' : 'Enter it here'}

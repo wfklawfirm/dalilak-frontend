@@ -348,7 +348,7 @@ export default function MyFilesPage() {
                     style={{
                       flexShrink: 0, width: 26, height: 26, borderRadius: 7,
                       border: '1px solid #E6E2DC', background: 'transparent',
-                      color: '#918B82', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                      color: 'var(--text-3)', fontSize: 13, fontWeight: 700, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                   >
@@ -379,7 +379,7 @@ export default function MyFilesPage() {
                 onClick={clearNotepad}
                 style={{
                   background: 'none', border: '1px solid #E6E2DC', borderRadius: 7,
-                  color: '#918B82', fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                  color: 'var(--text-3)', fontSize: 11, fontWeight: 700, cursor: 'pointer',
                   padding: '3px 8px', fontFamily: 'inherit',
                 }}
               >
@@ -406,7 +406,7 @@ export default function MyFilesPage() {
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
             <h2 style={{ fontSize: 17, fontWeight: 800, color: '#191713', margin: '0 0 8px' }}>{isAr ? 'تعذّر تحميل ملفاتك' : 'Could not load your files'}</h2>
-            <p style={{ color: '#918B82', fontSize: 13, margin: '0 0 20px' }}>{isAr ? 'تحقق من اتصالك بالإنترنت وحاول مجدداً' : 'Check your connection and try again'}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 20px' }}>{isAr ? 'تحقق من اتصالك بالإنترنت وحاول مجدداً' : 'Check your connection and try again'}</p>
             <button
               type="button"
               onClick={loadProcs}
@@ -424,7 +424,7 @@ export default function MyFilesPage() {
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4C5B0" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: '#191713', margin: '0 0 8px' }}>{isAr ? 'لا توجد معاملات بعد' : 'No procedures yet'}</h2>
-            <p style={{ color: '#918B82', fontSize: 13, margin: '0 0 24px' }}>{isAr ? 'ابحث عن معاملتك وابدأ متابعتها' : 'Find your procedure and start tracking it'}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 24px' }}>{isAr ? 'ابحث عن معاملتك وابدأ متابعتها' : 'Find your procedure and start tracking it'}</p>
             <Link
               href="/services"
               style={{
@@ -476,7 +476,7 @@ export default function MyFilesPage() {
                       <span style={{ fontSize: 10.5, padding: '2px 9px', borderRadius: 20, fontWeight: 700, ...statusStyle(proc.status) }}>
                         {statusLabel(proc.status)}
                       </span>
-                      <span style={{ fontSize: 10, color: '#918B82' }}>
+                      <span style={{ fontSize: 10, color: 'var(--text-3)' }}>
                         {new Date(proc.updated_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                       </span>
                     </div>
@@ -488,7 +488,7 @@ export default function MyFilesPage() {
                       <div style={{ width: `${proc.completion_pct}%`, background: barColor(proc.completion_pct), height: 5, borderRadius: 99, transition: 'width 0.4s ease' }} />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 10.5, color: '#918B82' }}>{proc.completion_pct}% {isAr ? 'مكتمل' : 'complete'}</span>
+                      <span style={{ fontSize: 10.5, color: 'var(--text-3)' }}>{proc.completion_pct}% {isAr ? 'مكتمل' : 'complete'}</span>
                       {proc.next_step && proc.completion_pct < 100 && (
                         <span style={{ fontSize: 10, color: '#8F1D2C', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '55%' }}>
                           <svg aria-hidden="true" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{display:'inline',verticalAlign:'middle',marginLeft:2}}><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg> {proc.next_step}
@@ -517,10 +517,10 @@ export default function MyFilesPage() {
               {!selected ? (
                 <div style={{
                   background: '#fff', borderRadius: 20, border: '1.5px solid #E6E2DC',
-                  padding: '60px 20px', textAlign: 'center', color: '#918B82',
+                  padding: '60px 20px', textAlign: 'center', color: 'var(--text-3)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320,
                 }}>
-                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></div>
                   <p style={{ fontSize: 13, margin: 0 }}>{isAr ? 'اختر معاملة من القائمة لعرض تفاصيلها' : 'Select a procedure from the list to view its details'}</p>
                 </div>
               ) : (
@@ -537,14 +537,14 @@ export default function MyFilesPage() {
                           <span style={{ fontSize: 11, padding: '3px 9px', borderRadius: 20, fontWeight: 700, ...statusStyle(selected.status) }}>
                             {statusLabel(selected.status)}
                           </span>
-                          <span style={{ fontSize: 11, color: '#918B82' }}>
+                          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
                             {isAr ? 'بدأت:' : 'Started:'} {new Date(selected.created_at).toLocaleDateString(isAr ? 'ar-LB' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </span>
                         </div>
                       </div>
                       {confirmDelete === selected.id ? (
                         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#918B82' }}>{isAr ? 'تأكيد الحذف؟' : 'Confirm delete?'}</span>
+                          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{isAr ? 'تأكيد الحذف؟' : 'Confirm delete?'}</span>
                           <button
                             type="button"
                             disabled={saving}
@@ -578,7 +578,7 @@ export default function MyFilesPage() {
                               type="button"
                               disabled={saving}
                               onClick={() => updateStatus(selected, 'cancelled')}
-                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: saving ? 'default' : 'pointer', color: '#918B82', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}
+                              style={{ background: 'none', border: '1px solid #E6E2DC', cursor: saving ? 'default' : 'pointer', color: 'var(--text-3)', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4, opacity: saving ? 0.6 : 1 }}
                             >
                               <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 9l-6 6"/></svg>
                               {isAr ? 'إلغاء' : 'Cancel'}
@@ -587,7 +587,7 @@ export default function MyFilesPage() {
                           <button
                             type="button"
                             onClick={() => setConfirmDelete(selected.id)}
-                            style={{ background: 'none', border: '1px solid #E6E2DC', cursor: 'pointer', color: '#918B82', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
+                            style={{ background: 'none', border: '1px solid #E6E2DC', cursor: 'pointer', color: 'var(--text-3)', fontSize: 12, padding: '5px 10px', borderRadius: 9, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}
                           >
                             <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                             {isAr ? 'حذف' : 'Delete'}
@@ -625,7 +625,7 @@ export default function MyFilesPage() {
                   <div style={{ padding: '18px 22px' }}>
                     <h3 style={{ fontSize: 13.5, fontWeight: 800, color: '#191713', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
                       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg> {isAr ? 'قائمة الخطوات' : 'Steps Checklist'}
-                      {saving && <span style={{ fontSize: 11, color: '#918B82', fontWeight: 400 }}>{isAr ? 'جارٍ الحفظ...' : 'Saving...'}</span>}
+                      {saving && <span style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 400 }}>{isAr ? 'جارٍ الحفظ...' : 'Saving...'}</span>}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {selected.checklist.map((step, si) => (
@@ -653,7 +653,7 @@ export default function MyFilesPage() {
                             flexShrink: 0, width: 24, height: 24, borderRadius: '50%',
                             border: step.done ? '2px solid #B45309' : '2px solid #D4C5B0',
                             background: step.done ? '#B45309' : 'transparent',
-                            color: step.done ? '#fff' : '#918B82',
+                            color: step.done ? '#fff' : 'var(--text-3)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 10, fontWeight: 800, marginTop: 2,
                           }}>
@@ -705,7 +705,7 @@ export default function MyFilesPage() {
                                 width: 28, height: 28, borderRadius: 8, flexShrink: 0,
                                 background: doc.uploaded ? '#B45309' : doc.required ? '#F8EDEF' : '#E6E2DC',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                color: doc.uploaded ? '#fff' : doc.required ? '#8F1D2C' : '#918B82',
+                                color: doc.uploaded ? '#fff' : doc.required ? '#8F1D2C' : 'var(--text-3)',
                               }}>
                                 {doc.uploaded
                                   ? <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>

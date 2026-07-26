@@ -45,7 +45,7 @@ export default function GlobalError({
           <h1 style={{ fontSize: 20, fontWeight: 800, color: '#191713', margin: '0 0 8px' }}>
             {isAr ? 'حدث خطأ غير متوقع' : 'An Unexpected Error Occurred'}
           </h1>
-          <p style={{ fontSize: 13, color: '#918B82', margin: '0 0 24px', lineHeight: 1.6, maxWidth: 320 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-3)', margin: '0 0 24px', lineHeight: 1.6, maxWidth: 320 }}>
             {isAr
               ? 'نعتذر، واجه التطبيق مشكلة. يمكنك المحاولة مجدداً أو العودة للصفحة الرئيسية.'
               : 'We apologize, the application encountered an error. You can try again or return to the home page.'}

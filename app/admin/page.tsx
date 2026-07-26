@@ -355,7 +355,7 @@ export default function AdminPage() {
                 <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: '16px 18px', border: '1.5px solid #E6E2DC', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', animation: 'admItem 0.22s cubic-bezier(0.22,1,0.36,1) both', animationDelay: `${i * 0.06}s` }}>
                   <div style={{ marginBottom: 8, display: 'flex' }}>{s.ic}</div>
                   <div style={{ fontSize: 28, fontWeight: 900, color: '#191713' }}>{s.value}</div>
-                  <div style={{ fontSize: 12, color: '#918B82', marginTop: 3 }}>{s.label}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -384,7 +384,7 @@ export default function AdminPage() {
                   <thead>
                     <tr style={{ background: '#FAFAF8', borderBottom: '1px solid #E6E2DC' }}>
                       {(isAr ? ['المستخدم', 'البريد', 'الخطة', 'الأيام', 'آخر دخول', 'إجراءات'] : ['User', 'Email', 'Plan', 'Days', 'Last login', 'Actions']).map(h => (
-                        <th key={h} style={{ padding: '10px 14px', textAlign: 'right', color: '#918B82', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>{h}</th>
+                        <th key={h} style={{ padding: '10px 14px', textAlign: 'right', color: 'var(--text-3)', fontWeight: 700, fontSize: 11, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -393,7 +393,7 @@ export default function AdminPage() {
                       <tr key={u.username} className="adm-tr" style={{ borderBottom: i < filtered.length - 1 ? '1px solid #E6E2DC' : 'none', opacity: u.active ? 1 : 0.5, background: '#fff' }}>
                         <td style={{ padding: '10px 14px' }}>
                           <div style={{ fontWeight: 700, color: '#191713', fontSize: 13 }}>{u.username}</div>
-                          <div style={{ fontSize: 11, color: '#918B82' }}>{u.full_name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{u.full_name}</div>
                         </td>
                         <td style={{ padding: '10px 14px', color: '#69645C', fontSize: 11 }}>{u.email}</td>
                         <td style={{ padding: '10px 14px' }}>
@@ -404,7 +404,7 @@ export default function AdminPage() {
                         <td style={{ padding: '10px 14px', color: '#69645C', fontSize: 13 }}>
                           {u.plan === 'paid' ? '∞' : u.days_left !== undefined ? (isAr ? arDaysLeftAdmin(u.days_left) : `${u.days_left} days`) : '—'}
                         </td>
-                        <td style={{ padding: '10px 14px', color: '#918B82', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
+                        <td style={{ padding: '10px 14px', color: 'var(--text-3)', fontSize: 11 }}>{fmtDate(u.last_login)}</td>
                         <td style={{ padding: '10px 14px' }}>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button
@@ -428,7 +428,7 @@ export default function AdminPage() {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '36px 0', color: '#918B82', fontSize: 13 }}>{isAr ? 'لا يوجد مستخدمون' : 'No users found'}</div>
+                  <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-3)', fontSize: 13 }}>{isAr ? 'لا يوجد مستخدمون' : 'No users found'}</div>
                 )}
               </div>
             </div>
@@ -503,20 +503,20 @@ export default function AdminPage() {
                   including the toLocaleTimeString call flagged in batch
                   #416. Translated the whole block for consistency rather
                   than fixing only the date locale in isolation. */}
-              <p style={{ fontSize: 12, color: '#918B82', marginBottom: 14 }}>{isAr ? 'عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.' : 'When a user requests a password reset, the code appears here. Send it to them manually.'}</p>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 14 }}>{isAr ? 'عندما يطلب مستخدم استعادة كلمته، يظهر الرمز هنا. أرسله له يدوياً.' : 'When a user requests a password reset, the code appears here. Send it to them manually.'}</p>
               {resets.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '28px 0', color: '#918B82', fontSize: 13 }}>{isAr ? 'لا توجد طلبات نشطة' : 'No active requests'}</div>
+                <div style={{ textAlign: 'center', padding: '28px 0', color: 'var(--text-3)', fontSize: 13 }}>{isAr ? 'لا توجد طلبات نشطة' : 'No active requests'}</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {resets.map((r, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 14 }}>
                       <div>
                         <div style={{ fontWeight: 700, color: '#191713', fontSize: 14 }}>{r.username}</div>
-                        <div style={{ fontSize: 11, color: '#918B82' }}>{isAr ? 'ينتهي' : 'Expires'}: {new Date(r.expires_at).toLocaleTimeString(isAr ? 'ar-LB' : 'en-US')}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-3)' }}>{isAr ? 'ينتهي' : 'Expires'}: {new Date(r.expires_at).toLocaleTimeString(isAr ? 'ar-LB' : 'en-US')}</div>
                       </div>
                       <div style={{ textAlign: 'center' }}>
                         <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: 4, color: '#741622' }}>{r.token}</div>
-                        <button type="button" onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: '#918B82', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>{isAr ? 'نسخ' : 'Copy'}</button>
+                        <button type="button" onClick={() => navigator.clipboard.writeText(r.token)} style={{ fontSize: 11, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>{isAr ? 'نسخ' : 'Copy'}</button>
                       </div>
                     </div>
                   ))}
@@ -544,7 +544,7 @@ export default function AdminPage() {
               trailingSize={11}
             />
             {feedback.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#918B82', textAlign: 'center', padding: '28px 0' }}>لا توجد تقييمات بعد</p>
+              <p style={{ fontSize: 13, color: 'var(--text-3)', textAlign: 'center', padding: '28px 0' }}>لا توجد تقييمات بعد</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 520, overflowY: 'auto' }}>
                 {feedback.map((f, i) => (
@@ -556,7 +556,7 @@ export default function AdminPage() {
                           : <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F1D2C" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path strokeLinecap="round" strokeLinejoin="round" d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
                         }
                       </span>
-                      <span style={{ fontSize: 11, color: '#918B82' }}>{f.username} · {fmtTs(f.timestamp)}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{f.username} · {fmtTs(f.timestamp)}</span>
                       {f.confidence && <span style={{ fontSize: 11, background: '#E6E2DC', color: '#69645C', padding: '1px 8px', borderRadius: 99 }}>{f.confidence}</span>}
                     </div>
                     <p style={{ fontSize: 13, fontWeight: 600, color: '#191713', margin: '0 0 4px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{f.question}</p>
@@ -586,20 +586,20 @@ export default function AdminPage() {
               trailingSize={11}
             />
             {escalations.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#918B82', textAlign: 'center', padding: '28px 0' }}>لا توجد طلبات بعد</p>
+              <p style={{ fontSize: 13, color: 'var(--text-3)', textAlign: 'center', padding: '28px 0' }}>لا توجد طلبات بعد</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 520, overflowY: 'auto' }}>
                 {escalations.map((e, i) => (
                   <div key={i} style={{ border: '1px solid #E6E2DC', borderRadius: 14, padding: 14 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                       <span style={{ fontSize: 13, fontWeight: 700, color: '#741622' }}>{e.request_type?.replace('_', ' ')}</span>
-                      <span style={{ fontSize: 11, color: '#918B82' }}>{fmtTs(e.timestamp)}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{fmtTs(e.timestamp)}</span>
                     </div>
                     <p style={{ fontSize: 13, color: '#2D1B0E', margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{e.question}</p>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                       {e.user_email && <span style={{ fontSize: 11, color: '#8F1D2C', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>{e.user_email}</span>}
                       {e.user_phone && <span style={{ fontSize: 11, color: '#78350F', display: 'inline-flex', alignItems: 'center', gap: 3 }}><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>{e.user_phone}</span>}
-                      <span style={{ fontSize: 11, color: '#918B82' }}>@{e.username}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-3)' }}>@{e.username}</span>
                     </div>
                   </div>
                 ))}
@@ -622,7 +622,7 @@ export default function AdminPage() {
                 ].map(s => (
                   <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: '14px 16px', border: '1.5px solid #E6E2DC', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                     <div style={{ fontSize: 26, fontWeight: 900, color: '#191713' }}>{s.val}</div>
-                    <div style={{ fontSize: 11, color: '#918B82', marginTop: 3 }}>{s.label}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3 }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -634,7 +634,7 @@ export default function AdminPage() {
                 { k: 'open',      dot: '#8F1D2C', label: 'مفتوح' },
                 { k: 'in_review', dot: '#CA8A04', label: 'قيد المراجعة' },
                 { k: 'resolved',  dot: '#B45309', label: 'محلول' },
-                { k: 'ignored',   dot: '#918B82', label: 'متجاهَل' },
+                { k: 'ignored',   dot: 'var(--text-3)', label: 'متجاهَل' },
               ].map(f => (
                 <button type="button" key={f.k}
                   aria-pressed={gapFilter === f.k}
@@ -656,9 +656,9 @@ export default function AdminPage() {
 
             {/* Gap list */}
             {loading ? (
-              <p style={{ textAlign: 'center', color: '#918B82', padding: '24px 0', fontSize: 13 }}>جارٍ التحميل...</p>
+              <p style={{ textAlign: 'center', color: 'var(--text-3)', padding: '24px 0', fontSize: 13 }}>جارٍ التحميل...</p>
             ) : contentGaps.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', background: '#fff', borderRadius: 16, border: '1.5px solid #E6E2DC', color: '#918B82', fontSize: 13 }}>
+              <div style={{ textAlign: 'center', padding: '40px 20px', background: '#fff', borderRadius: 16, border: '1.5px solid #E6E2DC', color: 'var(--text-3)', fontSize: 13 }}>
                 لا توجد ثغرات في هذه الحالة
               </div>
             ) : (
@@ -699,10 +699,10 @@ export default function AdminPage() {
                       </div>
                     </div>
                     {gap.admin_notes && (
-                      <p style={{ fontSize: 11, color: '#918B82', margin: 0, fontStyle: 'italic' }}>{gap.admin_notes}</p>
+                      <p style={{ fontSize: 11, color: 'var(--text-3)', margin: 0, fontStyle: 'italic' }}>{gap.admin_notes}</p>
                     )}
                     {gap.username && (
-                      <p style={{ fontSize: 10.5, color: '#918B82', margin: '4px 0 0' }}>@{gap.username}</p>
+                      <p style={{ fontSize: 10.5, color: 'var(--text-3)', margin: '4px 0 0' }}>@{gap.username}</p>
                     )}
                   </div>
                 ))}
@@ -725,7 +725,7 @@ export default function AdminPage() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ padding: '10px 14px', background: '#FAFAF8', borderRadius: 10, border: '1px solid #E6E2DC', fontSize: 12, color: '#69645C' }}>
-                <span style={{ color: '#918B82' }}>البريد: </span>{editUser.email}
+                <span style={{ color: 'var(--text-3)' }}>البريد: </span>{editUser.email}
               </div>
               <div>
                 <label htmlFor="edit-user-plan" style={LBL}>الخطة</label>

@@ -71,7 +71,10 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
   isAr: boolean
 }) {
   const meta = getDocCategoryMeta(category)
-  const confColor = confidence === 'high' ? '#78350F' : confidence === 'medium' ? '#B45309' : '#918B82'
+  // confBg keeps the raw hex for the `${}14` alpha-blend background below (var()
+  // can't be alpha-suffixed as a string); confColor is the WCAG-AA text color.
+  const confBg = confidence === 'high' ? '#78350F' : confidence === 'medium' ? '#B45309' : '#918B82'
+  const confColor = confidence === 'high' ? '#78350F' : confidence === 'medium' ? '#B45309' : 'var(--text-3)'
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
       <div style={{
@@ -89,7 +92,7 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
           {subtype}
         </span>
       )}
-      <span style={{ fontSize: 10, color: confColor, background: `${confColor}14`, borderRadius: 12, padding: '3px 9px', fontWeight: 600 }}>
+      <span style={{ fontSize: 10, color: confColor, background: `${confBg}14`, borderRadius: 12, padding: '3px 9px', fontWeight: 600 }}>
         {isAr ? 'الثقة: ' : 'Confidence: '}{confidenceLabel(confidence, isAr)}
       </span>
     </div>
@@ -100,14 +103,17 @@ export function DocumentTypeBadge({ category, subtype, confidence, isAr }: {
 
 export function ExtractedFactsTable({ facts, isAr }: { facts: ExtractedFact[]; isAr: boolean }) {
   if (!facts.length) return (
-    <p style={{ fontSize: 11.5, color: '#918B82', margin: 0 }}>
+    <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0 }}>
       {isAr ? 'لم يتم استخراج بيانات محددة.' : 'No specific facts extracted.'}
     </p>
   )
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       {facts.map((f, i) => {
-        const confColor = f.confidence === 'high' ? '#78350F' : f.confidence === 'medium' ? '#B45309' : '#918B82'
+        // confBg keeps the raw hex for the `${}14` alpha-blend background below
+        // (var() can't be alpha-suffixed as a string); confColor is the text color.
+        const confBg = f.confidence === 'high' ? '#78350F' : f.confidence === 'medium' ? '#B45309' : '#918B82'
+        const confColor = f.confidence === 'high' ? '#78350F' : f.confidence === 'medium' ? '#B45309' : 'var(--text-3)'
         return (
           <div key={i} style={{
             display: 'flex', gap: 10, padding: '9px 12px',
@@ -117,7 +123,7 @@ export function ExtractedFactsTable({ facts, isAr }: { facts: ExtractedFact[]; i
             <div style={{ flex: '0 0 120px', fontSize: 11.5, color: '#69645C', fontWeight: 600 }}>{f.label}</div>
             <div style={{ flex: 1, fontSize: 12, color: '#191713', fontWeight: 600 }}>{f.value}</div>
             <div style={{ flexShrink: 0 }}>
-              <span style={{ fontSize: 9, color: confColor, background: `${confColor}14`, borderRadius: 10, padding: '2px 7px', fontWeight: 700 }}>
+              <span style={{ fontSize: 9, color: confColor, background: `${confBg}14`, borderRadius: 10, padding: '2px 7px', fontWeight: 700 }}>
                 {confidenceLabel(f.confidence, isAr)}
               </span>
             </div>
@@ -136,11 +142,14 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
   onStartFlow?: (slug: string) => void
 }) {
   if (!procedures.length) return (
-    <p style={{ fontSize: 11.5, color: '#918B82', margin: 0 }}>
+    <p style={{ fontSize: 11.5, color: 'var(--text-3)', margin: 0 }}>
       {isAr ? 'لا توجد معاملات مرتبطة محددة.' : 'No related procedures identified.'}
     </p>
   )
-  const relevColor = (r: string) => r === 'high' ? '#78350F' : r === 'medium' ? '#B45309' : '#918B82'
+  // relevBg keeps the raw hex for the `${}14` alpha-blend background below
+  // (var() can't be alpha-suffixed as a string); relevColor is the text color.
+  const relevBg = (r: string) => r === 'high' ? '#78350F' : r === 'medium' ? '#B45309' : '#918B82'
+  const relevColor = (r: string) => r === 'high' ? '#78350F' : r === 'medium' ? '#B45309' : 'var(--text-3)'
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       {procedures.map((p, i) => (
@@ -150,7 +159,7 @@ export function RelatedProceduresPanel({ procedures, isAr, onStartFlow }: {
         }}>
           <span style={{
             fontSize: 9, fontWeight: 700, color: relevColor(p.relevance),
-            background: `${relevColor(p.relevance)}14`, borderRadius: 10,
+            background: `${relevBg(p.relevance)}14`, borderRadius: 10,
             padding: '3px 8px', flexShrink: 0, marginTop: 2,
           }}>
             {isAr
@@ -315,7 +324,7 @@ export function EvidencePanel({ evidence, confidence, isAr }: {
   confidence: UniversalDocumentAnalysis['confidence']
   isAr: boolean
 }) {
-  const confColor = (c: string) => c === 'high' ? '#78350F' : c === 'medium' ? '#B45309' : '#918B82'
+  const confColor = (c: string) => c === 'high' ? '#78350F' : c === 'medium' ? '#B45309' : 'var(--text-3)'
   return (
     <div>
       {/* Confidence summary */}
@@ -774,7 +783,7 @@ function CollapsibleSection({
       >
         <span style={{ display: 'flex', alignItems: 'center', color: '#8F1D2C' }}>{icon}</span>
         <span style={{ fontSize: 13, fontWeight: 700, color: '#191713', flex: 1 }}>{title}</span>
-        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2"
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2"
           style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
         </svg>
@@ -826,7 +835,7 @@ export default function DocumentIntelligenceView({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {analysis.extractedFacts.map((f, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '6px 0', borderBottom: i < analysis.extractedFacts.length - 1 ? '1px solid #E6E2DC' : 'none' }}>
-                <span style={{ fontSize: 11, color: '#918B82', flex: '0 0 120px', paddingTop: 1 }}>{f.label}</span>
+                <span style={{ fontSize: 11, color: 'var(--text-3)', flex: '0 0 120px', paddingTop: 1 }}>{f.label}</span>
                 <span style={{ fontSize: 12, fontWeight: 600, color: '#191713', flex: 1 }}>{f.value}</span>
               </div>
             ))}
@@ -846,7 +855,7 @@ export default function DocumentIntelligenceView({
               <div key={i} style={{ padding: '8px 10px', borderRadius: 10, background: '#FAFAF8', border: '1px solid #E6E2DC', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12.5, fontWeight: 700, color: '#191713' }}>{isAr ? p.titleAr : p.titleEn}</div>
-                  <div style={{ fontSize: 10.5, color: '#918B82', marginTop: 2 }}>{p.reason}</div>
+                  <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>{p.reason}</div>
                 </div>
                 <span style={{ fontSize: 9, fontWeight: 700, color: '#8F1D2C', background: '#F8EDEF', borderRadius: 20, padding: '2px 8px' }}>
                   {p.relevance === 'high' ? '↑ عالٍ' : p.relevance === 'medium' ? '→ متوسط' : '↓ منخفض'}

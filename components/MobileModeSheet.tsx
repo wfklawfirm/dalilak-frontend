@@ -150,7 +150,7 @@ export function MobileModeSheet({ isOpen, onClose, mode, onSelect, isAr }: Mobil
                   <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#8F1D2C' : '#191713' }}>
                     {isAr ? m.label_ar : m.label_en}
                   </div>
-                  <div style={{ fontSize: 11, color: '#918B82', marginTop: 2, lineHeight: 1.45 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2, lineHeight: 1.45 }}>
                     {isAr ? m.hint_ar : m.hint_en}
                   </div>
                 </div>
@@ -192,13 +192,13 @@ export function DesktopModeSelector({
               padding: '6px 14px', borderRadius: 999, fontSize: 12,
               fontWeight: 600, cursor: 'pointer', border: 'none',
               background: active ? '#fff' : 'transparent',
-              color: active ? '#8F1D2C' : '#918B82',
+              color: active ? '#8F1D2C' : 'var(--text-3)',
               boxShadow: active ? '0 1px 6px rgba(143,29,44,0.18)' : 'none',
               fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s, box-shadow 0.18s cubic-bezier(0.22,1,0.36,1)',
               whiteSpace: 'nowrap',
             }}
           >
-            <span style={{ display: 'flex', color: active ? '#8F1D2C' : '#918B82' }}>
+            <span style={{ display: 'flex', color: active ? '#8F1D2C' : 'var(--text-3)' }}>
               <ModeIcon id={m.id} size={13} />
             </span>
             <span>{isAr ? m.label_ar : m.label_en}</span>
@@ -247,7 +247,7 @@ export default function ModeSelector({
           <span style={{ fontSize: 12.5, fontWeight: 700, color: '#191713' }}>
             {isAr ? current.label_ar : current.label_en}
           </span>
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#918B82" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2.5" style={{ marginRight: 'auto' }}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>

@@ -115,7 +115,7 @@ export default function ProcedureDocReadinessBar({ code, docs, isAr }: Props) {
           <div style={{ fontSize: 11.5, fontWeight: 800, color: '#191713' }}>
             {isAr ? 'جاهزية الوثائق' : 'Document Readiness'}
           </div>
-          <div style={{ fontSize: 10, color: '#918B82', marginTop: 1 }}>
+          <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>
             {isAr
               ? `${doneCount} من ${arDocsUnit(docs.length)} جاهزة${allReady ? ' — ✅ مكتمل!' : ''}`
               : `${doneCount} of ${docs.length} ready${allReady ? ' — ✅ All set!' : ''}`}

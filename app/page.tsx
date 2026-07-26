@@ -1625,7 +1625,13 @@ Question: ${text}`
                                 </div>
                                 <div>
                                   <div style={{ fontSize:13.5, fontWeight:800, color:'#fff', lineHeight:1.2 }}>{isAr ? card.titleAr : card.titleEn}</div>
-                                  <div style={{ fontSize:10.5, color:'rgba(255,255,255,0.65)', marginTop:2 }}>
+                                  {/* batch #519 (axe-core audit): 0.65 opacity white
+                                      on this var(--brand) header measured 4.07:1
+                                      contrast against the required 4.5:1 for normal
+                                      text (real, not decorative, subtitle text) —
+                                      0.8 clears it with margin (~5.5:1) while
+                                      staying visually a lighter/secondary line. */}
+                                  <div style={{ fontSize:10.5, color:'rgba(255,255,255,0.8)', marginTop:2 }}>
                                     {isAr ? `${card.authAr} — ${card.cntAr}` : `${card.authEn} — ${card.cntEn}`}
                                   </div>
                                 </div>
@@ -1662,7 +1668,7 @@ Question: ${text}`
                               </div>
                             </div>
                             {/* Navigation dots */}
-                            <div style={{ padding:'10px 18px', display:'flex', alignItems:'center', justifyContent:'center', gap:6, borderTop:'1px solid var(--border)' }}>
+                            <div style={{ padding:'10px 18px', display:'flex', alignItems:'center', justifyContent:'center', gap:16, borderTop:'1px solid var(--border)' }}>
                               {HERO_CARDS.map((c, idx) => (
                                 <button key={idx} type="button"
                                   // Was a hardcoded English "Procedure N" label
@@ -1676,7 +1682,18 @@ Question: ${text}`
                                   aria-label={isAr ? `الانتقال إلى: ${c.titleAr}` : `Go to: ${c.titleEn}`}
                                   aria-current={idx === displayCard ? 'true' : undefined}
                                   onClick={() => setActiveCard(idx)}
-                                  style={{ width: idx===displayCard ? 20 : 6, height:6, borderRadius:3, border:'none', cursor:'pointer', padding:0, transition:'all 0.2s cubic-bezier(0.22,1,0.36,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
+                                  // batch #519 (axe-core WCAG 2.2 AA audit): these
+                                  // dots were 6x6px (20x6 active) with a 6px gap —
+                                  // both the raw size AND the "insufficient space
+                                  // to closest neighbor" checks failed target-size
+                                  // 2.5.8. Dot grew 6→8px, gap 6→16px so the
+                                  // .wcag-target-8 invisible hit-area (-8px inset,
+                                  // see globals.css) can reach 24x24 on every dot
+                                  // without its expanded hit-zone overlapping the
+                                  // next dot's — visually the dots are only
+                                  // slightly larger and a bit more spaced out.
+                                  className="wcag-target-8"
+                                  style={{ position:'relative', width: idx===displayCard ? 22 : 8, height:8, borderRadius:4, border:'none', cursor:'pointer', padding:0, transition:'all 0.2s cubic-bezier(0.22,1,0.36,1)', background: idx===displayCard ? 'var(--brand)' : 'var(--border)', flexShrink:0 }}
                                 />
                               ))}
                             </div>
@@ -1861,15 +1878,15 @@ Question: ${text}`
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '6px 14px', borderRadius: 20,
                     background: '#fff', border: '1.5px solid #E6E2DC',
-                    fontSize: 12, color: '#918B82', fontWeight: 600,
+                    fontSize: 12, color: 'var(--text-3)', fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
                     transition: 'border-color 0.15s, color 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.color = '#8F1D2C' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = '#918B82' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = 'var(--text-3)' }}
                   onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF'; e.currentTarget.style.color = '#8F1D2C' }}
-                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#918B82' }}>
+                  onTouchEnd={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = 'var(--text-3)' }}>
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V12h6v9"/>
@@ -1887,13 +1904,13 @@ Question: ${text}`
                     display: 'flex', alignItems: 'center', gap: 5,
                     padding: '6px 12px', borderRadius: 20,
                     background: '#fff', border: '1.5px solid #E6E2DC',
-                    fontSize: 11.5, color: '#918B82', fontWeight: 600,
+                    fontSize: 11.5, color: 'var(--text-3)', fontWeight: 600,
                     cursor: 'pointer', fontFamily: 'inherit',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
                     transition: 'border-color 0.15s, color 0.15s',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#8F1D2C'; e.currentTarget.style.color = '#8F1D2C' }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = '#918B82' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#E6E2DC'; e.currentTarget.style.color = 'var(--text-3)' }}
                 >
                   <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="6 9 6 2 18 2 18 9"/><path strokeLinecap="round" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
@@ -2210,7 +2227,7 @@ Question: ${text}`
                   type="button"
                   onClick={() => { setActiveDocumentName(null) }}
                   aria-label={isAr ? 'مسح المستند النشط' : 'Clear active document'}
-                  style={{ background: 'none', border: 'none', color: '#918B82', cursor: 'pointer', padding: 8, display: 'flex', alignItems: 'center', flexShrink: 0 }}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 8, display: 'flex', alignItems: 'center', flexShrink: 0 }}
                 ><svg aria-hidden="true" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12"/></svg></button>
               </div>
             )}

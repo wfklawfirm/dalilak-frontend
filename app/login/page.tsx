@@ -142,7 +142,7 @@ export default function LoginPage() {
                 onClick={() => setShowPass(s => !s)}
                 style={{
                   position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', cursor: 'pointer', color: '#918B82', padding: 0,
+                  background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', padding: 0,
                   display: 'flex', alignItems: 'center',
                 }}>
                 {showPass
@@ -164,7 +164,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: '#918B82' }}>
+        <div style={{ marginTop: 14, textAlign: 'center', fontSize: 13, color: 'var(--text-3)' }}>
           {isAr ? 'ليس لديك حساب؟' : "Don't have an account?"}{' '}
           <Link href="/register" style={{ color: '#8F1D2C', fontWeight: 700, textDecoration: 'none' }}>
             {isAr ? 'سجّل الآن — مجاناً لـ 3 أيام' : 'Register now — free for 3 days'}

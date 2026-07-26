@@ -99,7 +99,7 @@ export default function ProcedureExternalLinks({ ministrySlug, isAr }: Props) {
       dir={isAr ? 'rtl' : 'ltr'}
       style={{ marginBottom: 12 }}
     >
-      <div style={{ fontSize: 9.5, fontWeight: 700, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 5 }}>
+      <div style={{ fontSize: 9.5, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 5 }}>
         {isAr ? 'البوابات الإلكترونية الرسمية' : 'Official Gov Portals'}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

@@ -91,7 +91,7 @@ export default function ProcedureFAQChips({ ministry, title, isAr, onAsk }: Prop
 
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} style={{ marginTop: 12, marginBottom: 2 }}>
-      <div style={{ fontSize: 11, fontWeight: 800, color: '#918B82', marginBottom: 7, display: 'flex', alignItems: 'center', gap: 5 }}>
+      <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-3)', marginBottom: 7, display: 'flex', alignItems: 'center', gap: 5 }}>
         <span>💡</span>
         {isAr ? 'أسئلة ذات صلة' : 'Related questions'}
       </div>
@@ -143,7 +143,7 @@ export default function ProcedureFAQChips({ ministry, title, isAr, onAsk }: Prop
                     >
                       {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
                     </button>
-                    <Link href="/faq" style={{ fontSize: 10, fontWeight: 600, color: '#918B82', textDecoration: 'underline', alignSelf: 'center' }}>
+                    <Link href="/faq" style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-3)', textDecoration: 'underline', alignSelf: 'center' }}>
                       {isAr ? 'المزيد من الأسئلة' : 'More FAQs'}
                     </Link>
                   </div>

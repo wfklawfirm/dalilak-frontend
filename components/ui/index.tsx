@@ -110,7 +110,7 @@ export function SectionCard({ title, children, bg = '#fff', border = '#E6E2DC', 
           {title}
         </h3>
         {collapsible && (
-          <span style={{ display:'inline-flex', alignItems:'center', color: '#918B82', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
+          <span style={{ display:'inline-flex', alignItems:'center', color: 'var(--text-3)', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6"/></svg></span>
         )}
       </div>
       {open && (
@@ -134,7 +134,7 @@ const STATUS_MAP: Record<string, { labelAr: string; labelEn: string; color: stri
   ready: { labelAr: 'جاهزة', labelEn: 'Ready', color: '#78350F', bg: '#FFFBEB' },
   needs_review: { labelAr: 'تحتاج مراجعة', labelEn: 'Needs Review', color: '#CA8A04', bg: '#FFFBEB' },
   completed: { labelAr: 'مكتملة', labelEn: 'Completed', color: '#78350F', bg: '#FFFBEB' },
-  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: '#918B82', bg: '#E6E2DC' },
+  archived: { labelAr: 'محفوظة', labelEn: 'Archived', color: 'var(--text-3)', bg: '#E6E2DC' },
   pending: { labelAr: 'معلّق', labelEn: 'Pending', color: '#B8860B', bg: '#FFFBEB' },
   verified: { labelAr: 'موثّق', labelEn: 'Verified', color: '#78350F', bg: '#FFFBEB' },
   partially_verified: { labelAr: 'موثّق جزئياً', labelEn: 'Partially Verified', color: '#B8860B', bg: '#FFFBEB' },
@@ -213,7 +213,7 @@ export function EmptyState({ icon = DefaultEmptyIcon, titleAr, titleEn, subtitle
         {isAr ? titleAr : (titleEn || titleAr)}
       </p>
       {(subtitleAr || subtitleEn) && (
-        <p style={{ fontSize: 12, color: '#918B82', margin: '0 0 16px' }}>
+        <p style={{ fontSize: 12, color: 'var(--text-3)', margin: '0 0 16px' }}>
           {isAr ? subtitleAr : (subtitleEn || subtitleAr)}
         </p>
       )}

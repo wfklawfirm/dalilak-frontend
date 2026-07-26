@@ -175,7 +175,7 @@ export default function HomepageChatSuggestionsBar({ onAsk, isAr, messageCount }
       style={{ marginBottom: 8 }}
     >
       {/* Section label */}
-      <div style={{ fontSize: 9.5, fontWeight: 800, color: '#918B82', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ fontSize: 9.5, fontWeight: 800, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 5, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span>{isAr ? '💡 اقتراحات سريعة' : '💡 Quick suggestions'}</span>
         <button
           type="button"

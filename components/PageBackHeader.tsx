@@ -28,7 +28,7 @@ export default function PageBackHeader({
 }: PageBackHeaderProps) {
   const c =
     variant === 'legacy'
-      ? { bg: '#fff', border: '#E6E2DC', text1: '#191713', text3: '#918B82' }
+      ? { bg: '#fff', border: '#E6E2DC', text1: '#191713', text3: 'var(--text-3)' }
       : { bg: 'var(--surface)', border: 'var(--border)', text1: 'var(--text-1)', text3: 'var(--text-3)' }
 
   return (
