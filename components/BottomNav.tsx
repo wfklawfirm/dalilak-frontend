@@ -78,7 +78,16 @@ export default function BottomNav({ isAr: isArProp, activeTab = 'home', onHomeCl
   const handleTab = (id: string) => {
     if (id === 'home'  && onHomeClick) { onHomeClick(); return }
     if (id === 'chat'  && onChatClick) { onChatClick(); return }
-    const routes: Record<string, string> = { home:'/', services:'/services', procedures:'/procedures', chat:'/', account:'/my-files' }
+    // batch #526: on every page except the homepage itself (the only place
+    // that passes onHomeClick/onChatClick above), Home and Ask Dalilak both
+    // used to fall back to this same bare '/' — reported: "الرئيسية و اسأل
+    // دليلك نفس الصفحة" (Home and Ask Dalilak are the same page). They now
+    // mirror the distinct behavior the homepage's own onHomeClick/onChatClick
+    // already give: '?reset=true' clears the conversation for a fresh
+    // landing view (same pattern as onNewChat/onHomeClick/onHome in
+    // app/page.tsx), '?focusChat=true' leaves it as-is and just focuses the
+    // input. Handled in app/page.tsx's existing ?q=/?draft= mount effect.
+    const routes: Record<string, string> = { home:'/?reset=true', services:'/services', procedures:'/procedures', chat:'/?focusChat=true', account:'/my-files' }
     router.push(routes[id] || '/')
   }
 

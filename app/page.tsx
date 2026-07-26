@@ -763,6 +763,55 @@ Question: ${text}`
   useEffect(() => {
     if (!authChecked) return
     const params = new URLSearchParams(window.location.search)
+    // batch #526: BottomNav's "الرئيسية" (Home) and "اسأل دليلك" (Ask
+    // Dalilak) tabs both used to fall back to the exact same bare '/'
+    // route on every page other than the homepage itself — only the
+    // homepage passes onHomeClick/onChatClick to BottomNav to tell them
+    // apart. Reported: "الرئيسية و اسأل دليلك نفس الصفحة" (Home and Ask
+    // Dalilak are the same page). BottomNav.tsx now sends '?reset=true'
+    // for Home and '?focusChat=true' for Ask Dalilak; handled here to
+    // mirror the exact behavior the homepage's own onHomeClick/onChatClick
+    // already give when tapped from the homepage itself: Home saves then
+    // clears the conversation (same save-then-clear pattern already used
+    // by onNewChat/onHomeClick/onHome elsewhere in this file) for a fresh
+    // landing view, while Ask Dalilak leaves the conversation exactly as
+    // it is and just focuses the input, ready to type.
+    if (params.get('reset') === 'true') {
+      window.history.replaceState({}, '', '/')
+      // Deliberately read localStorage directly here instead of archiving
+      // the `messages` state variable this effect closed over: this effect
+      // and the history-restore effect above both fire in the same commit
+      // (both gated on authChecked), and `messages` in THIS closure is still
+      // last render's stale value at this point (React hasn't applied the
+      // restore effect's queued setMessages(clean) yet) — archiving that
+      // would silently lose a restored conversation instead of saving it.
+      // localStorage has no such staleness; it's the same source of truth
+      // the restore effect itself reads from, so this is exactly the
+      // conversation that would otherwise be showing.
+      try {
+        const raw = localStorage.getItem(CHAT_HISTORY_KEY)
+        if (raw) {
+          const clean = (JSON.parse(raw) as Message[])
+            .filter(m => !m.streaming)
+            .slice(-CHAT_HISTORY_MAX)
+          if (clean.length > 0) saveChatSession(clean)
+        }
+      } catch {}
+      setMessages([])
+      setFollowupQuestions([])
+      setRetryMsg(null)
+      return
+    }
+    if (params.get('focusChat') === 'true') {
+      window.history.replaceState({}, '', '/')
+      // rAF, not a bare call: the textarea needs one paint after mount/
+      // restore before focus + scrollIntoView reliably take effect.
+      requestAnimationFrame(() => {
+        textareaRef.current?.focus()
+        textareaRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      })
+      return
+    }
     const q = params.get('q')
     if (q) {
       window.history.replaceState({}, '', '/')
