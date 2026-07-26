@@ -723,6 +723,42 @@ Question: ${text}`
 
   const pool = lang === 'ar' ? QUESTION_POOL_AR : QUESTION_POOL_EN
 
+  // ── Load chat history from localStorage (after auth) ─────
+  // batch #525: this effect MUST run (and finish its setMessages call)
+  // before the "?q=/?draft=/pending-query" effect below — both are gated
+  // only on `authChecked` and React runs same-component effects in
+  // declaration order within one commit, so whichever is declared first
+  // wins the race. It used to be declared AFTER the q/draft effect: a
+  // Drafting Studio "أرسل للمساعد" (Send to Assistant) send would call
+  // sendMessage(), which synchronously queues `setMessages(prev => [...
+  // prev, userMsg])` for the new draft request — then this effect ran
+  // right after and called the unconditional, non-functional
+  // `setMessages(clean)`, wiping that queued update and replacing the
+  // whole conversation with old restored history. Reported bug: "عندما
+  // اطلب صياغة مسودة لا تظهر المسودة المولدة بالذكاء الاصطناعي" (asking
+  // Drafting Studio to generate a draft, the AI's draft never appears) —
+  // reproduced live: a returning user with saved chat history in
+  // localStorage got the old conversation silently restored over the new
+  // draft request every time. Moving this effect earlier means
+  // `setMessages(clean)` (an absolute overwrite) commits first, and the
+  // q/draft effect's `setMessages(prev => [...prev, ...])` (a functional
+  // updater) then correctly builds on top of it, in the same batch —
+  // exactly like appending a new question to an existing conversation.
+  useEffect(() => {
+    if (!authChecked || historyLoaded.current) return
+    historyLoaded.current = true
+    try {
+      const raw = localStorage.getItem(CHAT_HISTORY_KEY)
+      if (raw) {
+        const msgs = JSON.parse(raw) as Message[]
+        const clean = msgs
+          .filter(m => !m.streaming)
+          .slice(-CHAT_HISTORY_MAX)
+        if (clean.length > 0) { setMessages(clean); setRestoredCount(clean.length) }
+      }
+    } catch {}
+  }, [authChecked])
+
   // ── Handle ?q= param + ?draft=true from other pages ─────────
   useEffect(() => {
     if (!authChecked) return
@@ -749,6 +785,19 @@ Question: ${text}`
     if (pending) {
       sessionStorage.removeItem('dalilak_pending_query')
       sendMessageRef.current(pending)
+      return
+    }
+    // batch #525: FormDetailClient's "اسأل الذكاء الاصطناعي" (Ask AI) button
+    // (app/forms/[slug]/FormDetailClient.tsx handleAskAI) has always stored
+    // its prompt under this key and pushed to '/' — but this effect never
+    // read it, so the button silently did nothing on the home page: no
+    // message was ever sent. Found while auditing other pages for the same
+    // "generate via AI, redirect home" pattern as the Drafting Studio bug
+    // fixed just above in this same batch.
+    const prefill = sessionStorage.getItem('dalilak_prefill')
+    if (prefill) {
+      sessionStorage.removeItem('dalilak_prefill')
+      sendMessageRef.current(prefill)
     }
     // sendMessage itself is intentionally omitted from deps — called via the
     // always-fresh sendMessageRef (see its declaration above) instead of a
@@ -837,22 +886,6 @@ Question: ${text}`
     window.addEventListener('dalilak_onboarding_question', handler)
     return () => window.removeEventListener('dalilak_onboarding_question', handler)
   }, [])
-
-  // ── Load chat history from localStorage (after auth) ─────
-  useEffect(() => {
-    if (!authChecked || historyLoaded.current) return
-    historyLoaded.current = true
-    try {
-      const raw = localStorage.getItem(CHAT_HISTORY_KEY)
-      if (raw) {
-        const msgs = JSON.parse(raw) as Message[]
-        const clean = msgs
-          .filter(m => !m.streaming)
-          .slice(-CHAT_HISTORY_MAX)
-        if (clean.length > 0) { setMessages(clean); setRestoredCount(clean.length) }
-      }
-    } catch {}
-  }, [authChecked])
 
   // ── Save chat history on every change ────────────────────
   useEffect(() => {
