@@ -8,11 +8,15 @@ import { useLanguage } from '@/lib/LanguageContext'
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dalilak-backend-bvb9.onrender.com'
 
 // ── Section tabs ───────────────────────────────────────────────────────────────
+// batch #498 declutter: "Files" and "Drafts" tabs used to live here, but each
+// rendered nothing but a blurb + a single button to /my-files / /drafting-studio
+// — destinations already one tap away from Overview's own "Quick Actions" list
+// below ("Create Transaction File" → /my-files, "Prepare Legal Draft" →
+// /drafting-studio) and from the main nav menu. Removed the two shell tabs
+// (6→4); both destinations remain fully reachable, nothing was deleted.
 const SECTIONS = [
   { id: 'overview',    iconAr: '🏠', labelAr: 'نظرة عامة',     labelEn: 'Overview'   },
   { id: 'clients',     iconAr: '👥', labelAr: 'الموكّلون',       labelEn: 'Clients'    },
-  { id: 'files',       iconAr: '📂', labelAr: 'ملفات المعاملات', labelEn: 'Files'      },
-  { id: 'drafts',      iconAr: '✍️', labelAr: 'المسودات',        labelEn: 'Drafts'     },
   { id: 'reviews',     iconAr: '👨‍⚖️', labelAr: 'طلبات المراجعة', labelEn: 'Reviews'   },
   { id: 'intake',      iconAr: '📋', labelAr: 'استمارة العميل',  labelEn: 'Client Intake' },
 ]
@@ -309,49 +313,6 @@ export default function ProfessionalWorkspacePage() {
           />
         )}
 
-        {/* Files */}
-        {activeSection === 'files' && (
-          <div>
-            <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 4 }}>
-                {isAr ? '📂 ملفات المعاملات' : '📂 Transaction Files'}
-              </div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>
-                {isAr ? 'يمكنك إدارة ملفاتك من صفحة ملفاتي' : 'Manage your files from My Files page'}
-              </div>
-            </div>
-            <button onClick={() => router.push('/my-files')} style={{
-              width: '100%', padding: '12px 20px',
-              background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
-              color: '#fff', border: 'none', borderRadius: 12,
-              fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-            }}>
-              📂 {isAr ? 'الذهاب إلى ملفاتي' : 'Go to My Files'}
-            </button>
-          </div>
-        )}
-
-        {/* Drafts */}
-        {activeSection === 'drafts' && (
-          <div>
-            <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 4 }}>
-                {isAr ? '✍️ استوديو المسودات' : '✍️ Drafting Studio'}
-              </div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>
-                {isAr ? 'إعداد مسودات قانونية وإدارية احترافية' : 'Prepare professional legal and administrative drafts'}
-              </div>
-            </div>
-            <button onClick={() => router.push('/drafting-studio')} style={{
-              width: '100%', padding: '12px 20px',
-              background: 'linear-gradient(135deg, #8F1D2C 0%, #741622 100%)',
-              color: '#fff', border: 'none', borderRadius: 12,
-              fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-            }}>
-              ✍️ {isAr ? 'فتح استوديو المسودات' : 'Open Drafting Studio'}
-            </button>
-          </div>
-        )}
 
         {/* Reviews */}
         {activeSection === 'reviews' && (

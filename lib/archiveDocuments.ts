@@ -34,3 +34,22 @@ const ARCHIVE_DOCS_JSON: string = "[{\"id\": \"d74befb506951e7c\", \"title\": \"
 export const ARCHIVE_DOCS: ArchiveDoc[] = JSON.parse(ARCHIVE_DOCS_JSON) as ArchiveDoc[]
 
 export const ARCHIVE_INSTITUTIONS: string[] = Array.from(new Set(ARCHIVE_DOCS.map(d => d.institution))).sort()
+
+// مطابقة نصية بعنوان مصدر (مثل ما يُعاد من sources في /chat/stream) مقابل
+// وثيقة حقيقية في الأرشيف — تطابق تام أولاً ثم تطابق جزئي (prefix) كخيار
+// احتياطي، بلا أي تخمين. تُستخدم من app/page.tsx (المحادثة الرئيسية)
+// و components/ArchiveAISearch.tsx لعرض رابط تحميل حقيقي عند توفّره، عبر
+// dynamic import فقط (هذا الملف ~4MB خاماً بسبب حجم الأرشيف، فلا يجوز أن
+// يُستورَد بشكل ثابت في حزمة الصفحة الرئيسية).
+export function findArchiveDocByTitle(title: string): ArchiveDoc | undefined {
+  const t = (title || '').trim()
+  if (!t) return undefined
+  const exact = ARCHIVE_DOCS.find(d => d.title === t)
+  if (exact) return exact
+  const tl = t.toLowerCase()
+  if (tl.length < 6) return undefined
+  return ARCHIVE_DOCS.find(d => {
+    const dt = d.title.toLowerCase()
+    return dt.startsWith(tl) || tl.startsWith(dt)
+  })
+}

@@ -401,29 +401,12 @@ export default function MobileMenu({ isOpen, onClose, onLangToggle: onLangToggle
             <span style={{ flex: 1 }}>{isAr ? 'إمكانية الوصول' : 'Accessibility'}</span>
           </button>
 
-          {/* Help — /faq already contains real, existing Q&A content
-              (lib/serviceFAQ.ts). Distinct from "Contact Us" below: this is
-              self-serve help, contact is direct human support. */}
-          <button
-            type="button"
-            onClick={() => { router.push('/faq'); onClose() }}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', gap: 14,
-              padding: '13px 20px', border: 'none', background: 'none',
-              cursor: 'pointer', fontFamily: 'inherit',
-              textAlign: isAr ? 'right' : 'left',
-              color: '#191713', fontSize: 14, fontWeight: 500,
-            }}
-            onTouchStart={e => { e.currentTarget.style.background = '#F8EDEF' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'none' }}
-          >
-            <span style={{ color: '#8F1D2C', flexShrink: 0 }}>
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </span>
-            <span style={{ flex: 1 }}>{isAr ? 'المساعدة' : 'Help'}</span>
-          </button>
+          {/* batch #498 declutter: a "Help"/"المساعدة" row used to live here,
+              routing to /faq — the exact same destination as the "FAQ"/"أسئلة
+              شائعة" item already in the main nav list above. Removed the
+              duplicate; /faq is still one tap away via the FAQ nav item, so
+              nothing became less reachable. "Contact Us" below remains
+              distinct (direct human support vs self-serve FAQ). */}
 
           {/* Contact */}
           <div style={{ margin: '8px 16px', padding: '12px 14px', background: '#FAFAF8', borderRadius: 12, border: '1px solid #E6E2DC' }}>

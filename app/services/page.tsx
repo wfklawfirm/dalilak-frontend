@@ -367,19 +367,11 @@ function ServiceSheet({ service, onClose, onAsk }: {
               <path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.876L.057 23.882l6.187-1.473A11.948 11.948 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.875 9.875 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.86 9.86 0 012.106 12c0-5.459 4.435-9.894 9.894-9.894 5.46 0 9.894 4.435 9.894 9.894 0 5.46-4.434 9.894-9.894 9.894z"/>
             </svg>
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            onTouchStart={e => { e.currentTarget.style.background = 'var(--border)' }}
-            onTouchEnd={e => { e.currentTarget.style.background = 'var(--bg)' }}
-            style={{
-              padding: '13px 16px', borderRadius: 14, background: 'var(--bg)',
-              border: '1px solid var(--border)', color: 'var(--text-2)', fontSize: 12,
-              fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.12s',
-            }}
-          >
-            {isAr ? 'إغلاق' : 'Close'}
-          </button>
+          {/* batch #498 declutter: a text "Close"/"إغلاق" button used to sit
+              here, duplicating the header's X button (which is already
+              always visible above), plus tap-outside-to-dismiss and Esc —
+              four ways to close one sheet. Removed the redundant one; the
+              header X remains the single clear dismiss control. */}
         </div>
       </div>
     </div>

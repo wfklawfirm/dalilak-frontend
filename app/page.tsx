@@ -1218,6 +1218,24 @@ Question: ${text}`
         }
       }
       const finalAnswer = accumulated || (isAr ? 'عذراً، لم أتلقَّ ردّاً.' : 'Sorry, no response received.')
+
+      // إذا كان أحد المصادر المُعادة يطابق وثيقة حقيقية في أرشيف الوثائق
+      // الرسمية، نضيف رابط تحميلها الحقيقي (src.url) — تُعرض تلقائياً في
+      // بطاقة "المصادر المستخدمة" الموجودة أصلاً (TrustBadge)، بلا أي زر
+      // أو مكوّن جديد. lib/archiveDocuments.ts حجمه ~4MB خاماً بسبب حجم
+      // الأرشيف، فنستورده ديناميكياً هنا فقط (لا في أعلى الملف) حتى لا
+      // يُحمَّل ضمن حزمة الصفحة الرئيسية إلا عند وجود مصادر فعلية للفحص.
+      if (metaSources.length > 0) {
+        try {
+          const { findArchiveDocByTitle } = await import('@/lib/archiveDocuments')
+          metaSources = metaSources.map(s => {
+            if (s.url) return s
+            const doc = findArchiveDocByTitle(s.title)
+            return doc ? { ...s, url: doc.pdfUrl } : s
+          })
+        } catch { /* الأرشيف اختياري — لا نكسر الرد إن فشل الاستيراد */ }
+      }
+
       setMessages(prev => {
         const u = [...prev]
         u[u.length - 1] = {
@@ -1267,7 +1285,6 @@ Question: ${text}`
 
   const canSend = Boolean((input.trim() || attachedFile) && !loading)
   const MAX_INPUT = 4000
-  const showCharCount = input.length > 3000
 
   if (!authChecked) return (
     <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#F8F8F6', gap:20 }}>
@@ -2299,7 +2316,14 @@ Question: ${text}`
             {/* ── Char counter + keyboard hint — one slim utility row ── */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
               <ChatKeyboardSendHint isAr={isAr} />
-              <ChatInputCharCounter text={input} isAr={isAr} />
+              {/* batch #498 declutter: this was previously a SECOND, separate
+                  char counter alongside an inline one inside the textarea
+                  (removed above) — that inline copy also hardcoded a "very
+                  long" warning at 600 chars while the real hard limit
+                  (MAX_INPUT) is 4000, so it was misleadingly telling users
+                  they'd hit the limit 3400 characters early. One counter,
+                  correct threshold. */}
+              <ChatInputCharCounter text={input} isAr={isAr} maxLength={MAX_INPUT} />
             </div>
             <ChatDraftAutosave input={input} setInput={setInput} />
 
@@ -2389,18 +2413,6 @@ Question: ${text}`
                     fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
                   }}
                 />
-
-                {/* Character counter — visible only when > 3000 chars */}
-                {showCharCount && (
-                  <span style={{
-                    flexShrink: 0, fontSize: 11, lineHeight: 1,
-                    color: input.length > 3800 ? '#b91c1c' : '#918B82',
-                    fontFamily: 'monospace', padding: '0 2px',
-                    alignSelf: 'flex-end', paddingBottom: 10,
-                  }}>
-                    {input.length}/{MAX_INPUT}
-                  </span>
-                )}
 
                 {/* Enhance ✨ */}
                 {input.trim().length > 3 && !recording && !attachedFile && (

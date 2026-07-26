@@ -133,21 +133,16 @@ export default function ProcedureDetailClient() {
           </div>
         </div>
 
-        {/* One primary CTA + one secondary, per spec ("one primary button"). */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-          <button type="button" aria-label={isAr ? 'اسأل دليلك عن هذه المعاملة' : 'Ask Dalilak about this procedure'} onClick={askAI} className="btn-primary" style={{ flex: 1, padding: '12px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        {/* batch #498 declutter: this row used to carry a second "Home" button
+            next to the primary CTA — but it navigated to '/', the exact same
+            destination as the BottomNav's Home tab rendered a few hundred
+            pixels below on every viewport. Two controls, one destination, no
+            reason to keep both above the fold. One clean full-width primary
+            CTA now — nothing users could reach before is now unreachable. */}
+        <div style={{ marginBottom: 20 }}>
+          <button type="button" aria-label={isAr ? 'اسأل دليلك عن هذه المعاملة' : 'Ask Dalilak about this procedure'} onClick={askAI} className="btn-primary" style={{ width: '100%', padding: '12px', background: 'var(--brand)', color: '#fff', border: 'none', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
             {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
-          </button>
-          {/* batch #352 clarity fix: this button's onClick always navigated to '/' (homepage),
-              but was labeled "المعالج"/"Wizard" — implying it launches a guided wizard for this
-              specific procedure, which it never did. Relabeled to match its real behavior
-              instead of silently leaving a misleading control; no wizard-deep-link route exists
-              yet to make the old label true (GuidedFlow is a homepage-only modal with no
-              per-procedure entry point), so honest relabeling is the correct minimal fix here. */}
-          <button type="button" aria-label={isAr ? 'العودة إلى الصفحة الرئيسية' : 'Back to homepage'} onClick={() => router.push('/')} style={{ padding: '12px 16px', background: 'var(--surface)', color: 'var(--text-1)', border: '1px solid var(--border)', borderRadius: 12, fontFamily: 'inherit', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            {isAr ? 'الرئيسية' : 'Home'}
           </button>
         </div>
 

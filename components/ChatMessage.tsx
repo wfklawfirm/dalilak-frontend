@@ -313,6 +313,10 @@ export default function ChatMessage({
               confidence={msg.confidence}
               onFollowUp={onFollowUp}
               question={question}
+              /* افتح بطاقة "المصادر" تلقائياً فقط عندما يحتوي أحد المصادر
+                 على رابط ملف حقيقي (وثيقة أرشيف مطابقة) — بدل تركها مطويّة
+                 دائماً، حتى يرى المستخدم رابط التحميل دون نقر إضافي. */
+              defaultExpandSources={msg.sources?.some(s => !!s.url)}
             />
           </div>
           {/* Share bar + feedback — only once message is complete */}
