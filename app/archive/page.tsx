@@ -3,7 +3,7 @@
 /**
  * /archive — أرشيف الوثائق الرسمية
  *
- * صفحة بحث/تصفح لأكثر من 5300 وثيقة حكومية لبنانية حقيقية (قرارات مصرف
+ * صفحة بحث/تصفح لأكثر من 5200 وثيقة حكومية لبنانية حقيقية (قرارات مصرف
  * لبنان، تعاميم جمركية، قرارات وزارية، تقارير رسمية، محاضر، نماذج طلبات)
  * مستخرجة من أرشيف فعلي وليست بيانات تجريبية. كل سجل مرتبط بملف PDF/XLSX
  * أصلي قابل للتحميل (مستضاف على مستودع GitHub منفصل — راجع
@@ -20,8 +20,10 @@ import BottomNav from '@/components/BottomNav'
 import MobileHeader from '@/components/MobileHeader'
 import SearchInput from '@/components/SearchInput'
 import StatsRow from '@/components/StatsRow'
+import ArchiveAISearch from '@/components/ArchiveAISearch'
 import { ARCHIVE_DOCS, ARCHIVE_INSTITUTIONS, type ArchiveDoc } from '@/lib/archiveDocuments'
 import { useLanguage } from '@/lib/LanguageContext'
+import { isLoggedIn } from '@/lib/auth'
 
 const PAGE_SIZE = 60
 
@@ -31,6 +33,13 @@ export default function ArchivePage() {
   const [search, setSearch] = useState('')
   const [institutionFilter, setInstitutionFilter] = useState('all')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  // البحث بالذكاء الاصطناعي هو الوضع الأساسي بطلب المستخدم ("اجعل البحث عبر
+  // الذكاء الاصطناعي و ليس محرك بحث عادة") — لكنه يتطلب تسجيل دخول (نفس شرط
+  // /chat/stream)، فلا نفتح الصفحة بجدار تسجيل دخول أمام زائر لم يسبق له
+  // استخدام بحث نصي بلا حساب: الزوار غير المسجّلين يبدؤون بالبحث السريع
+  // (يحافظ على الوظيفة الموجودة أصلاً بلا أي قيد جديد)، والمسجّلون يبدؤون
+  // مباشرة بالبحث الذكي.
+  const [searchMode, setSearchMode] = useState<'ai' | 'quick'>(() => (isLoggedIn() ? 'ai' : 'quick'))
 
   const topInstitutions = useMemo(() => {
     const counts = new Map<string, number>()
@@ -92,6 +101,35 @@ export default function ArchivePage() {
           ]}
         />
 
+        <div style={{ display: 'flex', gap: 5, margin: '0 0 10px' }}>
+          <button type="button" aria-pressed={searchMode === 'ai'} onClick={() => setSearchMode('ai')}
+            style={{
+              flex: 1, padding: '8px 10px', borderRadius: 10, border: '1.5px solid', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+              borderColor: searchMode === 'ai' ? 'var(--brand)' : 'var(--border)',
+              background: searchMode === 'ai' ? 'var(--brand-soft)' : '#fff',
+              color: searchMode === 'ai' ? 'var(--brand)' : 'var(--text-2)',
+            }}>
+            <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3l1.9 4.5L18 9l-4.1 1.5L12 15l-1.9-4.5L6 9l4.1-1.5L12 3z"/><path strokeLinecap="round" strokeLinejoin="round" d="M18 15l1 2.5L21.5 18l-2.5 1L18 21.5 17 19l-2.5-1L17 17l1-2z"/></svg>
+            {isAr ? 'بحث بالذكاء الاصطناعي' : 'AI search'}
+          </button>
+          <button type="button" aria-pressed={searchMode === 'quick'} onClick={() => setSearchMode('quick')}
+            style={{
+              flex: 1, padding: '8px 10px', borderRadius: 10, border: '1.5px solid', fontSize: 11.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              borderColor: searchMode === 'quick' ? 'var(--brand)' : 'var(--border)',
+              background: searchMode === 'quick' ? 'var(--brand-soft)' : '#fff',
+              color: searchMode === 'quick' ? 'var(--brand)' : 'var(--text-2)',
+            }}>
+            {isAr ? 'بحث نصي سريع' : 'Quick text search'}
+          </button>
+        </div>
+
+        {searchMode === 'ai' && (
+          <ArchiveAISearch isAr={isAr} docs={ARCHIVE_DOCS} onAskFull={askAI} />
+        )}
+
+        {searchMode === 'quick' && (
+        <>
         <SearchInput
           value={search} onChange={setSearch} isAr={isAr}
           ariaLabel={isAr ? 'ابحث في أرشيف الوثائق الرسمية' : 'Search official documents archive'}
@@ -180,6 +218,8 @@ export default function ArchivePage() {
               </button>
             )}
           </>
+        )}
+        </>
         )}
       </main>
 

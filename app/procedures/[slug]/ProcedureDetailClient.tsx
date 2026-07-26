@@ -7,6 +7,12 @@ import BottomNav from '@/components/BottomNav'
 import SectionCollapseToggle from '@/components/SectionCollapseToggle'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { useLanguage } from '@/lib/LanguageContext'
+import { ARCHIVE_DOCS } from '@/lib/archiveDocuments'
+
+// كلمات دالة على أن الوثيقة نموذج/طلب فعلي (وليست قراراً أو تعميماً عاماً) —
+// استخدام مبني على النص الفعلي للعناوين، بلا أي تصنيف مُخترع، لترتيب
+// النماذج قبل غيرها ضمن نفس الجهة عند وجودها.
+const FORM_KEYWORDS = ['نموذج', 'طلب', 'استمارة', 'form', 'application']
 
 export default function ProcedureDetailClient() {
   const router = useRouter()
@@ -37,6 +43,26 @@ export default function ProcedureDetailClient() {
     const q = isAr ? proc.chatPrompt_ar : proc.chatPrompt_en
     router.push(`/?q=${encodeURIComponent(q)}`)
   }
+
+  // دمج وثائق الأرشيف الرسمية الحقيقية في صفحة المعاملة، بطلب المستخدم
+  // ("ادمج النماذج التي تكون معملة إدارية أو رسمية في المعاملات"). لا يوجد
+  // حقل مطابقة مباشر بين Procedure والأرشيف، فنطابق بالجهة المختصة
+  // (authority.ministry_en/name_en) مقابل ArchiveDoc.institution (تطابق
+  // نصي بسيط، بدون أي تخمين/ابتكار روابط) — إن لم توجد جهة أو لم يطابق
+  // اسمها أي جهة في الأرشيف، لا تُعرض أي وثائق (لا نُخمّن علاقة غير مؤكدة).
+  const relatedArchiveDocs = React.useMemo(() => {
+    const needle = `${proc.authority?.ministry_en || ''} ${proc.authority?.name_en || ''}`.trim().toLowerCase()
+    if (!needle) return []
+    const matchedInstitutions = new Set<string>()
+    for (const d of ARCHIVE_DOCS) {
+      const inst = d.institution.toLowerCase()
+      if (inst.length >= 4 && needle.includes(inst)) matchedInstitutions.add(d.institution)
+    }
+    if (matchedInstitutions.size === 0) return []
+    const candidates = ARCHIVE_DOCS.filter(d => matchedInstitutions.has(d.institution))
+    const isForm = (d: typeof candidates[number]) => FORM_KEYWORDS.some(k => d.title.toLowerCase().includes(k))
+    return [...candidates].sort((a, b) => Number(isForm(b)) - Number(isForm(a))).slice(0, 5)
+  }, [proc])
 
   return (
     <div style={{ minHeight: '100vh', background: '#F8F8F6', fontFamily: "'Cairo','Inter',sans-serif" }} dir={isAr ? 'rtl' : 'ltr'}>
@@ -194,6 +220,32 @@ export default function ProcedureDetailClient() {
                 )
               })}
             </div>
+          </Section>
+        )}
+
+        {relatedArchiveDocs.length > 0 && (
+          <Section title={isAr ? `نماذج ووثائق رسمية ذات صلة (${relatedArchiveDocs.length})` : `Related official forms & documents (${relatedArchiveDocs.length})`} icon={<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>} bg="var(--surface)" border="var(--border)">
+            <p style={{ fontSize: 11, color: 'var(--text-2)', margin: '0 0 10px', lineHeight: 1.5 }}>
+              {isAr
+                ? 'وثائق حقيقية من أرشيف دليلك مرتبطة بالجهة المختصة بهذه المعاملة.'
+                : 'Real documents from the Dalilak archive linked to this procedure’s responsible authority.'}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {relatedArchiveDocs.map(d => (
+                <div key={d.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 9, padding: '8px 10px' }}>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-1)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title}</span>
+                    {d.year && <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{d.year}</span>}
+                  </span>
+                  <a href={d.pdfUrl} target="_blank" rel="noopener noreferrer" style={{ flexShrink: 0, fontSize: 10.5, fontWeight: 700, color: 'var(--brand)', textDecoration: 'none', border: '1px solid var(--border-brand)', borderRadius: 8, padding: '4px 9px' }}>
+                    {isAr ? 'عرض' : 'View'}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <a href="/archive" style={{ display: 'inline-block', marginTop: 10, fontSize: 11, fontWeight: 700, color: 'var(--brand)', textDecoration: 'none' }}>
+              {isAr ? 'عرض المزيد في أرشيف الوثائق الرسمية ←' : 'See more in the official documents archive →'}
+            </a>
           </Section>
         )}
 
