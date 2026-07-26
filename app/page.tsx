@@ -702,6 +702,15 @@ Question: ${text}`
   }, [messages.length])
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  // batch #530: the empty landing screen (messages.length === 0) doesn't use
+  // textareaRef's composer at all -- it renders a completely separate search
+  // <input> bound to `heroInput`, with no ref. That's why "?focusChat=true"
+  // (batch #526/#528) never actually focused anything for the very common
+  // case of a fresh/empty conversation: textareaRef.current was null because
+  // that element genuinely doesn't exist yet in this UI state, not because of
+  // a timing race. Added this ref so the focusChat handler can fall back to
+  // whichever of the two inputs is actually mounted.
+  const heroInputRef = useRef<HTMLInputElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
   const mainRef = useRef<HTMLDivElement>(null)
@@ -805,25 +814,26 @@ Question: ${text}`
     if (params.get('focusChat') === 'true') {
       window.history.replaceState({}, '', '/')
       // batch #528: a single requestAnimationFrame here reliably lost the
-      // focus in live testing -- confirmed via Chrome MCP that tapping "Ask
-      // Dalilak" from another page never actually focused the textarea
-      // (document.activeElement stayed <body>), which is exactly why the
-      // user reported it "still takes me to the same place as Home": no
-      // keyboard pops up, nothing visibly happens. Root cause: Next.js's own
-      // post-navigation focus management (it moves focus to a hidden route
-      // announcer <div> for screen readers right after every client-side
-      // navigation) fires around the same time and can win the race, and a
-      // single rAF has no fallback if it's throttled or fires too early
-      // relative to that. Retry for ~1s instead of one attempt, so we always
-      // win eventually regardless of timing.
+      // focus race against Next.js's own post-navigation focus management
+      // (moves focus to a hidden route announcer <div> for screen readers
+      // after every client-side nav). Retrying for ~1s fixes that race, but
+      // was STILL not enough -- confirmed via live Chrome testing that with
+      // an empty/fresh conversation, textareaRef.current is null the entire
+      // time, not just briefly. batch #530 found why: the bottom composer
+      // (textareaRef) only mounts once messages.length > 0. The empty
+      // landing screen renders a completely different search <input>
+      // (bound to `heroInput`, now `heroInputRef`) instead. So "focus the
+      // chat input" has two different real targets depending on whether a
+      // conversation is already in progress -- try the composer first, and
+      // fall back to the landing search field, whichever actually exists.
       let attempts = 0
       const tryFocusChat = () => {
         attempts++
-        const ta = textareaRef.current
-        if (ta) {
-          ta.focus()
-          ta.scrollIntoView({ block: 'center', behavior: 'smooth' })
-          if (document.activeElement === ta) return
+        const el = textareaRef.current || heroInputRef.current
+        if (el) {
+          el.focus()
+          el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+          if (document.activeElement === el) return
         }
         if (attempts < 10) setTimeout(tryFocusChat, 100)
       }
@@ -1629,6 +1639,7 @@ Question: ${text}`
                           <circle cx="11" cy="11" r="7"/><path strokeLinecap="round" d="M21 21l-4.35-4.35"/>
                         </svg>
                         <input
+                          ref={heroInputRef}
                           type="text"
                           value={heroInput}
                           onChange={e => { setHeroInput(e.target.value); if (!e.target.value.trim()) chipsLockedRef.current = false }}
