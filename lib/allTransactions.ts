@@ -3404,11 +3404,33 @@ const _R:[string,number,0|1,string][]=[
 ['طلب ترميم وإعادة إعمار',42,0,'Request for renovation and reconstruction'],
 ]
 
-export const TX_ALL:TxItem[]=_R.map(([title,mid,hf,titleEn],i)=>({
-  id:`tx-${i}`,title,titleEn:titleEn||title,
-  ministry:_M[mid][0],ministryEn:_M[mid][1],ministrySlug:_M[mid][2],icon:_M[mid][3],
-  pdfUrl:_P[i]||'',hasForm:hf===1
-}))
+// batch #502: 61 of these 2484 scraped rows have title===titleEn -- the
+// "Arabic" field is actually the raw English dawlati.gov.lb page title
+// (often with a leftover " - E-Services Detail" scrape-artifact suffix, or
+// a bare alphanumeric service code like 'GENSEC0213'), confirmed via a
+// direct Node scan of this file's own _R array (61/2484, 2 of which have
+// hasForm===1). app/forms/page.tsx renders `tx.title` unconditionally as
+// the Arabic-mode label with no cleansing/guard (unlike serviceFAQ.ts's
+// isCorruptDictRepr() guard for a similar data-quality issue) -- on an
+// Arabic-first RTL app, this shows raw English/code text as the Arabic
+// title, and even gets spliced into an Arabic "Ask Dalilak" prompt
+// sentence. Stripped the scrape suffix, and for the 61 records with no
+// real Arabic content, fall back to the ministry's own Arabic name (always
+// present, never blank/English) instead of showing bare English/code text.
+const hasArabicChars = (s: string) => /[؀-ۿ]/.test(s)
+const stripScrapeSuffix = (s: string) => s.replace(/\s*-\s*E-Services Detail\s*$/i, '').trim()
+
+export const TX_ALL:TxItem[]=_R.map(([title,mid,hf,titleEn],i)=>{
+  const cleanTitle = stripScrapeSuffix(title)
+  const cleanTitleEn = stripScrapeSuffix(titleEn || title)
+  return {
+    id:`tx-${i}`,
+    title: hasArabicChars(cleanTitle) ? cleanTitle : `${_M[mid][0]} — ${cleanTitle}`,
+    titleEn: cleanTitleEn,
+    ministry:_M[mid][0],ministryEn:_M[mid][1],ministrySlug:_M[mid][2],icon:_M[mid][3],
+    pdfUrl:_P[i]||'',hasForm:hf===1
+  }
+})
 export const TX_WITH_FORMS:TxItem[]=TX_ALL.filter(t=>t.hasForm)
 
 export function filterTxForms(ministrySlug:string,query:string):TxItem[]{

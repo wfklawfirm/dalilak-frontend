@@ -273,7 +273,14 @@ export default function ProcedureQRShare({ code, titleAr, titleEn }: Props) {
 
   useEffect(() => { setMounted(true) }, [])
 
-  const url = `https://dalilak.app/procedures?q=${encodeURIComponent(isAr ? titleAr : (titleEn || titleAr))}`
+  // batch #503: was `https://dalilak.app/...` -- a domain that isn't this
+  // app at all (times out; no live site there). Every other URL-producing
+  // spot in the codebase (app/layout.tsx metadataBase, app/sitemap.ts,
+  // app/robots.ts, ProcedureShareViaEmail.tsx, ChatMessageActions.tsx) uses
+  // the real production domain dalilak-frontend.vercel.app. Scanning this
+  // QR code previously sent users to a dead/foreign host instead of "direct
+  // access" to the procedure as the modal's own caption promises.
+  const url = `https://dalilak-frontend.vercel.app/procedures?q=${encodeURIComponent(isAr ? titleAr : (titleEn || titleAr))}`
 
   const buildQR = useCallback(() => {
     try {

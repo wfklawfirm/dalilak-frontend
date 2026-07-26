@@ -26,7 +26,16 @@ function buildMailto(proc: EnrichedProcedure, isAr: boolean): string {
   const fee      = isAr ? proc.fees     : (proc.fees_en     || proc.fees)
   const time     = isAr ? proc.processingTime : (proc.processingTime_en || proc.processingTime)
 
-  const steps = proc.steps.map((s, i) => `${i + 1}. ${s}`)
+  // batch #504: was always `proc.steps` (Arabic) with no isAr branch --
+  // every other field here (title/ministry/fee/time/docs) correctly falls
+  // back to the _en variant, but steps was the one missed. The sibling
+  // "Share via WhatsApp" button in app/procedures/page.tsx already does
+  // this correctly (`isAr ? proc.steps : (proc.steps_en?.length ? ... )`),
+  // confirming the intended behavior. Result: an English-mode user got an
+  // email with an English subject/greeting/labels but Arabic step-by-step
+  // instructions in the middle of it.
+  const steps = (isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps))
+    .map((s, i) => `${i + 1}. ${s}`)
 
   const docs = isAr
     ? proc.requiredDocuments.map(d => `• ${d}`)

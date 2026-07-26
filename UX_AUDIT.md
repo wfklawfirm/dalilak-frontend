@@ -2044,4 +2044,97 @@ function displaySummary(s: string): string {
 
 `tsc --noEmit` نظيف (exit 0). الإصلاح محصور في `components/SmartReminder.tsx` (دالة مُصدَّرة جديدة) و`components/NotificationBell.tsx` (حقل جديد + إعادة هيكلة عنصر القائمة + زر إخفاء).
 
+### تحديث (batch #502) — 61 سجلاً في lib/allTransactions.ts يعرضون نص إنجليزي خام (بقايا استخراج آلي) كعنوان عربي
+
+**المشكلة**: `lib/allTransactions.ts:3407` — عند بناء `TX_ALL` من مصفوفة `_R` المستخرجة آلياً من dawlati.gov.lb، الحقل `title` (الذي تعامله كل المستهلكين كعنوان عربي) يساوي حرفياً `titleEn` في 61 من أصل 2484 سجلاً — تأكيد فعلي عبر سكريبت Node يحلّل مصفوفة `_R` مباشرة من الملف: 61 سجلاً بالضبط، منها 2 لديهما `hasForm=1`. أمثلة حقيقية: `'GENSEC0213'` (رمز خدمة خام من الأمن العام)، و`'Illegal Birth Registration (Lebanese citizen living abroad) - E-Services Detail'` (نص إنجليزي كامل مع لاحقة استخراج `" - E-Services Detail"`، من وزارة الداخلية والبلديات).
+
+**التحقق من الحيوية**: `app/forms/page.tsx` يستورد `TX_ALL`/`filterTxAll`/`filterTxForms` ويعرض `{isAr ? tx.title : (tx.titleEn || tx.title)}` بلا أي حارس لجودة البيانات (بخلاف `isCorruptDictRepr()` المستخدم لمشكلة مشابهة في `serviceFAQ.ts`) — في السطرين 223 و272، وتبويب `forms-tx` (الذي يحوي هذه السجلات) هو التبويب الافتراضي عند فتح `/forms` (`useState<ViewTab>('forms-tx')`). حتى زر "اسأل دليلك" يُدرج النص الإنجليزي الخام داخل جملة عربية: `` `ما هي متطلبات وإجراءات معاملة: ${tx.title}؟` ``.
+
+**الإصلاح**: في نقطة بناء `TX_ALL` نفسها — إزالة لاحقة الاستخراج `" - E-Services Detail"`، وللسجلات الـ61 التي لا تحتوي أي حرف عربي حقيقي، إضافة اسم الوزارة العربي (متوفر دائماً) كبادئة بدل عرض نص إنجليزي/رمز خام كعنوان عربي:
+```ts
+const hasArabicChars = (s: string) => /[؀-ۿ]/.test(s)
+const stripScrapeSuffix = (s: string) => s.replace(/\s*-\s*E-Services Detail\s*$/i, '').trim()
+
+export const TX_ALL:TxItem[]=_R.map(([title,mid,hf,titleEn],i)=>{
+  const cleanTitle = stripScrapeSuffix(title)
+  const cleanTitleEn = stripScrapeSuffix(titleEn || title)
+  return {
+    id:`tx-${i}`,
+    title: hasArabicChars(cleanTitle) ? cleanTitle : `${_M[mid][0]} — ${cleanTitle}`,
+    titleEn: cleanTitleEn,
+    ministry:_M[mid][0],ministryEn:_M[mid][1],ministrySlug:_M[mid][2],icon:_M[mid][3],
+    pdfUrl:_P[i]||'',hasForm:hf===1
+  }
+})
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `lib/allTransactions.ts` (نقطة بناء `TX_ALL` وحدها، لم تُعدَّل بيانات `_R` الخام نفسها ولا أي حقل آخر).
+
+### تحديث (batch #503) — رمز QR لمشاركة الإجراء يشير إلى نطاق ميت غير موجود
+
+**المشكلة**: `components/ProcedureQRShare.tsx:276` كان يبني الرابط المُرمَّز في QR باستخدام `https://dalilak.app/...` — نطاق مختلف تماماً عن التطبيق الفعلي. تحقّق فعلي: زيارة `https://dalilak.app` أدت لانتهاء المهلة (timeout) دون أي استجابة؛ بينما `https://dalilak-frontend.vercel.app` (النطاق الحقيقي) يعرض الصفحة الرئيسية الفعلية لدليلك.
+
+**التحقق من التفرّد**: بحث شامل عبر الكود أظهر أن كل موضع آخر يبني رابطاً كاملاً (`app/layout.tsx` — `metadataBase`، `app/sitemap.ts`، `app/robots.ts`، `lib/breadcrumbJsonLd.ts`، `components/ProcedureShareViaEmail.tsx`، `components/ChatMessageActions.tsx`) يستخدم `https://dalilak-frontend.vercel.app` بشكل متسق — `ProcedureQRShare.tsx` هو الملف الوحيد الذي كان يشير لنطاق مختلف.
+
+**التحقق من الحيوية**: المكوّن مستورد ومُستخدم فعلياً في `app/procedures/page.tsx:1050`، ويظهر كزر/شريحة "QR" على كل بطاقة إجراء موسّعة، بنافذة منبثقة نصّها "امسح الرمز بكاميرا هاتفك للوصول المباشر" — وعداً لا يتحقق أبداً لأن الرابط المُرمَّز كان يشير لنطاق ميت.
+
+**الإصلاح**: تصحيح النطاق إلى `https://dalilak-frontend.vercel.app`، مطابقاً لكل الاستخدامات الأخرى في الكود:
+```ts
+const url = `https://dalilak-frontend.vercel.app/procedures?q=${encodeURIComponent(isAr ? titleAr : (titleEn || titleAr))}`
+```
+
+**ملاحظة للمتابعة**: حتى بعد هذا الإصلاح، الرابط لا يزال يستخدم بحثاً نصياً حراً بالعنوان (`?q=`) بدل معرّف الإجراء الثابت (`proc.code`، المُمرَّر للمكوّن لكنه غير مُستخدم فعلياً في بناء الرابط)، و`app/procedures/page.tsx` لا يقرأ حالياً أي `?q=` من رابط الصفحة عبر `useSearchParams()` ليطبّق فلترة فعلية عند الوصول — فالوعد الكامل بـ"الوصول المباشر" يتطلب تعديلاً أوسع خارج هذا المكوّن (قراءة معامل الرابط وتطبيق فلترة دقيقة بالمعرّف). هذا الإصلاح يعالج العطل الأساسي (النطاق الميت) فقط، وهو الإصلاح الآمن والفوري القابل للتحقق.
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ProcedureQRShare.tsx` (سطر واحد + تعليق توضيحي).
+
+### تحديث (batch #504) — مشاركة الإجراء بالبريد الإلكتروني تُدرج الخطوات بالعربية دائماً حتى في وضع اللغة الإنجليزية
+
+**المشكلة**: `components/ProcedureShareViaEmail.tsx:29` (داخل `buildMailto()`) — حقل `steps` كان الحقل الوحيد بلا تفريع `isAr`:
+```ts
+const steps = proc.steps.map((s, i) => `${i + 1}. ${s}`)
+```
+بينما كل حقل آخر في نفس الدالة (`title`، `ministry`، `fee`، `time`، وحتى `docs`) يتفرّع بشكل صحيح على `isAr` مع الرجوع لنسخته الإنجليزية `_en` عند توفرها.
+
+**التحقق من الحيوية**: `app/procedures/page.tsx:34/1045` يستورد ويعرض المكوّن فعلياً في قسم "مشاركة وطباعة" لكل بطاقة إجراء، مُمرِّراً `proc` و`isAr` الحقيقيين. تحقّق عبر Node أن `steps_en` مُعبَّأ فعلياً في جميع الإجراءات الـ71 بملف `lib/enrichedProcedures.ts` — أي أن الخلل يؤثر على كل إجراء، وليس حالة بيانات جزئية.
+
+**دليل إضافي على أن هذا سهو لا تصميم مقصود**: زر "مشاركة عبر واتساب" المجاور (في `app/procedures/page.tsx:1011`) يطبّق المنطق الصحيح فعلاً: `isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps)` — ما يؤكد أن `ProcedureShareViaEmail.tsx` هو الموضع الوحيد الذي فاته هذا التفريع.
+
+**الأثر**: مستخدم بوضع اللغة الإنجليزية يضغط "مشاركة بالبريد" يحصل على رسالة بعنوان وتحية وتسميات إنجليزية، لكن خطوات الإجراء نفسها بالعربية في منتصف الرسالة — غير مفهومة لمستلم لا يقرأ العربية، ومتناقضة مع زر واتساب المجاور في نفس الواجهة.
+
+**الإصلاح**:
+```ts
+const steps = (isAr ? proc.steps : (proc.steps_en?.length ? proc.steps_en : proc.steps))
+  .map((s, i) => `${i + 1}. ${s}`)
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ProcedureShareViaEmail.tsx` (سطر واحد + تعليق توضيحي).
+
+### تحديث (batch #505) — سجل نشاط الإجراء لا يسجّل أبداً أحداث "بدأت"/"أكملت"، فقط "تم العرض"
+
+**المشكلة**: `components/ProcedureHistoryLog.tsx` مبني بالكامل لدعم ثلاثة أحداث: `viewed`/`started`/`completed` (تسميات، أيقونات، منطق إزالة التكرار — كلها جاهزة في `EVENT_LABELS`)، لكن دالة `addHistoryEvent()` المُصدَّرة منه لها موضع استدعاء واحد فقط في كامل الكود (تأكيد عبر `grep -rn "addHistoryEvent("`): الاستدعاء الداخلي لحدث `'viewed'` في الملف نفسه. لا `ProcedureStartButton.tsx`'s `setStartDate()` ولا `ProcedureCompletionBadge.tsx`'s `markCompleted()` كانا يستدعيانها.
+
+**التحقق من الحيوية**: الثلاثة مكوّنات (`ProcedureStartButton`، `ProcedureCompletionBadge`، `ProcedureHistoryLog`) مستوردة ومعروضة متجاورة في نفس بطاقة الإجراء الموسّعة (`app/procedures/page.tsx:871/872/880`).
+
+**الأثر**: مستخدم يضغط "بدأت هذه المعاملة" ثم "أنهيت هذه المعاملة" — كلا الزرّين يُحدّثان شارتهما الخاصة بنجاح — لكن "سجل النشاط" أسفلهما مباشرة لا يعرض هذين الحدثين أبداً؛ يبقى عالقاً على "تم العرض" إلى الأبد مهما تقدّم المستخدم فعلياً في الإجراء. سطر "آخر حدث" في رأس السجل يبقى مضللاً بعرض "👁️ تم العرض" حتى بعد إكمال الإجراء كلياً.
+
+**الإصلاح**: استدعاء `addHistoryEvent(code, 'started')` داخل `setStartDate()` و`addHistoryEvent(code, 'completed')` داخل `markCompleted()` — لا خطر من استيراد دائري (`ProcedureHistoryLog.tsx` لا يستورد من أي من الملفين):
+```ts
+// ProcedureStartButton.tsx
+export function setStartDate(code: string) {
+  const today = todayLb()
+  try { localStorage.setItem(LS_PREFIX + code, today) } catch {}
+  addHistoryEvent(code, 'started')
+  ...
+}
+// ProcedureCompletionBadge.tsx
+export function markCompleted(code: string) {
+  const today = todayLb()
+  try { localStorage.setItem(LS_COMPLETE + code, today) } catch {}
+  addHistoryEvent(code, 'completed')
+  ...
+}
+```
+
+`tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ProcedureStartButton.tsx` و`components/ProcedureCompletionBadge.tsx` (استيراد + سطر واحد لكل منهما).
+
 هذا الملف سيُحدَّث مع كل دفعة تالية — لا يُعاد كتابته من الصفر، بل تُضاف/تُحدَّث بنوده.

@@ -16,6 +16,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { getStartDate, todayLb } from '@/components/ProcedureStartButton'
+import { addHistoryEvent } from '@/components/ProcedureHistoryLog'
 
 const LS_COMPLETE = 'dalilak_completed_'
 const LS_STARTED  = 'dalilak_started_'
@@ -29,9 +30,15 @@ export function getCompletionDate(code: string): string | null {
 // it. During the ~2-3h window after Beirut midnight but before UTC
 // midnight, this recorded and permanently displayed the wrong (previous
 // day's) completion date. Now uses the shared todayLb() helper.
+// batch #505: added addHistoryEvent(code, 'completed') -- same gap as
+// ProcedureStartButton.tsx's setStartDate() (fixed alongside this):
+// ProcedureHistoryLog.tsx already has full built-in support for a
+// 'completed' event but had zero real call sites, so the activity log
+// could never reflect a user finishing a procedure.
 export function markCompleted(code: string) {
   const today = todayLb()
   try { localStorage.setItem(LS_COMPLETE + code, today) } catch {}
+  addHistoryEvent(code, 'completed')
   window.dispatchEvent(new Event('dalilak_saved_change'))
   window.dispatchEvent(new Event('storage'))
 }

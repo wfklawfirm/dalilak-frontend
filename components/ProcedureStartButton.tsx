@@ -17,6 +17,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import { addHistoryEvent } from '@/components/ProcedureHistoryLog'
 
 const LS_PREFIX = 'dalilak_started_'
 
@@ -36,9 +37,19 @@ export function todayLb(): string {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Beirut' })
 }
 
+// batch #505: added addHistoryEvent(code, 'started') -- ProcedureHistoryLog.tsx
+// (rendered right below this button in app/procedures/page.tsx) has full
+// built-in support for a 'started' event (label, icon, dedup logic) but had
+// exactly one call site in the whole repo (its own internal 'viewed'
+// auto-log). Clicking "Start" updated this button's own badge but the
+// adjacent activity log could never show it -- "Activity log" would show
+// only "Viewed" forever, even after a user started and finished a
+// procedure. Wiring this in (and the matching 'completed' event in
+// ProcedureCompletionBadge.tsx) lets the log reflect real user progress.
 export function setStartDate(code: string) {
   const today = todayLb()
   try { localStorage.setItem(LS_PREFIX + code, today) } catch {}
+  addHistoryEvent(code, 'started')
   window.dispatchEvent(new Event('dalilak_saved_change'))
   window.dispatchEvent(new Event('storage'))
 }
