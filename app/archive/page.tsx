@@ -3,7 +3,7 @@
 /**
  * /archive — أرشيف الوثائق الرسمية
  *
- * صفحة بحث/تصفح لأكثر من 4300 وثيقة حكومية لبنانية حقيقية (قرارات مصرف
+ * صفحة بحث/تصفح لأكثر من 5300 وثيقة حكومية لبنانية حقيقية (قرارات مصرف
  * لبنان، تعاميم جمركية، قرارات وزارية، تقارير رسمية، محاضر، نماذج طلبات)
  * مستخرجة من أرشيف فعلي وليست بيانات تجريبية. كل سجل مرتبط بملف PDF/XLSX
  * أصلي قابل للتحميل (مستضاف على مستودع GitHub منفصل — راجع
@@ -79,8 +79,8 @@ export default function ArchivePage() {
 
         <p style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 14px' }}>
           {isAr
-            ? 'أرشيف بحثي لوثائق حكومية لبنانية حقيقية — قرارات، تعاميم، تقارير، ومحاضر من 18 جهة رسمية. كل وثيقة هنا مستخرجة من ملف أصلي قابل للتحميل.'
-            : 'A searchable archive of real Lebanese government documents — decisions, circulars, reports, and minutes from 18 official bodies. Every document here is extracted from a downloadable original file.'}
+            ? 'أرشيف بحثي لوثائق حكومية لبنانية حقيقية — قرارات، تعاميم، تقارير، ومحاضر من 19 جهة رسمية. كل وثيقة هنا مستخرجة من ملف أصلي قابل للتحميل.'
+            : 'A searchable archive of real Lebanese government documents — decisions, circulars, reports, and minutes from 19 official bodies. Every document here is extracted from a downloadable original file.'}
         </p>
 
         <StatsRow
