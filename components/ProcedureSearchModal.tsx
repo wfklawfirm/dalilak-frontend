@@ -16,6 +16,16 @@ import { normalizeForSearch } from '@/lib/arabicNormalize'
 const LS_RECENT = 'dalilak_proc_searches'
 const MAX_RECENT = 6
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493, same
+// rule fixed once before in CostEstimator.tsx (batch #483) but never
+// applied here (58 of 71 real procedures need the plural "وثائق").
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 function loadRecent(): string[] {
   try {
     const raw = localStorage.getItem(LS_RECENT)
@@ -282,7 +292,7 @@ export default function ProcedureSearchModal({ onClose, onSelect, onAsk }: Props
                       </span>
                       {docs.length > 0 && (
                         <span style={{ fontSize: 10, color: 'var(--text-3)' }}>
-                          · 📋 {docs.length} {isAr ? 'وثيقة' : 'docs'}
+                          · 📋 {isAr ? arDocsUnit(docs.length) : `${docs.length} docs`}
                         </span>
                       )}
                       {steps.length > 0 && (

@@ -1878,4 +1878,22 @@ const today = new Date().toISOString().slice(0,10)    // اللحظة الحال
 
 `tsc --noEmit` نظيف (exit 0). إصلاح محصور في `components/ProcedureEstimatedCompletion.tsx`.
 
+### تحديث (batch #493) — خلل "وثيقة" لم يُصلَح إلا في ملف واحد، رغم إغلاقه سابقاً في السجلّ
+
+**تصحيح مهم**: تبيّن أن قاعدة التطابق العددي لكلمة "وثيقة" (batch #483) طُبِّقت في `CostEstimator.tsx` فقط — وليس في "6 مكوّنات" كما أُشير خطأً في تعليقات لاحقة (بالمقارنة مع "يوم" الذي أُصلح فعلاً في 6 مكوّنات). نفس النمط المكشوف (اسم مفرد ثابت بجانب عدّاد متغيّر) بقي حياً وغير مُصلَح في 6 مكوّنات أخرى.
+
+**السجلات المتأثرة**: فُحص التوزيع الفعلي لطول `requiredDocuments` عبر كل الـ71 سجلاً في `lib/enrichedProcedures.ts`: 3 سجلات بطول 1 (صحيح بالمصادفة)، 4 سجلات بطول 2 (تحتاج مثنى "وثيقتين")، 58 سجلاً بطول 3-10 (تحتاج جمعاً "وثائق")، 6 سجلات بطول 11+ (صحيح بالمصادفة) — أي **62 من 71 (87%)** يعرض نصاً مخالفاً للقواعد.
+
+**المكوّنات المُصلَحة في هذه الدفعة** (كلها تُستخدَم فعلياً في `app/procedures/page.tsx` و/أو `app/services/page.tsx`، تحقّق عبر grep):
+- `components/ProcedureDocReadinessBar.tsx:107` — `${doneCount} من ${docs.length} وثيقة جاهزة` (مفرد ثابت).
+- `components/ProcedureRelatedSuggestions.tsx:135` — `{docCount} وثيقة` (مفرد ثابت).
+- `components/ProcedureSearchModal.tsx:285` — `{docs.length} وثيقة` (مفرد ثابت).
+- `components/ProcedureProgressBadge.tsx:96,135` — `${checked} من ${total} وثيقة محضّرة` و`${checked}/${total} وثيقة` (مفرد ثابت، حتى في وضع compact).
+- `components/ProcedureChecklistExport.tsx:89` — `${doneCount} من ${docs.length} وثيقة جاهزة` (في نص القائمة القابلة للطباعة/التصدير).
+- `components/ReadinessChecker.tsx:226` — **خلل معكوس**: `${done} من ${total} وثائق جاهزة` (جمع ثابت دائماً) — خطأ للسجلات الثلاثة ذات وثيقة واحدة.
+
+**الإصلاح**: إضافة دالة `arDocsUnit(n)` (نفس قاعدة CostEstimator.tsx: مفرد/مثنى مجرور/جمع/تمييز) محلياً في كل ملف من الستة، واستبدال النص الثابت بها.
+
+`tsc --noEmit` نظيف (exit 0) بعد تعديل الملفات الستة.
+
 هذا الملف سيُحدَّث مع كل دفعة تالية — لا يُعاد كتابته من الصفر، بل تُضاف/تُحدَّث بنوده.

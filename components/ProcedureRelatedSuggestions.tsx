@@ -24,6 +24,17 @@ interface Props {
   onAsk?: (q: string) => void
 }
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493, same
+// rule fixed once before in CostEstimator.tsx (batch #483) but never
+// applied here, so this chip's bare "وثيقة" was wrong for most real
+// procedures (58 of 71 need the plural "وثائق", 4 need the dual "وثيقتين").
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 function getSuggestions(proc: EnrichedProcedure, isAr: boolean): EnrichedProcedure[] {
   const others = ENRICHED_PROCEDURES.filter(p => p.code !== proc.code)
 
@@ -132,7 +143,7 @@ export default function ProcedureRelatedSuggestions({ proc, onSelect, onAsk }: P
                     🏛️ {ministry}
                     {docCount > 0 && (
                       <span style={{ color: 'var(--text-3)', fontWeight: 400, marginInlineStart: 6 }}>
-                        · {docCount} {isAr ? 'وثيقة' : 'docs'}
+                        · {isAr ? arDocsUnit(docCount) : `${docCount} docs`}
                       </span>
                     )}
                   </div>

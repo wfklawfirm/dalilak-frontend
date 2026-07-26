@@ -28,6 +28,16 @@ import { useLanguage } from '@/lib/LanguageContext'
 
 const LS_PREFIX = 'dalilak_doc_'
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493, same
+// rule fixed once before in CostEstimator.tsx (batch #483) but never
+// applied here (58 of 71 real procedures need the plural "وثائق").
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 interface Props {
   code: string
   total: number
@@ -83,7 +93,7 @@ export default function ProcedureProgressBadge({ code, total, compact = false }:
   if (compact) {
     return (
       <span
-        title={isAr ? `${checked} من ${total} وثيقة محضّرة` : `${checked} of ${total} docs ready`}
+        title={isAr ? `${checked} من ${arDocsUnit(total)} محضّرة` : `${checked} of ${total} docs ready`}
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 3,
           padding: '1px 6px', borderRadius: 5,
@@ -122,7 +132,7 @@ export default function ProcedureProgressBadge({ code, total, compact = false }:
       <span style={{ fontSize: 10.5, fontWeight: 700, color, whiteSpace: 'nowrap' }}>
         {done
           ? (isAr ? '✅ الوثائق جاهزة' : '✅ Docs ready')
-          : (isAr ? `${checked}/${total} وثيقة` : `${checked}/${total} docs`)
+          : (isAr ? `${checked}/${arDocsUnit(total)}` : `${checked}/${total} docs`)
         }
       </span>
     </div>

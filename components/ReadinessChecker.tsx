@@ -34,6 +34,18 @@ interface ReadinessCheckerProps {
   docKeyPrefix?: string
 }
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493, same
+// rule fixed once before in CostEstimator.tsx (batch #483) but never
+// applied here. This site had the INVERSE bug (always hard-coded plural
+// "وثائق"), wrong for the 3 real procedures with exactly 1 required
+// document.
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 export default function ReadinessChecker({
   storageKey,
   documentsAr,
@@ -223,7 +235,7 @@ export default function ReadinessChecker({
           <span style={{ fontSize: 12.5, fontWeight: 700, color: barText }}>
             {ready
               ? (isAr ? '✅ أنت جاهز تماماً!' : '✅ You\'re fully ready!')
-              : (isAr ? `${done} من ${total} وثائق جاهزة` : `${done} of ${total} documents ready`)}
+              : (isAr ? `${done} من ${arDocsUnit(total)} جاهزة` : `${done} of ${total} documents ready`)}
           </span>
           <span style={{ fontSize: 18, fontWeight: 900, color: barText, lineHeight: 1 }}>
             {pct}%

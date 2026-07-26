@@ -24,6 +24,16 @@ interface Props {
   isAr: boolean
 }
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493, same
+// rule fixed once before in CostEstimator.tsx (batch #483) but never
+// applied here (58 of 71 real procedures need the plural "وثائق").
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 function loadCheckState(code: string, count: number): boolean[] {
   try {
     return Array.from({ length: count }, (_, i) =>
@@ -86,7 +96,7 @@ export default function ProcedureChecklistExport({ code, docs, titleAr, titleEn,
 <body>
 <h1>${title}</h1>
 <div class="meta">${isAr ? 'تاريخ الطباعة:' : 'Printed:'} ${today} — dalilak.vercel.app</div>
-<div class="progress">${isAr ? `${doneCount} من ${docs.length} وثيقة جاهزة` : `${doneCount} of ${docs.length} documents ready`}</div>
+<div class="progress">${isAr ? `${doneCount} من ${arDocsUnit(docs.length)} جاهزة` : `${doneCount} of ${docs.length} documents ready`}</div>
 <table>
   <thead>
     <tr>

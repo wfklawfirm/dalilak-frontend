@@ -34,6 +34,19 @@ interface Props {
 
 function getKey(code: string, idx: number) { return `dalilak_doc_${code}_${idx}` }
 
+// Arabic number-noun agreement for "وثيقة" (document) — batch #493. This
+// exact rule was fixed once before (CostEstimator.tsx, batch #483) but
+// never applied here, so this bar's own label still used a bare "وثيقة"
+// regardless of count. Checked against all 71 real ENRICHED_PROCEDURES
+// requiredDocuments lengths: 58 of 71 (82%) fall in the 3-10 plural range
+// and 4 more need the dual — only 9 of 71 (length 1 or 11+) were correct.
+function arDocsUnit(n: number): string {
+  if (n === 1) return 'وثيقة واحدة'
+  if (n === 2) return 'وثيقتين'
+  if (n >= 3 && n <= 10) return `${n} وثائق`
+  return `${n} وثيقة`
+}
+
 function loadReady(code: string, total: number): boolean[] {
   // Must check === '1', not just truthiness — ProcedureDocumentChecklist.tsx
   // (writing/reading this same key) writes the literal string '0' for an
@@ -104,7 +117,7 @@ export default function ProcedureDocReadinessBar({ code, docs, isAr }: Props) {
           </div>
           <div style={{ fontSize: 10, color: '#918B82', marginTop: 1 }}>
             {isAr
-              ? `${doneCount} من ${docs.length} وثيقة جاهزة${allReady ? ' — ✅ مكتمل!' : ''}`
+              ? `${doneCount} من ${arDocsUnit(docs.length)} جاهزة${allReady ? ' — ✅ مكتمل!' : ''}`
               : `${doneCount} of ${docs.length} ready${allReady ? ' — ✅ All set!' : ''}`}
           </div>
         </div>
