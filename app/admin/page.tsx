@@ -485,15 +485,23 @@ export default function AdminPage() {
             <div style={SECTION}>
               <h2 style={{ fontSize: 15, fontWeight: 800, color: '#191713', margin: '0 0 18px' }}>{isAr ? 'إنشاء مستخدم جديد' : 'Create new user'}</h2>
               <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {/* batch #549: هذه الحقول الخمسة والقائمة المنسدلة "الخطة" أدناها
+                    كانت الاستثناء الوحيد المتبقي في هذا الملف ثنائي اللغة بالكامل —
+                    مكتوبة بالعربية فقط بلا فحص isAr، رغم أن عنوان القسم وزر الإرسال
+                    في نفس النموذج يتحققان من isAr بشكل صحيح، وأن PLAN_LABELS_AR/EN
+                    (سطر 48-52) مُعرَّفتان بالفعل وتُستخدمان لعرض شارة الخطة في جدول
+                    المستخدمين — لم تُستخدما هنا. مسؤول يستخدم واجهة إنجليزية كان يرى
+                    نموذج "Create new user" لكن كل تسميات الحقول والقائمة المنسدلة
+                    بالعربية. */}
                 {[
-                  { k: 'full_name', label: 'الاسم الكامل',      type: 'text',     placeholder: 'أحمد علي' },
-                  { k: 'username',  label: 'اسم المستخدم',      type: 'text',     placeholder: 'username',          dir: 'ltr' },
-                  { k: 'email',     label: 'البريد الإلكتروني', type: 'email',    placeholder: 'you@example.com',   dir: 'ltr' },
-                  { k: 'phone',     label: 'الهاتف',             type: 'tel',      placeholder: '+961 xx xxx xxx',  dir: 'ltr' },
-                  { k: 'password',  label: 'كلمة المرور',        type: 'password', placeholder: '6 أحرف على الأقل' },
+                  { k: 'full_name', label: 'الاسم الكامل',      labelEn: 'Full name',  type: 'text',     placeholder: 'أحمد علي' },
+                  { k: 'username',  label: 'اسم المستخدم',      labelEn: 'Username',   type: 'text',     placeholder: 'username',          dir: 'ltr' },
+                  { k: 'email',     label: 'البريد الإلكتروني', labelEn: 'Email',      type: 'email',    placeholder: 'you@example.com',   dir: 'ltr' },
+                  { k: 'phone',     label: 'الهاتف',             labelEn: 'Phone',      type: 'tel',      placeholder: '+961 xx xxx xxx',  dir: 'ltr' },
+                  { k: 'password',  label: 'كلمة المرور',        labelEn: 'Password',   type: 'password', placeholder: '6 أحرف على الأقل' },
                 ].map(f => (
                   <div key={f.k}>
-                    <label htmlFor={f.k} style={LBL}>{f.label}</label>
+                    <label htmlFor={f.k} style={LBL}>{isAr ? f.label : f.labelEn}</label>
                     <input
                       id={f.k}
                       type={f.type}
@@ -507,11 +515,11 @@ export default function AdminPage() {
                   </div>
                 ))}
                 <div>
-                  <label htmlFor="new-user-plan" style={LBL}>الخطة</label>
-                  <select id="new-user-plan" value={newUser.plan} onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))} aria-label="خطة المستخدم" style={INP}>
-                    <option value="trial">تجريبي (3 أيام)</option>
-                    <option value="paid">مدفوع</option>
-                    <option value="admin">مشرف</option>
+                  <label htmlFor="new-user-plan" style={LBL}>{isAr ? 'الخطة' : 'Plan'}</label>
+                  <select id="new-user-plan" value={newUser.plan} onChange={e => setNewUser(u => ({ ...u, plan: e.target.value }))} aria-label={isAr ? 'خطة المستخدم' : 'User plan'} style={INP}>
+                    <option value="trial">{isAr ? 'تجريبي (3 أيام)' : 'Trial (3 days)'}</option>
+                    <option value="paid">{PLAN_LABELS.paid}</option>
+                    <option value="admin">{PLAN_LABELS.admin}</option>
                   </select>
                 </div>
                 <button type="submit" disabled={loading} style={{ padding: '11px 0', background: 'linear-gradient(135deg, #8F1D2C, #741622)', color: '#fff', borderRadius: 12, border: 'none', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}>

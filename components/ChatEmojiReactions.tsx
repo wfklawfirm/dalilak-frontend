@@ -3,11 +3,25 @@
 /**
  * ChatEmojiReactions — emoji reaction bar on assistant messages.
  *
- * LS key: dalilak_reaction_{msgId}  → emoji string
- * Props: { msgId: string; isAr: boolean }
+ * LS key: dalilak_reaction_{contentHash}  → emoji string
+ * Props: { content: string; isAr: boolean }
  *
  * Shows 4 reaction buttons. Selected one is highlighted.
  * Selecting the same emoji again clears it.
+ *
+ * batch #547: previously keyed by `msgId`, which the only caller
+ * (app/page.tsx) passed as `String(i)` — the message's position in the
+ * live `messages` render array. That array is reused across sessions:
+ * "New chat" resets it to [], and ChatHistoryPanel's restore feature
+ * (up to 5 saved sessions) replaces it wholesale — so every conversation's
+ * 3rd assistant reply, 5th reply, etc. shared the same `dalilak_reaction_2`
+ * / `dalilak_reaction_4` key. Reacting in one chat could make an unrelated
+ * chat (new or restored) appear pre-reacted at the same position, and
+ * toggling it there would silently overwrite the original chat's reaction.
+ * Sibling controls in the same row (ChatPinButton, ChatVoicePlayback,
+ * ChatSaveToNotes) already key off the message's actual text, not its
+ * position — switched this component to match: derive a stable key from
+ * the message content itself (a short hash) instead of array index.
  */
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -15,28 +29,37 @@ import React, { useState, useEffect, useCallback } from 'react'
 const EMOJIS = ['👍', '❤️', '💡', '🙏']
 
 interface Props {
-  msgId: string
+  content: string
   isAr: boolean
 }
 
-function lsKey(id: string) { return `dalilak_reaction_${id}` }
+// Small stable string hash (djb2) — content-derived, not position-derived.
+function hashContent(s: string): string {
+  let h = 5381
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) + h + s.charCodeAt(i)) | 0
+  }
+  return (h >>> 0).toString(36)
+}
 
-export default function ChatEmojiReactions({ msgId, isAr }: Props) {
+function lsKey(content: string) { return `dalilak_reaction_${hashContent(content)}` }
+
+export default function ChatEmojiReactions({ content, isAr }: Props) {
   const [mounted, setMounted]     = useState(false)
   const [selected, setSelected]   = useState<string>('')
   const [flash, setFlash]         = useState<string>('')
 
   useEffect(() => {
     setMounted(true)
-    try { setSelected(localStorage.getItem(lsKey(msgId)) ?? '') } catch {}
-  }, [msgId])
+    try { setSelected(localStorage.getItem(lsKey(content)) ?? '') } catch {}
+  }, [content])
 
   const pick = useCallback((emoji: string) => {
     const next = selected === emoji ? '' : emoji
     setSelected(next)
-    try { next ? localStorage.setItem(lsKey(msgId), next) : localStorage.removeItem(lsKey(msgId)) } catch {}
+    try { next ? localStorage.setItem(lsKey(content), next) : localStorage.removeItem(lsKey(content)) } catch {}
     if (next) { setFlash(emoji); setTimeout(() => setFlash(''), 400) }
-  }, [selected, msgId])
+  }, [selected, content])
 
   if (!mounted) return null
 

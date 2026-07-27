@@ -858,7 +858,13 @@ export default function DocumentIntelligenceView({
                   <div style={{ fontSize: 10.5, color: 'var(--text-3)', marginTop: 2 }}>{p.reason}</div>
                 </div>
                 <span style={{ fontSize: 9, fontWeight: 700, color: '#8F1D2C', background: '#F8EDEF', borderRadius: 20, padding: '2px 8px' }}>
-                  {p.relevance === 'high' ? '↑ عالٍ' : p.relevance === 'medium' ? '→ متوسط' : '↓ منخفض'}
+                  {/* batch #548: كان هذا الشارة الوحيدة في المكوّن بلا فحص isAr — تظهر
+                      بالعربية دائماً حتى في وضع اللغة الإنجليزية، رغم أن نفس البيانات
+                      (relevance) لها بالفعل الصيغة الصحيحة مع isAr في RelatedProceduresPanel
+                      أعلى في هذا الملف (سطر 165-167). */}
+                  {isAr
+                    ? (p.relevance === 'high' ? '↑ عالٍ' : p.relevance === 'medium' ? '→ متوسط' : '↓ منخفض')
+                    : (p.relevance === 'high' ? '↑ High' : p.relevance === 'medium' ? '→ Medium' : '↓ Low')}
                 </span>
               </div>
             ))}

@@ -2229,7 +2229,7 @@ Question: ${text}`
                           <>
                             <ChatPinButton text={msg.content} isAr={isAr} />
                             <ChatVoicePlayback text={msg.content} isAr={isAr} />
-                            <ChatEmojiReactions msgId={String(i)} isAr={isAr} />
+                            <ChatEmojiReactions content={msg.content} isAr={isAr} />
                             <ChatSaveToNotes text={msg.content} isAr={isAr} />
                           </>
                         )}
