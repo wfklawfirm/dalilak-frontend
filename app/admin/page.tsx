@@ -153,14 +153,28 @@ export default function AdminPage() {
     } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
   }
 
+  // batch #542: same race-condition pattern just fixed in
+  // app/admin/content/page.tsx (batch #541) -- each filter chip re-triggers
+  // this fetch keyed on `status`, with no guard against an earlier
+  // (slower) request's response landing after a later one and silently
+  // overwriting contentGaps/gapStats with data for a filter the admin no
+  // longer has selected. Same request-sequence-ref fix.
+  const gapsLoadSeqRef = useRef(0)
+
   async function loadContentGaps(status?: string) {
+    const seq = ++gapsLoadSeqRef.current
     try {
       setLoading(true)
       const data = await adminGetContentGaps(status ?? gapFilter)
+      if (seq !== gapsLoadSeqRef.current) return // superseded by a newer request
       setContentGaps(data.gaps || [])
       setGapStats(data.stats || null)
-    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
-    finally { setLoading(false) }
+    } catch (e) {
+      if (seq !== gapsLoadSeqRef.current) return
+      flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true)
+    } finally {
+      if (seq === gapsLoadSeqRef.current) setLoading(false)
+    }
   }
 
   async function handleGapUpdate(gapId: string, status: string, notes?: string) {

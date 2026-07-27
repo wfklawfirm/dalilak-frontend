@@ -81,7 +81,19 @@ export default function ContentGovernancePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterStatus])
 
+  // batch #541: loadItems() is re-fired on every filterStatus change (and
+  // also called directly from create/transition/retry actions) with no
+  // guard against out-of-order responses. Fast admin tile-clicking could
+  // let an earlier request's (slower) response resolve AFTER a later one
+  // and silently overwrite `items` with stale/mismatched data -- most
+  // visibly when landing back on filterStatus==='all', where filteredItems
+  // is `items` directly (no client-side re-filter to mask it). Fixed with a
+  // request-sequence ref: only the response from the most recently-started
+  // call is allowed to update state.
+  const loadSeqRef = useRef(0)
+
   const loadItems = async () => {
+    const seq = ++loadSeqRef.current
     setLoading(true)
     try {
       const url = filterStatus === 'all'
@@ -90,9 +102,14 @@ export default function ContentGovernancePage() {
       const res = await fetch(url, { headers: authHeaders() })
       const data = await res.json()
       if (!res.ok) throw new Error(data?.detail || (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content'))
+      if (seq !== loadSeqRef.current) return // a newer request superseded this one
       setItems(data.items || [])
-    } catch (err) { setLoadError(err instanceof Error ? err.message : (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content')) }
-    finally { setLoading(false) }
+    } catch (err) {
+      if (seq !== loadSeqRef.current) return
+      setLoadError(err instanceof Error ? err.message : (isAr ? 'تعذّر تحميل المحتوى' : 'Could not load content'))
+    } finally {
+      if (seq === loadSeqRef.current) setLoading(false)
+    }
   }
 
   const loadAudit = async () => {
