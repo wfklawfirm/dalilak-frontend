@@ -534,20 +534,38 @@ export function ResponseActions({
   const [copied, setCopied] = useState(false)
   const [docsCopied, setDocsCopied] = useState(false)
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null)
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false)
+  const [feedbackError, setFeedbackError] = useState(false)
 
-  const submitFeedback = (rating: 'up' | 'down') => {
-    if (feedback) return  // already rated
-    setFeedback(rating)
-    fetch(API_URL + '/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify({
-        question: question || '',
-        answer: content.slice(0, 800),
-        rating,
-        confidence: confidence || 'unknown',
-      }),
-    }).catch(() => {})
+  // batch #545: نفس مشكلة batch #544 (FeedbackWidget.tsx) لكن هنا على أزرار
+  // 👍/👎 الملاصقة لكل رد -- كان setFeedback(rating) يُنفَّذ فوراً قبل انتظار
+  // نتيجة fetch، والذي كان fire-and-forget (`.catch(() => {})` بلا فحص
+  // res.ok). إذا فشل الإرسال فعلياً، يبقى الزر مضيئاً كأن التقييم وصل، ولأن
+  // `if (feedback) return` يمنع أي محاولة لاحقة، لا توجد وسيلة لإعادة
+  // الإرسال. أصبح الآن ينتظر res.ok فعلياً قبل تفعيل حالة "تم التقييم"،
+  // ويعيد الزر لحالته الأصلية مع مؤشر خطأ صغير عند الفشل للسماح بإعادة المحاولة.
+  const submitFeedback = async (rating: 'up' | 'down') => {
+    if (feedback || feedbackSubmitting) return
+    setFeedbackSubmitting(true)
+    setFeedbackError(false)
+    try {
+      const res = await fetch(API_URL + '/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({
+          question: question || '',
+          answer: content.slice(0, 800),
+          rating,
+          confidence: confidence || 'unknown',
+        }),
+      })
+      if (!res.ok) throw new Error('feedback submit failed')
+      setFeedback(rating)
+    } catch {
+      setFeedbackError(true)
+    } finally {
+      setFeedbackSubmitting(false)
+    }
   }
 
   const copy = () => {
@@ -627,6 +645,11 @@ export function ResponseActions({
         </svg>,
         isAr ? 'غير مفيد' : 'Not helpful',
         feedback === 'down', '#8F1D2C', '#F8EDEF', 'rgba(143,29,44,0.3)',
+      )}
+      {feedbackError && (
+        <span style={{ fontSize: 10, color: '#B91C1C', alignSelf: 'center' }}>
+          {isAr ? 'تعذّر إرسال التقييم، حاول مجدداً' : "Couldn't send, try again"}
+        </span>
       )}
     </div>
   )
