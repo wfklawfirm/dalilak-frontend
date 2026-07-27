@@ -65,6 +65,8 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
   const [hover, setHover] = useState(0)
   const [comment, setComment] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(false)
   const checkRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Record session start
@@ -99,12 +101,10 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
     if (checkRef.current) { clearInterval(checkRef.current); checkRef.current = null }
   }
 
-  const handleSubmit = () => {
-    if (rating === 0) return
-    try {
-      const fb: StoredFeedback = { rating, comment, ts: Date.now() }
-      localStorage.setItem(LS_KEY, JSON.stringify(fb))
-    } catch {}
+  const handleSubmit = async () => {
+    if (rating === 0 || submitting) return
+    setSubmitting(true)
+    setSubmitError(false)
     // batch #499: كان هذا التقييم يُخزَّن محلياً على جهاز المستخدم فقط ولا
     // يصل لأي مكان — يعرض "شكراً على تقييمك" مع أن الفريق لا يرى شيئاً.
     // يُرسَل الآن فعلياً لنقطة /feedback الحقيقية نفسها التي يستخدمها تقييم
@@ -112,18 +112,37 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
     // /admin/feedback الحقيقية. لا تعديل على شكل الـ Backend API — فقط
     // إعادة استخدام الحقول الموجودة أصلاً (rating بصيغة up/down، question،
     // answer) بإسقاط تقييم النجوم عليها.
-    fetch(`${API_URL}/feedback`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...authHeaders() },
-      body: JSON.stringify({
-        question: 'تقييم عام لتجربة الموقع (Site Feedback Widget)',
-        answer: comment ? `${rating}/5 نجوم — ${comment}` : `${rating}/5 نجوم`,
-        rating: rating >= 4 ? 'up' : 'down',
-        confidence: 'site_feedback',
-      }),
-    }).catch(() => {})
-    setSubmitted(true)
-    setTimeout(() => { setOpen(false); setVisible(false) }, 2000)
+    //
+    // batch #544: كان الإرسال fire-and-forget (`.catch(() => {})`) يتبعه
+    // فوراً `setSubmitted(true)` بلا انتظار النتيجة ولا فحص res.ok -- إذا
+    // فشل الطلب فعلياً (خادم متوقف، شبكة، توكن منتهي)، كان المستخدم يرى
+    // "🙏 شكراً على تقييمك!" رغم أن التقييم لم يصل إطلاقاً، ولا توجد أي
+    // وسيلة لإعادة المحاولة. أصبح الآن ينتظر الاستجابة فعلياً ولا يُظهر
+    // رسالة النجاح إلا بعد تأكّد وصول التقييم (res.ok)، مع رسالة خطأ وزر
+    // إعادة محاولة عند الفشل (والتقييم/التعليق يبقيان محفوظين في الحقول).
+    try {
+      const res = await fetch(`${API_URL}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({
+          question: 'تقييم عام لتجربة الموقع (Site Feedback Widget)',
+          answer: comment ? `${rating}/5 نجوم — ${comment}` : `${rating}/5 نجوم`,
+          rating: rating >= 4 ? 'up' : 'down',
+          confidence: 'site_feedback',
+        }),
+      })
+      if (!res.ok) throw new Error('feedback submit failed')
+      try {
+        const fb: StoredFeedback = { rating, comment, ts: Date.now() }
+        localStorage.setItem(LS_KEY, JSON.stringify(fb))
+      } catch {}
+      setSubmitted(true)
+      setTimeout(() => { setOpen(false); setVisible(false) }, 2000)
+    } catch {
+      setSubmitError(true)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (!visible) return null
@@ -226,20 +245,34 @@ export default function FeedbackWidget({ messageCount = 0 }: Props) {
             />
           )}
 
+          {submitError && (
+            <div style={{
+              fontSize: 11, color: '#B91C1C', background: '#FEF2F2',
+              border: '1px solid #FCA5A5', borderRadius: 8,
+              padding: '6px 9px', marginBottom: 8, textAlign: 'center',
+            }}>
+              {isAr ? 'تعذّر إرسال التقييم. حاول مرة أخرى.' : 'Could not send feedback. Please try again.'}
+            </div>
+          )}
+
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={rating === 0}
+            disabled={rating === 0 || submitting}
             style={{
               width: '100%', padding: '8px 0', borderRadius: 9,
               background: rating > 0 ? '#8F1D2C' : 'var(--bg)',
               color: rating > 0 ? '#fff' : 'var(--text-3)',
               border: '1px solid var(--border)',
-              fontSize: 12.5, fontWeight: 700, cursor: rating > 0 ? 'pointer' : 'default',
+              fontSize: 12.5, fontWeight: 700,
+              cursor: rating > 0 && !submitting ? 'pointer' : 'default',
+              opacity: submitting ? 0.7 : 1,
               fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
             }}
           >
-            {isAr ? 'إرسال التقييم' : 'Submit Feedback'}
+            {submitting
+              ? (isAr ? 'جارٍ الإرسال...' : 'Sending...')
+              : (isAr ? 'إرسال التقييم' : 'Submit Feedback')}
           </button>
         </div>
       )}
