@@ -133,24 +133,54 @@ export default function AdminPage() {
     try { setUsers((await adminListUsers()).users) } catch (e) { flash(e instanceof Error ? e.message : (isArRef.current ? 'خطأ في تحميل المستخدمين' : 'Failed to load users'), true) }
   }
 
+  // batch #543: loadResets/loadFeedback/loadEscalations are each re-triggered
+  // both by their tab's click handler and by an independent per-section
+  // "Refresh" button -- same out-of-order-response race already fixed for
+  // loadContentGaps (batch #542) and app/admin/content/page.tsx (batch #541),
+  // just left unpatched in these three sibling fetchers. Same
+  // request-sequence-ref fix, one ref per independent fetcher.
+  const resetsSeqRef = useRef(0)
+  const feedbackSeqRef = useRef(0)
+  const escalationsSeqRef = useRef(0)
+
   async function loadResets() {
-    try { setResets((await adminGetResets()).reset_codes) } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
+    const seq = ++resetsSeqRef.current
+    try {
+      const data = await adminGetResets()
+      if (seq !== resetsSeqRef.current) return
+      setResets(data.reset_codes)
+    } catch (e) {
+      if (seq !== resetsSeqRef.current) return
+      flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true)
+    }
   }
 
   async function loadFeedback() {
+    const seq = ++feedbackSeqRef.current
     try {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/feedback?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
-      setFeedback((await res.json()).feedback || [])
-    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
+      const data = await res.json()
+      if (seq !== feedbackSeqRef.current) return
+      setFeedback(data.feedback || [])
+    } catch (e) {
+      if (seq !== feedbackSeqRef.current) return
+      flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true)
+    }
   }
 
   async function loadEscalations() {
+    const seq = ++escalationsSeqRef.current
     try {
       const { getToken } = await import('@/lib/auth')
       const res = await fetch(`${API_URL}/admin/escalations?limit=100`, { headers: { Authorization: `Bearer ${getToken()}` } })
-      setEscalations((await res.json()).escalations || [])
-    } catch (e) { flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true) }
+      const data = await res.json()
+      if (seq !== escalationsSeqRef.current) return
+      setEscalations(data.escalations || [])
+    } catch (e) {
+      if (seq !== escalationsSeqRef.current) return
+      flash(e instanceof Error ? e.message : (isAr ? 'خطأ' : 'Error'), true)
+    }
   }
 
   // batch #542: same race-condition pattern just fixed in
