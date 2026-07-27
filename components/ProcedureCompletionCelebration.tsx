@@ -8,7 +8,9 @@
  *   - dalilak_started_{code}   — any value means started
  *   - dalilak_completed_{code} — any value means completed
  *
- * Condition: startedCount > 0 && startedCount === completedCount
+ * Condition: at least one started procedure, and every started procedure
+ * (by code) is also present in the completed set — NOT just count equality
+ * (see batch #546 fix note below checkAllComplete()).
  *
  * LS key: dalilak_celebration_dismissed_{weekKey}
  * Dismisses automatically after 6 seconds or on user click.
@@ -61,14 +63,23 @@ function createParticles(count: number): Particle[] {
 }
 
 function checkAllComplete(): boolean {
-  let started = 0, completed = 0
+  // batch #546: كان الشرط يقارن العدد فقط (started === completed)، لا
+  // الهوية. الحقلان `dalilak_started_{code}` و`dalilak_completed_{code}`
+  // مستقلان تماماً (تُكتب/تُحذف كل منهما من زر منفصل في
+  // ProcedureStartButton.tsx / ProcedureCompletionBadge.tsx). سيناريو حقيقي:
+  // المستخدم يُنهي معاملة A (started=1,completed=1)، ثم يلغي "بدأت" A فقط
+  // (started=0)، ثم يبدأ معاملة B غير منتهية (started=1) — العدّان يتطابقان
+  // (1===1) فتظهر شاشة "🏆 أنجزت كل شيء!" رغم أن B لم تُنجَز إطلاقاً. أصبح
+  // الشرط الآن يتحقق من أن كل كود "بدأته" موجود فعلاً ضمن مجموعة "أنجزته".
+  const startedCodes: string[] = []
+  const completedCodes = new Set<string>()
   try {
     for (const proc of ENRICHED_PROCEDURES) {
-      if (localStorage.getItem(`dalilak_started_${proc.code}`)) started++
-      if (localStorage.getItem(`dalilak_completed_${proc.code}`)) completed++
+      if (localStorage.getItem(`dalilak_started_${proc.code}`)) startedCodes.push(proc.code)
+      if (localStorage.getItem(`dalilak_completed_${proc.code}`)) completedCodes.add(proc.code)
     }
   } catch {}
-  return started > 0 && started === completed
+  return startedCodes.length > 0 && startedCodes.every(code => completedCodes.has(code))
 }
 
 export default function ProcedureCompletionCelebration() {
