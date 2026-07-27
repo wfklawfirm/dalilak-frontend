@@ -60,10 +60,24 @@ export function clearStartDate(code: string) {
   window.dispatchEvent(new Event('storage'))
 }
 
+// batch #551: same bug class as ProcedureDeadlineAlert.tsx (batch #550) --
+// `new Date(isoDate)` parses the stored "YYYY-MM-DD" as UTC midnight, then
+// `.setHours(0,0,0,0)` re-anchors it to the DEVICE's local midnight. For any
+// negative-UTC-offset device (North America -- this app's own documented
+// diaspora audience), that silently rewinds the stored start date one
+// calendar day. Verified with TZ=America/New_York: tapping "Start" stores
+// today's Beirut date via todayLb() (e.g. "2026-07-27"), but daysElapsed()
+// immediately showed "started 1 day ago" instead of "started today" for
+// that same click. batch #495 only fixed the write side (todayLb() instead
+// of toISOString()) -- this read-side re-parse was never touched. Fixed the
+// same way as #550: pure calendar-date arithmetic via Date.UTC, no local
+// timezone re-interpretation.
 function daysElapsed(isoDate: string): number {
-  const start = new Date(isoDate); start.setHours(0, 0, 0, 0)
-  const now   = new Date();        now.setHours(0, 0, 0, 0)
-  return Math.floor((now.getTime() - start.getTime()) / 86_400_000)
+  const [sy, sm, sd] = isoDate.split('-').map(Number)
+  const [ny, nm, nd] = todayLb().split('-').map(Number)
+  const start = Date.UTC(sy, (sm || 1) - 1, sd || 1)
+  const now = Date.UTC(ny, (nm || 1) - 1, nd || 1)
+  return Math.floor((now - start) / 86_400_000)
 }
 
 interface Props {
