@@ -103,9 +103,18 @@ export default function ProcedureStepHighlight({ code, steps, isAr }: Props) {
             const isCurrent = idx === currentIdx
             const isDone    = done[idx]
             return (
+              // batch #537: same keyboard-trap bug already fixed in the twin
+              // component ProcedureStepProgress.tsx (batch #536) -- a plain
+              // onClick div with no role/tabIndex/onKeyDown. Fixed the same way.
               <div
                 key={idx}
+                role="checkbox"
+                aria-checked={isDone}
+                tabIndex={0}
                 onClick={() => toggle(idx)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(idx) }
+                }}
                 style={{
                   display: 'flex', alignItems: 'flex-start', gap: 10,
                   padding: '8px 14px',

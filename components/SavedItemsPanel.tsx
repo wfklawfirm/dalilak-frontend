@@ -143,19 +143,27 @@ function SavedCard({
     }
   }
 
+  // batch #538: same keyboard-trap bug class fixed in batches #534-537 --
+  // this card had onClick + cursor:pointer but no role/tabIndex/onKeyDown,
+  // so it was only activatable by mouse despite visually signaling it's
+  // clickable whenever item.aiPrompt is set. Fixed by making the outer
+  // container non-interactive and moving the interactive role onto an
+  // inner wrapper that excludes the remove <button> -- putting role="button"
+  // on the outer div itself would still nest a real <button> inside an
+  // ARIA button, the same "interactive inside interactive" anti-pattern
+  // already fixed for actual <button>-in-<button> cases in batch #534.
+  const isInteractive = !!(item.aiPrompt && onAsk)
+
   return (
     <div
       style={{
         background: hovered ? 'var(--surface-muted)' : 'var(--surface)',
         padding: '10px 12px',
-        cursor: item.aiPrompt ? 'pointer' : 'default',
         transition: 'background 0.12s',
-        display: 'flex', flexDirection: 'column', gap: 6,
         position: 'relative',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={handleClick}
     >
       {/* Remove button — always visible on touch devices (no hover state
           to reveal it there), hover-revealed on pointer/mouse devices to
@@ -178,50 +186,63 @@ function SavedCard({
         ×
       </button>
 
-      {/* Icon + type badge */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span style={{ fontSize: 18 }}>{item.icon}</span>
-        <span style={{
-          fontSize: 9.5, fontWeight: 700, padding: '1px 6px', borderRadius: 10,
-          background: 'var(--brand-soft)', color: 'var(--brand)',
-        }}>
-          {isAr
-            ? { procedure: 'إجراء', enriched: 'إجراء', service: 'خدمة', journey: 'رحلة', faq: 'سؤال' }[item.type]
-            : { procedure: 'Procedure', enriched: 'Procedure', service: 'Service', journey: 'Journey', faq: 'FAQ' }[item.type]}
-        </span>
-      </div>
-
-      {/* Title */}
-      <div style={{
-        fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)',
-        lineHeight: 1.4,
-        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-        overflow: 'hidden',
-      }}>
-        {isAr ? item.titleAr : item.titleEn}
-      </div>
-
-      {/* Subtitle */}
-      <div style={{
-        fontSize: 11, color: 'var(--text-3)',
-        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-      }}>
-        {isAr ? item.subtitleAr : item.subtitleEn}
-      </div>
-
-      {/* Ask CTA */}
-      {item.aiPrompt && (
-        <div className="saved-ask-cta" style={{
-          display: 'flex', alignItems: 'center', gap: 3,
-          fontSize: 10.5, color: 'var(--brand)', fontWeight: 600,
-          opacity: hovered ? 1 : 0.5, transition: 'opacity 0.12s',
-        }}>
-          <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
-          {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+      <div
+        role={isInteractive ? 'button' : undefined}
+        tabIndex={isInteractive ? 0 : undefined}
+        onClick={handleClick}
+        onKeyDown={isInteractive ? e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick() }
+        } : undefined}
+        style={{
+          cursor: item.aiPrompt ? 'pointer' : 'default',
+          display: 'flex', flexDirection: 'column', gap: 6,
+        }}
+      >
+        {/* Icon + type badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 18 }}>{item.icon}</span>
+          <span style={{
+            fontSize: 9.5, fontWeight: 700, padding: '1px 6px', borderRadius: 10,
+            background: 'var(--brand-soft)', color: 'var(--brand)',
+          }}>
+            {isAr
+              ? { procedure: 'إجراء', enriched: 'إجراء', service: 'خدمة', journey: 'رحلة', faq: 'سؤال' }[item.type]
+              : { procedure: 'Procedure', enriched: 'Procedure', service: 'Service', journey: 'Journey', faq: 'FAQ' }[item.type]}
+          </span>
         </div>
-      )}
+
+        {/* Title */}
+        <div style={{
+          fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)',
+          lineHeight: 1.4,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}>
+          {isAr ? item.titleAr : item.titleEn}
+        </div>
+
+        {/* Subtitle */}
+        <div style={{
+          fontSize: 11, color: 'var(--text-3)',
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+        }}>
+          {isAr ? item.subtitleAr : item.subtitleEn}
+        </div>
+
+        {/* Ask CTA */}
+        {item.aiPrompt && (
+          <div className="saved-ask-cta" style={{
+            display: 'flex', alignItems: 'center', gap: 3,
+            fontSize: 10.5, color: 'var(--brand)', fontWeight: 600,
+            opacity: hovered ? 1 : 0.5, transition: 'opacity 0.12s',
+          }}>
+            <svg aria-hidden="true" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            {isAr ? 'اسأل دليلك' : 'Ask Dalilak'}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

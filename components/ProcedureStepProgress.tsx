@@ -138,17 +138,32 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
       {/* Steps list */}
       <div style={{ padding: '6px 10px 8px' }}>
         {steps.map((step, i) => (
-          <label
+          // batch #536: was a <label> with no associated <input> wrapping two
+          // onClick divs/spans -- a <label> with no form control isn't
+          // keyboard-focusable, and neither inner element had role/tabIndex/
+          // onKeyDown either, so this row (the component's entire purpose)
+          // was 100% unreachable by keyboard. Same bug class fixed in
+          // ChatSummaryCard.tsx/ChatSessionSummaryChip.tsx (batches #534/535),
+          // fixed here the same way ReadinessChecker.tsx's equivalent
+          // checklist row already does it correctly: single focusable
+          // role="checkbox" element, inner parts non-interactive.
+          <div
             key={i}
+            role="checkbox"
+            aria-checked={checked[i]}
+            tabIndex={0}
+            onClick={() => toggle(i)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(i) }
+            }}
             style={{
               display: 'flex', alignItems: 'flex-start', gap: 9,
               padding: '6px 4px', cursor: 'pointer',
               borderBottom: i < steps.length - 1 ? '1px solid #F7F5F3' : 'none',
             }}
           >
-            {/* Custom checkbox */}
+            {/* Custom checkbox visual */}
             <div
-              onClick={() => toggle(i)}
               style={{
                 width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
                 border: `2px solid ${checked[i] ? '#8F1D2C' : '#D1CBC2'}`,
@@ -164,7 +179,6 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
               )}
             </div>
             <span
-              onClick={() => toggle(i)}
               style={{
                 fontSize: 11, lineHeight: 1.5, color: checked[i] ? 'var(--text-3)' : '#191713',
                 textDecoration: checked[i] ? 'line-through' : 'none',
@@ -177,7 +191,7 @@ export default function ProcedureStepProgress({ code, steps, isAr }: Props) {
               </span>
               {step}
             </span>
-          </label>
+          </div>
         ))}
       </div>
 
