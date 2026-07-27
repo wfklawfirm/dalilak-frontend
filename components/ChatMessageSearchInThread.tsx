@@ -25,7 +25,14 @@ interface Props {
 export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [matchIdx, setMatchIdx] = useState(0)
+  // batch #553: -1 means "no match jumped to yet" (fresh query, nothing
+  // navigated to). Was initialized to 0, which the counter below then
+  // displayed as "1/N" even though no jump had happened -- and the very
+  // first press of "next" computed `(0 + 1) % matches.length`, landing on
+  // the SECOND match and permanently skipping the first one on the primary
+  // forward-navigation path (the counter jumped straight from "1/N" to
+  // "2/N" with the highlighted message being matches[1], not matches[0]).
+  const [matchIdx, setMatchIdx] = useState(-1)
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -48,13 +55,13 @@ export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
 
   const goNext = () => {
     if (matches.length === 0) return
-    const next = (matchIdx + 1) % matches.length
+    const next = matchIdx < 0 ? 0 : (matchIdx + 1) % matches.length
     setMatchIdx(next)
     jumpTo(matches[next])
   }
   const goPrev = () => {
     if (matches.length === 0) return
-    const prev = (matchIdx - 1 + matches.length) % matches.length
+    const prev = matchIdx < 0 ? matches.length - 1 : (matchIdx - 1 + matches.length) % matches.length
     setMatchIdx(prev)
     jumpTo(matches[prev])
   }
@@ -91,7 +98,7 @@ export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
       <input
         autoFocus
         value={query}
-        onChange={e => { setQuery(e.target.value); setMatchIdx(0) }}
+        onChange={e => { setQuery(e.target.value); setMatchIdx(-1) }}
         onKeyDown={e => {
           if (e.key === 'Enter') { e.preventDefault(); goNext() }
           if (e.key === 'Escape') setOpen(false)
@@ -105,7 +112,9 @@ export default function ChatMessageSearchInThread({ messages, isAr }: Props) {
       />
       {query && (
         <span style={{ fontSize: 10, color: '#9CA3AF', flexShrink: 0 }}>
-          {matches.length > 0 ? `${matchIdx + 1}/${matches.length}` : (isAr ? 'لا نتائج' : 'No results')}
+          {matches.length > 0
+            ? (matchIdx >= 0 ? `${matchIdx + 1}/${matches.length}` : `${matches.length} ${isAr ? 'نتيجة' : 'matches'}`)
+            : (isAr ? 'لا نتائج' : 'No results')}
         </span>
       )}
       <button type="button" onClick={goPrev} disabled={matches.length === 0}
