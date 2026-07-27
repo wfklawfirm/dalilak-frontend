@@ -38,7 +38,11 @@ const MINISTRIES: Ministry[] = [
   { ar: 'وزارة العمل',                   en: 'Ministry of Labour',             phone: '01-556800', hours: '8:00–14:30', icon: '👷' },
   { ar: 'وزارة الأشغال العامة والنقل',   en: 'Ministry of Public Works',       phone: '05-455600', hours: '8:00–14:30', icon: '🏗️' },
   { ar: 'وزارة الزراعة',                en: 'Ministry of Agriculture',         phone: '05-952700', hours: '8:00–14:30', icon: '🌾' },
-  { ar: 'قوى الأمن الداخلي (ISF)',       en: 'Internal Security Forces',       phone: '1717',      hours: '24/7',      icon: '👮' },
+  // batch #532: was mislabeled '1717' -- verified against isf.gov.lb's own
+  // official contact page (tel:112 link), which shows 112 as ISF's number.
+  // 1717 belongs to a different agency (الأمن العام / General Security,
+  // already listed separately above with its own correct number).
+  { ar: 'قوى الأمن الداخلي (ISF)',       en: 'Internal Security Forces',       phone: '112',       hours: '24/7',      icon: '👮' },
   { ar: 'الدفاع المدني',                 en: 'Civil Defense',                  phone: '175',       hours: '24/7',      icon: '🚒' },
   { ar: 'الصليب الأحمر اللبناني',        en: 'Lebanese Red Cross',             phone: '140',       hours: '24/7',      icon: '🔴' },
   { ar: 'مصرف لبنان (BDL)',             en: 'Banque du Liban',                phone: '01-750000', hours: '8:30–14:00', icon: '🏦' },

@@ -80,8 +80,11 @@ const SLUG_MAP: Record<string, MinistryEntry> = {
     phone: '05-455600', hours: '8:00–14:30', icon: '🏗️',
   },
   isf: {
+    // batch #532: was mislabeled '1717' -- verified against isf.gov.lb's own
+    // official contact page (tel:112 link). 1717 belongs to a different
+    // agency (الأمن العام / General Security).
     ar: 'قوى الأمن الداخلي (ISF)', en: 'Internal Security Forces',
-    phone: '1717', hours: '24/7', icon: '👮',
+    phone: '112', hours: '24/7', icon: '👮',
   },
   traffic: {
     ar: 'مديرية السير والآليات', en: 'Traffic & Vehicle Directorate',

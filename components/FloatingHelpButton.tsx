@@ -4,7 +4,7 @@
  * FloatingHelpButton — Floating action button for emergency contacts + quick help.
  *
  * Shows a ❓ FAB (bottom-left). On click expands to:
- *   - Lebanese emergency numbers (112, 140, 175, 1735)
+ *   - Lebanese emergency numbers (112, 140, 175, 1480, 1650)
  *   - Link to /faq
  *   - "Ask Dalilak" button
  *
@@ -28,7 +28,9 @@ const EMERGENCY: EmergencyEntry[] = [
   { icon: '🚨', nameAr: 'طوارئ عامة',       nameEn: 'General Emergency', number: '112',  color: '#dc2626' },
   { icon: '🚑', nameAr: 'إسعاف',            nameEn: 'Ambulance',         number: '140',  color: '#059669' },
   { icon: '🚒', nameAr: 'إطفاء',            nameEn: 'Fire Brigade',      number: '175',  color: '#d97706' },
-  { icon: '🛡️', nameAr: 'قوى الأمن',       nameEn: 'Internal Security', number: '1735', color: '#1a56db' },
+  // batch #532: was mislabeled '1735' -- verified against isf.gov.lb's own
+  // official contact page (tel:112 link), which shows 112 as ISF's number.
+  { icon: '🛡️', nameAr: 'قوى الأمن',       nameEn: 'Internal Security', number: '112',  color: '#1a56db' },
   { icon: '⚡', nameAr: 'كهرباء',           nameEn: 'Electricity',       number: '1480', color: '#7c3aed' },
   { icon: '💧', nameAr: 'مياه',             nameEn: 'Water Authority',   number: '1650', color: '#0891b2' },
 ]
