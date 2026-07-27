@@ -118,16 +118,34 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
         animation: 'fadeUp 0.22s ease both',
       }}
     >
-      {/* Header */}
+      {/* Header. batch #535: the expand/collapse trigger used to be a plain
+          <div onClick=...> with no role/tabIndex/onKeyDown -- mouse/touch-only,
+          a WCAG 2.1.1 keyboard-trap (the expanded stats panel was completely
+          unreachable without a mouse). Can't simply make the whole row a
+          <button> since it already contains a real nested dismiss <button>
+          (that would reproduce the button-in-button bug fixed in batch #534
+          for ChatSessionSummaryChip.tsx). Fix: the row stays a non-interactive
+          div, and the title/icon/chevron area -- everything except the
+          dismiss control -- becomes its own real, keyboard-operable
+          <button>, a true sibling of the dismiss button (same pattern
+          FeedbackWidget.tsx already uses correctly). */}
       <div
-        onClick={() => setExpanded(e => !e)}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '11px 14px', cursor: 'pointer',
-          userSelect: 'none',
+          padding: '11px 14px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button
+          type="button"
+          onClick={() => setExpanded(e => !e)}
+          aria-expanded={expanded}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'none', border: 'none', padding: 0,
+            cursor: 'pointer', textAlign: isAr ? 'right' : 'left',
+            fontFamily: 'inherit', userSelect: 'none', flex: 1, minWidth: 0,
+          }}
+        >
           <span style={{ fontSize: 16 }}>📋</span>
           <div>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text-1)' }}>
@@ -139,23 +157,22 @@ export default function ChatSummaryCard({ messages, onAsk }: Props) {
                 : `${msgCount} question${msgCount !== 1 ? 's' : ''} • ${assistantCount} answer${assistantCount !== 1 ? 's' : ''} • ${topics.length} topic${topics.length !== 1 ? 's' : ''}`}
             </div>
           </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button
-            type="button"
-            onClick={e => { e.stopPropagation(); setDismissed(true) }}
-            aria-label={isAr ? 'إغلاق ملخص المحادثة' : 'Dismiss conversation summary'}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: 'var(--text-3)', fontSize: 16, padding: '2px 4px',
-            }}
-          >×</button>
           <span style={{
-            fontSize: 10, color: 'var(--text-3)',
+            fontSize: 10, color: 'var(--text-3)', marginInlineStart: 'auto',
             transform: expanded ? 'rotate(180deg)' : 'none',
             transition: 'transform 0.18s', display: 'inline-block',
           }}>▾</span>
-        </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label={isAr ? 'إغلاق ملخص المحادثة' : 'Dismiss conversation summary'}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: 'var(--text-3)', fontSize: 16, padding: '2px 4px',
+            marginInlineStart: 8, flexShrink: 0,
+          }}
+        >×</button>
       </div>
 
       {/* Topic pills — always visible */}
