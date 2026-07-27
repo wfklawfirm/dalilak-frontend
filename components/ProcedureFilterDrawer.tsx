@@ -17,7 +17,7 @@
  *   totalResults — number of matching procedures (for showing "X results")
  */
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useFocusTrap } from '@/lib/useFocusTrap'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -44,6 +44,14 @@ interface Props {
   onChange: (f: ProcFilters) => void
   onClose: () => void
   totalResults: number
+  // batch #552: optional live-preview callback -- given the user's
+  // in-progress (not-yet-applied) selection, returns what the result count
+  // would be if they hit "Apply" right now. Without this, the "Show N
+  // results" button kept displaying the OLD applied count while the header's
+  // "N active filters" badge (driven by the same in-progress selection)
+  // updated instantly -- the button lied about what applying would do for
+  // the entire time the drawer was open.
+  previewResultCount?: (f: ProcFilters) => number
 }
 
 interface ChipGroupProps<T extends string> {
@@ -88,7 +96,7 @@ function ChipGroup<T extends string>({ labelAr, labelEn, options, value, onChang
   )
 }
 
-export default function ProcedureFilterDrawer({ filters, onChange, onClose, totalResults }: Props) {
+export default function ProcedureFilterDrawer({ filters, onChange, onClose, totalResults, previewResultCount }: Props) {
   const { isAr } = useLanguage()
   const [local, setLocal] = useState<ProcFilters>(filters)
   // batch #361: trap Tab focus — mounted only while open by the parent
@@ -119,6 +127,15 @@ export default function ProcedureFilterDrawer({ filters, onChange, onClose, tota
   }
 
   const activeCount = Object.values(local).filter(v => v !== 'any').length
+
+  // batch #552: live preview of what "Apply" would yield for the CURRENT
+  // (not-yet-applied) selection, not the stale already-applied `totalResults`.
+  // Falls back to `totalResults` if the parent didn't pass a preview
+  // function, so this stays backward-compatible with any other future caller.
+  const previewCount = useMemo(
+    () => previewResultCount ? previewResultCount(local) : totalResults,
+    [previewResultCount, local, totalResults]
+  )
 
   return (
     <div
@@ -255,7 +272,7 @@ export default function ProcedureFilterDrawer({ filters, onChange, onClose, tota
               boxShadow: '0 2px 8px rgba(143,29,44,0.25)',
             }}
           >
-            {isAr ? `عرض ${totalResults} نتيجة` : `Show ${totalResults} results`}
+            {isAr ? `عرض ${previewCount} نتيجة` : `Show ${previewCount} results`}
           </button>
         </div>
       </div>

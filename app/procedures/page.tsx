@@ -218,11 +218,17 @@ export default function ProceduresPage() {
   // Deadline date input state — tracks the typed value in the deadline date picker per procedure
   const [deadlineInput, setDeadlineInput] = useState<string>('')
 
-  const filteredGuided = useMemo(() => {
-    // advFilters (hasForm/feeType/speed/started) has no matching field on
-    // guided PROCEDURES_DATA — showing this section unfiltered while an
-    // advanced filter is active silently defeats the filter for it.
-    if (hasActiveFilters(advFilters)) return []
+  // batch #552: split into a "base" list (search/ministry only, independent
+  // of advFilters) plus a pure predicate function -- needed so the filter
+  // drawer can compute a LIVE preview count from the user's in-progress
+  // selection (see `previewResultCount` below and ProcedureFilterDrawer.tsx),
+  // instead of the drawer's "Show N results" button silently showing the
+  // stale, already-applied count while the user is still picking chips (was:
+  // tap 2 new filter chips, "N active filters" badge updates instantly, but
+  // the button right below it keeps showing the OLD result count for the
+  // previously-applied filters the whole time -- misleading the one number
+  // users rely on to decide whether to commit to a filter combination).
+  const baseGuided = useMemo(() => {
     let list = PROCEDURES_DATA.filter(p => p.status === 'active')
     if (ministryFilter !== 'all') {
       list = list.filter(p => (CAT_TO_MINISTRY[p.categorySlug] || 'interior') === ministryFilter)
@@ -235,9 +241,17 @@ export default function ProceduresPage() {
       )
     }
     return list
-  }, [search, ministryFilter, advFilters])
+  }, [search, ministryFilter])
 
-  const filteredEnriched = useMemo(() => {
+  const filteredGuided = useMemo(() => {
+    // advFilters (hasForm/feeType/speed/started) has no matching field on
+    // guided PROCEDURES_DATA — showing this section unfiltered while an
+    // advanced filter is active silently defeats the filter for it.
+    if (hasActiveFilters(advFilters)) return []
+    return baseGuided
+  }, [baseGuided, advFilters])
+
+  const baseEnriched = useMemo(() => {
     let list = searchEnrichedProcedures(search)
     if (ministryFilter !== 'all') {
       list = list.filter(p => p.ministrySlug === ministryFilter)
@@ -245,28 +259,31 @@ export default function ProceduresPage() {
     if (enrichedMinistrySlug) {
       list = list.filter(p => p.ministrySlug === enrichedMinistrySlug)
     }
-    // Advanced filters
-    if (advFilters.hasForm !== 'any') {
-      list = list.filter(p => advFilters.hasForm === 'yes' ? !!p.hasForm : !p.hasForm)
+    return list
+  }, [search, ministryFilter, enrichedMinistrySlug])
+
+  const applyEnrichedAdvFilters = useCallback((list: EnrichedProcedure[], f: ProcFilters) => {
+    if (f.hasForm !== 'any') {
+      list = list.filter(p => f.hasForm === 'yes' ? !!p.hasForm : !p.hasForm)
     }
-    if (advFilters.feeType !== 'any') {
+    if (f.feeType !== 'any') {
       list = list.filter(p => {
         const fees = p.fees || ''
         if (!fees) return false // fee not recorded for this procedure — don't assert it's paid or free
         const isFree = fees.includes('مجان') || fees.toLowerCase().includes('free') || fees === '0'
-        return advFilters.feeType === 'free' ? isFree : !isFree
+        return f.feeType === 'free' ? isFree : !isFree
       })
     }
-    if (advFilters.speed !== 'any') {
+    if (f.speed !== 'any') {
       list = list.filter(p => {
         const pt = (p.processingTime || '').toLowerCase()
-        if (advFilters.speed === 'fast')   return pt.includes('يوم') || pt.includes('أيام') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
-        if (advFilters.speed === 'normal') return pt.includes('أسبوع') || pt.includes('أسابيع') || pt.includes('week') || pt.includes('أسبوعين')
-        if (advFilters.speed === 'slow')   return pt.includes('شهر') || pt.includes('month') || pt.includes('سنة') || pt.includes('year')
+        if (f.speed === 'fast')   return pt.includes('يوم') || pt.includes('أيام') || pt.includes('day') || pt.includes('ساعة') || pt.includes('hour')
+        if (f.speed === 'normal') return pt.includes('أسبوع') || pt.includes('أسابيع') || pt.includes('week') || pt.includes('أسبوعين')
+        if (f.speed === 'slow')   return pt.includes('شهر') || pt.includes('month') || pt.includes('سنة') || pt.includes('year')
         return true
       })
     }
-    if (advFilters.started === 'yes') {
+    if (f.started === 'yes') {
       // Matches ProcedureProgressBadge's real data source (dalilak_doc_{code}_{i},
       // written by the live ProcedureDocumentChecklist.tsx) — the old
       // dalilak_checklist_{code} key here was never written by any live
@@ -278,7 +295,21 @@ export default function ProceduresPage() {
       } catch { /* skip in SSR */ }
     }
     return list
-  }, [search, ministryFilter, enrichedMinistrySlug, advFilters])
+  }, [])
+
+  const filteredEnriched = useMemo(
+    () => applyEnrichedAdvFilters(baseEnriched, advFilters),
+    [baseEnriched, advFilters, applyEnrichedAdvFilters]
+  )
+
+  // Live preview of what "Apply" would yield for the drawer's in-progress
+  // (not-yet-applied) selection — same scope as the totalResults prop passed
+  // to the drawer below (guided + enriched only).
+  const previewResultCount = useCallback((f: ProcFilters) => {
+    const g = hasActiveFilters(f) ? 0 : baseGuided.length
+    const e = applyEnrichedAdvFilters(baseEnriched, f).length
+    return g + e
+  }, [baseGuided, baseEnriched, applyEnrichedAdvFilters])
 
   // batch #503: كان بنك الخدمات الحقيقي (ALL_SERVICES، 368 خدمة موثّقة
   // فعلياً بأجور/مستندات/هاتف/ساعات عمل حقيقية) يُستشهَد به فقط كعدّاد
@@ -1563,6 +1594,7 @@ export default function ProceduresPage() {
           onChange={f => setAdvFilters(f)}
           onClose={() => setFilterDrawerOpen(false)}
           totalResults={filteredEnriched.length + filteredGuided.length}
+          previewResultCount={previewResultCount}
         />
       )}
     </div>
