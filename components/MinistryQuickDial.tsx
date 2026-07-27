@@ -47,7 +47,11 @@ const MINISTRIES: Ministry[] = [
   { ar: 'الصليب الأحمر اللبناني',        en: 'Lebanese Red Cross',             phone: '140',       hours: '24/7',      icon: '🔴' },
   { ar: 'مصرف لبنان (BDL)',             en: 'Banque du Liban',                phone: '01-750000', hours: '8:30–14:00', icon: '🏦' },
   { ar: 'مديرية السير والآليات',         en: 'Traffic & Vehicle Directorate',  phone: '01-486600', hours: '8:00–14:00', icon: '🚗' },
-  { ar: 'النافعة — مياه بيروت',         en: 'Beirut Water Authority',         phone: '01-567000', hours: '8:00–14:00', icon: '💧' },
+  // batch #532: was inconsistent (01-567000 here vs 1650 in FloatingHelpButton)
+  // -- verified against the official Beirut & Mount Lebanon Water Establishment
+  // site (ebml.gov.lb/contactus.php), whose own "اتصل بنا" page states the
+  // hotline is 1713.
+  { ar: 'النافعة — مياه بيروت',         en: 'Beirut Water Authority',         phone: '1713',      hours: '8:00–14:00', icon: '💧' },
   { ar: 'كهرباء لبنان',                 en: 'Electricité du Liban',           phone: '1480',      hours: '24/7',      icon: '⚡' },
   { ar: 'طوارئ عامة',                    en: 'General Emergency',              phone: '112',       hours: '24/7',      icon: '🆘' },
   { ar: 'وزارة الشؤون الاجتماعية',       en: 'Ministry of Social Affairs',     phone: '01-738800', hours: '8:00–14:30', icon: '🤝' },

@@ -66,34 +66,48 @@ export default function ChatSessionSummaryChip({
         padding: '5px 0', marginBottom: 6,
       }}
     >
-      <button
-        type="button"
-        onClick={askForSummary}
+      {/* batch #534: was a <button> nested inside another <button> --
+          invalid HTML. Browsers auto-close the outer button as soon as the
+          parser hits the inner one, so the real DOM never matched what this
+          JSX described: the outer hit-area silently didn't wrap the "✕" as
+          intended, and screen readers saw two unrelated sibling buttons
+          instead of "chip + nested close button". Changed outer element to
+          role="group" (non-interactive) with the two buttons as true
+          siblings -- same click behavior, valid DOM/AX tree. */}
+      <div
+        role="group"
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '5px 14px', borderRadius: 20,
           background: 'rgba(91,33,182,0.07)', border: '1px solid rgba(91,33,182,0.2)',
-          cursor: 'pointer', fontFamily: 'inherit',
           transition: 'background 0.15s',
         }}
-        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(91,33,182,0.12)')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(91,33,182,0.07)')}
       >
-        <span style={{ fontSize: 12 }}>📋</span>
-        <span style={{ fontSize: 10.5, fontWeight: 700, color: '#5B21B6' }}>
-          {isAr
-            ? `${arMessages(messageCount)} — اضغط لتلخيص الجلسة`
-            : `${messageCount} messages — tap to summarize`}
-        </span>
         <button
           type="button"
-          onClick={e => { e.stopPropagation(); setDismissed(true) }}
+          onClick={askForSummary}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'none', border: 'none', padding: 0,
+            cursor: 'pointer', fontFamily: 'inherit',
+          }}
+        >
+          <span style={{ fontSize: 12 }}>📋</span>
+          <span style={{ fontSize: 10.5, fontWeight: 700, color: '#5B21B6' }}>
+            {isAr
+              ? `${arMessages(messageCount)} — اضغط لتلخيص الجلسة`
+              : `${messageCount} messages — tap to summarize`}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C4B5FD', fontSize: 10, padding: 0, lineHeight: 1, fontFamily: 'inherit' }}
           aria-label={isAr ? 'إغلاق' : 'Close'}
         >
           ✕
         </button>
-      </button>
+      </div>
     </div>
   )
 }

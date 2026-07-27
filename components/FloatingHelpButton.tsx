@@ -4,7 +4,7 @@
  * FloatingHelpButton — Floating action button for emergency contacts + quick help.
  *
  * Shows a ❓ FAB (bottom-left). On click expands to:
- *   - Lebanese emergency numbers (112, 140, 175, 1480, 1650)
+ *   - Lebanese emergency numbers (112, 140, 175, 1480, 1713)
  *   - Link to /faq
  *   - "Ask Dalilak" button
  *
@@ -32,7 +32,10 @@ const EMERGENCY: EmergencyEntry[] = [
   // official contact page (tel:112 link), which shows 112 as ISF's number.
   { icon: '🛡️', nameAr: 'قوى الأمن',       nameEn: 'Internal Security', number: '112',  color: '#1a56db' },
   { icon: '⚡', nameAr: 'كهرباء',           nameEn: 'Electricity',       number: '1480', color: '#7c3aed' },
-  { icon: '💧', nameAr: 'مياه',             nameEn: 'Water Authority',   number: '1650', color: '#0891b2' },
+  // batch #532: was mislabeled '1650' -- verified against the official Beirut
+  // & Mount Lebanon Water Establishment site (ebml.gov.lb/contactus.php),
+  // whose own "اتصل بنا" page states the hotline is 1713.
+  { icon: '💧', nameAr: 'مياه',             nameEn: 'Water Authority',   number: '1713', color: '#0891b2' },
 ]
 
 interface Props {
