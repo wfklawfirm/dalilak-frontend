@@ -45,9 +45,30 @@ interface DeadlineItem {
   daysLeft: number
 }
 
+// batch #550: daysLeft was computed by parsing the stored "YYYY-MM-DD"
+// deadline via `new Date(dateStr)` (interpreted as UTC midnight per spec)
+// then `.setHours(0,0,0,0)` (re-anchored to the DEVICE's local midnight) —
+// and comparing it against `today` computed the same locally-anchored way.
+// For any device with a negative UTC offset (any North America timezone —
+// a real diaspora-Lebanese audience for this app), that silently rolls the
+// deadline back one calendar day: a deadline stored as "2026-07-28" and
+// "today" both collapse onto the same local date a day early, showing
+// "Today!"/urgent-red styling roughly a day before the real Beirut-relative
+// deadline, or understating urgency depending on time of day — risking a
+// missed real government deadline. Fixed by comparing pure calendar dates
+// (Date.UTC anchors, no local-timezone re-interpretation at all) instead of
+// timezone-sensitive Date object arithmetic.
+function daysBetweenDateStrings(fromStr: string, toStr: string): number {
+  const [fy, fm, fd] = fromStr.split('-').map(Number)
+  const [ty, tm, td] = toStr.split('-').map(Number)
+  const from = Date.UTC(fy, (fm || 1) - 1, fd || 1)
+  const to = Date.UTC(ty, (tm || 1) - 1, td || 1)
+  return Math.round((to - from) / 86_400_000)
+}
+
 function scanDeadlines(): DeadlineItem[] {
   const items: DeadlineItem[] = []
-  const today = new Date(); today.setHours(0,0,0,0)
+  const todayStr = new Date().toISOString().slice(0, 10)
   // Snooze lookup key must use the same "local date, then ISO-stringify the
   // current instant" technique as snooze() below (new Date().toISOString()),
   // NOT today.toISOString() — today has been rolled back to local midnight
@@ -72,8 +93,7 @@ function scanDeadlines(): DeadlineItem[] {
       // Check snooze
       if (localStorage.getItem(LS_SNOOZE_PREFIX + code + '_' + snoozeToday)) continue
 
-      const deadline = new Date(dateStr); deadline.setHours(0,0,0,0)
-      const daysLeft = Math.ceil((deadline.getTime() - today.getTime()) / 86_400_000)
+      const daysLeft = daysBetweenDateStrings(todayStr, dateStr)
 
       if (daysLeft > 7) continue // Only show if within 7 days
 
