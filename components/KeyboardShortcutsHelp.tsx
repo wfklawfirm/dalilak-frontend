@@ -44,7 +44,7 @@ const CAT_LABEL: Record<string, [string, string]> = {
 }
 
 export default function KeyboardShortcutsHelp() {
-  const { isAr } = useLanguage()
+  const { isAr, toggleLang } = useLanguage()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -56,10 +56,19 @@ export default function KeyboardShortcutsHelp() {
         setOpen(o => !o)
       }
       if (e.key === 'Escape') setOpen(false)
+      // batch #539: the shortcuts list below has always advertised "Alt+L"
+      // to toggle Arabic/English, but no handler for it existed anywhere in
+      // the codebase (confirmed via a full-repo grep for altKey/'L' checks)
+      // -- the modal was documenting a shortcut that silently did nothing.
+      // Wired it to the same toggleLang() used by GlobalLangSwitch.tsx.
+      if (e.altKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault()
+        toggleLang()
+      }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [toggleLang])
 
   // batch #517: another real role="dialog" left out of the useFocusTrap.ts
   // audit trail (see MinistryQuickDial's batch #516 fix for the same gap) —
